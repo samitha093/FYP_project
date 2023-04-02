@@ -3,7 +3,7 @@ import csv
 
 def writetoCSV(firstVal,secondVal,thirdVal):
     # specify the name of the file you want to append to
-    filename = '../dataset/cartData.csv'
+    filename = 'dataset/cartData.csv'
 
     new_data = [[firstVal,secondVal,thirdVal] ]
 
