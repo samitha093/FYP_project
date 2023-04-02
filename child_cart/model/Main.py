@@ -46,14 +46,14 @@ def recodeDataRemove():
 #Globle aggregation process
 def globleAggregationProcess():
           print("Strat local training ------->")
-          model=mg.create_model()
+          model=create_model()
           model.load_weights('modelData/model_weights.h5')
           #traing model using cartdata
           print("Split dataset")
-          x_train,y_train = sp.splitCartData()
+          x_train,y_train = splitCartData()
           continuoustrainModel(model,x_train,y_train)
           #test model using local data
-          x_train_np, y_train_np,x_test_np,y_test_np =sp.splitDataset()
+          x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
           getModelAccuracy(model,x_test_np,y_test_np)
           #adding differential privacy
           differentialPrivacy()
@@ -73,14 +73,14 @@ def initialAggregationProcess():
 
 def differentialPrivacy():
     print("Starting adding differential privacy ------->")
-    model=mg.create_model()
+    model=create_model()
     model.load_weights('modelData/model_weights.h5')
     #traing model using cartdata
     print("Split dataset")
     #test model using local data
     print("Get Local model accuracy----->")
-    x_train_np, y_train_np,x_test_np,y_test_np =sp.splitDataset()
-    localModelAccuracy =  ma.getModelAccuracy(model,x_test_np,y_test_np)
+    x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
+    localModelAccuracy = getModelAccuracy(model,x_test_np,y_test_np)
     
     def loopProcess():
         # Define the standard deviation of the noise
@@ -88,7 +88,7 @@ def differentialPrivacy():
         stopRange =5
         # Get the model weights
         model_weights = model.get_weights()
-        tempModel=mg.create_model()
+        tempModel=create_model()
 
         print("Add differntial privacy----->")
         # Add Gaussian noise to the model weights
@@ -98,7 +98,7 @@ def differentialPrivacy():
         # Set the modified weights back to the model
         tempModel.set_weights(model_weights)
         print("Differential privacy model accuracy----->")
-        differentialPrivacyModelAccuracy = ma.getModelAccuracy(tempModel,x_test_np,y_test_np)
+        differentialPrivacyModelAccuracy = getModelAccuracy(tempModel,x_test_np,y_test_np)
         if( differentialPrivacyModelAccuracy > localModelAccuracy - stopRange ) and (differentialPrivacyModelAccuracy < localModelAccuracy + stopRange) :
             print(localModelAccuracy)
             print(differentialPrivacyModelAccuracy)
