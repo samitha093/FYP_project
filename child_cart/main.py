@@ -15,4 +15,4 @@ from ui.Flask import *
 if __name__ == '__main__':
     t = Thread(target=app.run, kwargs={'port': 5001})
     t.start()
-    backgroudNetworkProcess()
+    # backgroudNetworkProcess()

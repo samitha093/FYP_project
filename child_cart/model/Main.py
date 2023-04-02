@@ -30,11 +30,11 @@ def resetProject():
 #remove stored data in carData file
 def recodeDataRemove():
     
-    with open('dataset/cartData.csv', 'r') as input_file:
+    with open('../dataset/cartData.csv', 'r') as input_file:
         reader = csv.reader(input_file)
         rows = [row for row in reader]
 
-    with open('dataset/cartData.csv', 'w', newline='') as output_file:
+    with open('../dataset/cartData.csv', 'w', newline='') as output_file:
         writer = csv.writer(output_file)
         writer.writerows(rows[0:1])
         writer.writerows(rows[4:])

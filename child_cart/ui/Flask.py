@@ -31,7 +31,8 @@ currentGender = 0
 
 currentThreandArray=[]
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='../templates')
+
 headings=("Name","Number","Price","Amount","Total price")
 
 #find current threand
@@ -48,7 +49,7 @@ def findCurrentThreandArray():
     print(type(itemNum))
     print(type(int(itemNum)))
     currentThreandArray = []
-    receivedList = dbConnect.ItemList(int(itemNum));
+    receivedList = ItemList(int(itemNum));
     currentThreandArray.append(receivedList)
     print("length : ",len(currentThreandArray[0]))
     print(currentThreandArray)

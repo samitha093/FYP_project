@@ -6,7 +6,7 @@ from keras.utils import to_categorical
 #split generated dataset
 def splitDataset():
     #Load  the dataset from the CSV file
-    df = pd.read_csv('dataset/dataset.csv')
+    df = pd.read_csv('../dataset/dataset.csv')
     # Split the data into training and testing sets
    
     # train_data, test_data, train_labels, test_labels = train_test_split(df[['Month']], df['Item'], test_size=0.2)
@@ -44,7 +44,7 @@ def splitCartData():
     sizeOfDataset =3
     #Load  the dataset from the CSV file
     print("READ DATA SET")
-    my_data = pd.read_csv('dataset/cartData.csv')
+    my_data = pd.read_csv('../dataset/cartData.csv')
     train_data =my_data[['Month','Gender']].head(sizeOfDataset)
     train_labels =my_data['Item'].head(sizeOfDataset)
     
@@ -63,4 +63,3 @@ def splitCartData():
     y_train_np = to_categorical(y_train_np, 7)
     
     return x_train_np, y_train_np
-splitDataset()

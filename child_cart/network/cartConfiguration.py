@@ -14,7 +14,7 @@ def netConfigurations(HOST,LOCALHOST,PORT,RECEIVER_TIMEOUT,SYNC_CONST):
     data[0] = [HOST,LOCALHOST,PORT,RECEIVER_TIMEOUT,SYNC_CONST]
 
     # Write the modified data back to the CSV file
-    with open('cartConfigurations.csv', 'w', newline='') as csvfile:
+    with open('dataset/cartConfigurations.csv', 'w', newline='') as csvfile:
         # Create a CSV writer object
         writer = csv.writer(csvfile)
 
@@ -25,7 +25,7 @@ def netConfigurations(HOST,LOCALHOST,PORT,RECEIVER_TIMEOUT,SYNC_CONST):
 
 def getNetConfigurations():
     # Open the CSV file in read mode
-    with open('cartConfigurations.csv', 'r') as csvfile:
+    with open('dataset/cartConfigurations.csv', 'r') as csvfile:
         # Create a CSV reader object
         reader = csv.reader(csvfile)
 
@@ -45,4 +45,3 @@ def getNetConfigurations():
             print("SYNC_CONST:", SYNC_CONST)
         
         return row    
-# netConfigurations("13.250.112.120","17.125.145.152",9000,60,2)

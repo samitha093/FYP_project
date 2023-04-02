@@ -3,7 +3,7 @@ import csv
 
 def writetoCSV(firstVal,secondVal,thirdVal):
     # specify the name of the file you want to append to
-    filename = 'dataset/cartData.csv'
+    filename = '../dataset/cartData.csv'
 
     new_data = [[firstVal,secondVal,thirdVal] ]
 
@@ -16,3 +16,4 @@ def writetoCSV(firstVal,secondVal,thirdVal):
         for row in new_data:
             writer.writerow(row)
     print(firstVal ,secondVal, thirdVal , " added to system")
+

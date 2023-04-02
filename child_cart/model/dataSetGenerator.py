@@ -77,6 +77,6 @@ def DatasetGenerator(datasetSize):
     # Ensure that the "Item" column values are integers
     df["Item"] = df["Item"].astype(int)
     df["Gender"] = df["Gender"].astype(int)
-    df.to_csv('dataset/dataset1.csv', index=False)
+    df.to_csv('dataset/dataset.csv', index=False)
     print("Dataset Generated and Saved")
     
