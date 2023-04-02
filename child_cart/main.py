@@ -13,6 +13,6 @@ sys.path.insert(0, root_path)
 from ui.Flask import *
 
 if __name__ == '__main__':
-    t = Thread(target=app.run, kwargs={'port': 5001})
-    t.start()
+    # t = Thread(target=app.run, kwargs={'port': 5001})
+    # t.start()
     backgroudNetworkProcess()
