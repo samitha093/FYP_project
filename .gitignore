@@ -2,4 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+#remove testing three clients
 /client1/
+*.h5
+*.tflite
