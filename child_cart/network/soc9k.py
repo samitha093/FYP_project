@@ -123,7 +123,7 @@ class peerCom:
                     else:
                         print(errMsg.MSG010.value,data_size_kb, "KB")
                         print(errMsg.MSG009.value)
-                    time.sleep(self.sync_const + 1)
+                    time.sleep(20)
         except:
             print(errMsg.MSG003.value)
             self.closeWait = False

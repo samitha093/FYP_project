@@ -28,7 +28,7 @@ import pandas as pd
 HOST = '141.145.200.6' #141.145.200.6
 LOCALHOST = '141.145.200.6'
 PORT = 9000
-RECEIVER_TIMEOUT = 60
+RECEIVER_TIMEOUT = 3*60
 SYNC_CONST = 1
 
 def clientconfigurations():

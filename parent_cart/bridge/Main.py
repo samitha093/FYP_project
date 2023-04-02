@@ -28,7 +28,7 @@ cart_server_task = None
 DeviceTable = []
 ClusterTable = {}
 clusterSize = 2
-SYNC_CONST = 1
+SYNC_CONST = 2
 
 shared_data = {}
 MOBILEDATARECORDER = {}
@@ -148,6 +148,8 @@ async def handle_client(reader, writer):
             mailBox = DATARECORDER.get(userId)
             if mailBox[0].get("Data")[0] == "MODELPARAMETERS":
                     print("****MODELPARAMETERS FROM ",mailBox[0].get("Sender")," TO : ", userId)
+            if mailBox[0].get("Data")[0] == "MODELREQUEST":
+                    print("####MODEL REQUEST FROM ",mailBox[0].get("Sender")," TO : ", userId)
             mailData = pickle.dumps(mailBox[0])
             data_size = sys.getsizeof(mailData)
             data_size_kb = data_size / 1024
@@ -392,21 +394,21 @@ def create_bootstrap_node():
         server_loop.close()
 
 if __name__ == "__main__":
-    # signal.signal(signal.SIGINT, sigint_handler)
-    # loop = asyncio.new_event_loop()
-    # thread1 = threading.Thread(target=function_1)
-    # thread2 = threading.Thread(target=function_2)
-    # thread3 = threading.Thread(target=function_3, args=(loop,))
+    signal.signal(signal.SIGINT, sigint_handler)
+    loop = asyncio.new_event_loop()
+    thread1 = threading.Thread(target=function_1)
+    thread2 = threading.Thread(target=function_2)
+    thread3 = threading.Thread(target=function_3, args=(loop,))
 
-    # thread1.start()
-    # thread2.start()
-    # thread3.start()
+    thread1.start()
+    thread2.start()
+    thread3.start()
 
     try:
         # create_bootstrap_node()
-        connect_to_bootstrap_node(BOOSTRAP_HOST,BOOSTRAP_PORT)
-        # while running:
-        #     time.sleep(1)
+        # connect_to_bootstrap_node(BOOSTRAP_HOST,BOOSTRAP_PORT)
+        while running:
+            time.sleep(1)
 
     except:
         print("Program stopped: Rutime exception")
