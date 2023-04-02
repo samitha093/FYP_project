@@ -12,6 +12,8 @@ Requried libray
 ```bash
   pip install aiohttp
   pip install kademlia
+  pip install keras
+  pip install tensorflow
 ```
 
 
