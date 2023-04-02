@@ -20,22 +20,28 @@ Requried libray
 **Bridge Library:**
 
 (Http - Protocole)
-
 aiohttp : https://pypi.org/project/aiohttp/
 
 (TCP - Protocole)
-
 Socket : https://docs.python.org/3/library/socket.html
 
-(kademlia - Protocole -distributed network)
-
+(kademlia - Protocole - distributed network)
 kademlia: https://pypi.org/project/kademlia/
 
 **Network Library:**
+(serialize data packet)
+pickle: https://docs.python.org/3/library/pickle.html
 
 **Checkout system:**
 
 **AI model:**
 
 **Mobile Application:**
+
+
+## Authors
+
+- [@lakshan pathiraja](https://github.com/samitha093)
+- [@Isuru Lakshan]
+- [@Kavini Kushani]
 
