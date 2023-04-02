@@ -1,8 +1,6 @@
 import signal
 import sys
-import sys
 import time
-import os
 import os
 import sys
 
@@ -26,12 +24,12 @@ from network.cartConfiguration import *
 import pandas as pd
 
 
-
+# HOST = 'localhost'
 HOST = '141.145.200.6' #141.145.200.6
 LOCALHOST = '141.145.200.6'
 PORT = 9000
 RECEIVER_TIMEOUT = 20
-SYNC_CONST = 1 
+SYNC_CONST = 1
 
 def clientconfigurations():
     global HOST
@@ -39,7 +37,7 @@ def clientconfigurations():
     global PORT
     global RECEIVER_TIMEOUT
     global SYNC_CONST
-    
+
     row = getNetConfigurations()
     HOST = row[0]
     LOCALHOST = row[1]
@@ -49,12 +47,12 @@ def clientconfigurations():
 
 ########################################################################
 #------------------------------PEER   DATA-----------------------------#
-MODELPARAMETERS = encodeModelParameters()
 # MODELPARAMETERS  = bytes(1024)  # 1 KB
 # MODELPARAMETERS  = bytes(100*1024)  # 100 KB
 # MODELPARAMETERS  = bytes(1024*1024)  # 1 MB
 # MODELPARAMETERS  = bytes(3*1024*1024)  # 3 MB
 # MODELPARAMETERS  = bytes(5*1024*1024)  # 5 MB
+MODELPARAMETERS = encodeModelParameters()
 ########################################################################
 
 ########################################################################
@@ -64,7 +62,6 @@ MODELPARAMETERS = encodeModelParameters()
 # MOBILEMODELPARAMETERS  = bytes(1024*1024)  # 1 MB
 # MOBILEMODELPARAMETERS  = bytes(5*1024*1024)  # 5 MB
 MOBILEMODELPARAMETERS  =encodeModelParametersForMobile()
-
 ########################################################################a
 
 def sigint_handler(signal, frame, mySocket, USERID):
@@ -72,9 +69,9 @@ def sigint_handler(signal, frame, mySocket, USERID):
     mySocket.close(0,USERID)
     sys.exit(0)
 
-def mainFunn(MODE, RECIVER_TIMEOUT, SYNC_CONST, TIMEOUT = 12):
+def mainFunn(MODE, RECIVER_TIMEOUT, SYNC_CONST):
     try:
-        mySocket = peerCom(HOST, PORT, TIMEOUT , MODE, SYNC_CONST)
+        mySocket = peerCom(HOST, PORT, MODE, SYNC_CONST)
         signal.signal(signal.SIGINT, lambda signal, frame: sigint_handler(signal, frame, mySocket, USERID))
         TEMPUSERID = mySocket.connect()
         USERID = getID(TEMPUSERID)
@@ -90,18 +87,15 @@ def mainFunn(MODE, RECIVER_TIMEOUT, SYNC_CONST, TIMEOUT = 12):
                     receivedData = item['Data'][1]
                     print("receivedData------------------->>>>>>>")
                     decodeModelParameters(receivedData)
-                    
         if MODE == conctionType.SHELL.value:
             seedProx(mySocket,TEMPUSERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,RECIVER_TIMEOUT,USERID)
-    
     except Exception as e:
         print("Error occurred while running in", MODE, " mode ")
 
-    
+
 def connectNetwork(type):
     global RECEIVER_TIMEOUT
     global SYNC_CONST
-    
     if type == "SHELL":
             mainFunn("SHELL",RECEIVER_TIMEOUT,SYNC_CONST)
             time.sleep(2)
@@ -111,36 +105,30 @@ def connectNetwork(type):
             mainFunn("KERNEL",RECEIVER_TIMEOUT,SYNC_CONST)
             time.sleep(2)
             print("loop call triggered")
-
 #----------------------background process --------------------------------
 def backgroudNetworkProcess():
       #clientconfigurations()
       while True:
-            directoryModelData = "modelData" 
+            directoryModelData = "modelData"
             modelDataSize = len([f for f in os.listdir(directoryModelData) if os.path.isfile(os.path.join(directoryModelData, f))])
             cartData = pd.read_csv('dataset/cartData.csv')
-            #if cart is new 
+            #if cart is new
             if modelDataSize == 0:
                  print("Initializing cart")
-                 resetModelData()  
-            
-                
+                 resetModelData()
             #compare size of the dataset for globla aggregation
             elif len(cartData) >= 3:
                 print("Connecting as KERNEL for globla aggregation")
                 while True:
-                    directoryReceivedParameters = "receivedModelParameter" 
+                    directoryReceivedParameters = "receivedModelParameter"
                     receivedParametersSize = len([f for f in os.listdir(directoryReceivedParameters) if os.path.isfile(os.path.join(directoryReceivedParameters, f))])
-                    #check received parameters size 
+                    #check received parameters size
                     if receivedParametersSize >= 4:
                         globleAggregationProcess()
                         break
                     else:
-                        connectNetwork("KERNEL") 
-            
+                        connectNetwork("KERNEL")
             else:
                 print("Connecting as SHELL for send Models")
                 connectNetwork("SHELL")
-            
-            time.sleep(5) 
-             
+            time.sleep(5)
