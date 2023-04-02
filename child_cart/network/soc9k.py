@@ -3,10 +3,20 @@ import threading
 import pickle
 import time
 import sys
-from filesender import partDevider
-from enumList import conctionType
-from errorList import errMsg
-from util import requestModel
+import os
+
+
+# Get the path to the root directory
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+# Add the root and client4 directories to the Python path
+sys.path.insert(0, root_path)
+
+# Import the modules
+from network.util import *
+from network.errorList import *
+from network.filesender import *
+from network.enumList import *
 
 class peerCom:
     def __init__(self, host, port, Mtype, SYNC_CONST):
