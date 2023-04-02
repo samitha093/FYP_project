@@ -7,13 +7,11 @@ To establish a better TCP connection, we tryed different mechanisms. However, in
 
 ## Deployment
 
-Requried libray
+Requried library for bridge and network library
 
 ```bash
   pip install aiohttp
   pip install kademlia
-  pip install keras
-  pip install tensorflow
 ```
 
 
