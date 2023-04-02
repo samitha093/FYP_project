@@ -44,5 +44,5 @@ def getNetConfigurations():
             print("RECEIVER_TIMEOUT:", RECEIVER_TIMEOUT)
             print("SYNC_CONST:", SYNC_CONST)
         
-        return row    
+        return row
 # netConfigurations("13.250.112.120","17.125.145.152",9000,60,2)
