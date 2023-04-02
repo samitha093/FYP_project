@@ -2,28 +2,16 @@ import socket
 import threading
 import pickle
 import time
-
-
-import os
 import sys
-
-# Get the path to the root directory
-root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-
-# Add the root and client4 directories to the Python path
-sys.path.insert(0, root_path)
-
-# Import the modules
-from network.filesender import *
-from network.enumList import *
-from network.errorList import *
-from network.util import *
+from filesender import partDevider
+from enumList import conctionType
+from errorList import errMsg
+from util import requestModel
 
 class peerCom:
-    def __init__(self, host, port, timerout, Mtype, SYNC_CONST):
+    def __init__(self, host, port, Mtype, SYNC_CONST):
         self.host = host
         self.port = port
-        self.timerout = timerout
         self.mode = Mtype
         self.socket = None
         self.receiver_thread = None
@@ -31,9 +19,10 @@ class peerCom:
         self.SENDQUE = []
         self.RECIVEQUE = []
         self.socketFree = True
-        self.sync_const = 1
+        self.sync_const = SYNC_CONST
         self.closeWait = True
         self.USERID = ""
+        self.continueData = False
 
     def connect(self):
         try:
@@ -59,8 +48,10 @@ class peerCom:
             self.close(0,self.USERID)
             sys.exit(0)
 
+    def isData_Reciving(self):
+        return self.continueData
+
     def receiver(self):
-        continueData = False
         while self.is_running:
             try:
                 data_chunks = []
@@ -69,11 +60,11 @@ class peerCom:
                         self.socket.settimeout(self.sync_const)
                         received_data = self.socket.recv(1024*1024)
                         print(errMsg.MSG005.value)
-                        continueData = True
+                        self.continueData = True
                     except socket.timeout:
-                        if continueData:
+                        if self.continueData:
                             print(errMsg.MSG006.value)
-                            continueData = False
+                            self.continueData = False
                         break
                     except:
                         break
@@ -122,7 +113,7 @@ class peerCom:
                     else:
                         print(errMsg.MSG010.value,data_size_kb, "KB")
                         print(errMsg.MSG009.value)
-                    time.sleep(2)
+                    time.sleep(self.sync_const + 1)
         except:
             print(errMsg.MSG003.value)
             self.closeWait = False

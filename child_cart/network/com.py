@@ -1,17 +1,6 @@
 import time
-
-import os
-import sys
-
-# Get the path to the root directory
-root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-
-# Add the root and client4 directories to the Python path
-sys.path.insert(0, root_path)
-
-# Import the modules
-from network.util import *
-
+from util import requestModel
+from errorList import errMsg
 
 def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS,oldID):
     CLUSTERID = ""
@@ -64,10 +53,15 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS,oldID):
                     MODELPARAMETERLIST.append(x)
                 else:
                     print("UNKNOWN MESSAGE : ",x)
+                timerCal =0
         time.sleep(1)
         timerCal +=1
         if timerCal == TimerOut:
-            ModelParamLoop = False
+            Reciver_status = mySocket.isData_Reciving()
+            if Reciver_status:
+                timerCal = 0
+            else:
+                ModelParamLoop = False
     mySocket.close(0,USERID)
     return MODELPARAMETERLIST
     ################################################################################
