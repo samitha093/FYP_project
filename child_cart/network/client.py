@@ -111,52 +111,53 @@ def connectNetwork(type):
             print("loop call triggered")
 #----------------------background process --------------------------------
 def backgroudNetworkProcess():
-      #clientconfigurations()
-      directoryReceivedModelParameter = "receivedModelParameter"
-      # check if directory exists
-      if not os.path.exists(directoryReceivedModelParameter):
-            # create directory if it doesn't exist
-            os.makedirs(directoryReceivedModelParameter)
-            print("Directory created: " + directoryReceivedModelParameter)
-   
+    print("NETWORKING ......")
+    #clientconfigurations()
+    directoryReceivedModelParameter = "receivedModelParameter"
+    # check if directory exists
+    if not os.path.exists(directoryReceivedModelParameter):
+        # create directory if it doesn't exist
+        os.makedirs(directoryReceivedModelParameter)
+        print("Directory created: " + directoryReceivedModelParameter)
 
-      directoryModelData = "modelData"
-      # check if directory exists
-      if not os.path.exists(directoryModelData):
-            # create directory if it doesn't exist
-            os.makedirs(directoryModelData)
-            print("Directory created: " + directoryModelData)
 
-    
+    directoryModelData = "modelData"
+    # check if directory exists
+    if not os.path.exists(directoryModelData):
+        # create directory if it doesn't exist
+        os.makedirs(directoryModelData)
+        print("Directory created: " + directoryModelData)
 
-      # get number of files in directory
-      modelDataSize = len([f for f in os.listdir(directoryModelData) if os.path.isfile(os.path.join(directoryModelData, f))])
 
-      # if cart is new
-      if modelDataSize == 0:
+
+    # get number of files in directory
+    modelDataSize = len([f for f in os.listdir(directoryModelData) if os.path.isfile(os.path.join(directoryModelData, f))])
+
+    # if cart is new
+    if modelDataSize == 0:
         print("Initializing cart")
         resetModelData()
-            
-            
-      global MODELPARAMETERS
-      global MOBILEMODELPARAMETERS
-      while True:
-            MODELPARAMETERS = encodeModelParameters()
-            MOBILEMODELPARAMETERS  =encodeModelParametersForMobile()
-            cartData = pd.read_csv('dataset/cartData.csv')
-            #compare size of the dataset for globla aggregation
-            if len(cartData) >= 3:
-                print("Connecting as KERNEL for globla aggregation")
-                while True:
-                    directoryReceivedParameters = "receivedModelParameter"
-                    receivedParametersSize = len([f for f in os.listdir(directoryReceivedParameters) if os.path.isfile(os.path.join(directoryReceivedParameters, f))])
-                    #check received parameters size
-                    if receivedParametersSize >= 4:
-                        globleAggregationProcess()
-                        break
-                    else:
-                        connectNetwork("KERNEL")
-            else:
-                print("Connecting as SHELL for send Models")
-                connectNetwork("SHELL")
-            time.sleep(5)
+
+    global MODELPARAMETERS
+    global MOBILEMODELPARAMETERS
+    while True:
+        MODELPARAMETERS = encodeModelParameters()
+        MOBILEMODELPARAMETERS  =encodeModelParametersForMobile()
+        cartData = pd.read_csv('dataset/cartData.csv')
+        #compare size of the dataset for globla aggregation
+        if len(cartData) >= 3:
+            print("Connecting as KERNEL for globla aggregation")
+            while True:
+                directoryReceivedParameters = "receivedModelParameter"
+                receivedParametersSize = len([f for f in os.listdir(directoryReceivedParameters) if os.path.isfile(os.path.join(directoryReceivedParameters, f))])
+                #check received parameters size
+                if receivedParametersSize >= 4:
+                    globleAggregationProcess()
+                    break
+                else:
+                    connectNetwork("KERNEL")
+                time.sleep(10)
+        else:
+            print("Connecting as SHELL for send Models")
+            connectNetwork("SHELL")
+        time.sleep(5)

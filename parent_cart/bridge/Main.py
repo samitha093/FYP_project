@@ -142,11 +142,12 @@ async def handle_client(reader, writer):
     writer.write(userId.encode())
     await writer.drain()
     ######################RUNNER_ENGINE##########################
+    client_disconnected = False
     #coroutine for sending data to the client
     async def send_data():
-        nonlocal userId, reader, writer
-        print("SENDER - start for :",userId)
-        while True:
+        nonlocal userId, reader, writer, client_disconnected
+        print("SENDER - start for :",userId," : ",writer.get_extra_info('peername'))
+        while not client_disconnected:
             if len(DATARECORDER.get(userId)) > 0:
                 mailBox = DATARECORDER.get(userId)
                 if mailBox[0].get("Data")[0] == "MODELPARAMETERS":
@@ -167,6 +168,10 @@ async def handle_client(reader, writer):
                     for x in chunks:
                         writer.write(x)
                         await writer.drain()
+                if mailBox[0].get("Data")[0] == "ERROR":
+                    print("####ERROR ON ",mailBox[0].get("Data")[1]," : ", userId,)
+                    client_disconnected = True
+                await asyncio.sleep(2)
                 mailBox.remove(mailBox[0])
             await asyncio.sleep(1)
 
@@ -188,9 +193,9 @@ async def handle_client(reader, writer):
 
     # coroutine for receiving data from the client
     async def receive_data():
-        nonlocal userId, reader, writer
-        print("RECEIVER - start for :",userId)
-        while True:
+        nonlocal userId, reader, writer, client_disconnected
+        print("RECEIVER - start for :",userId," : ",writer.get_extra_info('peername'))
+        while not client_disconnected:
             try:
                 # Receive and concatenate the data chunks
                 data_chunks = []
@@ -205,16 +210,24 @@ async def handle_client(reader, writer):
                     asyncio.create_task(process_data(data_chunks.copy()))
                 else:
                     continue
+            except ConnectionResetError:
+                client_disconnected = True
+                break
             except Exception as e:
                 print("######## STATUS INFO : ",e)
+                client_disconnected = True
                 break
             await asyncio.sleep(1)
 
     #############################################################
-    await asyncio.gather(send_data(), receive_data())
+    try:
+        await asyncio.gather(send_data(), receive_data())
+    except:
+        print("######## ERROR CATCH : ACYNC")
     #############################################################
-    writer.close()
     print('Connection Closed : ',addr)
+    writer.close()
+
 
 # This is the coroutine that will handle incoming mobile app connections
 async def handle_mobile(reader, writer):
