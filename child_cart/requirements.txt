@@ -1,0 +1,12 @@
+tensorflow
+keras
+pymongo
+pandas
+sklearn
+zlib
+numpy
+sys
+csv
+cv2
+pyzbar
+flask

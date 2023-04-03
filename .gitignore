@@ -2,7 +2,6 @@
 __pycache__/
 *.py[cod]
 *$py.class
-*.txt
 #remove testing three clients
 /client1/
 /client2/

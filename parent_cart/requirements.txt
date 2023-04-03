@@ -1,0 +1,15 @@
+
+aiohttp==3.8.4
+kademlia==2.2.2
+tensorflow
+keras
+pymongo
+pandas
+sklearn
+zlib
+numpy
+sys
+csv
+cv2
+pyzbar
+flask
