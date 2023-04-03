@@ -142,57 +142,63 @@ async def handle_client(reader, writer):
     writer.write(userId.encode())
     await writer.drain()
     ######################RUNNER_ENGINE##########################
-    while True:
-        #Sender handler -----------------------------------------
-        if len(DATARECORDER.get(userId)) > 0:
-            mailBox = DATARECORDER.get(userId)
-            if mailBox[0].get("Data")[0] == "MODELPARAMETERS":
-                    print("****MODELPARAMETERS FROM ",mailBox[0].get("Sender")," TO : ", userId)
-            if mailBox[0].get("Data")[0] == "MODELREQUEST":
-                    print("####MODEL REQUEST FROM ",mailBox[0].get("Sender")," TO : ", userId)
-            mailData = pickle.dumps(mailBox[0])
-            data_size = sys.getsizeof(mailData)
-            data_size_kb = data_size / 1024
-            if data_size_kb < 1:
-                writer.write(mailData)
-                await writer.drain()
-            else:
-                print("OVERLOADED DATA FOUND : ",data_size_kb,"KB")
-                MAX_CHUNK_SIZE = 1024
-                chunks = [mailData[i:i+MAX_CHUNK_SIZE] for i in range(0, len(mailData), MAX_CHUNK_SIZE)]
-                print("NO OF CHUNKS : ",len(chunks)," : SENDED")
-                for x in chunks:
-                    writer.write(x)
+    # Create a coroutine for sending data to the client
+    async def send_data():
+        while True:
+            if len(DATARECORDER.get(userId)) > 0:
+                mailBox = DATARECORDER.get(userId)
+                if mailBox[0].get("Data")[0] == "MODELPARAMETERS":
+                        print("****MODELPARAMETERS FROM ",mailBox[0].get("Sender")," TO : ", userId)
+                if mailBox[0].get("Data")[0] == "MODELREQUEST":
+                        print("####MODEL REQUEST FROM ",mailBox[0].get("Sender")," TO : ", userId)
+                mailData = pickle.dumps(mailBox[0])
+                data_size = sys.getsizeof(mailData)
+                data_size_kb = data_size / 1024
+                if data_size_kb < 1:
+                    writer.write(mailData)
                     await writer.drain()
-            mailBox.remove(mailBox[0])
-        #Reciver handler-----------------------------------------
-        try:
-            # Receive and concatenate the data chunks
-            data_chunks = []
-            while True:
-                try:
-                    data = await asyncio.wait_for(reader.read(1024*1024), timeout=SYNC_CONST)
-                except asyncio.TimeoutError:
-                    break
-                data_chunks.append(data)
-            # Concatenate the chunks into a single bytes object
-            if len(data_chunks) == 0:
-                continue
-            data = b''.join(data_chunks)
-            decordedData = pickle.loads(data)
-        except Exception as e:
-            print("######## STATUS INFO : ",e)
-            break
-        if decordedData.get("Receiver") == "SERVER":
-            req = decordedData.get("Data")
-            if req[0] == "PEERTYPE":
-                if userId != req[2]:
-                    print("USER ID Replaced : ",userId," => ",req[2])
-                    userId = req[2]
-                    DATARECORDER[userId] = []
-            reqirementHandler(decordedData,writer,addr)
-        else:
-            requestHandler(decordedData)
+                else:
+                    print("OVERLOADED DATA FOUND : ",data_size_kb,"KB")
+                    MAX_CHUNK_SIZE = 1024
+                    chunks = [mailData[i:i+MAX_CHUNK_SIZE] for i in range(0, len(mailData), MAX_CHUNK_SIZE)]
+                    print("NO OF CHUNKS : ",len(chunks)," : SENDED")
+                    for x in chunks:
+                        writer.write(x)
+                        await writer.drain()
+                mailBox.remove(mailBox[0])
+
+    # Create a coroutine for receiving data from the client
+    async def receive_data():
+        while True:
+            try:
+                # Receive and concatenate the data chunks
+                data_chunks = []
+                while True:
+                    try:
+                        data = await asyncio.wait_for(reader.read(1024*1024), timeout=SYNC_CONST)
+                    except asyncio.TimeoutError:
+                        break
+                    data_chunks.append(data)
+                # Concatenate the chunks into a single bytes object
+                if len(data_chunks) == 0:
+                    continue
+                data = b''.join(data_chunks)
+                decordedData = pickle.loads(data)
+            except Exception as e:
+                print("######## STATUS INFO : ",e)
+                break
+            if decordedData.get("Receiver") == "SERVER":
+                req = decordedData.get("Data")
+                if req[0] == "PEERTYPE":
+                    if userId != req[2]:
+                        print("USER ID Replaced : ",userId," => ",req[2])
+                        userId = req[2]
+                        DATARECORDER[userId] = []
+                reqirementHandler(decordedData,writer,addr)
+            else:
+                requestHandler(decordedData)
+    #############################################################
+    await asyncio.gather(send_data(), receive_data())
     #############################################################
     writer.close()
     print('Connection Closed : ',addr)
@@ -296,8 +302,9 @@ def function_2():
 def add_path(userId,data):
     DATALIST[userId] = data
 
-def function_3(loop):
+def function_3():
     global running
+    loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     async def run_server():
         app = web.Application()
@@ -395,10 +402,9 @@ def create_bootstrap_node():
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, sigint_handler)
-    loop = asyncio.new_event_loop()
     thread1 = threading.Thread(target=function_1)
     thread2 = threading.Thread(target=function_2)
-    thread3 = threading.Thread(target=function_3, args=(loop,))
+    thread3 = threading.Thread(target=function_3)
 
     thread1.start()
     thread2.start()
