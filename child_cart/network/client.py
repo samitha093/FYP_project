@@ -52,7 +52,7 @@ def clientconfigurations():
 # MODELPARAMETERS  = bytes(1024*1024)  # 1 MB
 # MODELPARAMETERS  = bytes(3*1024*1024)  # 3 MB
 # MODELPARAMETERS  = bytes(5*1024*1024)  # 5 MB
-MODELPARAMETERS = encodeModelParameters()
+MODELPARAMETERS = bytes(1024) #set default values
 ########################################################################
 
 ########################################################################
@@ -61,7 +61,7 @@ MODELPARAMETERS = encodeModelParameters()
 # MOBILEMODELPARAMETERS  = bytes(1024)  # 1 KB
 # MOBILEMODELPARAMETERS  = bytes(1024*1024)  # 1 MB
 # MOBILEMODELPARAMETERS  = bytes(5*1024*1024)  # 5 MB
-MOBILEMODELPARAMETERS  =encodeModelParametersForMobile()
+MOBILEMODELPARAMETERS  =bytes(1024) #set default values
 ########################################################################a
 
 def sigint_handler(signal, frame, mySocket, USERID):
@@ -108,16 +108,40 @@ def connectNetwork(type):
 #----------------------background process --------------------------------
 def backgroudNetworkProcess():
       #clientconfigurations()
+      directoryReceivedModelParameter = "receivedModelParameter"
+      # check if directory exists
+      if not os.path.exists(directoryReceivedModelParameter):
+            # create directory if it doesn't exist
+            os.makedirs(directoryReceivedModelParameter)
+            print("Directory created: " + directoryReceivedModelParameter)
+   
+
+      directoryModelData = "modelData"
+      # check if directory exists
+      if not os.path.exists(directoryModelData):
+            # create directory if it doesn't exist
+            os.makedirs(directoryModelData)
+            print("Directory created: " + directoryModelData)
+
+    
+
+      # get number of files in directory
+      modelDataSize = len([f for f in os.listdir(directoryModelData) if os.path.isfile(os.path.join(directoryModelData, f))])
+
+      # if cart is new
+      if modelDataSize == 0:
+        print("Initializing cart")
+        resetModelData()
+            
+            
+      global MODELPARAMETERS
+      global MOBILEMODELPARAMETERS
       while True:
-            directoryModelData = "modelData"
-            modelDataSize = len([f for f in os.listdir(directoryModelData) if os.path.isfile(os.path.join(directoryModelData, f))])
+            MODELPARAMETERS = encodeModelParameters()
+            MOBILEMODELPARAMETERS  =encodeModelParametersForMobile()
             cartData = pd.read_csv('dataset/cartData.csv')
-            #if cart is new
-            if modelDataSize == 0:
-                 print("Initializing cart")
-                 resetModelData()
             #compare size of the dataset for globla aggregation
-            elif len(cartData) >= 3:
+            if len(cartData) >= 3:
                 print("Connecting as KERNEL for globla aggregation")
                 while True:
                     directoryReceivedParameters = "receivedModelParameter"

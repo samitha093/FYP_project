@@ -30,16 +30,20 @@ def resetProject():
 #remove stored data in carData file
 def recodeDataRemove():
     
-    with open('../dataset/cartData.csv', 'r') as input_file:
-        reader = csv.reader(input_file)
-        rows = [row for row in reader]
+    try:
+        with open('../dataset/cartData.csv', 'r') as input_file:
+            reader = csv.reader(input_file)
+            rows = [row for row in reader]
 
-    with open('../dataset/cartData.csv', 'w', newline='') as output_file:
-        writer = csv.writer(output_file)
-        writer.writerows(rows[0:1])
-        writer.writerows(rows[4:])
+        with open('../dataset/cartData.csv', 'w', newline='') as output_file:
+            writer = csv.writer(output_file)
+            writer.writerows(rows[0:1])
+            writer.writerows(rows[4:])
+            print("Removed training data")
 
-    print("Removes training data")
+    except Exception as e:
+        print("Error occurred while writing data to the CSV file:", e)
+        
     
 
 
@@ -47,7 +51,12 @@ def recodeDataRemove():
 def globleAggregationProcess():
           print("Strat local training ------->")
           model=create_model()
-          model.load_weights('modelData/model_weights.h5')
+          try:
+             model.load_weights('modelData/model_weights.h5')
+             print("Model weights loaded successfully!")
+          except Exception as e:
+             print("Error occurred while loading model weights:", e)
+
           #traing model using cartdata
           print("Split dataset")
           x_train,y_train = splitCartData()
@@ -74,7 +83,12 @@ def initialAggregationProcess():
 def differentialPrivacy():
     print("Starting adding differential privacy ------->")
     model=create_model()
-    model.load_weights('modelData/model_weights.h5')
+    try:
+        model.load_weights('modelData/model_weights.h5')
+        print("Model weights loaded successfully!")
+    except Exception as e:
+        print("Error occurred while loading model weights:", e)
+
     #traing model using cartdata
     print("Split dataset")
     #test model using local data

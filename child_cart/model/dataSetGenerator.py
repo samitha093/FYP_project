@@ -1,6 +1,6 @@
 #Generate dataset
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import datetime
 import random
 
 def DatasetGenerator(datasetSize):   
@@ -72,11 +72,13 @@ def DatasetGenerator(datasetSize):
                 df.at[i, "Item"] = random.choice([1, 2])
                 df.at[i,"Gender"] =0
 
-
-
     # Ensure that the "Item" column values are integers
     df["Item"] = df["Item"].astype(int)
     df["Gender"] = df["Gender"].astype(int)
-    df.to_csv('dataset/dataset.csv', index=False)
-    print("Dataset Generated and Saved")
-    
+    try:
+        df.to_csv('dataset/dataset.csv', index=False)
+        print("Dataset Generated and Saved")
+    except Exception as e:
+        print("Error occurred while generating or saving dataset:", e)
+
+

@@ -1,41 +1,35 @@
-#save ML model data to local path
 import os
 import tensorflow as tf
-from tensorflow import keras
 
 def saveModelData(model):
-    #save model
-    model.save('modelData/model.h5')
-    model.save('backup/model.h5')
-    #save model parameters
-    model.save_weights('modelData/model_weights.h5')
-    model.save_weights('backup/model_weights.h5')
-    #convert and save model into tensorflow type
-    convertToTenserflowModel(model)
-    # Get the size of the saved model file
-    model_size_bytes = os.path.getsize('modelData/model.h5')
-    # Convert bytes to MB
-    model_size_mb = model_size_bytes / (1024 * 1024)
+    try:
+        # Save model
+        model.save('modelData/model.h5')
+        # Save model parameters
+        model.save_weights('modelData/model_weights.h5')
+        # Convert and save model into tensorflow type
+        convertToTenserflowModel(model)
+        # Get the size of the saved model file
+        model_size_bytes = os.path.getsize('modelData/model.h5')
+        # Convert bytes to MB
+        model_size_mb = model_size_bytes / (1024 * 1024)
+        print(f"The size of the saved model file is {model_size_mb:.2f} MB.")
+        # Get the size of the saved model weight file
+        model_size_bytes = os.path.getsize('modelData/model_weights.h5')
+        # Convert bytes to MB
+        model_size_mb = model_size_bytes / (1024 * 1024)
+        print(f"The size of the saved model parameters file is {model_size_mb:.2f} MB.")
+        print("Model and parameters saved.")
+    except Exception as e:
+        print("Error occurred while saving the model:", str(e))
 
-    print(f"The size of the saved model file is {model_size_mb:.2f} MB.")
-
-    # Get the size of the saved model weight file
-    model_size_bytes = os.path.getsize('modelData/model_weights.h5')
-    # Convert bytes to MB
-    model_size_mb = model_size_bytes / (1024 * 1024)
-    #Save model as tensorflow 
-    convertToTenserflowModel(model)
-    print(f"The size of the saved model parameters file is {model_size_mb:.2f} MB.")
-    print("Model and parameters Saved ")
-    
-    
-    
-    
 def convertToTenserflowModel(model):
-    # Convert your Keras model to a TensorFlow Lite model
-    converter = tf.lite.TFLiteConverter.from_keras_model(model)
-    tflite_model = converter.convert()
-
-    # Save the TensorFlow Lite model to disk
-    open("modelData/model.tflite","wb").write(tflite_model)
-    open("backup/model.tflite","wb").write(tflite_model)
+    try:
+        # Convert the Keras model to TensorFlow Lite format
+        converter = tf.lite.TFLiteConverter.from_keras_model(model)
+        tflite_model = converter.convert()
+        # Save the model as a binary file
+        with open('modelData/model.tflite', 'wb') as f:
+            f.write(tflite_model)
+    except Exception as e:
+        print("Error occurred while converting the model to TensorFlow Lite format:", str(e))

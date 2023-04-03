@@ -44,15 +44,9 @@ def findCurrentThreandArray():
     month = datetime.datetime.now().month
     gender = currentGender
     itemNum = getCurrentThreand(month,gender)
-    print(month,gender)
-    print(itemNum)
-    print(type(itemNum))
-    print(type(int(itemNum)))
     currentThreandArray = []
     receivedList = ItemList(int(itemNum));
     currentThreandArray.append(receivedList)
-    print("length : ",len(currentThreandArray[0]))
-    print(currentThreandArray)
     
 #------------------------home---------------------------
 @app.route('/')
@@ -110,8 +104,6 @@ def result():
     totalBill=int(totalBill)+int(selectedItem[4])
      #update the globle array
     ItemListArray.append(selectedItem)
-    print(selectedItem)
-    print(ItemListArray)
     data =ItemListArray
     writetoCSV(month, item, gender)
     findCurrentThreandArray()

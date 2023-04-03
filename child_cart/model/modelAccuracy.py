@@ -53,9 +53,6 @@ def getCurrentThreand(month,gender):
 
   y_np = np.array(y_data)
   y_np = y_np.astype('float32')
-  # print(type(x_np))
-  # print((x_np))
-  # print(type(y_np))
   model = importModel()
   results = predictionsResults(model,x_np)
   return results[0]
@@ -63,7 +60,12 @@ def getCurrentThreand(month,gender):
   
 def importModel():
    model=create_model()
-   model.load_weights('modelData/model_weights.h5')
+   try:
+       model.load_weights('modelData/model_weights.h5')
+       print("Model weights loaded successfully!")
+   except Exception as e:
+       print("Error occurred while loading model weights:", e)
+
    return model
 
 # results = getCurrentThreand(1,0)
