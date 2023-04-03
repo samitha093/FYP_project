@@ -35,16 +35,15 @@ def get_items_category(client,categoryNo):
     # Print the retrieved documents
     for document in documents:
         result_array.append(document)
-        # print(document)
+        
          
     for item in result_array:
-        # print(item)
+        
         getItem =item["ImageUrl"]
         image_urls.append(getItem)  # extract "ImageUrl" and add to list
         
     print("Added to Array")
-    # print(result_array)  # print the list of documents
-    # print(image_urls)  # print the list of image URLs
+
     return image_urls
    
 def addOrUpdateData(client):
@@ -99,10 +98,6 @@ def addOrUpdateData(client):
                 print("Document inserted successfully!")
             else:
                 print("Error inserting document.")
-
-    # Find documents in the collection
-    for document in collection.find():
-        print(document)
     
 
 def ItemList(CategoryNo):
@@ -112,6 +107,4 @@ def ItemList(CategoryNo):
     #addOrUpdateData(client)
     #get all documents
     imageList =  get_items_category(client,CategoryNo)
-    print("DB lenght: " , len(imageList))
-    print("Returned array")
     return imageList

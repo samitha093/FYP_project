@@ -34,9 +34,6 @@ def encodeModelParameters():
     compressed_model = zlib.compress(model_bytes)
 
     print("Size of encoded model parameter is (Byte Data type): {:.2f} MB".format(len(compressed_model) / (1024 * 1024)))
-    print(type(compressed_model))
-
-    # print("Return encoded parameters as string")
     return compressed_model
 
 #decode for cart
@@ -79,21 +76,17 @@ def decodeModelParameters(encoded_message):
 
 #encode for mobile  
 def encodeModelParametersForMobile():
-    
-    print("Mobile version Model Loading & converto byte Stream ----------------> ")
-    
+        
     try:
         # Read the binary data of the model file
         with open("modelData/model.tflite", "rb") as f:
             tflite_model_bytes = f.read()
-        print("Binary data read successfully!")
+        print("Model data read successfully!")
     except Exception as e:
         print("Error occurred while reading binary data:", e)
 
-
     # Encode the model as bytes
     tflite_model_byte_stream = bytes(tflite_model_bytes)
-    print(type(tflite_model_byte_stream))
     size_in_mb = sys.getsizeof(tflite_model_byte_stream) / (1024 * 1024)
     print(f"Size of tflite model byte stream: {size_in_mb} MB")
     return tflite_model_byte_stream

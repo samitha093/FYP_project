@@ -1,6 +1,8 @@
 #generate new model
 from keras.models import Sequential
 from keras.layers import Dense
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 def create_model():
     try:
