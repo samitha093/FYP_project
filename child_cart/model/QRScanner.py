@@ -1,5 +1,5 @@
-import ast
 import cv2
+import ast
 
 def QRReader():
     cam = cv2.VideoCapture(0)
@@ -14,9 +14,14 @@ def QRReader():
         decoded_data, _, _ = qr.detectAndDecode(frame)
 
         if decoded_data:
-            # Extract the desired value
-            value_list = ast.literal_eval(decoded_data)
-            print(value_list)
-            return value_list
-
-
+            try:
+                # Extract the desired value
+                value_list = ast.literal_eval(decoded_data)
+                print(value_list)
+                return value_list
+            except ValueError:
+                print("Error: Unable to decode QR code data")
+                continue
+        else:
+            print("Error: QR code not detected")
+            continue

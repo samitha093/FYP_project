@@ -18,7 +18,7 @@ from model.fileHandle import *
 
 
 def intModel():
-    modelAggregation.initialModelAggregation()
+    initialModelAggregation()
     removeFiles()
     
     

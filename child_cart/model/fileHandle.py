@@ -19,11 +19,14 @@ def removeFiles():
         num=i+1
         path = f'receivedModelParameter/model_weights_{num}.h5'
         try:
-             os.remove(path)
+            os.remove(path)
+            print(f"File {path} has been removed successfully")
         except FileNotFoundError:
-             print("That file does not exist")
+            print(f"The file {path} does not exist")
+        except Exception as e:
+            print(f"Error occurred while removing file {path}:", e)
     print("Model parameters are removed from receivedModelParameter folder ")
-     
+
 def resetModelData():
     model =create_model()
     saveModelData(model)

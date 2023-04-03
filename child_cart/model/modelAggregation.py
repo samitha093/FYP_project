@@ -23,16 +23,26 @@ def modelAggregation():
     # x_train_np, y_train_np,x_test_np,y_test_np =sp.splitDataset()
     for i in range(2):
         num=i+1
-       
-        model.load_weights(f'receivedModelParameter/model_weights_{num}.h5')
-        print("Load received Model ------> ",num)
-        # ma.getModelAccuracy(model,x_test_np,y_test_np)
-        receivedModelParameters  = model.get_weights()
+        try:
+            model.load_weights(f'receivedModelParameter/model_weights_{num}.h5')
+            print("Load received Model ------> ",num) 
+            # ma.getModelAccuracy(model,x_test_np,y_test_np)
+            receivedModelParameters  = model.get_weights()
 
-        parameterArray[i]=receivedModelParameters
+            parameterArray[i]=receivedModelParameters
+        except Exception as e:
+            print("Error occurred while loading model weights:", e)
+
     
-    model.load_weights('modelData/model_weights.h5')
-    print("Load local Model ------> ")
+
+    try:
+        model.load_weights('modelData/model_weights.h5')
+        print("Load local Model ------> ")
+    except FileNotFoundError:
+        print("The specified file 'model_weights.h5' could not be found.")
+    except Exception as e:
+        print("An error occurred while loading model weights:", e)
+
     # ma.getModelAccuracy(model,x_test_np,y_test_np)
     receivedModelParameters  = model.get_weights()
    
@@ -52,27 +62,22 @@ def initialModelAggregation():
     print("Strat initial received model parameter aggregation ------->")
     # x_train_np, y_train_np,x_test_np,y_test_np =sp.splitDataset()
     model1 =create_model()
-    model1.load_weights(f'receivedModelParameter/model_weights_1.h5')
-    print("Load model parameter 1")
-    # print("Received model 1 accuracy ")
-    # ma.getModelAccuracy(model1,x_test_np,y_test_np)
-    weight_1  = model1.get_weights()
-
     model2=create_model()
-    model2.load_weights(f'receivedModelParameter/model_weights_2.h5')
-    print("Load model parameter 2")
-    # print("Received model 2 accuracy ")
-    # ma.getModelAccuracy(model2,x_test_np,y_test_np)
+    try:
+        model1.load_weights(f'receivedModelParameter/model_weights_1.h5')
+        print("Load model parameter 1")
+        model2.load_weights(f'receivedModelParameter/model_weights_2.h5')
+        print("Load model parameter 2")
+    except FileNotFoundError:
+        print("The specified file could not be found.")
+    except Exception as e:
+        print("An error occurred while loading model weights:", e)
+
+    weight_1  = model1.get_weights()
     weight_2  = model2.get_weights()
-
     averageWeight=[(w1 + w2 )/2 for w1, w2 in zip(weight_1, weight_2 )]
-
     modelAG=create_model()
     modelAG.set_weights(averageWeight)
-    # print("Aggregated Model ------> ")
-    # ma.getModelAccuracy(modelAG,x_test_np,y_test_np)
-    #save averaged parameters
     saveModelData(modelAG)
-
     print("Initial aggregration Completed")
     

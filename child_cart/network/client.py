@@ -108,6 +108,12 @@ def connectNetwork(type):
 #----------------------background process --------------------------------
 def backgroudNetworkProcess():
       #clientconfigurations()
+      directoryReceivedModelParameter = "receivedModelParameter"
+      # check if directory exists
+      if not os.path.exists(directoryReceivedModelParameter):
+            # create directory if it doesn't exist
+            os.makedirs(directoryReceivedModelParameter)
+            print("Directory created: " + directoryReceivedModelParameter)
    
 
       directoryModelData = "modelData"
@@ -117,6 +123,8 @@ def backgroudNetworkProcess():
             os.makedirs(directoryModelData)
             print("Directory created: " + directoryModelData)
 
+    
+
       # get number of files in directory
       modelDataSize = len([f for f in os.listdir(directoryModelData) if os.path.isfile(os.path.join(directoryModelData, f))])
 
@@ -124,6 +132,7 @@ def backgroudNetworkProcess():
       if modelDataSize == 0:
         print("Initializing cart")
         resetModelData()
+            
             
       global MODELPARAMETERS
       global MOBILEMODELPARAMETERS
