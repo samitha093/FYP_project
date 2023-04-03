@@ -1,36 +1,14 @@
 version: '3.1'
 #create network interface
-networks:
-  FLp2p:
-    name: FLp2p
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
 services:
 #init cart
-  cart:
-    image: cartimg
+  child_cart:
+    image: child_cart
     deploy:
-      replicas: 10
+      replicas: 1
     build:
-      context:  ./cart
+      context:  ./child_cart
       dockerfile:  Dockerfile
     stdin_open: true
     tty: true
-    networks:
-      FLp2p:
-    restart: on-failure:3
-#init mobile
-  mobilimg:
-    image: mobilimg
-    deploy:
-      replicas: 3
-    build:
-      context:  ./mobile
-      dockerfile:  Dockerfile
-    stdin_open: true
-    tty: true
-    networks:
-      FLp2p:
     restart: on-failure:3
