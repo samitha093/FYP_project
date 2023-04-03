@@ -4,8 +4,7 @@ __pycache__/
 *$py.class
 *.whl
 #remove testing three clients
-/client1/
-/client2/
+
 /test/
 #mobile app ignore files
 *.iml
@@ -25,3 +24,4 @@ __pycache__/
 local.properties
 .tflite
 .h5
+.csv
