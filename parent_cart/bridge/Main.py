@@ -171,9 +171,8 @@ async def handle_client(reader, writer):
                 if mailBox[0].get("Data")[0] == "ERROR":
                     print("####ERROR ON ",mailBox[0].get("Data")[1]," : ", userId,)
                     client_disconnected = True
-                await asyncio.sleep(2)
                 mailBox.remove(mailBox[0])
-            await asyncio.sleep(1)
+            await asyncio.sleep(5)
 
     #coroutine to process received data
     async def process_data(data_chunks):
