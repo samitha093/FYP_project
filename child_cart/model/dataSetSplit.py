@@ -7,7 +7,7 @@ from keras.utils import to_categorical
 def splitDataset():
     #Load  the dataset from the CSV file
     try:
-        df = pd.read_csv('../dataset/dataset.csv')
+        df = pd.read_csv('dataset/dataset.csv')
         print("CSV file loaded successfully!")
     except Exception as e:
         print("Error occurred while loading the CSV file:", e)
@@ -47,12 +47,12 @@ def splitCartData():
     #Load  the dataset from the CSV file
     print("READ DATA SET")
     try:
-        my_data = pd.read_csv('../dataset/cartData.csv')
+        my_data = pd.read_csv('dataset/cartData.csv')
         print("CSV file loaded successfully!")
     except Exception as e:
         print("Error occurred while loading the CSV file:", e)
         
-    my_data = pd.read_csv('../dataset/cartData.csv')
+    my_data = pd.read_csv('dataset/cartData.csv')
     train_data =my_data[['Month','Gender']].head(sizeOfDataset)
     train_labels =my_data['Item'].head(sizeOfDataset)
     
