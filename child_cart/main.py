@@ -11,10 +11,11 @@ sys.path.insert(0, root_path)
 
 
 # Import the modules
-from ui.Flask import *
-from model.csvFileGenerator import *
+from child_cart.ui.Flask import *
+from child_cart.model.csvFileGenerator import *
 
-if __name__ == '__main__':
+
+def mainFunc():
     try:
         directoryReceivedModelParameter = "dataset"
         if not os.path.exists(directoryReceivedModelParameter):

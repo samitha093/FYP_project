@@ -18,7 +18,7 @@ def csvGen():
         os.makedirs(directoryReceivedModelParameter)
         print("Directory created: " + directoryReceivedModelParameter)
     
-    DatasetGenerator(10)
+    DatasetGenerator(10000)
     cartDataFileGen()
     cartConfigurationsFileGen()
     

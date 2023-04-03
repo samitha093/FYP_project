@@ -29,7 +29,7 @@ HOST = 'localhost'
 LOCALHOST = '141.145.200.6'
 PORT = 9000
 KERNAL_TIMEOUT = 60
-SHELL_TIMEOUT = 5*60
+SHELL_TIMEOUT = 60
 SYNC_CONST = 1
 
 def clientconfigurations():
