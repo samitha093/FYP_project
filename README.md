@@ -31,6 +31,21 @@ kademlia: https://pypi.org/project/kademlia/
 (serialize data packet)
 pickle: https://docs.python.org/3/library/pickle.html
 
+pip==20.2.3
+aiohttp==3.8.4
+kademlia==2.2.2
+pymongo==4.3.3
+scikit-learn==1.2.1
+numpy==1.24.1
+cv2==4.7.0
+pyzbar==0.1.9
+tensorflow==2.11.0
+Flask==2.2.2 
+Flask-Cors==3.0.10
+h5py==3.8.0
+keras==2.11.0
+pandas==1.5.2
+
 **Checkout system:**
 
 **AI model:**
