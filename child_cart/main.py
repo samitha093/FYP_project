@@ -12,9 +12,13 @@ sys.path.insert(0, root_path)
 
 # Import the modules
 from ui.Flask import *
+from model.csvFileGenerator import *
 
 if __name__ == '__main__':
     try:
+        directoryReceivedModelParameter = "dataset"
+        if not os.path.exists(directoryReceivedModelParameter):
+            csvGen()
         # t = Thread(target=app.run, kwargs={'port': 5001})
         # t.start()
         backgroudNetworkProcess()

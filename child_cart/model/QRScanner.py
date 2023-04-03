@@ -23,5 +23,4 @@ def QRReader():
                 print("Error: Unable to decode QR code data")
                 continue
         else:
-            print("Error: QR code not detected")
             continue

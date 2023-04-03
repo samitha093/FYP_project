@@ -25,3 +25,4 @@ __pycache__/
 local.properties
 .tflite
 .h5
+.csv
