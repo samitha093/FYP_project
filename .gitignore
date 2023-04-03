@@ -5,7 +5,6 @@ __pycache__/
 #remove testing three clients
 /client1/
 /client2/
-*.h5
 *.tflite
 #mobile app ignore files
 *.iml
