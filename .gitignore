@@ -6,7 +6,6 @@ __pycache__/
 #remove testing three clients
 /client1/
 /client2/
-*.tflite
 #mobile app ignore files
 *.iml
 .gradle
