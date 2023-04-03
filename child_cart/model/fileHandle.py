@@ -11,9 +11,6 @@ sys.path.insert(0, root_path)
 from model.modelGenerator import *
 from model.saveModelData import *
 
-
-
-
 #remove the file from the initModelParameters
 def removeFiles():
     directory = "receivedModelParameter" #replace with your directory path
@@ -26,29 +23,6 @@ def removeFiles():
         except FileNotFoundError:
              print("That file does not exist")
     print("Model parameters are removed from receivedModelParameter folder ")
-
-
-def removeFilesFromBackup():
-     #remove model weights
-     path = f'backup/model_weights.h5'
-     try:
-        os.remove(path)
-     except FileNotFoundError:
-        print("That file does not exist")
-     #remove model
-     path = f'backup/model.h5'
-     try:
-        os.remove(path)
-     except FileNotFoundError:
-        print("That file does not exist")
-     #remove mobile version model
-     path = f'backup/model.tflite'
-     try:
-        os.remove(path)
-     except FileNotFoundError:
-        print("That file does not exist")
-     print("All files are removed from backup")
-     
      
 def resetModelData():
     model =create_model()

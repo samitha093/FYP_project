@@ -50,6 +50,12 @@ def encodeModelParameters():
 def decodeModelParameters(encoded_message):
     print("Start decoding ----------------> ")
     directory = "receivedModelParameter" #replace with  directory path
+        # check if directory exists
+    if not os.path.exists(directory):
+        # create directory if it doesn't exist
+        os.makedirs(directory)
+        print("Directory created: " + directory)
+
     num_files = len([f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))])
     num_files =num_files+1
 
