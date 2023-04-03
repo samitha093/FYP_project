@@ -66,6 +66,8 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS,oldID):
                 timerCal =0
         time.sleep(1)
         timerCal +=1
+        if len(PEERLIST) == len(MODELPARAMETERLIST):
+            ModelParamLoop = False
         if timerCal == TimerOut:
             Reciver_status = mySocket.isData_Reciving()
             if Reciver_status:
