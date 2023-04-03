@@ -28,21 +28,24 @@ HOST = 'localhost'
 # HOST = '141.145.200.6' #141.145.200.6
 LOCALHOST = '141.145.200.6'
 PORT = 9000
-RECEIVER_TIMEOUT = 3*60
+KERNAL_TIMEOUT = 60
+SHELL_TIMEOUT = 5*60
 SYNC_CONST = 1
 
 def clientconfigurations():
     global HOST
     global LOCALHOST
     global PORT
-    global RECEIVER_TIMEOUT
+    global SHELL_TIMEOUT
+    global KERNAL_TIMEOUT
     global SYNC_CONST
 
     row = getNetConfigurations()
     HOST = row[0]
     LOCALHOST = row[1]
     PORT = row[2]
-    RECEIVER_TIMEOUT = row[3]
+    KERNAL_TIMEOUT = row[3]
+    SHELL_TIMEOUT = 3*60
     SYNC_CONST = row[4]
 
 ########################################################################
@@ -94,15 +97,16 @@ def mainFunn(MODE, RECIVER_TIMEOUT, SYNC_CONST):
 
 
 def connectNetwork(type):
-    global RECEIVER_TIMEOUT
+    global KERNAL_TIMEOUT
+    global SHELL_TIMEOUT
     global SYNC_CONST
     if type == "SHELL":
-            mainFunn("SHELL",RECEIVER_TIMEOUT,SYNC_CONST)
+            mainFunn("SHELL",SHELL_TIMEOUT,SYNC_CONST)
             time.sleep(2)
             print("loop call triggered")
 
     elif type == "KERNEL":
-            mainFunn("KERNEL",RECEIVER_TIMEOUT,SYNC_CONST)
+            mainFunn("KERNEL",KERNAL_TIMEOUT,SYNC_CONST)
             time.sleep(2)
             print("loop call triggered")
 #----------------------background process --------------------------------
