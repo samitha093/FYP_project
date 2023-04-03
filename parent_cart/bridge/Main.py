@@ -69,7 +69,7 @@ def get_data_from_dht(server):
     # loop.close()
     # return True
 
-def reqirementHandler(data,writer,addr):
+def reqirementHandler(data):
     global MOBILEDATARECORDER
     global DATARECORDER
     global server
@@ -142,8 +142,10 @@ async def handle_client(reader, writer):
     writer.write(userId.encode())
     await writer.drain()
     ######################RUNNER_ENGINE##########################
-    # Create a coroutine for sending data to the client
+    #coroutine for sending data to the client
     async def send_data():
+        nonlocal userId, reader, writer
+        print("SENDER - start for :",userId)
         while True:
             if len(DATARECORDER.get(userId)) > 0:
                 mailBox = DATARECORDER.get(userId)
@@ -166,9 +168,28 @@ async def handle_client(reader, writer):
                         writer.write(x)
                         await writer.drain()
                 mailBox.remove(mailBox[0])
+            await asyncio.sleep(1)
 
-    # Create a coroutine for receiving data from the client
+    #coroutine to process received data
+    async def process_data(data_chunks):
+        nonlocal userId, reader, writer
+        data = b''.join(data_chunks)
+        decordedData = pickle.loads(data)
+        if decordedData.get("Receiver") == "SERVER":
+            req = decordedData.get("Data")
+            if req[0] == "PEERTYPE":
+                if userId != req[2]:
+                    print("USER ID Replaced : ",userId," => ",req[2])
+                    userId = req[2]
+                    DATARECORDER[userId] = []
+            reqirementHandler(decordedData)
+        else:
+            requestHandler(decordedData)
+
+    # coroutine for receiving data from the client
     async def receive_data():
+        nonlocal userId, reader, writer
+        print("RECEIVER - start for :",userId)
         while True:
             try:
                 # Receive and concatenate the data chunks
@@ -179,24 +200,16 @@ async def handle_client(reader, writer):
                     except asyncio.TimeoutError:
                         break
                     data_chunks.append(data)
-                # Concatenate the chunks into a single bytes object
-                if len(data_chunks) == 0:
+                # send data for processing
+                if len(data_chunks) > 0:
+                    asyncio.create_task(process_data(data_chunks.copy()))
+                else:
                     continue
-                data = b''.join(data_chunks)
-                decordedData = pickle.loads(data)
             except Exception as e:
                 print("######## STATUS INFO : ",e)
                 break
-            if decordedData.get("Receiver") == "SERVER":
-                req = decordedData.get("Data")
-                if req[0] == "PEERTYPE":
-                    if userId != req[2]:
-                        print("USER ID Replaced : ",userId," => ",req[2])
-                        userId = req[2]
-                        DATARECORDER[userId] = []
-                reqirementHandler(decordedData,writer,addr)
-            else:
-                requestHandler(decordedData)
+            await asyncio.sleep(1)
+
     #############################################################
     await asyncio.gather(send_data(), receive_data())
     #############################################################
