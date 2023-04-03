@@ -7,11 +7,10 @@ To establish a better TCP connection, we tryed different mechanisms. However, in
 
 ## Deployment
 
-Requried library for bridge and network library
+Requried library install
 
 ```bash
-  pip install aiohttp
-  pip install kademlia
+pip install -r requirements.txt
 ```
 
 
