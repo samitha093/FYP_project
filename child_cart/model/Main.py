@@ -31,11 +31,11 @@ def resetProject():
 def recodeDataRemove():
     
     try:
-        with open('../dataset/cartData.csv', 'r') as input_file:
+        with open('dataset/cartData.csv', 'r') as input_file:
             reader = csv.reader(input_file)
             rows = [row for row in reader]
 
-        with open('../dataset/cartData.csv', 'w', newline='') as output_file:
+        with open('dataset/cartData.csv', 'w', newline='') as output_file:
             writer = csv.writer(output_file)
             writer.writerows(rows[0:1])
             writer.writerows(rows[4:])
@@ -44,8 +44,6 @@ def recodeDataRemove():
     except Exception as e:
         print("Error occurred while writing data to the CSV file:", e)
         
-    
-
 
 #Globle aggregation process
 def globleAggregationProcess():
@@ -69,7 +67,7 @@ def globleAggregationProcess():
           #clear the csv file
           recodeDataRemove()
           #aggregate the models
-          modelAggregation.modelAggregation()
+          modelAggregation()
           #remove received files
           removeFiles()
           return "Aggregated"
