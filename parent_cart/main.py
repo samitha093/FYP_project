@@ -1,7 +1,6 @@
 import sys
 import os
 import threading
-import time
 
 
 # Get the path to the root directory
@@ -12,7 +11,7 @@ sys.path.insert(0, root_path)
 
 # Import the modules
 from child_cart.main import *
-from bridge.Main import *
+from parent_cart.bridge.Main import *
 
 def child_cart():
     mainFunc("PARENT")
@@ -22,15 +21,7 @@ def Bridge():
     # bidge_server(host = '172.20.2.3', boostrap_host ='127.0.0.1',boostrap_port = 8468)
     bidge_server(host = '172.20.2.3', boostrap_host ='LOCAL')
 
-if __name__ == '__main__':
-    cart_thread = threading.Thread(target=Bridge)
-    cart_thread.start()
-
-    try:
-        while True:
-            time.sleep(1)
-    except:
-        print("Program stopped: Rutime exception")
-
-    # # Start child_cart()
-    # child_cart()
+def parent_cart():
+    bridge_thread = threading.Thread(target=Bridge)
+    bridge_thread.start()
+    child_cart()
