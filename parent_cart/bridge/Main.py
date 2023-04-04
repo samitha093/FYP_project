@@ -9,11 +9,18 @@ import sys
 import time
 import random
 from kademlia.network import Server
-from rndGen import generateId
-from util import requestModel
 
-HOST = 'http://172.20.2.3'
-BOOSTRAP_HOST='127.0.0.1'
+# Get the path to the root directory
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+# Add the root and client4 directories to the Python path
+sys.path.insert(0, root_path)
+
+from bridge.rndGen import *
+from bridge.util import *
+
+HOST = ''
+BOOSTRAP_HOST=''
 BOOSTRAP_PORT = 8468
 PORT = 9000
 MOBILE_PORT = 8000
@@ -171,9 +178,8 @@ async def handle_client(reader, writer):
                 if mailBox[0].get("Data")[0] == "ERROR":
                     print("####ERROR ON ",mailBox[0].get("Data")[1]," : ", userId,)
                     client_disconnected = True
-                await asyncio.sleep(2)
                 mailBox.remove(mailBox[0])
-            await asyncio.sleep(1)
+            await asyncio.sleep(5)
 
     #coroutine to process received data
     async def process_data(data_chunks):
@@ -231,6 +237,7 @@ async def handle_client(reader, writer):
 
 # This is the coroutine that will handle incoming mobile app connections
 async def handle_mobile(reader, writer):
+    global HOST
     global MOBILEDATARECORDER
     global DATARECORDER
     global running
@@ -369,15 +376,6 @@ def sigint_handler(signal, frame):
     global running
     running = False
     print("Waiting for threads to finish...")
-    while thread1.is_alive() or thread2.is_alive() or thread3.is_alive():
-        if thread1.is_alive():
-            print("Thread 1 is still running.")
-        if thread2.is_alive():
-            print("Thread 2 is still running.")
-        if thread3.is_alive():
-            print("Thread 3 is still running.")
-        time.sleep(5)
-    print("All threads finished.")
     sys.exit(0)
 
 def connect_to_bootstrap_node(bootstrap_ip,bootstrap_port):
@@ -426,7 +424,11 @@ def create_bootstrap_node():
         server.stop()
         server_loop.close()
 
-if __name__ == "__main__":
+def bidge_server(host = 'http://172.20.2.3', boostrap_host ='127.0.0.1'):
+    global BOOSTRAP_HOST
+    BOOSTRAP_HOST = boostrap_host
+    global HOST
+    HOST = host
     signal.signal(signal.SIGINT, sigint_handler)
     thread1 = threading.Thread(target=function_1)
     thread2 = threading.Thread(target=function_2)
@@ -445,3 +447,6 @@ if __name__ == "__main__":
     except:
         print("Program stopped: Rutime exception")
         running = False
+    print("All threads finished.")
+
+bidge_server()
