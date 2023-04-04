@@ -5,16 +5,30 @@ To establish a better TCP connection, we tryed different mechanisms. However, in
 
 [![Blank-board-Page-1-3.png](https://i.postimg.cc/XvXpcXLy/Blank-board-Page-1-3.png)](https://postimg.cc/mcfLTL0b)
 
+
+
 ## Deployment
 
-Requried library install
+#### client code
 
 ```bash
-pip install -r requirements.txt
+import sys
+import os
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+sys.path.insert(0, root_path)
+from child_cart.main import *
+
+if __name__ == '__main__':
+    mainFunc()
 ```
-Required tensorflow package donload and add to child_cart Directory
+
+#### Floder location
 ```bash
-https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow_cpu-2.11.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+child_cart
+ -main.py
+parent_cart
+ -client
+    -main.py
 ```
 
 # Create test objects
@@ -43,6 +57,9 @@ if __name__ == '__main__':
         print("Keyboard interrupt received. Closing all programs...")
         os.system("pkill -f python")
 ```
+=======
+
+
 ## Tech Stack
 
 **Bridge Library:**
@@ -60,13 +77,45 @@ kademlia: https://pypi.org/project/kademlia/
 (serialize data packet)
 pickle: https://docs.python.org/3/library/pickle.html
 
+=======
+**Python Application:**
+*dependencies*
+```bash
+pip==20.2.3
+aiohttp==3.8.4
+kademlia==2.2.2
+pymongo==4.3.3
+scikit-learn==1.2.1
+numpy==1.24.1
+cv2==4.7.0
+pyzbar==0.1.9
+tensorflow==2.11.0
+Flask==2.2.2 
+Flask-Cors==3.0.10
+h5py==3.8.0
+keras==2.11.0
+pandas==1.5.2
+
+```
 
 **Checkout system:**
 
 **AI model:**
 
 **Mobile Application:**
+*dependencies*
+```bash
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.6.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    implementation 'org.tensorflow:tensorflow-lite:+'
+    implementation 'org.tensorflow:tensorflow-lite-support:0.1.0-rc1'
+    implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
 
+```
 
 ## File Organization
 
@@ -204,8 +253,20 @@ pickle: https://docs.python.org/3/library/pickle.html
    ├─ requirements.txt
    └─ startup.sh
 ```
-
-## Authors
+=======
+*dependencies*
+```bash
+implementation 'androidx.appcompat:appcompat:1.6.1'
+implementation 'com.google.android.material:material:1.6.0'
+implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+testImplementation 'junit:junit:4.+'
+androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+implementation 'org.tensorflow:tensorflow-lite:+'
+implementation 'org.tensorflow:tensorflow-lite-support:0.1.0-rc1'
+implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
+```
+### Authors
 
 - [@lakshan pathiraja](https://github.com/samitha093)
 - [@Isuru Lakshan](https://github.com/IsuruLakshan170)
