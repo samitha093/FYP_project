@@ -9,9 +9,13 @@ sys.path.insert(0, root_path)
 
 # Import the modules
 from child_cart.main import *
+from parent_cart.bridge.Main import *
 
 def child_cart():
     mainFunc("PARENT")
+
+def Bridge():
+    bidge_server()
 
 if __name__ == '__main__':
     child_cart()
