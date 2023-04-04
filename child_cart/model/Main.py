@@ -72,11 +72,6 @@ def globleAggregationProcess():
           removeFiles()
           return "Aggregated"
 
-#initial aggregation process  
-def initialAggregationProcess():
-     modelAggregation.initialModelAggregation()
-     removeFiles()
-
 
 def differentialPrivacy():
     print("Starting adding differential privacy ------->")
