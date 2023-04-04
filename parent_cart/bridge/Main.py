@@ -21,7 +21,7 @@ from bridge.util import *
 
 HOST = ''
 BOOSTRAP_HOST=''
-BOOSTRAP_PORT = 8468
+BOOSTRAP_PORT = 0
 PORT = 9000
 MOBILE_PORT = 8000
 HTTPPORT = 5000
@@ -371,13 +371,6 @@ def function_3():
         loop.run_until_complete(asyncio.gather(*pending_tasks, return_exceptions=True))
         loop.close()
 
-def sigint_handler(signal, frame):
-    print('Exiting program...')
-    global running
-    running = False
-    print("Waiting for threads to finish...")
-    sys.exit(0)
-
 def connect_to_bootstrap_node(bootstrap_ip,bootstrap_port):
     global server_loop
     server_loop.set_debug(True)
@@ -424,12 +417,13 @@ def create_bootstrap_node():
         server.stop()
         server_loop.close()
 
-def bidge_server(host = 'http://172.20.2.3', boostrap_host ='127.0.0.1'):
+def bidge_server(host = '172.20.2.3', boostrap_host ='127.0.0.1', boostrap_port = 8468):
     global BOOSTRAP_HOST
     BOOSTRAP_HOST = boostrap_host
     global HOST
-    HOST = host
-    signal.signal(signal.SIGINT, sigint_handler)
+    HOST = 'http://' + host
+    global BOOSTRAP_PORT
+    BOOSTRAP_PORT = boostrap_port
     thread1 = threading.Thread(target=function_1)
     thread2 = threading.Thread(target=function_2)
     thread3 = threading.Thread(target=function_3)
@@ -439,14 +433,11 @@ def bidge_server(host = 'http://172.20.2.3', boostrap_host ='127.0.0.1'):
     thread3.start()
 
     try:
-        # create_bootstrap_node()
-        # connect_to_bootstrap_node(BOOSTRAP_HOST,BOOSTRAP_PORT)
-        while running:
-            time.sleep(1)
+        if boostrap_host == "LOCAL":
+            create_bootstrap_node()
+        else:
+            connect_to_bootstrap_node(BOOSTRAP_HOST,BOOSTRAP_PORT)
 
     except:
         print("Program stopped: Rutime exception")
-        running = False
     print("All threads finished.")
-
-bidge_server()
