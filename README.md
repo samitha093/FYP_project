@@ -86,7 +86,7 @@ implementation 'org.tensorflow:tensorflow-lite:+'
 implementation 'org.tensorflow:tensorflow-lite-support:0.1.0-rc1'
 implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
 ```
-## Authors
+### Authors
 
 - [@lakshan pathiraja](https://github.com/samitha093)
 - [@Isuru Lakshan]
