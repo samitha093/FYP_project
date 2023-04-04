@@ -14,8 +14,8 @@ sys.path.insert(0, root_path)
 from child_cart.main import *
 from parent_cart.bridge.Main import *
 
-def child_cart():
-    mainFunc("PARENT")
+# def child_cart():
+#     mainFunc("PARENT")
 
 def Bridge():
     bidge_server(host = 'http://172.20.2.3', boostrap_host ='127.0.0.1')
@@ -24,20 +24,11 @@ if __name__ == '__main__':
     cart_thread = threading.Thread(target=Bridge)
     cart_thread.start()
 
-    # Wait for the TCP server process to start
-    while True:
-        # Check if the TCP server process is running
-        for proc in psutil.process_iter(['pid', 'name']):
-            if proc.info['name'] == 'tcp_server' and proc.info['pid'] != os.getpid():
-                # If the process is running, break out of the loop
-                break
-        else:
-            # If the process is not running, wait for 1 second and try again
+    try:
+        while True:
             time.sleep(1)
-            continue
+    except:
+        print("Program stopped: Rutime exception")
 
-        # If the process is running, break out of the loop
-        break
-
-    # Start child_cart()
-    child_cart()
+    # # Start child_cart()
+    # child_cart()

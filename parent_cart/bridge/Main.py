@@ -9,8 +9,15 @@ import sys
 import time
 import random
 from kademlia.network import Server
-from rndGen import generateId
-from util import requestModel
+
+# Get the path to the root directory
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+# Add the root and client4 directories to the Python path
+sys.path.insert(0, root_path)
+
+from bridge.rndGen import *
+from bridge.util import *
 
 HOST = ''
 BOOSTRAP_HOST=''
