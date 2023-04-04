@@ -26,4 +26,3 @@ def mainFunc(type = "CHILD"):
     except Exception as e:
         print("An error occurred:", e)
 
-mainFunc(type = "PARENT")
