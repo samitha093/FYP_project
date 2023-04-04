@@ -25,3 +25,5 @@ def mainFunc(type = "CHILD"):
         backgroudNetworkProcess(type)
     except Exception as e:
         print("An error occurred:", e)
+
+mainFunc(type = "PARENT")
