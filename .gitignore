@@ -4,7 +4,9 @@ __pycache__/
 *$py.class
 *.whl
 #remove testing three clients
-
+dataset/
+modelData/
+receivedModelParameter/
 /test/
 #mobile app ignore files
 *.iml
