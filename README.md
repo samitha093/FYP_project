@@ -90,6 +90,6 @@ implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
 ### Authors
 
 - [@lakshan pathiraja](https://github.com/samitha093)
-- [@Isuru Lakshan]
+- [@Isuru Lakshan](https://github.com/IsuruLakshan170)
 - [@Kavini Kushani]
 
