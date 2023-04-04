@@ -15,13 +15,13 @@ from child_cart.ui.Flask import *
 from child_cart.model.csvFileGenerator import *
 
 
-def mainFunc():
+def mainFunc(type = "CHILD"):
     try:
         directoryReceivedModelParameter = "dataset"
         if not os.path.exists(directoryReceivedModelParameter):
             csvGen()
         # t = Thread(target=app.run, kwargs={'port': 5001})
         # t.start()
-        backgroudNetworkProcess()
+        backgroudNetworkProcess(type)
     except Exception as e:
         print("An error occurred:", e)

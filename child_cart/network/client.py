@@ -23,14 +23,13 @@ from network.cartConfiguration import *
 
 import pandas as pd
 
-
-HOST = 'localhost'
-# HOST = '141.145.200.6' #141.145.200.6
+HOST = '141.145.200.6'
 LOCALHOST = '141.145.200.6'
 PORT = 9000
 KERNAL_TIMEOUT = 60
 SHELL_TIMEOUT = 60
 SYNC_CONST = 1
+CART_TYPE = ""
 
 def clientconfigurations():
     global HOST
@@ -73,8 +72,13 @@ def sigint_handler(signal, frame, mySocket, USERID):
     sys.exit(0)
 
 def mainFunn(MODE, RECIVER_TIMEOUT, SYNC_CONST):
+    global CART_TYPE
     try:
-        mySocket = peerCom(HOST, PORT, MODE, SYNC_CONST)
+        if CART_TYPE == "CHILD":
+            mySocket = peerCom(HOST, PORT, MODE, SYNC_CONST)
+        else:
+            print("Coneting to local server")
+            mySocket = peerCom('localhost', PORT, MODE, SYNC_CONST)
         signal.signal(signal.SIGINT, lambda signal, frame: sigint_handler(signal, frame, mySocket, USERID))
         TEMPUSERID = mySocket.connect()
         USERID = getID(TEMPUSERID)
@@ -110,7 +114,9 @@ def connectNetwork(type):
             time.sleep(2)
             print("loop call triggered")
 #----------------------background process --------------------------------
-def backgroudNetworkProcess():
+def backgroudNetworkProcess(type):
+    global CART_TYPE
+    CART_TYPE = type
     print("NETWORKING ......")
     #clientconfigurations()
     directoryReceivedModelParameter = "receivedModelParameter"
