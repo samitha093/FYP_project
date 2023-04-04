@@ -5,13 +5,24 @@ To establish a better TCP connection, we tryed different mechanisms. However, in
 
 [![Blank-board-Page-1-3.png](https://i.postimg.cc/XvXpcXLy/Blank-board-Page-1-3.png)](https://postimg.cc/mcfLTL0b)
 
+
+
 ## Deployment
 
-Requried library install
+client code
 
 ```bash
-pip install -r requirements.txt
+import sys
+import os
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+sys.path.insert(0, root_path)
+from child_cart.main import *
+
+if __name__ == '__main__':
+    mainFunc()
 ```
+
+
 
 
 ## Tech Stack
