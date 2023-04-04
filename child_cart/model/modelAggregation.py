@@ -1,20 +1,16 @@
 import os
 import sys
-
+import absl.logging
+absl.logging.set_verbosity(absl.logging.ERROR)
 # Get the path to the root directory
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-
 # Add the root and client4 directories to the Python path
 sys.path.insert(0, root_path)
-
 # Import the modules
 from model.modelGenerator import *
 from model.saveModelData import *
 from model.modelAccuracy import *
 from model.dataSetSplit import *
-
-import absl.logging
-absl.logging.set_verbosity(absl.logging.ERROR)
 
 # model aggregation when cart training after  -- aggregate 3 models----
 def modelAggregation():

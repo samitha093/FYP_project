@@ -1,21 +1,14 @@
 #get model accuracy
 import os
 import sys
-
-# Get the path to the root directory
-root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-
-# Add the root and client4 directories to the Python path
-sys.path.insert(0, root_path)
-
-# Import the modules
-from model.modelGenerator import *
-
-
-#libraries
 from sklearn.metrics import accuracy_score
 import numpy as np
-
+# Get the path to the root directory
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+# Add the root and client4 directories to the Python path
+sys.path.insert(0, root_path)
+# Import the modules
+from model.modelGenerator import *
 
 def getModelAccuracy(model,test_data1,test_labels1):
       #Predict model 1  test using test date

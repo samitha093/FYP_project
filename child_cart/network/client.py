@@ -3,13 +3,11 @@ import sys
 import time
 import os
 import sys
-
+import pandas as pd
 # Get the path to the root directory
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-
 # Add the root and client4 directories to the Python path
 sys.path.insert(0, root_path)
-
 # Import the modules
 from model.Main import *
 from model.encodeParameter import *
@@ -20,9 +18,6 @@ from network.com import *
 from network.seed import *
 from network.file import *
 from network.cartConfiguration import *
-
-import pandas as pd
-
 
 HOST = 'localhost'
 # HOST = '141.145.200.6' #141.145.200.6

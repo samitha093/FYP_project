@@ -1,12 +1,11 @@
 import os
 import sys
-
+import csv
+import numpy as np
 # Get the path to the root directory
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-
 # Add the root and client4 directories to the Python path
 sys.path.insert(0, root_path)
-
 # Import the modules
 from model.modelGenerator import *
 from model.modelTraining import *
@@ -15,11 +14,6 @@ from model.dataSetSplit import *
 from model.modelAggregation import *
 from model.fileHandle import *
 from model.saveModelData import *
-
-#files
-
-import csv
-import numpy as np
 
 
 #cart initialisation remove files that have alredy having

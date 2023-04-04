@@ -1,28 +1,20 @@
 #Flask for ui handing and request handling
 from flask import Flask, render_template, request
-
 import os
 import sys
-
+import datetime
 # Get the path to the root directory
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-
 # Add the root and client4 directories to the Python path
 sys.path.insert(0, root_path)
-
 # Import the modules
 from model.Main import *
 from model.writeFile import *
-
 from model.QRScanner import *
 from model.writeFile import *
-
 from db.dbConnect import *
 from network.cartConfiguration import *
 from network.client import *
-
-import datetime
-
 
 selectedItem ="Item 0"
 ItemListArray = [];
