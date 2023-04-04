@@ -9,7 +9,7 @@ To establish a better TCP connection, we tryed different mechanisms. However, in
 
 ## Deployment
 
-client code
+#### client code
 
 ```bash
 import sys
@@ -22,15 +22,15 @@ if __name__ == '__main__':
     mainFunc()
 ```
 
-project
-│   README.md
-│
-├── child_cart
-│   └── main.py
-│
-└── parent_cart
-    └── client
-        └──
+#### Floder location
+```http
+child_cart
+ -main.py
+parent_cart
+ -client
+    -main.py
+```
+
 
 
 
