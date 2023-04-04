@@ -50,7 +50,7 @@ kademlia: https://pypi.org/project/kademlia/
 **Network Library:**
 (serialize data packet)
 pickle: https://docs.python.org/3/library/pickle.html
-
+**Python Application:**
 ```bash
 pip==20.2.3
 aiohttp==3.8.4
@@ -85,7 +85,7 @@ androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 implementation 'org.tensorflow:tensorflow-lite:+'
 implementation 'org.tensorflow:tensorflow-lite-support:0.1.0-rc1'
 implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
-```bash
+```
 ## Authors
 
 - [@lakshan pathiraja](https://github.com/samitha093)
