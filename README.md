@@ -52,6 +52,7 @@ kademlia: https://pypi.org/project/kademlia/
 pickle: https://docs.python.org/3/library/pickle.html
 
 **Python Application:**
+*dependencies*
 ```bash
 pip==20.2.3
 aiohttp==3.8.4
@@ -75,8 +76,8 @@ pandas==1.5.2
 **AI model:**
 
 **Mobile Application:**
+*dependencies*
 ```bash
----dependencies---
 implementation 'androidx.appcompat:appcompat:1.6.1'
 implementation 'com.google.android.material:material:1.6.0'
 implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
