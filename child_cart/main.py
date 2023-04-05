@@ -15,10 +15,19 @@ def mainFunc(type = "CHILD"):
     try:
         directoryReceivedModelParameter = "dataset"
         if not os.path.exists(directoryReceivedModelParameter):
-            csvGen()
-        # t = Thread(target=app.run, kwargs={'port': 5001})
-        # t.start()
-        backgroudNetworkProcess(type)
+            initGen()
+        # try:
+        #     t = Thread(target=app.run, kwargs={'port': 5001})
+        #     t.start()
+        # except KeyboardInterrupt:
+        #     print("Keyboard interrupt received. Closing all programs...")
+        #     os.system("pkill -f python")    
+
+        try:
+            backgroudNetworkProcess(type)
+        except KeyboardInterrupt:
+            print("Keyboard interrupt received. Closing all programs...")
+            os.system("pkill -f python")
     except Exception as e:
         print("An error occurred:", e)
 

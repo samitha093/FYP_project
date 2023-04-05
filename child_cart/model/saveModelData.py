@@ -1,5 +1,12 @@
 import os
+import sys
 import tensorflow as tf
+# Get the path to the root directory
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+# Add the root and client4 directories to the Python path
+sys.path.insert(0, root_path)
+# Import the modules
+from model.modelGenerator import *
 
 def saveModelData(model):
     try:
@@ -33,3 +40,18 @@ def convertToTenserflowModel(model):
             f.write(tflite_model)
     except Exception as e:
         print("Error occurred while converting the model to TensorFlow Lite format:", str(e))
+
+#---------------------------recedive model parameters save -----------------------------
+
+def receivedParameterSave(model_weights):
+    directory = "receivedModelParameter" #replace with  directory path
+    model = create_model()
+    # set the model parameters to the loaded values
+    model.set_weights(model_weights)
+    num_files = len([f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))])
+    num_files =num_files+1
+    try:
+        model.save_weights(f'receivedModelParameter/model_weights_{num_files}.h5')
+        print(f'Decode completed and save Received model parameter {num_files}')
+    except Exception as e:
+        print("Error occurred while saving model weights:", e)
