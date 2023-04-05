@@ -1,7 +1,7 @@
 import os
 
 def getID(newId):
-    filename = "cashData.txt"
+    filename = "./dataset/cashData.txt"
     # Check if file exists, create it if not
     if not os.path.isfile(filename):
         open(filename, 'w').close()
@@ -19,7 +19,7 @@ def getID(newId):
         return newId
 
 def WriteData(data):
-    file = open("cashData.txt","w")
+    file = open("./dataset/cashData.txt","w")
     file.writelines(data)
     file.close()
     return
