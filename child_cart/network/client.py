@@ -108,7 +108,7 @@ def mainFunn(MODE, RECIVER_TIMEOUT, SYNC_CONST):
 def receivingModelAnalize(encoded_message,x_test_np,y_test_np):
     print("Received model analysis ")
     global LOCALMODELACCURACY
-    stepSize =10
+    stepSize =30
     model_bytes = zlib.decompress(encoded_message)
     with np.load(io.BytesIO(model_bytes)) as data:
         model_weights = [data[f'arr_{i}'] for i in range(len(data.files))]
@@ -145,6 +145,13 @@ def connectNetwork(type):
             mainFunn("KERNEL",KERNAL_TIMEOUT,SYNC_CONST)
             time.sleep(2)
             print("loop call triggered")
+
+def time_cal():
+    global TIME_ARRAY
+    print("Model reciving time : ",TIME_ARRAY[1]-TIME_ARRAY[0],"second")
+    print("Model list anlyzing time : ",TIME_ARRAY[2]-TIME_ARRAY[1],"second")
+    print("Model aggregation time : ",TIME_ARRAY[4]-TIME_ARRAY[3],"second")
+
 #----------------------background process --------------------------------
 def backgroudNetworkProcess(type):
     global CART_TYPE
@@ -194,6 +201,7 @@ def backgroudNetworkProcess(type):
                     TIME_ARRAY[3] = time.time() ## time stap 4
                     globleAggregationProcess()
                     TIME_ARRAY[4] = time.time() ## time stap 5
+                    time_cal()
                     break
                 else:
                     connectNetwork("KERNEL")

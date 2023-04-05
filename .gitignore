@@ -9,7 +9,6 @@ __pycache__/
 dataset/
 modelData/
 receivedModelParameter/
-/test/
 #mobile app ignore files
 *.iml
 .gradle

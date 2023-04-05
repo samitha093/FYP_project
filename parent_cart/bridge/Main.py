@@ -433,10 +433,12 @@ def bidge_server(host = '172.20.2.3', boostrap_host ='127.0.0.1', boostrap_port 
     thread3.start()
 
     try:
-        if boostrap_host == "LOCAL":
-            create_bootstrap_node()
-        else:
-            connect_to_bootstrap_node(BOOSTRAP_HOST,BOOSTRAP_PORT)
+        # if boostrap_host == "LOCAL":
+        #     create_bootstrap_node()
+        # else:
+        #     connect_to_bootstrap_node(BOOSTRAP_HOST,BOOSTRAP_PORT)
+        while True:
+            time.sleep(5)
 
     except:
         print("Program stopped: Rutime exception")
