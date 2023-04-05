@@ -9,32 +9,20 @@ To establish a better TCP connection, we tryed different mechanisms. However, in
 
 ## Deployment
 
-#### client code
 
-```bash
-import sys
-import os
-root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
-sys.path.insert(0, root_path)
-from child_cart.main import *
 
-if __name__ == '__main__':
-    mainFunc()
-```
-
-#### Floder location
-```bash
-child_cart
- -main.py
-parent_cart
- -client
-    -main.py
-```
 
 # Create test objects
 
+When creating multiple objects in the same PC environment, it is important to be mindful of the available I/O resources and processing speed.
+
+At the network layer, it is recommended to have at least 500KB/s of bandwidth available for each peer to ensure proper communication. If the available bandwidth is lower than this, it may cause problems with communication between peers.
+
+To test the functionality of the project, you can use the "test" directory located in the root project folder. This directory contains test images that can be used to verify that the project is working correctly
+
+### Parent cart image
+
 use ./test/parent/main.py
-### parent cart image
 ```bash
 import sys
 import os
@@ -57,12 +45,32 @@ if __name__ == '__main__':
         print("Keyboard interrupt received. Closing all programs...")
         os.system("pkill -f python")
 ```
-=======
+### Child cart image
+
+use ./test/child/main.py
+
+```bash
+import sys
+import os
+
+# Get the path to the root directory (two levels up from the current file)
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+
+# Add the root directory to the Python path
+sys.path.insert(0, root_path)
+
+# Import the mainFunc function from the child_cart module
+from child_cart.main import *
+
+if __name__ == '__main__':
+    # Call the mainFunc function from the child_cart module
+    mainFunc()# parameter => "LOCAl" for loacalhost
+```
 
 
 ## Tech Stack
 
-**Bridge Library:**
+**Bridge Module:**
 
 (Http - Protocole)
 aiohttp : https://pypi.org/project/aiohttp/
@@ -73,12 +81,13 @@ Socket : https://docs.python.org/3/library/socket.html
 (kademlia - Protocole - distributed network)
 kademlia: https://pypi.org/project/kademlia/
 
-**Network Library:**
+**Cart network module:**
+
 (serialize data packet)
 pickle: https://docs.python.org/3/library/pickle.html
 
-=======
 **Python Application:**
+
 *dependencies*
 ```bash
 pip==20.2.3
@@ -98,11 +107,8 @@ pandas==1.5.2
 
 ```
 
-**Checkout system:**
-
-**AI model:**
-
 **Mobile Application:**
+
 *dependencies*
 ```bash
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -253,7 +259,6 @@ pandas==1.5.2
    ├─ requirements.txt
    └─ startup.sh
 ```
-=======
 
 ### Authors
 
