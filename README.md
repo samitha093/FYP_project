@@ -13,7 +13,10 @@ Requried library install
 ```bash
 pip install -r requirements.txt
 ```
-tensorflow version
+Required tensorflow package donload and add to child_cart Directory
+```bash
+https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow_cpu-2.11.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+```
 
 
 # Create test objects
