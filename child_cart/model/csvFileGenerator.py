@@ -16,11 +16,11 @@ def csvGen():
         # create directory if it doesn't exist
         os.makedirs(directoryReceivedModelParameter)
         print("Directory created: " + directoryReceivedModelParameter)
-    
+
     DatasetGenerator(10000)
     cartDataFileGen()
     cartConfigurationsFileGen()
-    
+
 def cartDataFileGen():
     # Define the data for the first row
     header = ['Month', 'Item', 'Gender']
@@ -29,7 +29,7 @@ def cartDataFileGen():
         writer = csv.writer(csv_file)
         writer.writerow(header)  # write the header row
     print("Cart Data save csv file created")
-    
+
 def cartConfigurationsFileGen():
     # Define the data for the first row
     header = ['10.101','888','5554','85','5']

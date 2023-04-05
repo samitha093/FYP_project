@@ -2,7 +2,6 @@ import signal
 import sys
 import time
 import os
-import sys
 import pandas as pd
 # Get the path to the root directory
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -30,6 +29,8 @@ SHELL_TIMEOUT = 60
 SYNC_CONST = 1
 CART_TYPE = ""
 LOCALMODELACCURACY =0
+
+TIME_ARRAY = [0] * 5
 
 def clientconfigurations():
     global HOST
@@ -73,6 +74,7 @@ def sigint_handler(signal, frame, mySocket, USERID):
 
 def mainFunn(MODE, RECIVER_TIMEOUT, SYNC_CONST):
     global CART_TYPE
+    global TIME_ARRAY
     try:
         if CART_TYPE == "CHILD":
             mySocket = peerCom(HOST, PORT, MODE, SYNC_CONST)
@@ -87,6 +89,7 @@ def mainFunn(MODE, RECIVER_TIMEOUT, SYNC_CONST):
         print("USER TYPE  : ",MODE)
         if MODE == conctionType.KERNEL.value:
             MODELPARAMETERLIST = communicationProx(mySocket,TEMPUSERID,MODE,RECIVER_TIMEOUT,MODELPARAMETERS,USERID)
+            TIME_ARRAY[1] = time.time() ##time stap 2
             print("LIST")
             print("length : ",len(MODELPARAMETERLIST))
             x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
@@ -96,6 +99,7 @@ def mainFunn(MODE, RECIVER_TIMEOUT, SYNC_CONST):
                     receivedData = item['Data'][1]
                     print("receivedData------------------->>>>>>>")
                     receivingModelAnalize(receivedData,x_test_np,y_test_np)
+            TIME_ARRAY[2] = time.time() ##time stap 3
         if MODE == conctionType.SHELL.value:
             seedProx(mySocket,TEMPUSERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,RECIVER_TIMEOUT,USERID)
     except Exception as e:
@@ -123,25 +127,27 @@ def localModelAnalize(x_test_np,y_test_np):
     global LOCALMODELACCURACY
     model = create_model()
     model.load_weights('modelData/model_weights.h5')
-    LOCALMODELACCURACY = getModelAccuracy(model,x_test_np,y_test_np)   
+    LOCALMODELACCURACY = getModelAccuracy(model,x_test_np,y_test_np)
     print("Local model Acc : ",LOCALMODELACCURACY)
-    
+
 def connectNetwork(type):
     global KERNAL_TIMEOUT
     global SHELL_TIMEOUT
     global SYNC_CONST
+    global TIME_ARRAY
     if type == "SHELL":
             mainFunn("SHELL",SHELL_TIMEOUT,SYNC_CONST)
             time.sleep(2)
             print("loop call triggered")
 
     elif type == "KERNEL":
+            TIME_ARRAY[0] = time.time() ##time stap 1
             mainFunn("KERNEL",KERNAL_TIMEOUT,SYNC_CONST)
             time.sleep(2)
             print("loop call triggered")
 #----------------------background process --------------------------------
 def backgroudNetworkProcess(type):
-    global CART_TYPE 
+    global CART_TYPE
     CART_TYPE = type
     print("NETWORKING ......")
     #clientconfigurations()
@@ -172,6 +178,7 @@ def backgroudNetworkProcess(type):
 
     global MODELPARAMETERS
     global MOBILEMODELPARAMETERS
+    global TIME_ARRAY
     while True:
         MODELPARAMETERS = encodeModelParameters()
         MOBILEMODELPARAMETERS  =encodeModelParametersForMobile()
@@ -184,7 +191,9 @@ def backgroudNetworkProcess(type):
                 receivedParametersSize = len([f for f in os.listdir(directoryReceivedParameters) if os.path.isfile(os.path.join(directoryReceivedParameters, f))])
                 #check received parameters size
                 if receivedParametersSize >= 4:
+                    TIME_ARRAY[3] = time.time() ## time stap 4
                     globleAggregationProcess()
+                    TIME_ARRAY[4] = time.time() ## time stap 5
                     break
                 else:
                     connectNetwork("KERNEL")

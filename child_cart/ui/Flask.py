@@ -138,6 +138,6 @@ def moveAdmin():
     PORT = row[2]
     RECEIVER_TIMEOUT = row[3]
     SYNC_CONST = row[4]
-  
+
     return render_template('admin.html',HOST=HOST,LOCALHOST=LOCALHOST,PORT=PORT,RECEIVER_TIMEOUT=RECEIVER_TIMEOUT,SYNC_CONST=SYNC_CONST)
 

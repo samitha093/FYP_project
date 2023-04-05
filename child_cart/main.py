@@ -16,8 +16,8 @@ def mainFunc(type = "CHILD"):
         directoryReceivedModelParameter = "dataset"
         if not os.path.exists(directoryReceivedModelParameter):
             csvGen()
-        t = Thread(target=app.run, kwargs={'port': 5001})
-        t.start()
+        # t = Thread(target=app.run, kwargs={'port': 5001})
+        # t.start()
         backgroudNetworkProcess(type)
     except Exception as e:
         print("An error occurred:", e)
