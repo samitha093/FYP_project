@@ -10,11 +10,11 @@ root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, root_path)
 
 # Import the modules
-from child_cart.main import *
+# from child_cart.main import *
 from parent_cart.bridge.Main import *
 
-def child_cart():
-    mainFunc("PARENT")
+# def child_cart():
+#     mainFunc("PARENT")
 
 def Bridge():
     # host is the parent cart ip address
@@ -22,6 +22,7 @@ def Bridge():
     bidge_server(host = '172.20.2.3', boostrap_host ='LOCAL')
 
 def parent_cart():
-    bridge_thread = threading.Thread(target=Bridge)
-    bridge_thread.start()
-    child_cart()
+    Bridge()
+    # bridge_thread = threading.Thread(target=Bridge)
+    # bridge_thread.start()
+    # child_cart()
