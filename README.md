@@ -9,7 +9,11 @@ To establish a better TCP connection, we tryed different mechanisms. However, in
 
 ## Deployment
 
-
+Requried library install
+```bash
+pip install -r requirements.txt
+```
+tensorflow version
 
 
 # Create test objects
