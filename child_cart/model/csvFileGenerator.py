@@ -9,7 +9,7 @@ root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, root_path)
 from model.dataSetGenerator import *
 
-def csvGen():
+def initGen():
     directoryReceivedModelParameter = "dataset"
     # check if directory exists
     if not os.path.exists(directoryReceivedModelParameter):
@@ -20,6 +20,7 @@ def csvGen():
     DatasetGenerator(10000)
     cartDataFileGen()
     cartConfigurationsFileGen()
+    modelFolderGen()
 
 def cartDataFileGen():
     # Define the data for the first row
@@ -38,3 +39,19 @@ def cartConfigurationsFileGen():
         writer = csv.writer(csv_file)
         writer.writerow(header)  # write the header row
     print("Configurations save csv file created")
+
+def modelFolderGen():
+    directoryReceivedModelParameter = "receivedModelParameter"
+    # check if directory exists
+    if not os.path.exists(directoryReceivedModelParameter):
+        # create directory if it doesn't exist
+        os.makedirs(directoryReceivedModelParameter)
+        print("Directory created: " + directoryReceivedModelParameter)
+
+
+    directoryModelData = "modelData"
+    # check if directory exists
+    if not os.path.exists(directoryModelData):
+        # create directory if it doesn't exist
+        os.makedirs(directoryModelData)
+        print("Directory created: " + directoryModelData)
