@@ -127,7 +127,8 @@ def localModelAnalize(x_test_np,y_test_np):
     print("Local model analysis ")
     global MODEL
     global LOCALMODELACCURACY
-    MODEL.load_weights('modelData/model_weights.h5')
+    localModelWeights=loadLocalCartModelData()
+    MODEL.set_weights(localModelWeights)
     LOCALMODELACCURACY = getModelAccuracy(MODEL,x_test_np,y_test_np)
     print("Local model Acc : ",LOCALMODELACCURACY)
 
@@ -172,11 +173,10 @@ def backgroudNetworkProcess(type):
         MOBILEMODELPARAMETERS  =encodeModelParametersForMobile()
         cartData = getCartDataLenght()
         #compare size of the dataset for globla aggregation
-        if len(cartData) >= 3:
+        if cartData >= 3:
             print("Connecting as KERNEL for globla aggregation")
             while True:
-                directoryReceivedParameters = "receivedModelParameter"
-                receivedParametersSize = len([f for f in os.listdir(directoryReceivedParameters) if os.path.isfile(os.path.join(directoryReceivedParameters, f))])
+                receivedParametersSize = getReceivedModelParameterLength()
                 #check received parameters size
                 if receivedParametersSize >= 4:
                     TIME_ARRAY[3] = time.time() ## time stap 4
