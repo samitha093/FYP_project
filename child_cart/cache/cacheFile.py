@@ -100,8 +100,11 @@ def loadCartData():
     # Load the header array from the cache file
     with open(filename, 'rb') as f:
         cartData = pickle.load(f)  
-    print(cartData)
-    return cartData
+    
+    df = pd.DataFrame(cartData[1:], columns=cartData[0])
+    print(df)
+    print(type(df))
+    return df
 # loadCartData()
 def updataCartData(new_row):
     filename = "cache/cartData.pkl"
@@ -161,8 +164,24 @@ def deleteCartDataItems(itemCount):
 
 # deleteCartDataItems(3)
 
-
-
+def getCartDataLenght():
+    filename = "cache/cartData.pkl"
+    if os.path.isfile(filename):
+        print("The file", filename, "exists in the current path.")
+    else:
+        print("The file", filename, "does not exist in the current path.")
+        # load the csv file into a pandas dataframe
+        header = [['Month', 'Item', 'Gender']]
+        # Save the header array to a cache file
+        with open(filename, 'wb') as f:
+            pickle.dump(header, f)
+            
+    # Load the header array from the cache file
+    with open(filename, 'rb') as f:
+        cartData = pickle.load(f) 
+    cartDataSize=len(cartData)
+    print(cartDataSize)
+    return cartDataSize
 #------->>>>>>>>>>>>>>>>>>>>> Model >>>>>>>>>>>>>>>> -------
 #*********************************------------------
 #save local ML model 
@@ -185,8 +204,8 @@ def saveLocalModelData(model):
 # model=create_model()
 # saveLocalModelData(model)
 
-def loadLocalModelData():
-    #model weights
+def loadLocalCartModelData():
+    #cart model weights
     filename = "cache/model_weights.pkl"
     if os.path.isfile(filename):
         print("The file", filename, "exists in the current path.")
@@ -203,7 +222,10 @@ def loadLocalModelData():
     with open('cache/model_weights.pkl', 'rb') as f:
         serialized_weights = f.read()
     localModeWeights = pickle.loads(serialized_weights)
-    
+    return localModeWeights
+  
+# loadLocalCartModelData()
+def loadLocalMobileModelData():
     #mobile model
     filename = "cache/mobileModel.pkl"
     if os.path.isfile(filename):
@@ -222,9 +244,9 @@ def loadLocalModelData():
     # Load the TFLite model from the cache file
     with open('cache/mobileModel.pkl', 'rb') as f:
         mobileModel = pickle.load(f)
-        
-        
-loadLocalModelData()
+
+    return mobileModel
+
 #-------------------------Receiving model------------------
 #save local ML model 
 def saveReceivedModelData(receivedModelWeights):

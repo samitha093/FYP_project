@@ -11,13 +11,13 @@ sys.path.insert(0, root_path)
 from model.Main import *
 from model.encodeParameter import *
 from model.fileHandle import *
-from model.saveModelData import *
 from network.soc9k import *
 from network.enumList import *
 from network.com import *
 from network.seed import *
 from network.file import *
 from network.cartConfiguration import *
+from cache.cacheFile import *
 
 
 import pandas as pd
@@ -118,7 +118,7 @@ def receivingModelAnalize(encoded_message,x_test_np,y_test_np):
     recievedModelAcc = getModelAccuracy(MODEL,x_test_np,y_test_np)
     print("Received model Acc : ",recievedModelAcc)
     if(recievedModelAcc < LOCALMODELACCURACY + stepSize ) and (recievedModelAcc > LOCALMODELACCURACY - stepSize ):
-        receivedParameterSave(model_weights)
+        saveReceivedModelData(model_weights)
         print("Received model Accept!")
     else:
         print("Received model Droped!")
@@ -163,22 +163,14 @@ def backgroudNetworkProcess(type):
     CART_TYPE = type
     print("NETWORKING ......")
     #clientconfigurations()
-    directoryModelData = "modelData"
-    # get number of files in directory
-    modelDataSize = len([f for f in os.listdir(directoryModelData) if os.path.isfile(os.path.join(directoryModelData, f))])
-
-    # if cart is new
-    if modelDataSize == 0:
-        print("Initializing cart")
-        resetModelData()
-
+  
     global MODELPARAMETERS
     global MOBILEMODELPARAMETERS
     global TIME_ARRAY
     while True:
         MODELPARAMETERS = encodeModelParameters()
         MOBILEMODELPARAMETERS  =encodeModelParametersForMobile()
-        cartData = pd.read_csv('dataset/cartData.csv')
+        cartData = getCartDataLenght()
         #compare size of the dataset for globla aggregation
         if len(cartData) >= 3:
             print("Connecting as KERNEL for globla aggregation")

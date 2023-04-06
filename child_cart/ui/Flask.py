@@ -2,7 +2,7 @@
 from flask import Flask, render_template, request
 import os
 import sys
-import datetime
+from datetime import datetime
 # Get the path to the root directory
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 # Add the root and client4 directories to the Python path
@@ -15,6 +15,7 @@ from model.writeFile import *
 from db.dbConnect import *
 from network.cartConfiguration import *
 from network.client import *
+from cache.cacheFile import *
 
 selectedItem ="Item 0"
 ItemListArray = [];
@@ -33,7 +34,7 @@ def findCurrentThreandArray():
     global currentGender
  
     #get current threand
-    month = datetime.datetime.now().month
+    month = datetime.now().month
     gender = currentGender
     itemNum = getCurrentThreand(month,gender)
     currentThreandArray = []
@@ -56,7 +57,8 @@ def getItems():
     global selectedItem
     global totalBill
     
-    current_date = datetime.date.today()
+    current_date = datetime.today().date()
+
     results = QRReader()
     selectedItem=results
     data =ItemListArray
@@ -70,9 +72,9 @@ def result():
     global ItemListArray
     global totalBill
     global currentGender
-    current_date = datetime.date.today()
+    current_date = datetime.today().date()
     output = request.form.to_dict()
-    month = datetime.datetime.now().month
+    month = datetime.now().month
     item = 0
     selectedItemItemNo =selectedItem[1]
     if selectedItemItemNo == "Item 1":
@@ -97,7 +99,9 @@ def result():
      #update the globle array
     ItemListArray.append(selectedItem)
     data =ItemListArray
-    writetoCSV(month, item, gender)
+  
+    new_row = [month, item, int(gender)]
+    updataCartData(new_row)
     findCurrentThreandArray()
     return render_template("home.html" ,cartData=ItemListArray,currentDate=current_date,headings=headings,data=data,totalBill=totalBill,threandingArray=currentThreandArray)
 

@@ -9,6 +9,7 @@ root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, root_path)
 # Import the modules
 from model.modelGenerator import *
+from cache.cacheFile import *
 
 def getModelAccuracy(model,test_data1,test_labels1):
       #Predict model 1  test using test date
@@ -54,7 +55,8 @@ def getCurrentThreand(month,gender):
 def importModel():
    model=create_model()
    try:
-       model.load_weights('modelData/model_weights.h5')
+       localModelWeights=loadLocalCartModelData()
+       model.set_weights(localModelWeights)
        print("Model weights loaded successfully!")
    except Exception as e:
        print("Error occurred while loading model weights:", e)
