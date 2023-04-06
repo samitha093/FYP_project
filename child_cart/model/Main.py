@@ -36,8 +36,7 @@ def recodeDataRemove():
             print("Removed training data")
 
     except Exception as e:
-        print("Error occurred while writing data to the CSV file:", e)
-        
+        print("Error occurred while writing data to the CSV file:", e)  
 
 #Globle aggregation process
 def globleAggregationProcess(model,x_test_np,y_test_np):

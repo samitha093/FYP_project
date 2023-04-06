@@ -10,7 +10,6 @@ sys.path.insert(0, root_path)
 from child_cart.ui.Flask import *
 from child_cart.model.csvFileGenerator import *
 
-
 def mainFunc(type = "CHILD"):
     try:
         directoryReceivedModelParameter = "dataset"
