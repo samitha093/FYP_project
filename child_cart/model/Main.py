@@ -40,9 +40,8 @@ def recodeDataRemove():
         
 
 #Globle aggregation process
-def globleAggregationProcess():
+def globleAggregationProcess(model,x_test_np,y_test_np):
           print("Strat local training ------->")
-          model=create_model()
           try:
              model.load_weights('modelData/model_weights.h5')
              print("Model weights loaded successfully!")
@@ -54,22 +53,20 @@ def globleAggregationProcess():
           x_train,y_train = splitCartData()
           continuoustrainModel(model,x_train,y_train)
           #test model using local data
-          x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
           getModelAccuracy(model,x_test_np,y_test_np)
           #adding differential privacy
-          differentialPrivacy()
+          differentialPrivacy(model,x_test_np,y_test_np)
           #clear the csv file
           recodeDataRemove()
           #aggregate the models
-          modelAggregation()
+          modelAggregation(model,x_test_np,y_test_np)
           #remove received files
           removeFiles()
           return "Aggregated"
 
 
-def differentialPrivacy():
+def differentialPrivacy(model,x_test_np,y_test_np):
     print("Starting adding differential privacy ------->")
-    model=create_model()
     try:
         model.load_weights('modelData/model_weights.h5')
         print("Model weights loaded successfully!")
@@ -80,7 +77,6 @@ def differentialPrivacy():
     print("Split dataset")
     #test model using local data
     print("Get Local model accuracy----->")
-    x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
     localModelAccuracy = getModelAccuracy(model,x_test_np,y_test_np)
     
     def loopProcess():

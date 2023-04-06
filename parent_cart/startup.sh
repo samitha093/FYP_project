@@ -1,6 +1,6 @@
 #!/bin/sh
 
-python Main.py
+python main.py
 
 while true
 do

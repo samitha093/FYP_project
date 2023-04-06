@@ -13,14 +13,11 @@ from model.modelAccuracy import *
 from model.dataSetSplit import *
 
 # model aggregation when cart training after  -- aggregate 3 models----
-def modelAggregation():
+def modelAggregation(model,x_test_np,y_test_np):
     print("Strat aggregation process -------->")
     #aggregating model size
     parameterArray = [0] * 5
     accArray = [0] * 5
-    model=create_model()
-    x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
-
     for i in range(4):
         num=i+1
         try:
@@ -55,11 +52,9 @@ def modelAggregation():
     totalAccuracy=accArray[0]+accArray[1]+accArray[2]+accArray[3]+accArray[4]
     averageWeight=[(w1*accArray[0] + w2*accArray[1] + w3*accArray[2] + w4*accArray[3] + w5*accArray[4] )/totalAccuracy for w1, w2 , w3 , w4 , w5 in zip(parameterArray[0], parameterArray[1],parameterArray[2], parameterArray[3],parameterArray[4])]
     print("Weighted averating added")
-
-    modelAG=create_model()
-    modelAG.set_weights(averageWeight)
+    model.set_weights(averageWeight)
     print("Aggregated model ------>>")
-    acc = getModelAccuracy(modelAG,x_test_np,y_test_np)
+    acc = getModelAccuracy(model,x_test_np,y_test_np)
 
     print("Aggregrated sucessfuly  ")
 

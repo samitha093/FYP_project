@@ -11,6 +11,7 @@ sys.path.insert(0, root_path)
 from model.Main import *
 from model.encodeParameter import *
 from model.fileHandle import *
+from model.saveModelData import *
 from network.soc9k import *
 from network.enumList import *
 from network.com import *
@@ -25,12 +26,13 @@ HOST = '141.145.200.6'
 LOCALHOST = '141.145.200.6'
 PORT = 9000
 KERNAL_TIMEOUT = 60
-SHELL_TIMEOUT = 60
+SHELL_TIMEOUT = 5*60
 SYNC_CONST = 1
 CART_TYPE = ""
 LOCALMODELACCURACY =0
-
 TIME_ARRAY = [0] * 5
+MODEL=create_model()
+x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
 
 def clientconfigurations():
     global HOST
@@ -75,24 +77,25 @@ def sigint_handler(signal, frame, mySocket, USERID):
 def mainFunn(MODE, RECIVER_TIMEOUT, SYNC_CONST):
     global CART_TYPE
     global TIME_ARRAY
+    global x_test_np
+    global y_test_np
     try:
         if CART_TYPE == "CHILD":
             mySocket = peerCom(HOST, PORT, MODE, SYNC_CONST)
         else:
             print("Coneting to local server")
             mySocket = peerCom('localhost', PORT, MODE, SYNC_CONST)
-        signal.signal(signal.SIGINT, lambda signal, frame: sigint_handler(signal, frame, mySocket, USERID))
+        signal.signal(signal.SIGINT, lambda signal, frame: sigint_handler(signal, frame, mySocket))
         TEMPUSERID = mySocket.connect()
-        USERID = getID(TEMPUSERID)
+        print("Starting data reciver and sender")
         mySocket.start_receiver()
         mySocket.start_sender()
         print("USER TYPE  : ",MODE)
         if MODE == conctionType.KERNEL.value:
-            MODELPARAMETERLIST = communicationProx(mySocket,TEMPUSERID,MODE,RECIVER_TIMEOUT,MODELPARAMETERS,USERID)
+            MODELPARAMETERLIST = communicationProx(mySocket,TEMPUSERID,MODE,RECIVER_TIMEOUT,MODELPARAMETERS)
             TIME_ARRAY[1] = time.time() ##time stap 2
             print("LIST")
             print("length : ",len(MODELPARAMETERLIST))
-            x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
             localModelAnalize(x_test_np,y_test_np)
             for item in MODELPARAMETERLIST:
                 if "MODELPARAMETERS" in item['Data']:
@@ -101,33 +104,31 @@ def mainFunn(MODE, RECIVER_TIMEOUT, SYNC_CONST):
                     receivingModelAnalize(receivedData,x_test_np,y_test_np)
             TIME_ARRAY[2] = time.time() ##time stap 3
         if MODE == conctionType.SHELL.value:
-            seedProx(mySocket,TEMPUSERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,RECIVER_TIMEOUT,USERID)
+            seedProx(mySocket,TEMPUSERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,RECIVER_TIMEOUT)
     except Exception as e:
         print("Error occurred while running in", MODE, " mode ")
 
 def receivingModelAnalize(encoded_message,x_test_np,y_test_np):
     print("Received model analysis ")
+    global MODEL
     global LOCALMODELACCURACY
-    stepSize =10
-    model_bytes = zlib.decompress(encoded_message)
-    with np.load(io.BytesIO(model_bytes)) as data:
-        model_weights = [data[f'arr_{i}'] for i in range(len(data.files))]
-    model = create_model()
-    model.set_weights(model_weights)
-    recievedModelAcc = getModelAccuracy(model,x_test_np,y_test_np)
+    stepSize =30
+    model_weights=decodeModelParameters(encoded_message)
+    MODEL.set_weights(model_weights)
+    recievedModelAcc = getModelAccuracy(MODEL,x_test_np,y_test_np)
     print("Received model Acc : ",recievedModelAcc)
     if(recievedModelAcc < LOCALMODELACCURACY + stepSize ) and (recievedModelAcc > LOCALMODELACCURACY - stepSize ):
-        decodeModelParameters(encoded_message)
+        receivedParameterSave(model_weights)
         print("Received model Accept!")
     else:
         print("Received model Droped!")
 
 def localModelAnalize(x_test_np,y_test_np):
     print("Local model analysis ")
+    global MODEL
     global LOCALMODELACCURACY
-    model = create_model()
-    model.load_weights('modelData/model_weights.h5')
-    LOCALMODELACCURACY = getModelAccuracy(model,x_test_np,y_test_np)
+    MODEL.load_weights('modelData/model_weights.h5')
+    LOCALMODELACCURACY = getModelAccuracy(MODEL,x_test_np,y_test_np)
     print("Local model Acc : ",LOCALMODELACCURACY)
 
 def connectNetwork(type):
@@ -137,37 +138,32 @@ def connectNetwork(type):
     global TIME_ARRAY
     if type == "SHELL":
             mainFunn("SHELL",SHELL_TIMEOUT,SYNC_CONST)
-            time.sleep(2)
+            # time.sleep(2)
             print("loop call triggered")
 
     elif type == "KERNEL":
             TIME_ARRAY[0] = time.time() ##time stap 1
             mainFunn("KERNEL",KERNAL_TIMEOUT,SYNC_CONST)
-            time.sleep(2)
+            # time.sleep(2)
             print("loop call triggered")
+
+def time_cal():
+    global TIME_ARRAY
+    print("Model reciving time : ",TIME_ARRAY[1]-TIME_ARRAY[0],"second")
+    print("Model list anlyzing time : ",TIME_ARRAY[2]-TIME_ARRAY[1],"second")
+    print("Model aggregation time : ",TIME_ARRAY[4]-TIME_ARRAY[3],"second")
+
 #----------------------background process --------------------------------
+
+
 def backgroudNetworkProcess(type):
     global CART_TYPE
+    global x_test_np
+    global y_test_np
     CART_TYPE = type
     print("NETWORKING ......")
     #clientconfigurations()
-    directoryReceivedModelParameter = "receivedModelParameter"
-    # check if directory exists
-    if not os.path.exists(directoryReceivedModelParameter):
-        # create directory if it doesn't exist
-        os.makedirs(directoryReceivedModelParameter)
-        print("Directory created: " + directoryReceivedModelParameter)
-
-
     directoryModelData = "modelData"
-    # check if directory exists
-    if not os.path.exists(directoryModelData):
-        # create directory if it doesn't exist
-        os.makedirs(directoryModelData)
-        print("Directory created: " + directoryModelData)
-
-
-
     # get number of files in directory
     modelDataSize = len([f for f in os.listdir(directoryModelData) if os.path.isfile(os.path.join(directoryModelData, f))])
 
@@ -192,12 +188,13 @@ def backgroudNetworkProcess(type):
                 #check received parameters size
                 if receivedParametersSize >= 4:
                     TIME_ARRAY[3] = time.time() ## time stap 4
-                    globleAggregationProcess()
+                    globleAggregationProcess(MODEL,x_test_np,y_test_np)
                     TIME_ARRAY[4] = time.time() ## time stap 5
+                    time_cal()
                     break
                 else:
                     connectNetwork("KERNEL")
-                time.sleep(10)
+                # time.sleep(10)
         else:
             print("Connecting as SHELL for send Models")
             connectNetwork("SHELL")

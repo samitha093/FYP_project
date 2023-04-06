@@ -129,6 +129,8 @@ pandas==1.5.2
     implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
 
 ```
+## Protocol
+![protocol](https://user-images.githubusercontent.com/82941889/230212480-bc55136c-e4d8-48bd-95e1-ca1db05d3371.PNG)
 
 ## File Organization
 

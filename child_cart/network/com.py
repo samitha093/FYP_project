@@ -12,23 +12,23 @@ sys.path.insert(0, root_path)
 from network.util import *
 from network.errorList import *
 
-def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS,oldID):
+def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS):
     CLUSTERID = ""
     PEERLIST = []
     MODELPARAMETERLIST = []
+    timerCal =0
 
     CLusterIDLoop = True
     ModelParamLoop = True
     ################################################################################
     #-----------------------BEGIN----COMMUNICATION SCRIPT--------------------------#
     ################################################################################
-    peerTypeReq = ["PEERTYPE",MODE,oldID]#-------------Cluster ID REQUEST-----------------
+    peerTypeReq = ["PEERTYPE",MODE]#-------------Cluster ID REQUEST-----------------
     mySocket.request(requestModel(USERID,peerTypeReq))
-    if USERID != oldID:
-        USERID = oldID
     while CLusterIDLoop: #----------------------GET Cluster-------------------------
         tempDataSet = mySocket.RECIVEQUE.copy()
         if len(tempDataSet) > 0:
+            timerCal = 0
             for x in tempDataSet:
                 tempData = x.get("Data")
                 if tempData[0] != "ERROR":
@@ -42,12 +42,18 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS,oldID):
                         break
                 else:
                     return MODELPARAMETERLIST
-    for x in PEERLIST:#----------------------REQUEST Model params-------------------
-        if x != USERID:
-            modelReq = ["MODELREQUEST"]
-            mySocket.request(requestModel(USERID,modelReq,x))
-            print("SEND MODEL REQUEST TO : ",x)
-    timerCal =0
+        time.sleep(1)
+        timerCal +=1
+        if timerCal == TimerOut:
+            CLusterIDLoop = False
+            ModelParamLoop = False
+            break
+    if len(PEERLIST)>0:
+        for x in PEERLIST:#----------------------REQUEST Model params-------------------
+            if x != USERID:
+                modelReq = ["MODELREQUEST"]
+                mySocket.request(requestModel(USERID,modelReq,x))
+                print("SEND MODEL REQUEST TO : ",x)
     while ModelParamLoop:#----------------------READ Model params-------------------
         tempDataSet = mySocket.RECIVEQUE.copy()
         if len(tempDataSet) > 0:
@@ -67,6 +73,7 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS,oldID):
         time.sleep(1)
         timerCal +=1
         if len(PEERLIST) == len(MODELPARAMETERLIST):
+            print("recived all model parameters which are requested")
             ModelParamLoop = False
         if timerCal == TimerOut:
             Reciver_status = mySocket.isData_Reciving()
