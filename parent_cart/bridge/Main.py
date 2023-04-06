@@ -35,7 +35,7 @@ cart_server_task = None
 DeviceTable = []
 ClusterTable = {}
 clusterSize = 2
-SYNC_CONST = 2
+SYNC_CONST = 1
 
 shared_data = {}
 MOBILEDATARECORDER = {}
@@ -85,8 +85,6 @@ def reqirementHandler(data):
     User = data.get("Sender")
     req = data.get("Data")
     if req[0] == "PEERTYPE":
-        if User != req[2]:
-            User = req[2]
         if req[1] == "KERNEL":
             print(User, " : ",req[1])
             if len(DeviceTable) >= clusterSize:
@@ -99,9 +97,11 @@ def reqirementHandler(data):
             ##Clustering Process END          ---------------------------
                 defineCluster = ["CLUSTERID",ClusterId, "PEERLIST",ClusterTable.get(ClusterId)]
                 tempData = responceModel(User,defineCluster)
+                time.sleep(5)
                 mailBox = DATARECORDER.get(User)
                 mailBox.append(tempData)
             else:
+                time.sleep(5)
                 dataError = ["ERROR","There were not enough SHELL peers available at that time. Please try again later."]
                 tempData = responceModel(User,dataError)
                 mailBox = DATARECORDER.get(User)
@@ -138,7 +138,7 @@ def requestHandler(data):
 
 # This is the coroutine that will handle incoming cart connections
 async def handle_client(reader, writer):
-    global running
+    global running,DeviceTable
     print('----------------------------------------------------------------')
     addr = writer.get_extra_info('peername')
     print('Connected by', addr)
@@ -157,10 +157,7 @@ async def handle_client(reader, writer):
         while not client_disconnected:
             if len(DATARECORDER.get(userId)) > 0:
                 mailBox = DATARECORDER.get(userId)
-                if mailBox[0].get("Data")[0] == "MODELPARAMETERS":
-                        print("****MODELPARAMETERS FROM ",mailBox[0].get("Sender")," TO : ", userId)
-                if mailBox[0].get("Data")[0] == "MODELREQUEST":
-                        print("####MODEL REQUEST FROM ",mailBox[0].get("Sender")," TO : ", userId)
+                print("****BRIDGE SEND : ",mailBox[0].get("Data")[0]," : FROM : ",mailBox[0].get("Sender")," : TO : ", userId)
                 mailData = pickle.dumps(mailBox[0])
                 data_size = sys.getsizeof(mailData)
                 data_size_kb = data_size / 1024
@@ -179,20 +176,15 @@ async def handle_client(reader, writer):
                     print("####ERROR ON ",mailBox[0].get("Data")[1]," : ", userId,)
                     client_disconnected = True
                 mailBox.remove(mailBox[0])
-            await asyncio.sleep(5)
+            await asyncio.sleep(2)
 
     #coroutine to process received data
     async def process_data(data_chunks):
         nonlocal userId, reader, writer
         data = b''.join(data_chunks)
         decordedData = pickle.loads(data)
+        print("****BRIDGE recived : ",decordedData.get("Data")[0]," : FROM : ",decordedData.get("Sender")," : TO : ", decordedData.get("Receiver"))
         if decordedData.get("Receiver") == "SERVER":
-            req = decordedData.get("Data")
-            if req[0] == "PEERTYPE":
-                if userId != req[2]:
-                    print("USER ID Replaced : ",userId," => ",req[2])
-                    userId = req[2]
-                    DATARECORDER[userId] = []
             reqirementHandler(decordedData)
         else:
             requestHandler(decordedData)
@@ -232,6 +224,8 @@ async def handle_client(reader, writer):
         print("######## ERROR CATCH : ACYNC")
     #############################################################
     print('Connection Closed : ',addr)
+    if userId in DeviceTable:
+            DeviceTable.remove(userId)
     writer.close()
 
 

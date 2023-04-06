@@ -12,14 +12,12 @@ sys.path.insert(0, root_path)
 from network.util import *
 from network.errorList import *
 
-def seedProx(mySocket,USERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,SHELL_TIMEOUT,oldID):
+def seedProx(mySocket,USERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,SHELL_TIMEOUT):
     ModelParamLoop = True
     print(errMsg.MSG004.value)
-    peerTypeReq = ["PEERTYPE",MODE,oldID]
+    peerTypeReq = ["PEERTYPE",MODE]
     mySocket.request(requestModel(USERID,peerTypeReq))
     ########################################################################
-    if USERID != oldID:
-        USERID = oldID
     timerCal =0
     while ModelParamLoop:
         tempDataSet = mySocket.RECIVEQUE.copy()
@@ -41,6 +39,9 @@ def seedProx(mySocket,USERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,SHELL_TI
                 timerCal = 0
         time.sleep(1)
         timerCal +=1
+        if mySocket.isReadyForClose():
+            ModelParamLoop = False
+            break
         if timerCal == SHELL_TIMEOUT:
             Reciver_status = mySocket.isData_Reciving()
             if Reciver_status:

@@ -33,6 +33,7 @@ class peerCom:
         self.closeWait = True
         self.USERID = ""
         self.continueData = False
+        self.readForClose = False
 
     def connect(self):
         try:
@@ -60,6 +61,9 @@ class peerCom:
 
     def isData_Reciving(self):
         return self.continueData
+    
+    def isReadyForClose(self):
+        return self.readForClose
 
     def receiver(self):
         while self.is_running:
@@ -123,12 +127,14 @@ class peerCom:
                     else:
                         print(errMsg.MSG010.value,data_size_kb, "KB")
                         print(errMsg.MSG009.value)
-                    time.sleep(10)
+                    if toDumpData.get("Data")[0] == "MODELPARAMETERS":
+                        print("Model parameters sended. time to logout from cluster")
+                        self.readForClose = True
+                    time.sleep(5)
         except:
             print(errMsg.MSG003.value)
             self.closeWait = False
             self.close(0,self.USERID)
-            sys.exit(0)
 
     def request(self, data):
         self.SENDQUE.append(data)

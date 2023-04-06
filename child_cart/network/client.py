@@ -26,7 +26,7 @@ HOST = '141.145.200.6'
 LOCALHOST = '141.145.200.6'
 PORT = 9000
 KERNAL_TIMEOUT = 60
-SHELL_TIMEOUT = 60
+SHELL_TIMEOUT = 5*60
 SYNC_CONST = 1
 CART_TYPE = ""
 LOCALMODELACCURACY =0
@@ -85,14 +85,14 @@ def mainFunn(MODE, RECIVER_TIMEOUT, SYNC_CONST):
         else:
             print("Coneting to local server")
             mySocket = peerCom('localhost', PORT, MODE, SYNC_CONST)
-        signal.signal(signal.SIGINT, lambda signal, frame: sigint_handler(signal, frame, mySocket, USERID))
+        signal.signal(signal.SIGINT, lambda signal, frame: sigint_handler(signal, frame, mySocket))
         TEMPUSERID = mySocket.connect()
-        USERID = getID(TEMPUSERID)
+        print("Starting data reciver and sender")
         mySocket.start_receiver()
         mySocket.start_sender()
         print("USER TYPE  : ",MODE)
         if MODE == conctionType.KERNEL.value:
-            MODELPARAMETERLIST = communicationProx(mySocket,TEMPUSERID,MODE,RECIVER_TIMEOUT,MODELPARAMETERS,USERID)
+            MODELPARAMETERLIST = communicationProx(mySocket,TEMPUSERID,MODE,RECIVER_TIMEOUT,MODELPARAMETERS)
             TIME_ARRAY[1] = time.time() ##time stap 2
             print("LIST")
             print("length : ",len(MODELPARAMETERLIST))
@@ -104,7 +104,7 @@ def mainFunn(MODE, RECIVER_TIMEOUT, SYNC_CONST):
                     receivingModelAnalize(receivedData,x_test_np,y_test_np)
             TIME_ARRAY[2] = time.time() ##time stap 3
         if MODE == conctionType.SHELL.value:
-            seedProx(mySocket,TEMPUSERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,RECIVER_TIMEOUT,USERID)
+            seedProx(mySocket,TEMPUSERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,RECIVER_TIMEOUT)
     except Exception as e:
         print("Error occurred while running in", MODE, " mode ")
 
@@ -198,4 +198,4 @@ def backgroudNetworkProcess(type):
         else:
             print("Connecting as SHELL for send Models")
             connectNetwork("SHELL")
-        # time.sleep(5)
+        time.sleep(5)
