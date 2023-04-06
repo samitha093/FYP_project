@@ -23,7 +23,8 @@ def resetProject():
 #remove stored data in carData file
 def recodeDataRemove():
     try:
-        deleteCartDataItems()
+        #3 mean number of records
+        deleteCartDataItems(3)
         print("Removed training data")
 
     except Exception as e:

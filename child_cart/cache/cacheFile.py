@@ -8,12 +8,9 @@ import tensorflow as tf
 import glob
 
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-# Add the root and client4 directories to the Python path
 sys.path.insert(0, root_path)
-# Import the modules
 from model.dataSetGenerator import *
 from model.modelGenerator import *
-# Get the current working directory of the script
 cwd = os.getcwd()
 
 #--------------------check cache file-----------------
@@ -24,9 +21,6 @@ def genCacheFile():
         print("Directory created: " + directoryReceivedModelParameter)
 
 #------->>>>>>>>>>>>>>>>>>>>> dataset >>>>>>>>>>>>>>>> -------
-def temp():
-    print("Caching......")
-    
 #*********************************cart configuration --------------------------------  
 def loadCartConfigurations():
     genCacheFile()
@@ -106,8 +100,6 @@ def loadCartData():
         cartData = pickle.load(f)  
     
     df = pd.DataFrame(cartData[1:], columns=cartData[0])
-    print(df)
-    print(type(df))
     return df
 # loadCartData()
 def updataCartData(new_row):
@@ -119,16 +111,12 @@ def updataCartData(new_row):
         print("The file", filename, "does not exist in the current path.")
         # load the csv file into a pandas dataframe
         header = [['Month', 'Item', 'Gender']]
-        
         # Save the header array to a cache file
         with open(filename, 'wb') as f:
             pickle.dump(header, f)
-    
     # Load the header array from the cache file
     with open(filename, 'rb') as f:
         cartData = pickle.load(f)  
-           
-    
     cartData.append(new_row)
     #save
     with open(filename, 'wb') as f:
@@ -137,8 +125,6 @@ def updataCartData(new_row):
     # Load the header array from the cache file
     with open(filename, 'rb') as f:
         cartData = pickle.load(f) 
-        
-     
     print(cartData)
     return cartData
 

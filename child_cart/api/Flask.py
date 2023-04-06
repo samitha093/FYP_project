@@ -3,9 +3,7 @@ from flask import Flask, render_template, request
 import os
 import sys
 from datetime import datetime
-# Get the path to the root directory
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-# Add the root and client4 directories to the Python path
 sys.path.insert(0, root_path)
 # Import the modules
 from model.Main import *
@@ -21,7 +19,6 @@ selectedItem ="Item 0"
 ItemListArray = [];
 totalBill = 0
 currentGender = 0
-
 currentThreandArray=[]
 
 app = Flask(__name__, template_folder='../templates')
@@ -32,7 +29,6 @@ headings=("Name","Number","Price","Amount","Total price")
 def findCurrentThreandArray():
     global currentThreandArray
     global currentGender
- 
     #get current threand
     month = datetime.now().month
     gender = currentGender
@@ -125,8 +121,8 @@ def configureNetwork():
     PORT = row["PORT"]
     RECEIVER_TIMEOUT = row["RECEIVER_TIMEOUT"]
     SYNC_CONST = row["SYNC_CONST"]
-
-    netConfigurations(HOST,LOCALHOST,PORT,RECEIVER_TIMEOUT,SYNC_CONST)
+    header=[HOST,LOCALHOST,PORT,RECEIVER_TIMEOUT,SYNC_CONST]
+    updateCartConfigurations(header)
     return render_template('admin.html',HOST=HOST,LOCALHOST=LOCALHOST,PORT=PORT,RECEIVER_TIMEOUT=RECEIVER_TIMEOUT,SYNC_CONST=SYNC_CONST)
 
 @app.route("/start", methods =['POST',"GET"])
@@ -136,7 +132,7 @@ def start():
 
 @app.route('/moveAdmin', methods =['POST',"GET"])
 def moveAdmin():
-    row = getNetConfigurations()
+    row = loadCartConfigurations()
     HOST = row[0]
     LOCALHOST = row[1]
     PORT = row[2]
