@@ -8,34 +8,18 @@ networks:
       config:
         - subnet: 172.20.0.0/16
 services:
-#parent carts
+#init server
   parent_cart:
     image: parent_cart
     deploy:
-      replicas: 5
+      replicas: 10
     build:
       context:  ./
       dockerfile:  Dockerfile.parent
     stdin_open: true
     tty: true
-    volumes:
-      - ./bridge:/app/sever
     networks:
       FLp2p:
     restart: on-failure:3
     ports:
-      - "5001-5005:5001"
-#init cart
-  cart:
-    image: cartimg
-    deploy:
-      replicas: 10
-    build:
-      context:  ./cart
-      dockerfile:  Dockerfile
-    stdin_open: true
-    tty: true
-    networks:
-      FLp2p:
-    restart: on-failure:3
-
+      - "5001-5010:5001"

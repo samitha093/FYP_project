@@ -1,11 +1,21 @@
-up:
-	docker-compose up -d
+up child:
+	docker-compose -f docker-composer.child.yml up -d
 
+down child:
+	docker-compose -f docker-composer.child.yml down
 
-down:
-	docker-compose down
+reup child:
+	docker-compose -f docker-composer.child.yml down
+	docker-compose -f docker-composer.child.yml build
+	docker-compose -f docker-composer.child.yml up -d
 
-reup:
-	docker-compose down
-	docker-compose build
-	docker-compose up -d
+up parent:
+	docker-compose -f docker-composer.parent.yml up -d
+
+down parent:
+	docker-compose -f docker-composer.parent.yml down
+
+reup parent:
+	docker-compose -f docker-composer.parent.yml down
+	docker-compose -f docker-composer.parent.yml build
+	docker-compose -f docker-composer.parent.yml up -d

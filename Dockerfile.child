@@ -1,16 +1,21 @@
 FROM python:3.8
 
-WORKDIR /app
-COPY ./ ./
-
+WORKDIR /app/child_cart/
+COPY ./child_cart .
+WORKDIR /app/
 RUN apt-get update
 RUN --mount=type=cache,target=/root/.cache/pip apt-get install -y libgl1-mesa-glx
 RUN --mount=type=cache,target=/root/.cache/pip python -m pip install --upgrade pip
+
+COPY ./tensorflow_cpu-2.11.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl .
 RUN --mount=type=cache,target=/root/.cache/pip pip install tensorflow_cpu-2.11.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-COPY requirements.txt .
+
+COPY ./child_cart/requirements.txt .
 RUN --mount=type=cache,target=/root/.cache/pip pip install -r requirements.txt
+
+RUN echo "import sys\nimport os\n\nroot_path = os.path.abspath(os.path.join(os.path.dirname(__file__), \".\"))\nsys.path.insert(0, root_path)\n\nfrom child_cart.main import *\n\nif __name__ == '__main__':\n    mainFunc()" > main.py
 
 COPY startup.sh .
 RUN chmod +x startup.sh
 
-CMD ["./startup.sh"]
+# CMD ["./startup.sh"]
