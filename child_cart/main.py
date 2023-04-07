@@ -9,6 +9,7 @@ from child_cart.api.Flask import *
 def mainFunc(type = "CHILD"):
     try:
         print("")
+        genCacheFile()
         try:
             print("")
             # t = Thread(target=app.run, kwargs={'port': 5001})

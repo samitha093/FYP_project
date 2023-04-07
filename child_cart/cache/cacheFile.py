@@ -26,7 +26,7 @@ def genCacheFile():
 #*********************************cart configuration --------------------------------  
 def loadCartConfigurations():
     try:
-        genCacheFile()
+       
         filename = "cache/cartConfigurations.pkl"
         if os.path.isfile(filename):
             print("The file", filename, "exists in the current path.")
@@ -53,7 +53,7 @@ def loadCartConfigurations():
 # loadCartConfigurations()
 def updateCartConfigurations(header1):
     try:
-        genCacheFile()
+       
         filename = "cache/cartConfigurations.pkl"
         # Save the header array to a cache file
         with open(filename, 'wb') as f:
@@ -76,7 +76,7 @@ def updateCartConfigurations(header1):
 #*********************************DataSet --accuracy check csv data-----------------------------
 def loadDatasetCsv():
     try:
-        genCacheFile()
+       
         filename = "cache/dataset.pkl"
         if os.path.isfile(filename):
             print("The file", filename, "exists in the current path.")
@@ -97,7 +97,7 @@ def loadDatasetCsv():
 #*********************************CartData --Customer Data------------------
 def loadCartData():
     try:
-        genCacheFile()
+       
         filename = "cache/cartData.pkl"
         if os.path.isfile(filename):
             print("The file", filename, "exists in the current path.")
@@ -122,7 +122,7 @@ def loadCartData():
 # loadCartData()
 def updataCartData(new_row):
     try:
-        genCacheFile()
+       
         filename = "cache/cartData.pkl"
         if os.path.isfile(filename):
             print("The file", filename, "exists in the current path.")
@@ -157,7 +157,7 @@ def updataCartData(new_row):
 
 def deleteCartDataItems(itemCount):
     try:
-        genCacheFile()
+       
         filename = "cache/cartData.pkl"
         if os.path.isfile(filename):
             print("The file", filename, "exists in the current path.")
@@ -176,7 +176,7 @@ def deleteCartDataItems(itemCount):
         #save
         with open(filename, 'wb') as f:
             pickle.dump(cartData, f)
-        print(cartData)
+        
         return cartData
     except Exception as e:
         print("Error occurred: ", str(e))
@@ -185,13 +185,13 @@ def deleteCartDataItems(itemCount):
 
 # deleteCartDataItems(2)
 def getCartDataLenght():
-    genCacheFile()
+   
     filename = "cache/cartData.pkl"
     try:
         with open(filename, 'rb') as f:
             cartData = pickle.load(f) 
         cartDataSize=len(cartData)
-        print(cartDataSize)
+        
         return cartDataSize
     except FileNotFoundError:
         print("The file", filename, "does not exist in the current path.")
@@ -201,7 +201,7 @@ def getCartDataLenght():
         with open(filename, 'wb') as f:
             pickle.dump(header, f)
         cartDataSize = len(header)
-        print(cartDataSize)
+       
         return cartDataSize
     except (pickle.UnpicklingError, EOFError) as e:
         print("Error loading data from", filename, ":")
@@ -213,7 +213,7 @@ def getCartDataLenght():
 #*********************************------------------
 #save local ML model 
 def saveLocalModelData(model):
-    genCacheFile()
+   
     localModeWeights = model.get_weights()
     # Serialize the weights using pickle
     serialized_weights = pickle.dumps(localModeWeights)
@@ -245,7 +245,7 @@ def saveLocalModelData(model):
 
 def loadLocalCartModelData():
     #cart model weights
-    genCacheFile()
+   
     filename = "cache/model_weights.pkl"
     if os.path.isfile(filename):
         print("The file", filename, "exists in the current path.")
@@ -275,7 +275,7 @@ def loadLocalCartModelData():
 # loadLocalCartModelData()
 def loadLocalMobileModelData():
     #mobile model
-    genCacheFile()
+   
     filename = "cache/mobileModel.pkl"
     if os.path.isfile(filename):
         print("The file", filename, "exists in the current path.")
@@ -306,7 +306,7 @@ def loadLocalMobileModelData():
 #save received ML model 
 def saveReceivedModelData(receivedModelWeights):
     try:
-        genCacheFile()
+       
         # Count the number of files in the current directory that match the pattern
         count = len(glob.glob("cache/receivedModelWeight_*.pkl"))
         # Print the count
@@ -327,7 +327,7 @@ def saveReceivedModelData(receivedModelWeights):
 # saveReceivedModelData(weights)
 
 def loadReceivedModelData():
-    genCacheFile()
+   
     count = len(glob.glob("cache/receivedModelWeight_*.pkl"))
     # Print the count
     print("Number of model files:", count)
@@ -348,7 +348,7 @@ def loadReceivedModelData():
 
 def deleteReceivedModelWeights():
     try:
-        genCacheFile()
+       
         os.chdir('cache/')
         # Find all files in the directory that match the pattern "receivedModelWeight_*.pkl"
         files_to_delete = glob.glob('receivedModelWeight_*.pkl')
@@ -371,7 +371,7 @@ def deleteReceivedModelWeights():
 # deleteReceivedModelWeights()
 
 def getReceivedModelParameterLength():
-    genCacheFile()
+   
     try:
         count = len(glob.glob("cache/receivedModelWeight_*.pkl"))
     except:

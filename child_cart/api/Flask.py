@@ -10,11 +10,11 @@ from model.Main import *
 from model.writeFile import *
 from model.QRScanner import *
 from model.writeFile import *
-# from db.dbConnect import *
 from network.cartConfiguration import *
 from cache.cacheFile import *
 
-from api.lib import *
+from network.client import *
+from db.dbConnect import *
 
 selectedItem ="Item 0"
 ItemListArray = [];
