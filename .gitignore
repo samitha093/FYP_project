@@ -9,6 +9,7 @@ __pycache__/
 dataset/
 modelData/
 receivedModelParameter/
+*.pkl
 #mobile app ignore files
 *.iml
 .gradle
@@ -25,7 +26,4 @@ receivedModelParameter/
 .externalNativeBuild
 .cxx
 local.properties
-.tflite
-.h5
-.csv
-*pkl
+.pkl
