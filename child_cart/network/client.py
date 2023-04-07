@@ -31,6 +31,8 @@ TIME_ARRAY = [0] * 5
 MODEL=create_model()
 x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
 
+CULSTER_SIZE = 5
+
 def clientconfigurations():
     global HOST
     global LOCALHOST
@@ -159,6 +161,7 @@ def backgroudNetworkProcess(type):
     global x_test_np
     global y_test_np
     CART_TYPE = type
+    global CULSTER_SIZE
     print("NETWORKING ......")
     #clientconfigurations()
   
@@ -175,9 +178,9 @@ def backgroudNetworkProcess(type):
             while True:
                 receivedParametersSize = getReceivedModelParameterLength()
                 #check received parameters size
-                if receivedParametersSize >= 4:
+                if receivedParametersSize >= CULSTER_SIZE:
                     TIME_ARRAY[3] = time.time() ## time stap 4
-                    globleAggregationProcess(MODEL,x_test_np,y_test_np)
+                    globleAggregationProcess(MODEL,x_test_np,y_test_np,CULSTER_SIZE)
                     TIME_ARRAY[4] = time.time() ## time stap 5
                     time_cal()
                     break
