@@ -29,3 +29,4 @@ local.properties
 .h5
 .csv
 .pkl
+/cache/

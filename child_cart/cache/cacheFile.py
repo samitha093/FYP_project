@@ -331,8 +331,9 @@ def loadReceivedModelData():
     count = len(glob.glob("cache/receivedModelWeight_*.pkl"))
     # Print the count
     print("Number of model files:", count)
-    receivedModelWeights = [0] * count
-    for i in range(count):
+    sizeOfModelWeights=4
+    receivedModelWeights = [0] * sizeOfModelWeights
+    for i in range(sizeOfModelWeights):
         try:
             with open(f'cache/receivedModelWeight_{i+1}.pkl', 'rb') as f:
                 serialized_weights = f.read()

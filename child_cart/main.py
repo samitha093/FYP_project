@@ -5,7 +5,6 @@ from threading import Thread
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, root_path)
 from child_cart.api.Flask import *
-from child_cart.cache.cacheFile import *
 
 def mainFunc(type = "CHILD"):
     try:
