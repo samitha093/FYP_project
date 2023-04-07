@@ -11,6 +11,7 @@ root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, root_path)
 # Import the modules
 from model.modelGenerator import *
+from cache.cacheFile import *
 #---------------------------------------Encode-----------------------
 #encode for cart 
 def encodeModelParameters():
@@ -18,13 +19,12 @@ def encodeModelParameters():
     print("Encoding ----------------> ")
     model = create_model()
     try:
-        model.load_weights('modelData/model_weights.h5')
+        model_weights= loadLocalCartModelData()
         print("Model weights loaded successfully!")
     except Exception as e:
         print("Error occurred while loading model weights:", e)
 
 
-    model_weights = model.get_weights()
 
     # save the model weights to an in-memory buffer
     buf = io.BytesIO()
@@ -41,9 +41,7 @@ def encodeModelParameters():
 def encodeModelParametersForMobile():
         
     try:
-        # Read the binary data of the model file
-        with open("modelData/model.tflite", "rb") as f:
-            tflite_model_bytes = f.read()
+        tflite_model_bytes = loadLocalMobileModelData()
         print("Model data read successfully!")
     except Exception as e:
         print("Error occurred while reading binary data:", e)
@@ -62,5 +60,3 @@ def decodeModelParameters(encoded_message):
     with np.load(io.BytesIO(model_bytes)) as data:
         model_weights = [data[f'arr_{i}'] for i in range(len(data.files))]
     return model_weights
-
-

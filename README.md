@@ -177,7 +177,7 @@ pandas==1.5.2
 │  ├─ templates
 │  │  ├─ admin.html
 │  │  └─ home.html
-│  └─ ui
+│  └─ api
 │     └─ Flask.py
 ├─ docker-compose.yml
 ├─ docker-composer.dev.yml

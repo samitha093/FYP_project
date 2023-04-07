@@ -11,13 +11,13 @@ sys.path.insert(0, root_path)
 from model.Main import *
 from model.encodeParameter import *
 from model.fileHandle import *
-from model.saveModelData import *
 from network.soc9k import *
 from network.enumList import *
 from network.com import *
 from network.seed import *
 from network.file import *
 from network.cartConfiguration import *
+from cache.cacheFile import *
 
 
 import pandas as pd
@@ -26,7 +26,7 @@ HOST = '141.145.200.6'
 LOCALHOST = '141.145.200.6'
 PORT = 9000
 KERNAL_TIMEOUT = 60
-SHELL_TIMEOUT = 5*60
+SHELL_TIMEOUT = 60
 SYNC_CONST = 1
 CART_TYPE = ""
 LOCALMODELACCURACY =0
@@ -118,7 +118,7 @@ def receivingModelAnalize(encoded_message,x_test_np,y_test_np):
     recievedModelAcc = getModelAccuracy(MODEL,x_test_np,y_test_np)
     print("Received model Acc : ",recievedModelAcc)
     if(recievedModelAcc < LOCALMODELACCURACY + stepSize ) and (recievedModelAcc > LOCALMODELACCURACY - stepSize ):
-        receivedParameterSave(model_weights)
+        saveReceivedModelData(model_weights)
         print("Received model Accept!")
     else:
         print("Received model Droped!")
@@ -127,7 +127,8 @@ def localModelAnalize(x_test_np,y_test_np):
     print("Local model analysis ")
     global MODEL
     global LOCALMODELACCURACY
-    MODEL.load_weights('modelData/model_weights.h5')
+    localModelWeights=loadLocalCartModelData()
+    MODEL.set_weights(localModelWeights)
     LOCALMODELACCURACY = getModelAccuracy(MODEL,x_test_np,y_test_np)
     print("Local model Acc : ",LOCALMODELACCURACY)
 
@@ -163,28 +164,19 @@ def backgroudNetworkProcess(type):
     CART_TYPE = type
     print("NETWORKING ......")
     #clientconfigurations()
-    directoryModelData = "modelData"
-    # get number of files in directory
-    modelDataSize = len([f for f in os.listdir(directoryModelData) if os.path.isfile(os.path.join(directoryModelData, f))])
-
-    # if cart is new
-    if modelDataSize == 0:
-        print("Initializing cart")
-        resetModelData()
-
+  
     global MODELPARAMETERS
     global MOBILEMODELPARAMETERS
     global TIME_ARRAY
     while True:
         MODELPARAMETERS = encodeModelParameters()
         MOBILEMODELPARAMETERS  =encodeModelParametersForMobile()
-        cartData = pd.read_csv('dataset/cartData.csv')
+        cartData = getCartDataLenght()
         #compare size of the dataset for globla aggregation
-        if len(cartData) >= 3:
+        if cartData >= 3:
             print("Connecting as KERNEL for globla aggregation")
             while True:
-                directoryReceivedParameters = "receivedModelParameter"
-                receivedParametersSize = len([f for f in os.listdir(directoryReceivedParameters) if os.path.isfile(os.path.join(directoryReceivedParameters, f))])
+                receivedParametersSize = getReceivedModelParameterLength()
                 #check received parameters size
                 if receivedParametersSize >= 4:
                     TIME_ARRAY[3] = time.time() ## time stap 4

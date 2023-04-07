@@ -13,9 +13,8 @@ from model.modelAccuracy import *
 from model.dataSetSplit import *
 from model.modelAggregation import *
 from model.fileHandle import *
-from model.saveModelData import *
 
-
+from cache.cacheFile import *
 #cart initialisation remove files that have alredy having
 def resetProject():
     resetModelData()
@@ -23,27 +22,20 @@ def resetProject():
 
 #remove stored data in carData file
 def recodeDataRemove():
-    
     try:
-        with open('dataset/cartData.csv', 'r') as input_file:
-            reader = csv.reader(input_file)
-            rows = [row for row in reader]
-
-        with open('dataset/cartData.csv', 'w', newline='') as output_file:
-            writer = csv.writer(output_file)
-            writer.writerows(rows[0:1])
-            writer.writerows(rows[4:])
-            print("Removed training data")
+        #3 mean number of records
+        deleteCartDataItems(3)
+        print("Removed training data")
 
     except Exception as e:
-        print("Error occurred while writing data to the CSV file:", e)
-        
+        print("Error occurred while writing data to the CSV file:", e)  
 
 #Globle aggregation process
 def globleAggregationProcess(model,x_test_np,y_test_np):
           print("Strat local training ------->")
           try:
-             model.load_weights('modelData/model_weights.h5')
+             localModelWeights=loadLocalCartModelData()
+             model.set_weights(localModelWeights)
              print("Model weights loaded successfully!")
           except Exception as e:
              print("Error occurred while loading model weights:", e)
@@ -68,7 +60,8 @@ def globleAggregationProcess(model,x_test_np,y_test_np):
 def differentialPrivacy(model,x_test_np,y_test_np):
     print("Starting adding differential privacy ------->")
     try:
-        model.load_weights('modelData/model_weights.h5')
+        localModelWeights=loadLocalCartModelData()
+        model.set_weights(localModelWeights)
         print("Model weights loaded successfully!")
     except Exception as e:
         print("Error occurred while loading model weights:", e)
@@ -101,7 +94,7 @@ def differentialPrivacy(model,x_test_np,y_test_np):
             print(differentialPrivacyModelAccuracy)
             
             print("Stop loop process")
-            saveModelData(tempModel)
+            saveLocalModelData(tempModel)
             return True
         
         else:
