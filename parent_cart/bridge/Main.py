@@ -2,22 +2,18 @@ import asyncio
 from asyncore import loop
 import os
 import pickle
-import signal
 import threading
+import traceback
 from aiohttp import web
 import sys
 import time
-import random
-from kademlia.network import Server
 
-# Get the path to the root directory
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-
-# Add the root and client4 directories to the Python path
 sys.path.insert(0, root_path)
 
 from bridge.rndGen import *
 from bridge.util import *
+from bridge.kademlia import *
 
 HOST = ''
 BOOSTRAP_HOST=''
@@ -41,8 +37,7 @@ shared_data = {}
 MOBILEDATARECORDER = {}
 DATARECORDER = {}
 
-server = Server()
-server_loop = asyncio.get_event_loop()
+KademliaNetwork = kademlia_network()
 
 def responceModel(msgTo, data, msgFrom="SERVER"):
     return {
@@ -50,31 +45,6 @@ def responceModel(msgTo, data, msgFrom="SERVER"):
         'Receiver': msgTo,
         'Data':data
     }
-
-def set_data_on_dht(server):
-    global server_loop
-    async def set_data():
-        await server.set("my_key", "my_value_2")
-
-    asyncio.run_coroutine_threadsafe(set_data(), loop=server_loop)
-    return True
-
-def get_data_from_dht(server):
-    global server_loop
-    async def set_data():
-        result = server_loop.run_until_complete(server.get("my_key"))
-        print(result)
-
-    asyncio.run_coroutine_threadsafe(set_data(), loop=server_loop)
-    return True
-    # asyncio.set_event_loop(server_loop)
-
-    # result = server_loop.run_until_complete(server.get("my_key"))
-    # print(result)
-
-    # loop.stop()
-    # loop.close()
-    # return True
 
 def reqirementHandler(data):
     global MOBILEDATARECORDER
@@ -109,8 +79,6 @@ def reqirementHandler(data):
         elif req[1] == "SHELL":
             DeviceTable.append(User)
             # set_data_on_dht(server)
-            threadTM = threading.Thread(target=set_data_on_dht, args=(server,))
-            threadTM.start()
             print(User, " : ",req[1])
     elif req[0] == "EXIT":
         print("exit request from : ",User)
@@ -365,75 +333,47 @@ def function_3():
         loop.run_until_complete(asyncio.gather(*pending_tasks, return_exceptions=True))
         loop.close()
 
-def connect_to_bootstrap_node(bootstrap_ip,bootstrap_port):
-    global server_loop
-    server_loop.set_debug(True)
-    # Try assign available ports to new bootstrap node
-    while True:
-        myport = random.randint(49152, 65535)
-        try:
-            server_loop.run_until_complete(server.listen(myport))
-            print("Boostrap node Stared on : ",myport)
-            break
-        except OSError:
-            continue
-    bootstrap_node = (bootstrap_ip, int(bootstrap_port))
-    server_loop.run_until_complete(server.bootstrap([bootstrap_node]))
-    print("Connection successful to distributed network! : ",bootstrap_node)
-    #get data fron DHT
-    # server_loop.run_until_complete(server.set("my_key", "my_value"))
-    result = server_loop.run_until_complete(server.get("my_key"))
-    print(result)
-    # Get the list of bootstrappable neighbors
-    bootstrappable_neighbors = server.bootstrappable_neighbors()
-    print("Bootstrappable neighbors:", bootstrappable_neighbors)
+def function_4(host):
+    global KademliaNetwork
+    KademliaNetwork.create_bootstrap_node(host)
 
-    try:
-        server_loop.run_forever()
-    except KeyboardInterrupt:
-        pass
-    finally:
-        server.stop()
-        server_loop.close()
-
-def create_bootstrap_node():
-    global server_loop
-    server_loop.set_debug(True)
-
-    server_loop.run_until_complete(server.listen(BOOSTRAP_PORT))
-    print("Boostrap node Stared on : ",BOOSTRAP_PORT)
-
-    try:
-        server_loop.run_forever()
-    except KeyboardInterrupt:
-        pass
-    finally:
-        server.stop()
-        server_loop.close()
-
-def bidge_server(host = '172.20.2.3', boostrap_host ='127.0.0.1', boostrap_port = 8468):
-    global BOOSTRAP_HOST
-    BOOSTRAP_HOST = boostrap_host
-    global HOST
+def bidge_server(host = '172.20.2.3'):
+    global HOST, KademliaNetwork
     HOST = 'http://' + host
-    global BOOSTRAP_PORT
-    BOOSTRAP_PORT = boostrap_port
+
     thread1 = threading.Thread(target=function_1)
     thread2 = threading.Thread(target=function_2)
     thread3 = threading.Thread(target=function_3)
+    thread4 = threading.Thread(target=function_4, args=(host,))
 
     thread1.start()
     thread2.start()
     thread3.start()
+    thread4.start()
 
     try:
-        # if boostrap_host == "LOCAL":
-        #     create_bootstrap_node()
-        # else:
-        #     connect_to_bootstrap_node(BOOSTRAP_HOST,BOOSTRAP_PORT)
         while True:
             time.sleep(5)
+            # name =input("What is the boostrap port? ")
+            # print("Hello, " + name + "!")
+            ######get cash settings for boostrap nodes #####
+            ###### get cash settings for TCP and HTTP  #####
+            ################################################
+            # try:
+            #     asyncio.run(KademliaNetwork.connect_bootstrap_node('127.0.0.1',name))
+            # except Exception as e:
+            #     traceback.print_exc()
+            ########## SYNC device table on DHT ############
+            ################################################
 
     except:
         print("Program stopped: Rutime exception")
     print("All threads finished.")
+
+
+
+## last part (global peer conection)
+# peerList = KademliaNetwork.getnabourList()
+# print("nabour list : ",peerList)
+
+## lst part (global peer conection peer avalability)
