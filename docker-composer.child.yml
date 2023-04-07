@@ -5,10 +5,12 @@ services:
   child_cart:
     image: child_cart
     deploy:
-      replicas: 1
+      replicas: 10
     build:
-      context:  ./child_cart
-      dockerfile:  Dockerfile
+      context:  ./
+      dockerfile:  Dockerfile.child
     stdin_open: true
     tty: true
     restart: on-failure:3
+    ports:
+      - "5001-5010:5001"
