@@ -9,7 +9,9 @@ from child_cart.cache.cacheFile import *
 
 def mainFunc(type = "CHILD"):
     try:
+        print("")
         try:
+            print("")
             t = Thread(target=app.run, kwargs={'port': 5001})
             t.start()
         except KeyboardInterrupt:
