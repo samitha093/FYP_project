@@ -19,10 +19,7 @@ from network.file import *
 from network.cartConfiguration import *
 from cache.cacheFile import *
 
-
-import pandas as pd
 HOST = '141.145.200.6'
-
 LOCALHOST = '141.145.200.6'
 PORT = 9000
 KERNAL_TIMEOUT = 60

@@ -21,31 +21,33 @@ def dbConnect():
         print("Error inserting/updating document: %s" % e)
 
 
-def get_items_category(client,categoryNo):
+def get_items_category(client, categoryNo):
     result_array = [] 
     image_urls = []  # create an empty list
-      # Select a database
-    db = client["supermarket"]
-    # Select a collection
-    collection = db["itemList"]
+    try:
+        # Select a database
+        db = client["supermarket"]
+        # Select a collection
+        collection = db["itemList"]
+        
+        # Find documents in the collection with ItemCategory of categoryNo
+        documents = collection.find({"ItemCategory": categoryNo})
+        
+        # Print the retrieved documents
+        for document in documents:
+            result_array.append(document)
+             
+        for item in result_array:
+            getItem = item["ImageUrl"]
+            image_urls.append(getItem)  # extract "ImageUrl" and add to list
+            
+        print("Added to Array")
+    except Exception as e:
+        print("Error: ", str(e))
     
-    # Find documents in the collection with ItemCategory of 1
-    documents = collection.find({"ItemCategory": categoryNo})
-
-    # Print the retrieved documents
-    for document in documents:
-        result_array.append(document)
-        
-         
-    for item in result_array:
-        
-        getItem =item["ImageUrl"]
-        image_urls.append(getItem)  # extract "ImageUrl" and add to list
-        
-    print("Added to Array")
-
     return image_urls
-   
+
+ #not nessary  
 def addOrUpdateData(client):
       # Select a database
     db = client["supermarket"]
@@ -101,10 +103,15 @@ def addOrUpdateData(client):
     
 
 def ItemList(CategoryNo):
-    #connect to database
-    client = dbConnect()
-    #add or update documents
-    #addOrUpdateData(client)
-    #get all documents
-    imageList =  get_items_category(client,CategoryNo)
-    return imageList
+    try:
+        # connect to database
+        client = dbConnect()
+
+        # get list of items for the given category
+        imageList = get_items_category(client, CategoryNo)
+        
+        return imageList
+    
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return []
