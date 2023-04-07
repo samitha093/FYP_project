@@ -31,7 +31,7 @@ TIME_ARRAY = [0] * 5
 MODEL=create_model()
 x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
 
-CULSTER_SIZE = 5
+CULSTER_SIZE = 3
 
 def clientconfigurations():
     global HOST

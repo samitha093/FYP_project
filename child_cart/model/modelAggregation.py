@@ -16,11 +16,9 @@ def modelAggregation(model,x_test_np,y_test_np,CULSTER_SIZE):
     print("Strat aggregation process -------->")
     #aggregating model size
 
-    print(type(CULSTER_SIZE))
     aggregation_cluster_size = CULSTER_SIZE +1
     parameterArray = [0] * aggregation_cluster_size
-   
-    
+
     receivedModelWeights = loadReceivedModelData(CULSTER_SIZE)
     accArray = [0] * aggregation_cluster_size
     for i in range(CULSTER_SIZE):
@@ -67,9 +65,7 @@ def modelAggregation(model,x_test_np,y_test_np,CULSTER_SIZE):
     print("Aggregrated sucessfuly  ")
 
     #save averaged parameters
-    # saveLocalModelData(model)
-   
-   
+    saveLocalModelData(model)
    
 def aggregateRecModels(aggregation_cluster_size,parameterArray,accArray,totalAccuracy):
     if(aggregation_cluster_size ==3):

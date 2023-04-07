@@ -32,28 +32,28 @@ def recodeDataRemove():
 
 #Globle aggregation process
 def globleAggregationProcess(model,x_test_np,y_test_np,CULSTER_SIZE):
-        #   print("Strat local training ------->")
-        #   try:
-        #      localModelWeights=loadLocalCartModelData()
-        #      model.set_weights(localModelWeights)
-        #      print("Model weights loaded successfully!")
-        #   except Exception as e:
-        #      print("Error occurred while loading model weights:", e)
+          print("Strat local training ------->")
+          try:
+             localModelWeights=loadLocalCartModelData()
+             model.set_weights(localModelWeights)
+             print("Model weights loaded successfully!")
+          except Exception as e:
+             print("Error occurred while loading model weights:", e)
 
-        #   #traing model using cartdata
-        #   print("Split dataset")
-        #   x_train,y_train = splitCartData()
-        #   continuoustrainModel(model,x_train,y_train)
-        #   #test model using local data
-        #   getModelAccuracy(model,x_test_np,y_test_np)
-        #   #adding differential privacy
-        #   differentialPrivacy(model,x_test_np,y_test_np)
-        #   #clear the csv file
-        #   recodeDataRemove()
+          #traing model using cartdata
+          print("Split dataset")
+          x_train,y_train = splitCartData()
+          continuoustrainModel(model,x_train,y_train)
+          #test model using local data
+          getModelAccuracy(model,x_test_np,y_test_np)
+          #adding differential privacy
+          differentialPrivacy(model,x_test_np,y_test_np)
+          #clear the csv file
+          recodeDataRemove()
           #aggregate the models
           modelAggregation(model,x_test_np,y_test_np,CULSTER_SIZE)
           #remove received files
-        #   removeFiles()
+          removeFiles()
           return "Aggregated"
 
 
