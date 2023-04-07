@@ -10,10 +10,11 @@ from model.Main import *
 from model.writeFile import *
 from model.QRScanner import *
 from model.writeFile import *
-from db.dbConnect import *
 from network.cartConfiguration import *
-from network.client import *
 from cache.cacheFile import *
+
+from network.client import *
+from db.dbConnect import *
 
 selectedItem ="Item 0"
 ItemListArray = [];
@@ -122,7 +123,9 @@ def configureNetwork():
     RECEIVER_TIMEOUT = row["RECEIVER_TIMEOUT"]
     SYNC_CONST = row["SYNC_CONST"]
     header=[HOST,LOCALHOST,PORT,RECEIVER_TIMEOUT,SYNC_CONST]
+    print("Added new configuration data ",header)
     updateCartConfigurations(header)
+    
     return render_template('admin.html',HOST=HOST,LOCALHOST=LOCALHOST,PORT=PORT,RECEIVER_TIMEOUT=RECEIVER_TIMEOUT,SYNC_CONST=SYNC_CONST)
 
 @app.route("/start", methods =['POST',"GET"])
@@ -138,6 +141,6 @@ def moveAdmin():
     PORT = row[2]
     RECEIVER_TIMEOUT = row[3]
     SYNC_CONST = row[4]
-
+    print("Load network configuration : ",row)
     return render_template('admin.html',HOST=HOST,LOCALHOST=LOCALHOST,PORT=PORT,RECEIVER_TIMEOUT=RECEIVER_TIMEOUT,SYNC_CONST=SYNC_CONST)
 

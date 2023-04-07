@@ -8,7 +8,7 @@ from child_cart.main import *
 
 if __name__ == '__main__':
     try:
-        mainFunc()
+        mainFunc("LOCAL")
     except KeyboardInterrupt:
         print("Keyboard interrupt received. Closing all programs...")
         os.system("pkill -f python")
