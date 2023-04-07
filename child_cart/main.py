@@ -8,18 +8,18 @@ from child_cart.api.Flask import *
 
 def mainFunc(type = "CHILD"):
     try:
-        print("")
+        # print("")
         genCacheFile()
         try:
             print("")
-            # t = Thread(target=app.run, kwargs={'port': 5001})
-            # t.start()
+            t = Thread(target=app.run, kwargs={'port': 5001})
+            t.start()
         except KeyboardInterrupt:
             print("Keyboard interrupt received. Closing all programs...")
             os.system("pkill -f python")
 
         try:
-            print("")
+            # print("")
             backgroudNetworkProcess(type)
         except KeyboardInterrupt:
            print("Keyboard interrupt received. Closing all programs...")
