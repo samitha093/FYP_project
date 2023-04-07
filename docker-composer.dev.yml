@@ -26,16 +26,18 @@ services:
     ports:
       - "5001-5005:5001"
 #init cart
-  cart:
-    image: cartimg
+  child_cart:
+    image: child_cart
     deploy:
       replicas: 10
     build:
-      context:  ./cart
-      dockerfile:  Dockerfile
+      context:  ./
+      dockerfile:  Dockerfile.child
     stdin_open: true
     tty: true
     networks:
       FLp2p:
     restart: on-failure:3
+    ports:
+      - "5101-5110:5001"
 

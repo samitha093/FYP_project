@@ -22,6 +22,8 @@ def genCacheFile():
             print("Directory created: " + directoryReceivedModelParameter)
     except OSError as error:
         print("Error creating directory:", error)
+
+genCacheFile()
 #------->>>>>>>>>>>>>>>>>>>>> dataset >>>>>>>>>>>>>>>> -------
 #*********************************cart configuration --------------------------------  
 def loadCartConfigurations():
@@ -124,9 +126,8 @@ def updataCartData(new_row):
     try:
        
         filename = "cache/cartData.pkl"
-        if os.path.isfile(filename):
-            print("The file", filename, "exists in the current path.")
-        else:
+        if not os.path.isfile(filename):
+            # print("The file", filename, "exists in the current path.")
             print("The file", filename, "does not exist in the current path.")
             # load the csv file into a pandas dataframe
             header = [['Month', 'Item', 'Gender']]
@@ -151,7 +152,7 @@ def updataCartData(new_row):
         return None
 
 
-# for i in range(100):
+# for i in range(1000):
 #     new_row = [3, 0, 0]
 #     updataCartData(new_row)
 
