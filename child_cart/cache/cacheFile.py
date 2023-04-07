@@ -144,7 +144,7 @@ def updataCartData(new_row):
         # Load the header array from the cache file
         with open(filename, 'rb') as f:
             cartData = pickle.load(f) 
-        print(cartData)
+       
         return cartData
     except Exception as e:
         print("An error occurred:", str(e))
@@ -355,6 +355,15 @@ def deleteReceivedModelWeights():
         # Delete each file in the list
         for file in files_to_delete:
             os.remove(file)
+            
+        # Get the current directory
+        current_dir = os.getcwd()
+
+        # Get the parent directory
+        parent_dir = os.path.dirname(current_dir)
+
+        # Change the current working directory to the parent directory
+        os.chdir(parent_dir)
     except Exception as e:
         print("Error occurred during file deletion:", str(e))
 
