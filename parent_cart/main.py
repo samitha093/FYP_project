@@ -18,8 +18,7 @@ def child_cart(design):
 
 def Bridge():
     # host is the parent cart ip address
-    # bidge_server(host = '172.20.2.3', boostrap_host ='127.0.0.1',boostrap_port = 8468)
-    bidge_server(host = '172.20.2.3', boostrap_host ='LOCAL')
+    bidge_server(host = '172.20.2.3')
 
 def parent_cart():
     Bridge()
