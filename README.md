@@ -3,9 +3,13 @@
 
 To establish a better TCP connection, we tryed different mechanisms. However, in practical internet usage, we can use TCP punching, for which we can use a middle communication bridge device. In this case, we can use WebSockets to establish a connection, which is helpful for real-time communication over NAT routing networks. However, we cannot send large data over WebSockets, so we use byte data streams to break the data into small chunks and send them as separate packets over the internet. Below is an overview of the communication method as peer-to-peer.
 
+## P2P Communication Protocole
+
 [![Blank-board-Page-1-3.png](https://i.postimg.cc/XvXpcXLy/Blank-board-Page-1-3.png)](https://postimg.cc/mcfLTL0b)
 
+## Novel Distributed Fedarated learning Protocol
 
+![protocol](https://user-images.githubusercontent.com/82941889/230212480-bc55136c-e4d8-48bd-95e1-ca1db05d3371.PNG)
 
 ## Deployment
 
@@ -129,8 +133,7 @@ pandas==1.5.2
     implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
 
 ```
-## Protocol
-![protocol](https://user-images.githubusercontent.com/82941889/230212480-bc55136c-e4d8-48bd-95e1-ca1db05d3371.PNG)
+
 
 ## File Organization
 
