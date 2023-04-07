@@ -2,12 +2,20 @@
 from sklearn.model_selection import train_test_split
 import pandas as pd
 from keras.utils import to_categorical
+import os
+import sys
+
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+# Add the root and client4 directories to the Python path
+sys.path.insert(0, root_path)
+# Import the modules
+from cache.cacheFile import *
 
 #split generated dataset
 def splitDataset():
     #Load  the dataset from the CSV file
     try:
-        df = pd.read_csv('dataset/dataset.csv')
+        df = loadDatasetCsv()
         print("CSV file loaded successfully!")
     except Exception as e:
         print("Error occurred while loading the CSV file:", e)
@@ -47,12 +55,12 @@ def splitCartData():
     #Load  the dataset from the CSV file
     print("READ DATA SET")
     try:
-        my_data = pd.read_csv('dataset/cartData.csv')
+        my_data = loadCartData()
+        print(type(my_data))
         print("CSV file loaded successfully!")
     except Exception as e:
         print("Error occurred while loading the CSV file:", e)
         
-    my_data = pd.read_csv('dataset/cartData.csv')
     train_data =my_data[['Month','Gender']].head(sizeOfDataset)
     train_labels =my_data['Item'].head(sizeOfDataset)
     
@@ -71,3 +79,4 @@ def splitCartData():
     y_train_np = to_categorical(y_train_np, 7)
     
     return x_train_np, y_train_np
+# splitCartData()

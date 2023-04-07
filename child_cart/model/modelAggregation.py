@@ -8,20 +8,20 @@ root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, root_path)
 # Import the modules
 from model.modelGenerator import *
-from model.saveModelData import *
 from model.modelAccuracy import *
 from model.dataSetSplit import *
-
+from cache.cacheFile import *
 # model aggregation when cart training after  -- aggregate 3 models----
 def modelAggregation(model,x_test_np,y_test_np):
     print("Strat aggregation process -------->")
     #aggregating model size
     parameterArray = [0] * 5
+    receivedModelWeights = loadReceivedModelData()
     accArray = [0] * 5
     for i in range(4):
         num=i+1
         try:
-            model.load_weights(f'receivedModelParameter/model_weights_{num}.h5')
+            model.set_weights(receivedModelWeights[i])
             print("Load received Model ------> ",num) 
             #accuracy add
             acc = getModelAccuracy(model,x_test_np,y_test_np)
@@ -33,17 +33,17 @@ def modelAggregation(model,x_test_np,y_test_np):
             print("Error occurred while loading model weights:", e)
 
     try:
-        model.load_weights('modelData/model_weights.h5')
+        localModelWeights=loadLocalCartModelData()
+        model.set_weights(localModelWeights)
         print("Load local Model ------> 5")
     except FileNotFoundError:
         print("The specified file 'model_weights.h5' could not be found.")
     except Exception as e:
         print("An error occurred while loading model weights:", e)
    
-
     #weight add
-    receivedModelParameters  = model.get_weights()
-    parameterArray[4]=receivedModelParameters
+    localModelParameters  = model.get_weights()
+    parameterArray[4]=localModelParameters
      #accuracy add
 
     acc = getModelAccuracy(model,x_test_np,y_test_np)
@@ -59,5 +59,5 @@ def modelAggregation(model,x_test_np,y_test_np):
     print("Aggregrated sucessfuly  ")
 
     #save averaged parameters
-    saveModelData(model)
+    saveLocalModelData(model)
    
