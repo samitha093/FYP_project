@@ -31,7 +31,7 @@ def recodeDataRemove():
         print("Error occurred while writing data to the CSV file:", e)  
 
 #Globle aggregation process
-def globleAggregationProcess(model,x_test_np,y_test_np):
+def globleAggregationProcess(model,x_test_np,y_test_np,CULSTER_SIZE):
           print("Strat local training ------->")
           try:
              localModelWeights=loadLocalCartModelData()
@@ -51,7 +51,7 @@ def globleAggregationProcess(model,x_test_np,y_test_np):
           #clear the csv file
           recodeDataRemove()
           #aggregate the models
-          modelAggregation(model,x_test_np,y_test_np)
+          modelAggregation(model,x_test_np,y_test_np,CULSTER_SIZE)
           #remove received files
           removeFiles()
           return "Aggregated"
