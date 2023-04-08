@@ -12,8 +12,8 @@ def mainFunc(type = "CHILD"):
         genCacheFile()
         try:
             print("")
-            t = Thread(target=app.run, kwargs={'port': 5001})
-            t.start()
+            # t = Thread(target=app.run, kwargs={'port': 5001})
+            # t.start()
         except KeyboardInterrupt:
             print("Keyboard interrupt received. Closing all programs...")
             os.system("pkill -f python")

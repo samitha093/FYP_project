@@ -327,12 +327,13 @@ def saveReceivedModelData(receivedModelWeights):
 # weights = model.get_weights()
 # saveReceivedModelData(weights)
 
-def loadReceivedModelData():
+def loadReceivedModelData(CULSTER_SIZE):
+   
    
     count = len(glob.glob("cache/receivedModelWeight_*.pkl"))
     # Print the count
     print("Number of model files:", count)
-    sizeOfModelWeights=4
+    sizeOfModelWeights=CULSTER_SIZE
     receivedModelWeights = [0] * sizeOfModelWeights
     for i in range(sizeOfModelWeights):
         try:
@@ -342,7 +343,7 @@ def loadReceivedModelData():
         except Exception as e:
             print(f"Error loading cache file cache/receivedModelWeight_{i+1}.pkl: {e}")
             receivedModelWeights[i] = None
-    
+    print("Load receivedModelWeight")
     return receivedModelWeights
 
 # loadReceivedModelData()
