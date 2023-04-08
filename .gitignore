@@ -38,6 +38,7 @@ coverage/
 
 # production
 build/
+web_app/
 
 # misc
 .DS_Store
