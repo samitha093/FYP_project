@@ -150,6 +150,11 @@ def time_cal():
     print("Model reciving time : ",TIME_ARRAY[1]-TIME_ARRAY[0],"second")
     print("Model list anlyzing time : ",TIME_ARRAY[2]-TIME_ARRAY[1],"second")
     print("Model aggregation time : ",TIME_ARRAY[4]-TIME_ARRAY[3],"second")
+    with open("log.txt", "a") as f:
+        f.write("---------------------------------------------------------------------\n")
+        f.write("Model reciving time : " + str(TIME_ARRAY[1]-TIME_ARRAY[0]) + " second\n")
+        f.write("Model list anlyzing time : " + str(TIME_ARRAY[2]-TIME_ARRAY[1]) + " second\n")
+        f.write("Model aggregation time : " + str(TIME_ARRAY[4]-TIME_ARRAY[3]) + " second\n\n")
 
 #----------------------background process --------------------------------
 
