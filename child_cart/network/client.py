@@ -23,7 +23,7 @@ HOST = '141.145.200.6'
 LOCALHOST = '141.145.200.6'
 PORT = 9000
 KERNAL_TIMEOUT = 60
-SHELL_TIMEOUT = 60
+SHELL_TIMEOUT = 3*60
 SYNC_CONST = 1
 CART_TYPE = ""
 LOCALMODELACCURACY =0
@@ -31,7 +31,7 @@ TIME_ARRAY = [0] * 5
 MODEL=create_model()
 x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
 
-CULSTER_SIZE = 3
+CULSTER_SIZE = 10
 
 def clientconfigurations():
     global HOST
@@ -90,6 +90,7 @@ def mainFunn(MODE, RECIVER_TIMEOUT, SYNC_CONST):
         mySocket.start_receiver()
         mySocket.start_sender()
         print("USER TYPE  : ",MODE)
+        print("USER ID    : ",TEMPUSERID)
         if MODE == conctionType.KERNEL.value:
             MODELPARAMETERLIST = communicationProx(mySocket,TEMPUSERID,MODE,RECIVER_TIMEOUT,MODELPARAMETERS)
             TIME_ARRAY[1] = time.time() ##time stap 2
