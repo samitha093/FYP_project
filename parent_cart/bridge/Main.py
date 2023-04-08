@@ -30,7 +30,7 @@ cart_server_task = None
 
 DeviceTable = []
 ClusterTable = {}
-clusterSize = 2
+clusterSize = 10
 SYNC_CONST = 1
 
 shared_data = {}
