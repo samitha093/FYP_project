@@ -51,11 +51,8 @@ def modelAggregation(model,x_test_np,y_test_np,CULSTER_SIZE):
 
     acc = getModelAccuracy(model,x_test_np,y_test_np)
     accArray[CULSTER_SIZE]=int(acc)
-    totalAccuracy=0
-    for i in range(CULSTER_SIZE+1):
-        totalAccuracy=totalAccuracy+accArray[i]
-    
-    averageWeight = aggregateRecModels(aggregation_cluster_size,parameterArray,accArray,totalAccuracy)
+
+    averageWeight = aggregateRecModels(aggregation_cluster_size,parameterArray,accArray,x_test_np,y_test_np)
     
     print("Weighted averating added")
     model.set_weights(averageWeight)
@@ -67,32 +64,20 @@ def modelAggregation(model,x_test_np,y_test_np,CULSTER_SIZE):
     #save averaged parameters
     saveLocalModelData(model)
    
-def aggregateRecModels(aggregation_cluster_size,parameterArray,accArray,totalAccuracy):
-    if(aggregation_cluster_size ==3):
-        averageWeight=[(w1*accArray[0] + w2*accArray[1] + w3*accArray[2]  )/totalAccuracy for w1, w2 , w3 in zip(parameterArray[0], parameterArray[1],parameterArray[2])]
+def aggregateRecModels(aggregation_cluster_size,parameterArray,acc_array,x_test_np,y_test_np):
     
-    elif(aggregation_cluster_size ==4):
-        averageWeight=[(w1*accArray[0] + w2*accArray[1] + w3*accArray[2] + w4*accArray[3]  )/totalAccuracy for w1, w2 , w3 , w4  in zip(parameterArray[0], parameterArray[1],parameterArray[2], parameterArray[3])]
+    size =aggregation_cluster_size
+    kernal_Model=create_model()
+    kernal_Model.set_weights(parameterArray[size-1])
+    for i in range(size-1):
+        total_acc=0
+        total_acc =acc_array[i]+acc_array[size-1]
+        parameterArray[size-1]= kernal_Model.get_weights()
+        averaged_weights = [(w1*acc_array[i] + w2*acc_array[size-1] )/total_acc for w1, w2 in zip(parameterArray[i], parameterArray[size-1])]
+
+        print("Aggregated --->>")
+        kernal_Model.set_weights(averaged_weights)
+        acc_array[size-1] = int(getModelAccuracy(kernal_Model,x_test_np,y_test_np))
     
-    elif(aggregation_cluster_size ==5):
-        averageWeight=[(w1*accArray[0] + w2*accArray[1] + w3*accArray[2] + w4*accArray[3] + w5*accArray[4] )/totalAccuracy for w1, w2 , w3 , w4 , w5 in zip(parameterArray[0], parameterArray[1],parameterArray[2], parameterArray[3],parameterArray[4])]
-    
-    elif(aggregation_cluster_size ==6):
-        averageWeight=[(w1*accArray[0] + w2*accArray[1] + w3*accArray[2] + w4*accArray[3] + w5*accArray[4]+ w6*accArray[5] )/totalAccuracy for w1, w2 , w3 , w4 , w5,w6 in zip(parameterArray[0], parameterArray[1],parameterArray[2], parameterArray[3],parameterArray[4],parameterArray[5])]
-    
-    elif(aggregation_cluster_size ==7):
-        averageWeight=[(w1*accArray[0] + w2*accArray[1] + w3*accArray[2] + w4*accArray[3] + w5*accArray[4]+ w6*accArray[5] + w7*accArray[6] )/totalAccuracy for w1, w2 , w3 , w4 , w5,w6,w7 in zip(parameterArray[0], parameterArray[1],parameterArray[2], parameterArray[3],parameterArray[4],parameterArray[5],parameterArray[6])]
-    
-    elif(aggregation_cluster_size ==8):
-        averageWeight=[(w1*accArray[0] + w2*accArray[1] + w3*accArray[2] + w4*accArray[3] + w5*accArray[4]+ w6*accArray[5] + w7*accArray[6]+ w8*accArray[7] )/totalAccuracy for w1, w2 , w3 , w4 , w5,w6,w7,w8 in zip(parameterArray[0], parameterArray[1],parameterArray[2], parameterArray[3],parameterArray[4],parameterArray[5],parameterArray[6],parameterArray[7])]
-    
-    elif(aggregation_cluster_size ==9):
-        averageWeight=[(w1*accArray[0] + w2*accArray[1] + w3*accArray[2] + w4*accArray[3] + w5*accArray[4]+ w6*accArray[5] + w7*accArray[6]+ w8*accArray[7] + w9*accArray[8] )/totalAccuracy for w1, w2 , w3 , w4 , w5,w6,w7,w8,w9 in zip(parameterArray[0], parameterArray[1],parameterArray[2], parameterArray[3],parameterArray[4],parameterArray[5],parameterArray[6],parameterArray[7],parameterArray[8])]
-    
-    elif(aggregation_cluster_size ==10):
-        averageWeight=[(w1*accArray[0] + w2*accArray[1] + w3*accArray[2] + w4*accArray[3] + w5*accArray[4]+ w6*accArray[5] + w7*accArray[6]+ w8*accArray[7] + w9*accArray[8]+ w10*accArray[9] )/totalAccuracy for w1, w2 , w3 , w4 , w5,w6,w7,w8,w9,w10 in zip(parameterArray[0], parameterArray[1],parameterArray[2], parameterArray[3],parameterArray[4],parameterArray[5],parameterArray[6],parameterArray[7],parameterArray[8],parameterArray[9])]
-    
-    elif(aggregation_cluster_size ==11):
-        averageWeight=[(w1*accArray[0] + w2*accArray[1] + w3*accArray[2] + w4*accArray[3] + w5*accArray[4]+ w6*accArray[5] + w7*accArray[6]+ w8*accArray[7] + w9*accArray[8]+ w10*accArray[9] + w11*accArray[10] )/totalAccuracy for w1, w2 , w3 , w4 , w5,w6,w7,w8,w9,w10 ,w11 in zip(parameterArray[0], parameterArray[1],parameterArray[2], parameterArray[3],parameterArray[4],parameterArray[5],parameterArray[6],parameterArray[7],parameterArray[8],parameterArray[9],parameterArray[10])]
-    
-    return averageWeight
+ 
+    return averaged_weights
