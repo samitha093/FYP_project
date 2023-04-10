@@ -13,6 +13,7 @@ from model.modelAccuracy import *
 from model.dataSetSplit import *
 from model.modelAggregation import *
 from model.fileHandle import *
+import queue
 
 from cache.cacheFile import *
 #cart initialisation remove files that have alredy having
@@ -24,7 +25,12 @@ def resetProject():
 def recodeDataRemove():
     try:
         #3 mean number of records
-        deleteCartDataItems(3)
+        # deleteCartDataItems(3)
+        q = queue.Queue()
+        t1=threading.Thread(target=deleteCartDataItems,args=(3,q,))
+        t1.start()
+        t1.join()
+        result = q.get()
         print("Removed training data")
 
     except Exception as e:
@@ -34,7 +40,14 @@ def recodeDataRemove():
 def globleAggregationProcess(model,x_test_np,y_test_np,CULSTER_SIZE):
           print("Strat local training ------->")
           try:
-             localModelWeights=loadLocalCartModelData()
+            #  localModelWeights=loadLocalCartModelData()
+             q = queue.Queue()
+             t1=threading.Thread(target=loadLocalCartModelData,args=(q,))
+             t1.start()
+             t1.join()
+             result = q.get()
+             localModelWeights= result
+             
              model.set_weights(localModelWeights)
              print("Model weights loaded successfully!")
           except Exception as e:
@@ -53,6 +66,8 @@ def globleAggregationProcess(model,x_test_np,y_test_np,CULSTER_SIZE):
           #aggregate the models
           modelAggregation(model,x_test_np,y_test_np,CULSTER_SIZE)
           #remove received files
+          print("5")
+          
           removeFiles()
           return "Aggregated"
 
@@ -60,7 +75,14 @@ def globleAggregationProcess(model,x_test_np,y_test_np,CULSTER_SIZE):
 def differentialPrivacy(model,x_test_np,y_test_np):
     print("Starting adding differential privacy ------->")
     try:
-        localModelWeights=loadLocalCartModelData()
+        # localModelWeights=loadLocalCartModelData()
+        q = queue.Queue()
+        t1=threading.Thread(target=loadLocalCartModelData,args=(q,))
+        t1.start()
+        t1.join()
+        result = q.get()
+        localModelWeights= result
+        
         model.set_weights(localModelWeights)
         print("Model weights loaded successfully!")
     except Exception as e:
@@ -94,7 +116,10 @@ def differentialPrivacy(model,x_test_np,y_test_np):
             print(differentialPrivacyModelAccuracy)
             
             print("Stop loop process")
-            saveLocalModelData(tempModel)
+            # saveLocalModelData(tempModel)
+            t1=threading.Thread(target=saveLocalModelData,args=(tempModel,))
+            t1.start()
+            t1.join()
             return True
         
         else:

@@ -4,6 +4,7 @@ import zlib
 import numpy as np
 import io
 import sys
+import queue
 
 # Get the path to the root directory
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -19,7 +20,14 @@ def encodeModelParameters():
     print("Encoding ----------------> ")
     model = create_model()
     try:
-        model_weights= loadLocalCartModelData()
+        # model_weights= loadLocalCartModelData()
+        q = queue.Queue()
+        t1=threading.Thread(target=loadLocalCartModelData,args=(q,))
+        t1.start()
+        t1.join()
+        result = q.get()
+        model_weights= result
+
         print("Model weights loaded successfully!")
     except Exception as e:
         print("Error occurred while loading model weights:", e)
@@ -41,7 +49,15 @@ def encodeModelParameters():
 def encodeModelParametersForMobile():
         
     try:
-        tflite_model_bytes = loadLocalMobileModelData()
+        # tflite_model_bytes = loadLocalMobileModelData()
+        
+        q = queue.Queue()
+        t1=threading.Thread(target=loadLocalMobileModelData,args=(q,))
+        t1.start()
+        t1.join()
+        result = q.get()
+        tflite_model_bytes = result
+        
         print("Model data read successfully!")
     except Exception as e:
         print("Error occurred while reading binary data:", e)

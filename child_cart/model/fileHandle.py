@@ -1,5 +1,6 @@
 import sys
 import os
+import queue
 
 # Get the path to the root directory
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -10,9 +11,16 @@ from model.modelGenerator import *
 from cache.cacheFile import *
 #remove the file from the initModelParameters
 def removeFiles():
-    deleteReceivedModelWeights()
+    # deleteReceivedModelWeights()
+    q = queue.Queue()
+    t1=threading.Thread(target=deleteReceivedModelWeights,args=(q,))
+    t1.start()
+    t1.join()
     print("Removed receivedModelParameters")
 
 def resetModelData():
     model =create_model()
-    saveLocalModelData(model)
+    # saveLocalModelData(model)
+    t1=threading.Thread(target=saveLocalModelData,args=(model,))
+    t1.start()
+    t1.join()

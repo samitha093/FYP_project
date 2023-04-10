@@ -19,7 +19,14 @@ def modelAggregation(model,x_test_np,y_test_np,CULSTER_SIZE):
     aggregation_cluster_size = CULSTER_SIZE +1
     parameterArray = [0] * aggregation_cluster_size
 
-    receivedModelWeights = loadReceivedModelData(CULSTER_SIZE)
+    # receivedModelWeights = loadReceivedModelData(CULSTER_SIZE)
+    q = queue.Queue()
+    t1=threading.Thread(target=loadReceivedModelData,args=(CULSTER_SIZE,q,))
+    t1.start()
+    t1.join()
+    result = q.get()
+    receivedModelWeights = result
+    
     accArray = [0] * aggregation_cluster_size
     for i in range(CULSTER_SIZE):
         num=i+1
@@ -36,7 +43,14 @@ def modelAggregation(model,x_test_np,y_test_np,CULSTER_SIZE):
             print("Error occurred while loading model weights:", e)
 
     try:
-        localModelWeights=loadLocalCartModelData()
+        # localModelWeights=loadLocalCartModelData()
+        q = queue.Queue()
+        t1=threading.Thread(target=loadLocalCartModelData,args=(q,))
+        t1.start()
+        t1.join()
+        result = q.get()
+        localModelWeights= result
+       
         model.set_weights(localModelWeights)
         print("Load local Model ------> ",CULSTER_SIZE+1)
     except FileNotFoundError:
@@ -62,7 +76,10 @@ def modelAggregation(model,x_test_np,y_test_np,CULSTER_SIZE):
     print("Aggregrated sucessfuly  ")
 
     #save averaged parameters
-    saveLocalModelData(model)
+    # saveLocalModelData(model)
+    t1=threading.Thread(target=saveLocalModelData,args=(model,))
+    t1.start()
+    t1.join()
    
 def aggregateRecModels(aggregation_cluster_size,parameterArray,acc_array,x_test_np,y_test_np):
     

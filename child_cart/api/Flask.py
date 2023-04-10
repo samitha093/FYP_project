@@ -15,6 +15,7 @@ from cache.cacheFile import *
 
 from network.client import *
 from db.dbConnect import *
+import queue
 
 selectedItem ="Item 0"
 ItemListArray = [];
@@ -92,13 +93,23 @@ def result():
     selectedItem[3] = itemCount
     itemPrice=selectedItem[2]
     selectedItem[4] =int(itemPrice)*int(itemCount)
+    
     totalBill=int(totalBill)+int(selectedItem[4])
+    print("bill ",totalBill)
+    
      #update the globle array
     ItemListArray.append(selectedItem)
     data =ItemListArray
   
     new_row = [month, item, int(gender)]
-    updataCartData(new_row)
+    print("new row ",new_row)
+    # print(new_row)
+    # updataCartData(new_row)
+    q = queue.Queue()
+    t1=threading.Thread(target=updataCartData,args=(new_row,q,))
+    t1.start()
+    t1.join()
+    result = q.get()
     findCurrentThreandArray()
     return render_template("home.html" ,cartData=ItemListArray,currentDate=current_date,headings=headings,data=data,totalBill=totalBill,threandingArray=currentThreandArray)
 
@@ -124,7 +135,14 @@ def configureNetwork():
     SYNC_CONST = row["SYNC_CONST"]
     header=[HOST,LOCALHOST,PORT,RECEIVER_TIMEOUT,SYNC_CONST]
     print("Added new configuration data ",header)
-    updateCartConfigurations(header)
+    # updateCartConfigurations(header)
+    q = queue.Queue()
+    t1=threading.Thread(target=updateCartConfigurations,args=(header,q,))
+    t1.start()
+    t1.join()
+    result = q.get()
+    
+    
     
     return render_template('admin.html',HOST=HOST,LOCALHOST=LOCALHOST,PORT=PORT,RECEIVER_TIMEOUT=RECEIVER_TIMEOUT,SYNC_CONST=SYNC_CONST)
 
@@ -135,7 +153,13 @@ def start():
 
 @app.route('/moveAdmin', methods =['POST',"GET"])
 def moveAdmin():
-    row = loadCartConfigurations()
+    # row = loadCartConfigurations(q)
+    q = queue.Queue()
+    t1=threading.Thread(target=loadCartConfigurations,args=(q,))
+    t1.start()
+    t1.join()
+    result = q.get()
+    row = result
     HOST = row[0]
     LOCALHOST = row[1]
     PORT = row[2]

@@ -4,6 +4,7 @@ import pandas as pd
 from keras.utils import to_categorical
 import os
 import sys
+import queue
 
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 # Add the root and client4 directories to the Python path
@@ -15,7 +16,13 @@ from cache.cacheFile import *
 def splitDataset():
     #Load  the dataset from the CSV file
     try:
-        df = loadDatasetCsv()
+        # df = loadDatasetCsv()
+        q = queue.Queue()
+        t1=threading.Thread(target=loadDatasetCsv,args=(q,))
+        t1.start()
+        t1.join()
+        result = q.get()
+        df = result
         print("CSV file loaded successfully!")
     except Exception as e:
         print("Error occurred while loading the CSV file:", e)
@@ -55,7 +62,13 @@ def splitCartData():
     #Load  the dataset from the CSV file
     print("READ DATA SET")
     try:
-        my_data = loadCartData()
+        # my_data = loadCartData()
+        q = queue.Queue()
+        t1=threading.Thread(target=loadCartData,args=(q,))
+        t1.start()
+        t1.join()
+        result = q.get()
+        my_data=result
         print(type(my_data))
         print("CSV file loaded successfully!")
     except Exception as e:
