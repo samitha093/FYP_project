@@ -18,6 +18,7 @@ from network.seed import *
 from network.file import *
 from network.cartConfiguration import *
 from cache.cacheFile import *
+import queue
 
 HOST = '141.145.200.6'
 LOCALHOST = '141.145.200.6'
@@ -31,7 +32,7 @@ TIME_ARRAY = [0] * 5
 MODEL=create_model()
 x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
 
-CULSTER_SIZE = 10
+CULSTER_SIZE = 3
 
 def clientconfigurations():
     global HOST
@@ -118,7 +119,10 @@ def receivingModelAnalize(encoded_message,x_test_np,y_test_np):
     recievedModelAcc = getModelAccuracy(MODEL,x_test_np,y_test_np)
     print("Received model Acc : ",recievedModelAcc)
     if(recievedModelAcc < LOCALMODELACCURACY + stepSize ) and (recievedModelAcc > LOCALMODELACCURACY - stepSize ):
-        saveReceivedModelData(model_weights)
+        # saveReceivedModelData(model_weights)
+        t1=threading.Thread(target=saveReceivedModelData,args=(model_weights,))
+        t1.start()
+        t1.join()
         print("Received model Accept!")
     else:
         print("Received model Droped!")
@@ -127,7 +131,15 @@ def localModelAnalize(x_test_np,y_test_np):
     print("Local model analysis ")
     global MODEL
     global LOCALMODELACCURACY
-    localModelWeights=loadLocalCartModelData()
+    # localModelWeights=loadLocalCartModelData()
+    
+    q = queue.Queue()
+    t1=threading.Thread(target=loadLocalCartModelData,args=(q,))
+    t1.start()
+    t1.join()
+    result = q.get()
+    localModelWeights= result
+        
     MODEL.set_weights(localModelWeights)
     LOCALMODELACCURACY = getModelAccuracy(MODEL,x_test_np,y_test_np)
     print("Local model Acc : ",LOCALMODELACCURACY)
@@ -177,12 +189,27 @@ def backgroudNetworkProcess(type):
     while True:
         MODELPARAMETERS = encodeModelParameters()
         MOBILEMODELPARAMETERS  =encodeModelParametersForMobile()
-        cartData = getCartDataLenght()
+        # cartData = getCartDataLenght()
+        q = queue.Queue()
+        t1=threading.Thread(target=getCartDataLenght,args=(q,))
+        t1.start()
+        t1.join()
+        result = q.get()
+        cartData = result
+        print("Cart Data size: ",cartData)
         #compare size of the dataset for globla aggregation
         if cartData >= 3:
             print("Connecting as KERNEL for globla aggregation")
             while True:
-                receivedParametersSize = getReceivedModelParameterLength()
+                # receivedParametersSize = getReceivedModelParameterLength()
+                
+                q = queue.Queue()
+                t1=threading.Thread(target=getReceivedModelParameterLength,args=(q,))
+                t1.start()
+                t1.join()
+                result = q.get()
+                receivedParametersSize = result
+                
                 #check received parameters size
                 if receivedParametersSize >= CULSTER_SIZE:
                     TIME_ARRAY[3] = time.time() ## time stap 4
