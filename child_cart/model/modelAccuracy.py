@@ -10,6 +10,7 @@ sys.path.insert(0, root_path)
 # Import the modules
 from model.modelGenerator import *
 from cache.cacheFile import *
+import queue
 
 def getModelAccuracy(model,test_data1,test_labels1):
       #Predict model 1  test using test date
@@ -55,7 +56,15 @@ def getCurrentThreand(month,gender):
 def importModel():
    model=create_model()
    try:
-       localModelWeights=loadLocalCartModelData()
+      #  localModelWeights=loadLocalCartModelData()
+       
+       q = queue.Queue()
+       t1=threading.Thread(target=loadLocalCartModelData,args=(q,))
+       t1.start()
+       t1.join()
+       result = q.get()
+       localModelWeights= result
+       
        model.set_weights(localModelWeights)
        print("Model weights loaded successfully!")
    except Exception as e:
