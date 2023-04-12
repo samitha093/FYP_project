@@ -18,7 +18,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, darkMode , container
 
   return (
     <Box
-      maxW={containerWidth}
+      // maxW={containerWidth}
+      w={{ base: `calc(100% - 0px)`,sm: `calc(50% - 20px)` , md: `calc(50% - 20px)`, lg: `calc(33% - 20px)`,
+      xl: `calc(25% - 20px)` }}
       borderWidth="1px"
       borderRadius="lg"
       overflow="hidden"

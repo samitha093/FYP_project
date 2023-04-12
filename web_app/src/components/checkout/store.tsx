@@ -97,9 +97,7 @@ const Store: React.FC<AppProps> = ({ darkMode }) => {
         const handleResize = () => {
             setKey(window.innerWidth);
         };
-    
         window.addEventListener("resize", handleResize);
-    
         return () => {
           window.removeEventListener("resize", handleResize);
         };
