@@ -4,9 +4,11 @@ import { debounce } from 'lodash'
 
 interface AppProps {
     darkMode: boolean;
+    handleProduct:any;
+    handleAddProduct:any;
 }
 
-const Item: React.FC<AppProps> = ({ darkMode }) => {
+const Item: React.FC<AppProps> = ({ darkMode , handleProduct, handleAddProduct}) => {
     const [quantity, setQuantity] = useState(1);
     const [key, setKey] = useState(0);
     const [Overflow, setOverflow] = useState(false);
@@ -103,8 +105,11 @@ const Item: React.FC<AppProps> = ({ darkMode }) => {
                     </Flex>
                     <Box fontSize="35px" textAlign="center" color="orange" mb="20px">Total: $10.99</Box>
                     <Flex justifyContent="center">
-                    <Button colorScheme="orange" size="lg">
+                    <Button colorScheme="orange" size="lg" mr={5} onClick={handleAddProduct}>
                         Add to Cart
+                    </Button>
+                    <Button colorScheme="red" size="lg" onClick={handleProduct}>
+                        Remove
                     </Button>
                     </Flex>
                 </Flex>
