@@ -16,14 +16,6 @@ interface Product {
   ImageUrl: string;
 }
 
-interface Thread {
-  _id: string;
-  ItemId: number;
-  ItemName: string;
-  ItemCategory: number;
-  ItemPrice: number;
-  ImageUrl: string;
-}
 
 
 const Store: React.FC<AppProps> = ({ darkMode }) => {
@@ -65,7 +57,6 @@ const Store: React.FC<AppProps> = ({ darkMode }) => {
 
     const cardWidth = `${100 / maxItemsPerRow}%`;
 
-     const [threads, setThreads] = useState<Thread[]>([]);
 
      const [productList, setProductList] = useState<Product[]>([]);
 

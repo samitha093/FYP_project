@@ -29,7 +29,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, darkMode , container
     mb={4}
   >
   
-      <Image src={product.ImageUrl} alt={product.ItemName} />
+  <Image src={product.ImageUrl} alt={product.ItemName} style={{width: '300px', height: '300px'}} />
+
       <Box p="6">
         <Flex justify="space-between" align="baseline">
           <Text fontWeight="semibold" fontSize="xs" mr={2}>

@@ -1,17 +1,25 @@
 import { Box, Button, Center, Flex, Image, Input } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { debounce } from 'lodash'
+import qr from './qr'
+
 
 interface AppProps {
     darkMode: boolean;
     handleProduct:any;
     handleAddProduct:any;
+    result: any; // add result prop to interface
 }
 
-const Item: React.FC<AppProps> = ({ darkMode , handleProduct, handleAddProduct}) => {
+const Item: React.FC<AppProps> = ({ darkMode, handleProduct, handleAddProduct, result }) => { // destructure result from props
     const [quantity, setQuantity] = useState(1);
     const [key, setKey] = useState(0);
     const [Overflow, setOverflow] = useState(false);
+    // use destructured result prop here if needed
+    useEffect(() => {
+        console.log("item page"); 
+        console.log(result); // example usage of result prop in useEffect
+    }, [result]);
 
     const handleQuantityChange = (event:any) => {
         setQuantity(event.target.value);
@@ -79,7 +87,8 @@ const Item: React.FC<AppProps> = ({ darkMode , handleProduct, handleAddProduct})
         <Flex id="parent-box" direction="row" h="100%" flexWrap="wrap" overflow="auto" justifyContent="center" alignItems="center">
             <Box id="first-box" w='60%' h={Overflow?'60%':'100%'}   borderRadius="30px" overflow="hidden" mt={Overflow?25:0}>
                 <Center h="100%" color='white'>
-                    <Image src='https://via.placeholder.com/500x500' alt='product iamge' />
+                <img src='https://5.imimg.com/data5/ANDROID/Default/2020/10/YU/QD/UL/35343054/prod-20201011-0159397534769397062872599-jpg-500x500.jpg'
+                 alt='product image' width='200' height='400' />
                 </Center>
             </Box>
             <Box id="second-box" w={Overflow?'100%':'40%'} h='100%' borderRadius="30px" padding="20px">

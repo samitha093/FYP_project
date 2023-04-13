@@ -21,7 +21,7 @@ import queue
 selectedItem ="Item 0"
 ItemListArray = [];
 totalBill = 0
-currentGender = 0
+currentGender = 1
 currentThreandArray=[]
 
 app = Flask(__name__, template_folder='../templates')
@@ -42,7 +42,19 @@ def findCurrentThreandArray():
     receivedList = ItemList(int(itemNum));
     # currentThreandArray.append(receivedList)
     return receivedList
-    
+
+def findCurrentThreandArray_imageList():
+    global currentThreandArray
+    global currentGender
+    #get current threand
+    month = datetime.now().month
+    gender = currentGender
+    itemNum = getCurrentThreand(month,gender)
+    currentThreandArray = []
+    print("Category no: ",itemNum)
+    receivedList = ItemList_image(int(itemNum));
+    # currentThreandArray.append(receivedList)
+    return receivedList
 #------------------------home---------------------------
 @app.route('/')
 def load():
@@ -58,7 +70,11 @@ def moveHome():
 def threands():
     list =findCurrentThreandArray()
     return list
-
+#list of threands images
+@app.route('/threandsImages', methods =["GET"])
+def threandsImages():
+    list =findCurrentThreandArray_imageList()
+    return list
 
 @app.route('/getItems', methods =['POST',"GET"])
 def getItems():
