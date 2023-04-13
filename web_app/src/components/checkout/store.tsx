@@ -8,64 +8,23 @@ interface AppProps {
 }
 
 interface Product {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  image: string;
+  _id: string;
+  ItemId: number;
+  ItemName: string;
+  ItemCategory: number;
+  ItemPrice: number;
+  ImageUrl: string;
 }
 
-const productList: Product[] = [
-  {
-    id: 1,
-    title: 'Product 1',
-    description: 'Product 1 description',
-    price: 99.99,
-    image: 'https://via.placeholder.com/400x400',
-  },
-  {
-    id: 2,
-    title: 'Product 2',
-    description: 'Product 2 description',
-    price: 149.99,
-    image: 'https://via.placeholder.com/400x400',
-  },
-  {
-    id: 3,
-    title: 'Product 3',
-    description: 'Product 3 description',
-    price: 199.99,
-    image: 'https://via.placeholder.com/400x400',
-  },
-  {
-    id: 4,
-    title: 'Product 2',
-    description: 'Product 2 description',
-    price: 149.99,
-    image: 'https://via.placeholder.com/400x400',
-  },
-  {
-    id: 5,
-    title: 'Product 3',
-    description: 'Product 3 description',
-    price: 199.99,
-    image: 'https://via.placeholder.com/400x400',
-  },
-  {
-    id: 6,
-    title: 'Product 2',
-    description: 'Product 2 description',
-    price: 149.99,
-    image: 'https://via.placeholder.com/400x400',
-  },
-  {
-    id: 7,
-    title: 'Product 3',
-    description: 'Product 3 description',
-    price: 199.99,
-    image: 'https://via.placeholder.com/400x400',
-  }
-];
+interface Thread {
+  _id: string;
+  ItemId: number;
+  ItemName: string;
+  ItemCategory: number;
+  ItemPrice: number;
+  ImageUrl: string;
+}
+
 
 const Store: React.FC<AppProps> = ({ darkMode }) => {
     const theme = useTheme();
@@ -103,18 +62,23 @@ const Store: React.FC<AppProps> = ({ darkMode }) => {
           window.removeEventListener("resize", handleResize);
         };
       }, []);
-      useEffect(() => {
-        axios.get('https://dummyjson.com/products/1')
-        .then(response => {
-          console.log(response.data);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-      }, []);
 
     const cardWidth = `${100 / maxItemsPerRow}%`;
 
+     const [threads, setThreads] = useState<Thread[]>([]);
+
+     const [productList, setProductList] = useState<Product[]>([]);
+
+     useEffect(() => {
+       axios.get<Product[]>('http://127.0.0.1:5001/threands')
+         .then(response => {
+           console.log(response.data);
+           setProductList(response.data);
+         })
+         .catch(error => {
+           console.log(error);
+         });
+     }, []);
     return (
       <Flex
         direction="column"
@@ -123,6 +87,11 @@ const Store: React.FC<AppProps> = ({ darkMode }) => {
         h="100vh"
         color={darkMode ? 'white' : 'gray.800'}
       >
+
+    <div>
+
+    </div>
+
         <Box w="100%" px={4} pb={8} overflow="auto">
           <Flex justify="space-between" align="center" mb={20}>
             <Box>
@@ -136,7 +105,7 @@ const Store: React.FC<AppProps> = ({ darkMode }) => {
                 id="product-container"
                 >
                 {productList.map((product) => (
-                  <ProductCard key={product.id} product={product} darkMode={darkMode} containerWidth={containerWidth}/>
+                  <ProductCard key={product._id} product={product} darkMode={darkMode} containerWidth={containerWidth}/>
                 ))}
               </Flex>
             </Box>

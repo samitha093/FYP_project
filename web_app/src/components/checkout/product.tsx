@@ -3,11 +3,12 @@ import { Box, Flex, Image, Text, useTheme } from '@chakra-ui/react';
 
 interface ProductCardProps {
   product: {
-    id: number;
-    title: string;
-    description: string;
-    price: number;
-    image: string;
+    _id: string;
+    ItemId: number;
+    ItemName: string;
+    ItemCategory: number;
+    ItemPrice: number;
+    ImageUrl: string;
   };
   darkMode: boolean;
   containerWidth:any
@@ -18,30 +19,29 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, darkMode , container
 
   return (
     <Box
-      // maxW={containerWidth}
-      w={{ base: `calc(100% - 0px)`,sm: `calc(50% - 20px)` , md: `calc(50% - 20px)`, lg: `calc(33% - 20px)`,
-      xl: `calc(25% - 20px)` }}
-      borderWidth="1px"
-      borderRadius="lg"
-      overflow="hidden"
-      bg={darkMode ? theme.colors.gray[700] : 'white'}
-      color={darkMode ? 'white' : 'gray.800'}
-      mr={4}
-      mb={4}
-    >
-      <Image src={product.image} alt={product.title} />
+    width="250px"
+    borderWidth="1px"
+    borderRadius="lg"
+    overflow="hidden"
+    bg={darkMode ? theme.colors.gray[700] : 'white'}
+    color={darkMode ? 'white' : 'gray.800'}
+    mr={4}
+    mb={4}
+  >
+  
+      <Image src={product.ImageUrl} alt={product.ItemName} />
       <Box p="6">
         <Flex justify="space-between" align="baseline">
           <Text fontWeight="semibold" fontSize="xs" mr={2}>
-            {product.title}
+            {product.ItemName}
           </Text>
           <Text fontSize="lg" color="gray.500">
-            ${product.price}
+            ${product.ItemPrice}
           </Text>
         </Flex>
 
         <Text mt={2} fontSize="s">
-          {product.description}
+          {product.ItemCategory}
         </Text>
       </Box>
     </Box>
