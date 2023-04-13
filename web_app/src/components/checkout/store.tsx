@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Box, Flex, Image, Text, useTheme } from '@chakra-ui/react';
 import ProductCard from './product';
+import axios from 'axios';
 
 interface AppProps {
   darkMode: boolean;
@@ -101,6 +102,15 @@ const Store: React.FC<AppProps> = ({ darkMode }) => {
         return () => {
           window.removeEventListener("resize", handleResize);
         };
+      }, []);
+      useEffect(() => {
+        axios.get('https://dummyjson.com/products/1')
+        .then(response => {
+          console.log(response.data);
+        })
+        .catch(error => {
+          console.log(error);
+        });
       }, []);
 
     const cardWidth = `${100 / maxItemsPerRow}%`;
