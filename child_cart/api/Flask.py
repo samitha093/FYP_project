@@ -65,6 +65,7 @@ def load():
 def moveHome():
     return render_template('home.html',threandingArray=currentThreandArray)
 
+#react api methods //////////////////////////////////////////////////
 #list call
 @app.route('/threands', methods =["GET"])
 def threands():
@@ -75,6 +76,40 @@ def threands():
 def threandsImages():
     list =findCurrentThreandArray_imageList()
     return list
+#get parentPortIp 
+@app.route('/getPortIp', methods =["GET"])
+def getPortIp():
+    q = queue.Queue()
+    t1=threading.Thread(target=loadParentPortIp,args=(q,))
+    t1.start()
+    t1.join()
+    result = q.get()
+    return result
+
+@app.route('/addPortIp', methods =["POST"])
+def addPortIp():
+    port=request.json['port']
+    ip =request.json['ip']
+    print("port : ",port)
+    print("ip : ",ip)
+    t1=threading.Thread(target=addParentPortIp,args=(port,ip,))
+    t1.start()
+    t1.join()
+    return "200"
+
+@app.route('/updatePortIp', methods =["POST"])
+def updatePortIp():
+    port=request.json['port']
+    ip =request.json['ip']
+    index =request.json['index']
+    print("port : ",port)
+    print("ip : ",ip)
+    print("index : ",index)
+    t1=threading.Thread(target=updateParentPortIp,args=(index,port,ip,))
+    t1.start()
+    t1.join()
+    return "201"
+#close react api methods //////////////////////////////////////////////////
 
 @app.route('/getItems', methods =['POST',"GET"])
 def getItems():
