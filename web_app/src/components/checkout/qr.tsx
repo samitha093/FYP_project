@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import QrReader from "react-qr-reader";
 
-
 interface AppProps {
   datasender: any;
 }
@@ -13,9 +12,12 @@ const Scanner: React.FC<AppProps> = ({ datasender }) => {
   if (error) {
     return <div className="error">{error}</div>;
   }
+
   useEffect(() => {
+    console.log("Result changed:", result);
     datasender(result);
   }, [result]);
+
 
   return (
     <div>
@@ -28,6 +30,7 @@ const Scanner: React.FC<AppProps> = ({ datasender }) => {
           if (data) {
             setResult(data);
             setError(null);
+            
           }
         }}
         style={{ width: "100%" }}

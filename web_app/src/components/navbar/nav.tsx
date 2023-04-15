@@ -22,7 +22,7 @@ const Nav: React.FC<NavProps> = ({ darkMode, toggleDarkMode ,settings ,toggleSet
       boxShadow="0 1px 2px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.05), 0 4px 8px rgba(0, 0, 0, 0.05), 0 8px 16px rgba(0, 0, 0, 0.05), 0 16px 32px rgba(0, 0, 0, 0.05), 0 32px 64px rgba(0, 0, 0, 0.05), 0 64px 128px rgba(0, 0, 0, 0.05)"
     >
       <Box display="flex" alignItems="center">
-        <img src="/logo.svg" alt="Super M" className="h-8 w-8 mr-2" />
+        {/* <img src="/logo.svg" alt="Super M" className="h-8 w-8 mr-2" /> */}
       </Box>
       <Box display="flex" alignItems="center">
         <IconButton

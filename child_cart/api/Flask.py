@@ -12,6 +12,7 @@ from model.QRScanner import *
 from model.writeFile import *
 from network.cartConfiguration import *
 from cache.cacheFile import *
+from flask_cors import CORS
 
 from network.client import *
 from db.dbConnect import *
@@ -20,10 +21,11 @@ import queue
 selectedItem ="Item 0"
 ItemListArray = [];
 totalBill = 0
-currentGender = 0
+currentGender = 1
 currentThreandArray=[]
 
 app = Flask(__name__, template_folder='../templates')
+CORS(app)  # Enable CORS for all routes
 
 headings=("Name","Number","Price","Amount","Total price")
 
@@ -36,9 +38,23 @@ def findCurrentThreandArray():
     gender = currentGender
     itemNum = getCurrentThreand(month,gender)
     currentThreandArray = []
+    print("Category no: ",itemNum)
     receivedList = ItemList(int(itemNum));
-    currentThreandArray.append(receivedList)
-    
+    # currentThreandArray.append(receivedList)
+    return receivedList
+
+def findCurrentThreandArray_imageList():
+    global currentThreandArray
+    global currentGender
+    #get current threand
+    month = datetime.now().month
+    gender = currentGender
+    itemNum = getCurrentThreand(month,gender)
+    currentThreandArray = []
+    print("Category no: ",itemNum)
+    receivedList = ItemList_image(int(itemNum));
+    # currentThreandArray.append(receivedList)
+    return receivedList
 #------------------------home---------------------------
 @app.route('/')
 def load():
@@ -49,6 +65,16 @@ def load():
 def moveHome():
     return render_template('home.html',threandingArray=currentThreandArray)
 
+#list call
+@app.route('/threands', methods =["GET"])
+def threands():
+    list =findCurrentThreandArray()
+    return list
+#list of threands images
+@app.route('/threandsImages', methods =["GET"])
+def threandsImages():
+    list =findCurrentThreandArray_imageList()
+    return list
 
 @app.route('/getItems', methods =['POST',"GET"])
 def getItems():
