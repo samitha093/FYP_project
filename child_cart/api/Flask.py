@@ -76,6 +76,7 @@ def threands():
 def threandsImages():
     list =findCurrentThreandArray_imageList()
     return list
+
 #get parentPortIp 
 @app.route('/getPortIp', methods =["GET"])
 def getPortIp():
@@ -84,7 +85,8 @@ def getPortIp():
     t1.start()
     t1.join()
     result = q.get()
-    return result
+    jsonResult = json.dumps(result)
+    return jsonResult
 
 @app.route('/addPortIp', methods =["POST"])
 def addPortIp():

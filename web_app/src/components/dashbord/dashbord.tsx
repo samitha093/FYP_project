@@ -1,5 +1,6 @@
 import { Box, Flex } from '@chakra-ui/react';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 import New from './new';
 import Item from './item';
@@ -8,45 +9,74 @@ import Tcpitem from './tcpitem';
 
 interface AppProps {
     darkMode: boolean;
+    portIpList: portIp[]; // add this line
+    ipAdd: string; // add this line
+
 }
 
-const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
-    return (
-        <Flex
-          justify="space-between"
-          align="center"
-          w={'100%'}
-          h={'100%'}
-          flexDir={{ base: 'column', lg: 'row' }}
-          overflow={'scroll'}
-        >
-          <Box border="1px solid" borderColor={darkMode ? "gray.600" : 'gray.300'} padding={'20px'}
-          mr={{ base: '0', lg: '30px' }} w={{ base: '100%', lg: '60%' }} h={'100%'} minW={'300px'}>
-            <Flex
-                flexWrap="wrap"
-            >
-                <Tcpitem darkMode={darkMode}/>
-                <Item darkMode={darkMode}/>
-                <Item darkMode={darkMode}/>
-                <Item darkMode={darkMode}/>
-                <Item darkMode={darkMode}/>
-                <Item darkMode={darkMode}/>
-                <Item darkMode={darkMode}/>
-                <New darkMode={darkMode}/>
-            </Flex>
-          </Box>
-            <Box border="1px solid" borderColor={darkMode ? "gray.600" : 'gray.300'} padding={'20px'}
-            w={{ base: '100%', lg: '40%' }} h={'100%'} minW={'300px'} mt={{ base: '30px', lg: '0px' }}>
-                <Flex
-                flexWrap="wrap"
-            >
-                <Sitem darkMode={darkMode}/>
-                <Sitem darkMode={darkMode}/>
-                <Sitem darkMode={darkMode}/>
-            </Flex>
-            </Box>
+interface portIp {
+  ip: string;
+  port: string;
+  index: string;
+}
+
+const Dashboard: React.FC<AppProps> = ({ darkMode ,ipAdd }) => {
+  const [portIpList, setPortIpList] = useState<portIp[]>([]);
+ 
+  // const ipAdd="125.212.325.23"
+
+  useEffect(() => {
+    axios.get('http://127.0.0.1:5001/getPortIp')
+      .then(response => {
+        setPortIpList(response.data);
+        console.log("Port IP");
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []);
+
+  return (
+    <Flex
+      justify="space-between"
+      align="center"
+      w={'100%'}
+      h={'100%'}
+      flexDir={{ base: 'column', lg: 'row' }}
+      overflow={'scroll'}
+    >
+      <Box
+        border="1px solid"
+        borderColor={darkMode ? 'gray.600' : 'gray.300'}
+        padding={'20px'}
+        mr={{ base: '0', lg: '30px' }}
+        w={{ base: '100%', lg: '60%' }}
+        h={'100%'}
+        minW={'300px'}
+      >
+        <Flex flexWrap="wrap">
+          <Tcpitem darkMode={darkMode} />
+          <Item darkMode={darkMode} />
         </Flex>
-      );
+      </Box>
+      <Box
+        border="1px solid"
+        borderColor={darkMode ? 'gray.600' : 'gray.300'}
+        padding={'20px'}
+        w={{ base: '100%', lg: '40%' }}
+        h={'100%'}
+        minW={'300px'}
+        mt={{ base: '30px', lg: '0px' }}
+      >
+        <Flex flexWrap="wrap">
+          <Sitem darkMode={darkMode} />
+          <Sitem darkMode={darkMode} />
+          <Sitem darkMode={darkMode} />
+        </Flex>
+      </Box>
+    </Flex>
+  );
 };
 
 export default Dashboard;
