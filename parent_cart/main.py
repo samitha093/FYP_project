@@ -21,7 +21,7 @@ def Bridge():
     bidge_server(host = '172.20.2.3')
 
 def parent_cart():
-    Bridge()
-    # bridge_thread = threading.Thread(target=Bridge)
-    # bridge_thread.start()
-    # child_cart("LOCAL")
+    # Bridge()
+    bridge_thread = threading.Thread(target=Bridge)
+    bridge_thread.start()
+    child_cart("LOCAL")

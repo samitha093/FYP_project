@@ -38,6 +38,7 @@ MOBILEDATARECORDER = {}
 DATARECORDER = {}
 
 KademliaNetwork = kademlia_network()
+KademliaPort = 0
 
 def responceModel(msgTo, data, msgFrom="SERVER"):
     return {
@@ -337,18 +338,41 @@ def function_4(host):
     global KademliaNetwork
     KademliaNetwork.create_bootstrap_node(host)
 
+def get_kademliaPort():
+    global KademliaNetwork, KademliaPort
+    return KademliaNetwork.get_port()
+
+def add_boostrapNode(data):
+    global KademliaNetwork
+    ip_data = data['ip']
+    port_data = data['port']
+    print ("adding boostrap link => ", ip_data,":",port_data)
+    try:
+        asyncio.run(KademliaNetwork.connect_bootstrap_node(ip_data,port_data))
+        print ("created boostrap link => ", ip_data,":",port_data)
+    except Exception as e:
+        traceback.print_exc()
+
+def get_nabourList():
+    global KademliaNetwork
+    try:
+        peerList = asyncio.run(KademliaNetwork.getnabourList())
+        print("nabour list : ",peerList)
+    except Exception as e:
+        traceback.print_exc()
+
 def bidge_server(host = '172.20.2.3'):
     global HOST, KademliaNetwork
     HOST = 'http://' + host
 
-    thread1 = threading.Thread(target=function_1)
-    thread2 = threading.Thread(target=function_2)
-    thread3 = threading.Thread(target=function_3)
+    # thread1 = threading.Thread(target=function_1)
+    # thread2 = threading.Thread(target=function_2)
+    # thread3 = threading.Thread(target=function_3)
     thread4 = threading.Thread(target=function_4, args=(host,))
 
-    thread1.start()
-    thread2.start()
-    thread3.start()
+    # thread1.start()
+    # thread2.start()
+    # thread3.start()
     thread4.start()
 
     try:

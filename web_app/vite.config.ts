@@ -11,6 +11,7 @@ export default defineConfig(async () => ({
   // tauri expects a fixed port, fail if that port is not available
   server: {
     port: 1420,
+    host: "0.0.0.0",
     strictPort: true,
   },
   // to make use of `TAURI_DEBUG` and other env variables
