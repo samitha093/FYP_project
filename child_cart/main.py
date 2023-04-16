@@ -18,10 +18,10 @@ def mainFunc(type = "CHILD"):
             print("Keyboard interrupt received. Closing all programs...")
             os.system("pkill -f python")
 
-        # try:
-        #     # print("")
-        #     backgroudNetworkProcess(type)
-        # except KeyboardInterrupt:
+        try:
+            # print("")
+            backgroudNetworkProcess(type)
+        except KeyboardInterrupt:
             print("Keyboard interrupt received. Closing all programs...")
             os.system("pkill -f python")
     except Exception as e:

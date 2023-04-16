@@ -6,6 +6,7 @@ class kademlia_network:
     def __init__(self):
         self.server = Server()
         self.event_loop = asyncio.get_event_loop()
+        self.port = 0
 
     def create_bootstrap_node(self,host):
         while True:
@@ -13,6 +14,7 @@ class kademlia_network:
             try:
                 self.event_loop.run_until_complete(self.server.listen(myport))
                 print("Boostrap node Stared on : ",myport)
+                self.port = myport
                 break
             except OSError:
                 continue
@@ -23,6 +25,9 @@ class kademlia_network:
         finally:
             self.event_loop.stop()
             self.event_loop.close()
+
+    def get_port(self):
+        return self.port
 
     async def connect_bootstrap_node(self,bootstrap_ip,bootstrap_port):
         bootstrap_node = (bootstrap_ip, int(bootstrap_port))

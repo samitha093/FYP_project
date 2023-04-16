@@ -5,6 +5,7 @@ import New from './new';
 import Item from './item';
 import Sitem from './sitem';
 import Tcpitem from './tcpitem';
+import NodeItem from './node'
 
 interface AppProps {
     darkMode: boolean;
@@ -26,6 +27,7 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
                 flexWrap="wrap"
             >
                 <Tcpitem darkMode={darkMode}/>
+                <NodeItem darkMode={darkMode}/>
                 <Item darkMode={darkMode}/>
                 <Item darkMode={darkMode}/>
                 <Item darkMode={darkMode}/>
