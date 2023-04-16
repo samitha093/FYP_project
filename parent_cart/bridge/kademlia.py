@@ -43,6 +43,6 @@ class kademlia_network:
         print("Data : ",result)
         return result
 
-    def getnabourList(self):
+    async def getnabourList(self):
         bootstrappable_neighbors = self.server.bootstrappable_neighbors()
         return bootstrappable_neighbors

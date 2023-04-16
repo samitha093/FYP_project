@@ -206,12 +206,12 @@ def node():
     return jsonify({'ip': public_ip, 'port': kademlia_port})
 
 @app.route('/bridge/boostrap', methods=['POST'])
-def hello():
+def boostrap():
     node_data = request.json
     add_boostrapNode(node_data)
     return jsonify({'message': 'Sucessfull added to queue'})
 
 @app.route('/bridge/nabours', methods=['GET'])
-def node():
-    get_nabourList()
-    return jsonify({'message': 'Sucessfull read'})
+def nabours():
+    peerList = get_nabourList()
+    return jsonify({'message': peerList})

@@ -358,6 +358,7 @@ def get_nabourList():
     try:
         peerList = asyncio.run(KademliaNetwork.getnabourList())
         print("nabour list : ",peerList)
+        return peerList
     except Exception as e:
         traceback.print_exc()
 
