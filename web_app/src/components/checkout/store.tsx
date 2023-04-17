@@ -63,7 +63,7 @@ const Store: React.FC<AppProps> = ({ darkMode }) => {
      useEffect(() => {
        axios.get<Product[]>('http://127.0.0.1:5001/threands')
          .then(response => {
-           console.log(response.data);
+          //  console.log(response.data);
            setProductList(response.data);
          })
          .catch(error => {

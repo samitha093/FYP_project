@@ -1,16 +1,22 @@
 import { Box, Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Button, useDisclosure } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface AppProps {
   darkMode: boolean;
+  data:any;
 }
 
-const Item: React.FC<AppProps> = ({ darkMode }) => {
+const Item: React.FC<AppProps> = ({ darkMode, data }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [ip, setIp] = useState('192.168.34.56');
   const [port, setPort] = useState('55687');
   const [ipError, setIpError] = useState('');
   const [portError, setPortError] = useState('');
+
+  useEffect(() => {
+    setIp(data.ip);
+    setPort(data.port);
+  }, []);
 
   const handleSave = () => {
     if (!ip || !port) {
@@ -89,8 +95,8 @@ const Item: React.FC<AppProps> = ({ darkMode }) => {
       <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Connect with node</ModalHeader>
-          <ModalCloseButton />
+          <ModalHeader>Boostrap link config</ModalHeader>
+          <ModalCloseButton color={'black'}/>
           <ModalBody>
             <Box mb="4" display="flex" flexDirection="column">
               <label htmlFor="ip">IP:</label>

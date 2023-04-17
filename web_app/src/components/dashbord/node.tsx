@@ -1,5 +1,6 @@
 import { Box, Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Button, useDisclosure } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 
 interface AppProps {
   darkMode: boolean;
@@ -47,7 +48,16 @@ const NodeItem: React.FC<AppProps> = ({ darkMode }) => {
     }
     setPortError('');
   };
-
+  useEffect(() => {
+    axios.get('http://127.0.0.1:5001/bridge/node')
+      .then(response => {
+        setIp(response.data.ip);
+        setPort(response.data.port)
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []);
   return (
     <>
       <Flex

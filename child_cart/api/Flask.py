@@ -20,8 +20,6 @@ from child_cart.network.client import *
 from child_cart.db.dbConnect import *
 import queue
 
-from parent_cart.bridge.Main import *
-
 selectedItem ="Item 0"
 ItemListArray = [];
 totalBill = 0
@@ -171,9 +169,7 @@ def configureNetwork():
     t1.start()
     t1.join()
     result = q.get()
-    
-    
-    
+
     return render_template('admin.html',HOST=HOST,LOCALHOST=LOCALHOST,PORT=PORT,RECEIVER_TIMEOUT=RECEIVER_TIMEOUT,SYNC_CONST=SYNC_CONST)
 
 @app.route("/start", methods =['POST',"GET"])
@@ -199,19 +195,30 @@ def moveAdmin():
     return render_template('admin.html',HOST=HOST,LOCALHOST=LOCALHOST,PORT=PORT,RECEIVER_TIMEOUT=RECEIVER_TIMEOUT,SYNC_CONST=SYNC_CONST)
 
 #-----------------------------NEW API-----------------------------------
-@app.route('/bridge/node', methods=['GET'])
-def node():
-    public_ip = requests.get('http://httpbin.org/ip').json()['origin']
-    kademlia_port = get_kademliaPort()
-    return jsonify({'ip': public_ip, 'port': kademlia_port})
+@app.route('/network/config', methods=['GET'])
+def nconfig():
+    config = get_config()
+    return jsonify({'message': config})
+try:
+    from parent_cart.bridge.Main import *
+    @app.route('/bridge/hello', methods=['GET'])
+    def hello():
+        return jsonify({'message': "ok"})
+    @app.route('/bridge/node', methods=['GET'])
+    def node():
+        public_ip = requests.get('http://httpbin.org/ip').json()['origin']
+        kademlia_port = get_kademliaPort()
+        return jsonify({'ip': public_ip, 'port': kademlia_port})
 
-@app.route('/bridge/boostrap', methods=['POST'])
-def boostrap():
-    node_data = request.json
-    add_boostrapNode(node_data)
-    return jsonify({'message': 'Sucessfull added to queue'})
+    @app.route('/bridge/boostrap', methods=['POST'])
+    def boostrap():
+        node_data = request.json
+        add_boostrapNode(node_data)
+        return jsonify({'message': 'Sucessfull added to queue'})
 
-@app.route('/bridge/nabours', methods=['GET'])
-def nabours():
-    peerList = get_nabourList()
-    return jsonify({'message': peerList})
+    @app.route('/bridge/nabours', methods=['GET'])
+    def nabours():
+        peerList = get_nabourList()
+        return jsonify({'message': peerList})
+except FileNotFoundError:
+    print("Main.py file not found")
