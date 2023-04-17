@@ -7,7 +7,6 @@ interface AppProps {
 
 const Item: React.FC<AppProps> = ({ darkMode }) => {
   
-  const[portIp,setPortIp]=AppProps.ipPort;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [ip, setIp] = useState('192.168.34.56');
   const [port, setPort] = useState('55687');
