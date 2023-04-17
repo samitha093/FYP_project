@@ -169,9 +169,7 @@ def configureNetwork():
     t1.start()
     t1.join()
     result = q.get()
-    
-    
-    
+
     return render_template('admin.html',HOST=HOST,LOCALHOST=LOCALHOST,PORT=PORT,RECEIVER_TIMEOUT=RECEIVER_TIMEOUT,SYNC_CONST=SYNC_CONST)
 
 @app.route("/start", methods =['POST',"GET"])
@@ -197,8 +195,15 @@ def moveAdmin():
     return render_template('admin.html',HOST=HOST,LOCALHOST=LOCALHOST,PORT=PORT,RECEIVER_TIMEOUT=RECEIVER_TIMEOUT,SYNC_CONST=SYNC_CONST)
 
 #-----------------------------NEW API-----------------------------------
+@app.route('/network/config', methods=['GET'])
+def nconfig():
+    config = get_config()
+    return jsonify({'message': config})
 try:
     from parent_cart.bridge.Main import *
+    @app.route('/bridge/hello', methods=['GET'])
+    def hello():
+        return jsonify({'message': "ok"})
     @app.route('/bridge/node', methods=['GET'])
     def node():
         public_ip = requests.get('http://httpbin.org/ip').json()['origin']

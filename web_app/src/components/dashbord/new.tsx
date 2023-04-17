@@ -4,9 +4,10 @@ import { useState } from 'react';
 
 interface AppProps {
   darkMode: boolean;
+  handledataSave:any;
 }
 
-const New: React.FC<AppProps> = ({ darkMode }) => {
+const New: React.FC<AppProps> = ({ darkMode, handledataSave }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [ip, setIp] = useState('');
   const [port, setPort] = useState('');
@@ -30,6 +31,7 @@ const New: React.FC<AppProps> = ({ darkMode }) => {
         return;
       }
     // Handle saving IP and port
+    handledataSave({"ip":ip,"port":port})
     onClose();
   };
 
@@ -72,7 +74,7 @@ const New: React.FC<AppProps> = ({ darkMode }) => {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Conect with new node</ModalHeader>
-          <ModalCloseButton />
+          <ModalCloseButton color={'black'}/>
           <ModalBody>
             <Box mb="4" display="flex" flexDirection="column">
               <label htmlFor="ip">Host Address:</label>

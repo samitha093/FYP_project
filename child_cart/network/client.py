@@ -160,6 +160,16 @@ def connectNetwork(type):
             # time.sleep(2)
             print("loop call triggered")
 
+def get_config():
+    my_dict ={}
+    my_dict['HOST'] = HOST
+    my_dict['LOCALHOST'] = LOCALHOST
+    my_dict['PORT'] = PORT
+    my_dict['KERNAL_TIMEOUT'] = KERNAL_TIMEOUT
+    my_dict['SHELL_TIMEOUT'] = SHELL_TIMEOUT
+    my_dict['SYNC_CONST'] = SYNC_CONST
+    return my_dict
+
 def time_cal():
     global TIME_ARRAY
     print("Model reciving time : ",TIME_ARRAY[1]-TIME_ARRAY[0],"second")
