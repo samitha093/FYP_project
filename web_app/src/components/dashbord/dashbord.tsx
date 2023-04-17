@@ -9,8 +9,7 @@ import Tcpitem from './tcpitem';
 
 interface AppProps {
     darkMode: boolean;
-    portIpList: portIp[]; // add this line
-    ipAdd: string; // add this line
+    
 
 }
 
@@ -20,11 +19,11 @@ interface portIp {
   index: string;
 }
 
-const Dashboard: React.FC<AppProps> = ({ darkMode ,ipAdd }) => {
+const Dashboard: React.FC<AppProps> = ({ darkMode  }) => {
   const [portIpList, setPortIpList] = useState<portIp[]>([]);
  
   // const ipAdd="125.212.325.23"
-
+// get port ip list
   useEffect(() => {
     axios.get('http://127.0.0.1:5001/getPortIp')
       .then(response => {
@@ -36,6 +35,37 @@ const Dashboard: React.FC<AppProps> = ({ darkMode ,ipAdd }) => {
         console.error(error);
       });
   }, []);
+
+//add port ip list
+  const data = {
+    port: '8000',
+    ip: '125.215.11'
+  };
+  
+  axios.post('http://127.0.0.1:5001/addPortIp', data)
+    .then(response => {
+      console.log("add post response")
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.error(error);
+    });
+//update port ip list
+const updateData = {
+  index :'1',
+  port: '2500',
+  ip: '125.215.11'
+};
+
+axios.post('http://127.0.0.1:5001/updatePortIp', updateData)
+  .then(response => {
+    console.log("update post response")
+    console.log(response.data);
+  })
+  .catch(error => {
+    console.error(error);
+  });
+
 
   return (
     <Flex
