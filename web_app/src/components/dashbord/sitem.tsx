@@ -1,11 +1,18 @@
 import { Center, Flex } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface AppProps {
     darkMode: boolean;
+    data:any;
 }
 
-const Sitem: React.FC<AppProps> = ({ darkMode }) => {
+const Sitem: React.FC<AppProps> = ({ darkMode,data }) => {
+    const [ip, setIp] = useState('192.168.34.56');
+    const [port, setPort] = useState('55687');
+    useEffect(() => {
+        setIp(data[0]);
+        setPort(data[1]);
+      }, []);
     return (
         <Flex justify="space-between"
         align="center"
@@ -21,7 +28,7 @@ const Sitem: React.FC<AppProps> = ({ darkMode }) => {
         mb={'10px'}>
         <Center margin={'30px'} h={'inherit'} w={'inherit'}
         color={darkMode? "white" : "black"}>
-            192.168.23.45:6788
+            {ip}:{port}
         </Center>
         </Flex>
     );

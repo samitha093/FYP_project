@@ -1,5 +1,6 @@
 import { Box, Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Button, useDisclosure } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 
 interface AppProps {
   darkMode: boolean;
@@ -13,6 +14,21 @@ const Tcpitem: React.FC<AppProps> = ({ darkMode }) => {
   const [Ktimeout, setKtimeout] = useState(60);
   const [Stimeout, setStimeout] = useState(180);
   const [SyncConstant, setSyncConstant] = useState(1);
+
+  useEffect(() => {
+    axios.get('http://127.0.0.1:5001/network/config')
+      .then(response => {
+        setRemoteHost(response.data.message.HOST);
+        setLocalHost(response.data.message.LOCALHOST);
+        setPort(response.data.message.PORT);
+        setKtimeout(response.data.message.KERNAL_TIMEOUT);
+        setStimeout(response.data.message.SHELL_TIMEOUT);
+        setSyncConstant(response.data.message.SYNC_CONST)
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []);
 
   const handleSave = () => {
     // Handle saving IP and port
@@ -87,8 +103,8 @@ const Tcpitem: React.FC<AppProps> = ({ darkMode }) => {
       <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Connect with TCP</ModalHeader>
-          <ModalCloseButton />
+          <ModalHeader>Network Module Settings</ModalHeader>
+          <ModalCloseButton color={'black'}/>
           <ModalBody>
             <Box mb="4" display="flex" flexDirection="column">
               <label htmlFor="remoteHost">Remote Host:</label>

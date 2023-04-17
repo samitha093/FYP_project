@@ -1,21 +1,23 @@
 #Flask for ui handing and request handling
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import os
 import sys
 from datetime import datetime
-root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+import requests
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.insert(0, root_path)
 # Import the modules
-from model.Main import *
-from model.writeFile import *
-from model.QRScanner import *
-from model.writeFile import *
-from network.cartConfiguration import *
-from cache.cacheFile import *
+from child_cart.model.Main import *
+from child_cart.model.writeFile import *
+from child_cart.model.QRScanner import *
+from child_cart.model.writeFile import *
+from child_cart.network.cartConfiguration import *
+from child_cart.cache.cacheFile import *
 from flask_cors import CORS
 
-from network.client import *
-from db.dbConnect import *
+from child_cart.network.client import *
+from child_cart.db.dbConnect import *
 import queue
 
 selectedItem ="Item 0"
@@ -204,9 +206,7 @@ def configureNetwork():
     t1.start()
     t1.join()
     result = q.get()
-    
-    
-    
+
     return render_template('admin.html',HOST=HOST,LOCALHOST=LOCALHOST,PORT=PORT,RECEIVER_TIMEOUT=RECEIVER_TIMEOUT,SYNC_CONST=SYNC_CONST)
 
 @app.route("/start", methods =['POST',"GET"])
@@ -231,3 +231,31 @@ def moveAdmin():
     print("Load network configuration : ",row)
     return render_template('admin.html',HOST=HOST,LOCALHOST=LOCALHOST,PORT=PORT,RECEIVER_TIMEOUT=RECEIVER_TIMEOUT,SYNC_CONST=SYNC_CONST)
 
+#-----------------------------NEW API-----------------------------------
+@app.route('/network/config', methods=['GET'])
+def nconfig():
+    config = get_config()
+    return jsonify({'message': config})
+try:
+    from parent_cart.bridge.Main import *
+    @app.route('/bridge/hello', methods=['GET'])
+    def hello():
+        return jsonify({'message': "ok"})
+    @app.route('/bridge/node', methods=['GET'])
+    def node():
+        public_ip = requests.get('http://httpbin.org/ip').json()['origin']
+        kademlia_port = get_kademliaPort()
+        return jsonify({'ip': public_ip, 'port': kademlia_port})
+
+    @app.route('/bridge/boostrap', methods=['POST'])
+    def boostrap():
+        node_data = request.json
+        add_boostrapNode(node_data)
+        return jsonify({'message': 'Sucessfull added to queue'})
+
+    @app.route('/bridge/nabours', methods=['GET'])
+    def nabours():
+        peerList = get_nabourList()
+        return jsonify({'message': peerList})
+except FileNotFoundError:
+    print("Main.py file not found")

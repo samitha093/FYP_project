@@ -1,22 +1,17 @@
 import { Box, Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Button, useDisclosure } from '@chakra-ui/react';
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 
 interface AppProps {
   darkMode: boolean;
-  data:any;
 }
 
-const Item: React.FC<AppProps> = ({ darkMode, data }) => {
+const NodeItem: React.FC<AppProps> = ({ darkMode }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [ip, setIp] = useState('192.168.34.56');
   const [port, setPort] = useState('55687');
   const [ipError, setIpError] = useState('');
   const [portError, setPortError] = useState('');
-
-  useEffect(() => {
-    setIp(data.ip);
-    setPort(data.port);
-  }, []);
 
   const handleSave = () => {
     if (!ip || !port) {
@@ -53,7 +48,16 @@ const Item: React.FC<AppProps> = ({ darkMode, data }) => {
     }
     setPortError('');
   };
-
+  useEffect(() => {
+    axios.get('http://127.0.0.1:5001/bridge/node')
+      .then(response => {
+        setIp(response.data.ip);
+        setPort(response.data.port)
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []);
   return (
     <>
       <Flex
@@ -73,7 +77,7 @@ const Item: React.FC<AppProps> = ({ darkMode, data }) => {
       >
         <Flex margin={'0px'} h={'inherit'} w={'100%'} color={darkMode ? "white" : "black"} align="center" pl={'20px'}>
           <Box>
-            Remote Host: {ip}
+            Host: {ip}
             <Box>
               PORT: {port}
             </Box>
@@ -84,36 +88,16 @@ const Item: React.FC<AppProps> = ({ darkMode, data }) => {
           bottom="0"
           right="0"
           w="auto"
-          bg={'green.700'}
+          bg={'purple.600'}
           p={'10px 20px'}
           color="white"
           borderTopLeftRadius="20px"
         >
-          Boostrap
+          B-Node
         </Box>
       </Flex>
-      <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Boostrap link config</ModalHeader>
-          <ModalCloseButton color={'black'}/>
-          <ModalBody>
-            <Box mb="4" display="flex" flexDirection="column">
-              <label htmlFor="ip">IP:</label>
-              <input type="text" id="ip" value={ip} onChange={handleIpChange} />
-              {ipError && <Box color="red">{ipError}</Box>}
-            </Box>
-            <Box mb="4" display="flex" flexDirection="column">
-              <label htmlFor="port">Port:</label>
-              <input type="text" id="port" value={port} onChange={handlePortChange} />
-              {portError && <Box color="red">{portError}</Box>}
-            </Box>
-            <Button w="100%" colorScheme="green" _hover={{ bg: "green.700" }} color="white" onClick={handleSave}>Update</Button>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
     </>
   );
 };
 
-export default Item;
+export default NodeItem;

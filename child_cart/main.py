@@ -12,16 +12,16 @@ def mainFunc(type = "CHILD"):
         genCacheFile()
         try:
             print("")
-            t = Thread(target=app.run, kwargs={'port': 5001})
+            t = Thread(target=app.run, kwargs={'port': 5003})
             t.start()
         except KeyboardInterrupt:
             print("Keyboard interrupt received. Closing all programs...")
             os.system("pkill -f python")
 
-        # try:
-        #     # print("")
-        #     backgroudNetworkProcess(type)
-        # except KeyboardInterrupt:
+        try:
+            # print("")
+            backgroudNetworkProcess(type)
+        except KeyboardInterrupt:
             print("Keyboard interrupt received. Closing all programs...")
             os.system("pkill -f python")
     except Exception as e:

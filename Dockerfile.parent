@@ -2,8 +2,20 @@ FROM python:3.8
 
 WORKDIR /app/child_cart/
 COPY ./child_cart .
+
 WORKDIR /app/parent_cart/
 COPY ./parent_cart .
+
+WORKDIR /app/web_app/
+COPY ./web_app .
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
+    && apt-get update \
+    && apt-get install -y yarn
+RUN yarn
+
 WORKDIR /app/
 RUN apt-get update
 RUN --mount=type=cache,target=/root/.cache/pip apt-get install -y libgl1-mesa-glx
@@ -17,7 +29,4 @@ RUN --mount=type=cache,target=/root/.cache/pip pip install -r requirements.txt
 
 RUN echo "import sys\nimport os\n\nroot_path = os.path.abspath(os.path.join(os.path.dirname(__file__), \"../..\"))\nsys.path.insert(0, root_path)\n\nfrom parent_cart.main import *\n\nif __name__ == '__main__':\n    try:\n        parent_cart()\n    except KeyboardInterrupt:\n        print(\"Keyboard interrupt received. Closing all programs...\")\n        os.system(\"pkill -f python\")" > main.py
 
-COPY startup.sh .
-RUN chmod +x startup.sh
-
-# CMD ["./startup.sh"]
+CMD ["sh", "-c", "cd /app/web_app && yarn dev & cd /app && python main.py"]
