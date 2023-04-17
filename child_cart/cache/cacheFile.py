@@ -19,6 +19,7 @@ cartData_lock = threading.Lock()
 localModelData_lock = threading.Lock()
 localMobileModelData_lock = threading.Lock()
 receivedModelData_lock = threading.Lock()
+parentPortIp_lock = threading.Lock()
 #--------------------check cache file-----------------
 def genCacheFile():
     directoryReceivedModelParameter = "cache"
@@ -112,6 +113,129 @@ def loadDatasetCsv(que):
     
     except Exception as e:
         print("An error occurred:", e)
+
+#***********************************parent port ip add ********************************
+def loadParentPortIp(que):
+    global parentPortIp_lock
+    try:
+        filename = "cache/parentPortIp.pkl"
+        if os.path.isfile(filename):
+            print("The file", filename, "exists in the current path.")
+            # Load the header array from the cache file
+            parentPortIp_lock.acquire()
+            with open(filename, 'rb') as f:
+                portIp = pickle.load(f)  
+            
+            parentPortIp_lock.release()
+
+            print(portIp)
+            que.put(portIp)
+            return portIp
+        else:
+            print("The file", filename, "does not exist in the current path.")
+            # Define the header array
+            print([])
+            que.put([])
+            return []
+
+    except Exception as e:
+        print("An error occurred:", e)
+
+#add new item
+def addParentPortIp(port,ip):
+    global parentPortIp_lock
+    try:
+        filename = "cache/parentPortIp.pkl"
+        if not os.path.isfile(filename):
+            # print("The file", filename, "exists in the current path.")
+            print("The file", filename, "does not exist in the current path.")
+            new_row=[["1",port,ip]]
+            parentPortIp_lock.acquire()
+            with open(filename, 'wb') as f:
+                pickle.dump(new_row, f)
+            parentPortIp_lock.release()
+            print("Added")
+
+        else: # Load the header array from the cache file
+            print("The file", filename, "does exist in the current path.")
+
+            parentPortIp_lock.acquire()
+            with open(filename, 'rb') as f:
+               portIp = pickle.load(f) 
+            sizeOfPortIp=len(portIp)
+            index=str(sizeOfPortIp+1)
+            new_row=[index,port,ip]
+              
+            portIp.append(new_row)
+ 
+            #save
+            with open(filename, 'wb') as f:
+                pickle.dump(portIp, f)
+            parentPortIp_lock.release()
+            
+            print("Added")
+    except Exception as e:
+        print("An error occurred:", str(e))
+        return None
+
+
+def updateParentPortIp(index,port,ip):
+    global parentPortIp_lock
+    try:
+        filename = "cache/parentPortIp.pkl"
+        if not os.path.isfile(filename):
+            # print("The file", filename, "exists in the current path.")
+            print("The file", filename, "does not exist in the current path.")
+            new_row=[["1",port,ip]]
+            parentPortIp_lock.acquire()
+            with open(filename, 'wb') as f:
+                pickle.dump(new_row, f)
+            parentPortIp_lock.release()
+            print("Added")
+
+        else: # Load the header array from the cache file
+            print("The file", filename, "exist in the current path.")
+
+            # parentPortIp_lock.acquire()
+            with open(filename, 'rb') as f:
+               portIp = pickle.load(f) 
+               
+               
+            sizeOfPortIp=len(portIp)
+            print(portIp)
+            for i in range(sizeOfPortIp):
+                if(portIp[i][0] == index):
+                    
+                    portIp[i]=[index,port,ip]
+                print(portIp[i][0])
+            # new_row=[sizeOfPortIp+1,port,ip]
+              
+            # portIp.append(new_row)
+ 
+            #save
+            with open(filename, 'wb') as f:
+                pickle.dump(portIp, f)
+            # parentPortIp_lock.release()
+            
+            print("updated")
+            
+            # with open(filename, 'rb') as f:
+            #    portIp = pickle.load(f) 
+            # print(portIp)
+            
+    except Exception as e:
+        print("An error occurred:", str(e))
+        return None
+
+
+# for i in range(1000):
+port = "1000"
+ip = "55.99.88"
+index=1
+# addParentPortIp(port,ip)
+# updateParentPortIp(index,port,ip)
+# loadParentPortIp()
+
 
 # loadDatasetCsv()
 #*********************************CartData --Customer Data------------------
@@ -223,8 +347,6 @@ def deleteCartDataItems(itemCount,que):
 def getCartDataLenght(que):
     global cartData_lock
     filename = "cache/cartData.pkl"
-    
-
     try:
         cartData_lock.acquire()
         with open(filename, 'rb') as f:
