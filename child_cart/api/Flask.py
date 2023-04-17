@@ -57,15 +57,15 @@ def findCurrentThreandArray_imageList():
     receivedList = ItemList_image(int(itemNum));
     # currentThreandArray.append(receivedList)
     return receivedList
-#------------------------home---------------------------
-@app.route('/')
-def load():
-    findCurrentThreandArray()
-    return render_template('home.html',threandingArray=currentThreandArray)
+# #------------------------home---------------------------
+# @app.route('/')
+# def load():
+#     findCurrentThreandArray()
+#     return render_template('home.html',threandingArray=currentThreandArray)
 
-@app.route('/moveHome', methods =['POST',"GET"])
-def moveHome():
-    return render_template('home.html',threandingArray=currentThreandArray)
+# @app.route('/moveHome', methods =['POST',"GET"])
+# def moveHome():
+#     return render_template('home.html',threandingArray=currentThreandArray)
 
 #react api methods //////////////////////////////////////////////////
 #list call
@@ -115,121 +115,120 @@ def updatePortIp():
     return "201"
 #close react api methods //////////////////////////////////////////////////
 
-@app.route('/getItems', methods =['POST',"GET"])
-def getItems():
-    global selectedItem
-    global totalBill
+# @app.route('/getItems', methods =['POST',"GET"])
+# def getItems():
+#     global selectedItem
+#     global totalBill
     
-    current_date = datetime.today().date()
+#     current_date = datetime.today().date()
 
-    results = QRReader()
-    selectedItem=results
-    data =ItemListArray
+#     results = QRReader()
+#     selectedItem=results
+#     data =ItemListArray
    
-    # print(results)
-    return render_template('home.html',Item_Name=results[0],Item_No=results[1],Item_Price=results[2], currentDate=current_date,headings=headings,data=data,totalBill=totalBill,threandingArray=currentThreandArray)
+#     # print(results)
+#     return render_template('home.html',Item_Name=results[0],Item_No=results[1],Item_Price=results[2], currentDate=current_date,headings=headings,data=data,totalBill=totalBill,threandingArray=currentThreandArray)
 
-@app.route("/result", methods =['POST',"GET"])
-def result():
-    global selectedItem
-    global ItemListArray
-    global totalBill
-    global currentGender
-    current_date = datetime.today().date()
-    output = request.form.to_dict()
-    month = datetime.now().month
-    item = 0
-    selectedItemItemNo =selectedItem[1]
-    if selectedItemItemNo == "Item 1":
-        item =1
-    elif selectedItemItemNo == "Item 2":
-        item =2
-    elif selectedItemItemNo == "Item 3":
-        item =3
-    elif selectedItemItemNo == "Item 4":
-        item =4
-    elif selectedItemItemNo == "Item 5":
-        item =5
-    elif selectedItemItemNo == "Item 6":
-        item =6
-    gender = output["gender"]
-    currentGender = gender
-    itemCount = output["itemCount"]
-    selectedItem[3] = itemCount
-    itemPrice=selectedItem[2]
-    selectedItem[4] =int(itemPrice)*int(itemCount)
+# @app.route("/result", methods =['POST',"GET"])
+# def result():
+#     global selectedItem
+#     global ItemListArray
+#     global totalBill
+#     global currentGender
+#     current_date = datetime.today().date()
+#     output = request.form.to_dict()
+#     month = datetime.now().month
+#     item = 0
+#     selectedItemItemNo =selectedItem[1]
+#     if selectedItemItemNo == "Item 1":
+#         item =1
+#     elif selectedItemItemNo == "Item 2":
+#         item =2
+#     elif selectedItemItemNo == "Item 3":
+#         item =3
+#     elif selectedItemItemNo == "Item 4":
+#         item =4
+#     elif selectedItemItemNo == "Item 5":
+#         item =5
+#     elif selectedItemItemNo == "Item 6":
+#         item =6
+#     gender = output["gender"]
+#     currentGender = gender
+#     itemCount = output["itemCount"]
+#     selectedItem[3] = itemCount
+#     itemPrice=selectedItem[2]
+#     selectedItem[4] =int(itemPrice)*int(itemCount)
     
-    totalBill=int(totalBill)+int(selectedItem[4])
-    print("bill ",totalBill)
+#     totalBill=int(totalBill)+int(selectedItem[4])
+#     print("bill ",totalBill)
     
-     #update the globle array
-    ItemListArray.append(selectedItem)
-    data =ItemListArray
+#      #update the globle array
+#     ItemListArray.append(selectedItem)
+#     data =ItemListArray
   
-    new_row = [month, item, int(gender)]
-    print("new row ",new_row)
-    # print(new_row)
-    # updataCartData(new_row)
-    q = queue.Queue()
-    t1=threading.Thread(target=updataCartData,args=(new_row,q,))
-    t1.start()
-    t1.join()
-    result = q.get()
-    findCurrentThreandArray()
-    return render_template("home.html" ,cartData=ItemListArray,currentDate=current_date,headings=headings,data=data,totalBill=totalBill,threandingArray=currentThreandArray)
+#     new_row = [month, item, int(gender)]
+#     print("new row ",new_row)
+#     # print(new_row)
+#     # updataCartData(new_row)
+#     q = queue.Queue()
+#     t1=threading.Thread(target=updataCartData,args=(new_row,q,))
+#     t1.start()
+#     t1.join()
+#     result = q.get()
+#     findCurrentThreandArray()
+#     return render_template("home.html" ,cartData=ItemListArray,currentDate=current_date,headings=headings,data=data,totalBill=totalBill,threandingArray=currentThreandArray)
 
 
-@app.route("/checkout", methods =['POST',"GET"])
-def checkout():
-    global ItemListArray
-    global totalBill
-    totalBill = 0
-    ItemListArray =[]
-    data=ItemListArray
-    return render_template("home.html",headings=headings,data=data,totalBill=totalBill,threandingArray=currentThreandArray)
+# @app.route("/checkout", methods =['POST',"GET"])
+# def checkout():
+#     global ItemListArray
+#     global totalBill
+#     totalBill = 0
+#     ItemListArray =[]
+#     data=ItemListArray
+#     return render_template("home.html",headings=headings,data=data,totalBill=totalBill,threandingArray=currentThreandArray)
 
-#------admin-----------------------
-@app.route('/configureNetwork', methods =['POST',"GET"])
-def configureNetwork():
-    row = request.form.to_dict()
-    
-    HOST = row["HOST"]
-    LOCALHOST = row["LOCALHOST"]
-    PORT = row["PORT"]
-    RECEIVER_TIMEOUT = row["RECEIVER_TIMEOUT"]
-    SYNC_CONST = row["SYNC_CONST"]
-    header=[HOST,LOCALHOST,PORT,RECEIVER_TIMEOUT,SYNC_CONST]
-    print("Added new configuration data ",header)
-    # updateCartConfigurations(header)
-    q = queue.Queue()
-    t1=threading.Thread(target=updateCartConfigurations,args=(header,q,))
-    t1.start()
-    t1.join()
-    result = q.get()
+# #------admin-----------------------
+# @app.route('/configureNetwork', methods =['POST',"GET"])
+# def configureNetwork():
+#     row = request.form.to_dict()
+#     HOST = row["HOST"]
+#     LOCALHOST = row["LOCALHOST"]
+#     PORT = row["PORT"]
+#     RECEIVER_TIMEOUT = row["RECEIVER_TIMEOUT"]
+#     SYNC_CONST = row["SYNC_CONST"]
+#     header=[HOST,LOCALHOST,PORT,RECEIVER_TIMEOUT,SYNC_CONST]
+#     print("Added new configuration data ",header)
+#     # updateCartConfigurations(header)
+#     q = queue.Queue()
+#     t1=threading.Thread(target=updateCartConfigurations,args=(header,q,))
+#     t1.start()
+#     t1.join()
+#     result = q.get()
 
-    return render_template('admin.html',HOST=HOST,LOCALHOST=LOCALHOST,PORT=PORT,RECEIVER_TIMEOUT=RECEIVER_TIMEOUT,SYNC_CONST=SYNC_CONST)
+#     return render_template('admin.html',HOST=HOST,LOCALHOST=LOCALHOST,PORT=PORT,RECEIVER_TIMEOUT=RECEIVER_TIMEOUT,SYNC_CONST=SYNC_CONST)
 
-@app.route("/start", methods =['POST',"GET"])
-def start():
-    resetProject()
-    return render_template("admin.html")
+# @app.route("/start", methods =['POST',"GET"])
+# def start():
+#     resetProject()
+#     return render_template("admin.html")
 
-@app.route('/moveAdmin', methods =['POST',"GET"])
-def moveAdmin():
-    # row = loadCartConfigurations(q)
-    q = queue.Queue()
-    t1=threading.Thread(target=loadCartConfigurations,args=(q,))
-    t1.start()
-    t1.join()
-    result = q.get()
-    row = result
-    HOST = row[0]
-    LOCALHOST = row[1]
-    PORT = row[2]
-    RECEIVER_TIMEOUT = row[3]
-    SYNC_CONST = row[4]
-    print("Load network configuration : ",row)
-    return render_template('admin.html',HOST=HOST,LOCALHOST=LOCALHOST,PORT=PORT,RECEIVER_TIMEOUT=RECEIVER_TIMEOUT,SYNC_CONST=SYNC_CONST)
+# @app.route('/moveAdmin', methods =['POST',"GET"])
+# def moveAdmin():
+#     # row = loadCartConfigurations(q)
+#     q = queue.Queue()
+#     t1=threading.Thread(target=loadCartConfigurations,args=(q,))
+#     t1.start()
+#     t1.join()
+#     result = q.get()
+#     row = result
+#     HOST = row[0]
+#     LOCALHOST = row[1]
+#     PORT = row[2]
+#     RECEIVER_TIMEOUT = row[3]
+#     SYNC_CONST = row[4]
+#     print("Load network configuration : ",row)
+#     return render_template('admin.html',HOST=HOST,LOCALHOST=LOCALHOST,PORT=PORT,RECEIVER_TIMEOUT=RECEIVER_TIMEOUT,SYNC_CONST=SYNC_CONST)
 
 #-----------------------------NEW API-----------------------------------
 @app.route('/network/config', methods=['GET'])

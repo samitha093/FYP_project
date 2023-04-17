@@ -7,12 +7,9 @@ import Item from './item';
 import Sitem from './sitem';
 import Tcpitem from './tcpitem';
 import NodeItem from './node'
-import axios from 'axios';
 
 interface AppProps {
     darkMode: boolean;
-    
-
 }
 
 interface portIp {
@@ -91,8 +88,6 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
             </Flex>
             </Box>
         </Flex>
-      </Box>
-    </Flex>
   );
 };
 
