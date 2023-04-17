@@ -61,7 +61,7 @@ const Login: React.FC<AppProps> = ({darkMode}) => {
           </form>
         </Box>
       </AbsoluteCenter>
-    }</Flex>
+    },</Flex>
   );
 };
 

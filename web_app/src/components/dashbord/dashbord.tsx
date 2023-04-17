@@ -1,5 +1,6 @@
 import { Box, Flex } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 import New from './new';
 import Item from './item';
@@ -10,6 +11,14 @@ import axios from 'axios';
 
 interface AppProps {
     darkMode: boolean;
+    
+
+}
+
+interface portIp {
+  ip: string;
+  port: string;
+  index: string;
 }
 
 const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
@@ -25,6 +34,7 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
         console.error(error);
       });
   }, []);
+
   useEffect(() => {
     axios.get('http://127.0.0.1:5001/bridge/nabours')
       .then(response => {
@@ -81,7 +91,9 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
             </Flex>
             </Box>
         </Flex>
-      );
+      </Box>
+    </Flex>
+  );
 };
 
 export default Dashboard;
