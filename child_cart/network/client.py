@@ -26,13 +26,13 @@ PORT = 9000
 KERNAL_TIMEOUT = 60
 SHELL_TIMEOUT = 3*60
 SYNC_CONST = 1
+CULSTER_SIZE = 3
+
 CART_TYPE = ""
 LOCALMODELACCURACY =0
 TIME_ARRAY = [0] * 5
 MODEL=create_model()
 x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
-
-CULSTER_SIZE = 3
 
 def clientconfigurations():
     global HOST

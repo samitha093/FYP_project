@@ -8,18 +8,12 @@ interface AppProps {
     darkMode: boolean;
     handleProduct:any;
     handleAddProduct:any;
-    result: any; // add result prop to interface
 }
 
-const Item: React.FC<AppProps> = ({ darkMode, handleProduct, handleAddProduct, result }) => { // destructure result from props
+const Item: React.FC<AppProps> = ({ darkMode, handleProduct, handleAddProduct}) => {
     const [quantity, setQuantity] = useState(1);
     const [key, setKey] = useState(0);
     const [Overflow, setOverflow] = useState(false);
-    // use destructured result prop here if needed
-    useEffect(() => {
-        console.log("item page"); 
-        console.log(result); // example usage of result prop in useEffect
-    }, [result]);
 
     const handleQuantityChange = (event:any) => {
         setQuantity(event.target.value);
