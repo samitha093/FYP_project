@@ -79,40 +79,40 @@ def threandsImages():
     list =findCurrentThreandArray_imageList()
     return list
 
-#get parentPortIp 
-@app.route('/getPortIp', methods =["GET"])
-def getPortIp():
-    q = queue.Queue()
-    t1=threading.Thread(target=loadParentPortIp,args=(q,))
-    t1.start()
-    t1.join()
-    result = q.get()
-    jsonResult = json.dumps(result)
-    return jsonResult
+# #get parentPortIp 
+# @app.route('/getPortIp', methods =["GET"])
+# def getPortIp():
+#     q = queue.Queue()
+#     t1=threading.Thread(target=loadParentPortIp,args=(q,))
+#     t1.start()
+#     t1.join()
+#     result = q.get()
+#     jsonResult = json.dumps(result)
+#     return jsonResult
 
-@app.route('/addPortIp', methods =["POST"])
-def addPortIp():
-    port=request.json['port']
-    ip =request.json['ip']
-    print("port : ",port)
-    print("ip : ",ip)
-    t1=threading.Thread(target=addParentPortIp,args=(port,ip,))
-    t1.start()
-    t1.join()
-    return "200"
+# @app.route('/addPortIp', methods =["POST"])
+# def addPortIp():
+#     port=request.json['PORT']
+#     ip =request.json['IP']
+#     print("port : ",port)
+#     print("ip : ",ip)
+#     t1=threading.Thread(target=addParentPortIp,args=(port,ip,))
+#     t1.start()
+#     t1.join()
+#     return "200"
 
-@app.route('/updatePortIp', methods =["POST"])
-def updatePortIp():
-    port=request.json['port']
-    ip =request.json['ip']
-    index =request.json['index']
-    print("port : ",port)
-    print("ip : ",ip)
-    print("index : ",index)
-    t1=threading.Thread(target=updateParentPortIp,args=(index,port,ip,))
-    t1.start()
-    t1.join()
-    return "201"
+# @app.route('/updatePortIp', methods =["POST"])
+# def updatePortIp():
+#     port=request.json['port']
+#     ip =request.json['ip']
+#     index =request.json['index']
+#     print("port : ",port)
+#     print("ip : ",ip)
+#     print("index : ",index)
+#     t1=threading.Thread(target=updateParentPortIp,args=(index,port,ip,))
+#     t1.start()
+#     t1.join()
+#     return "201"
 #close react api methods //////////////////////////////////////////////////
 
 # @app.route('/getItems', methods =['POST',"GET"])
@@ -235,6 +235,24 @@ def updatePortIp():
 def nconfig():
     config = get_config()
     return jsonify({'message': config})
+@app.route('/network/config', methods=['POST'])
+def nconfigPost():
+    HOST=request.json['HOST']
+    LOCALHOST=request.json['LOCALHOST']
+    PORT=request.json['PORT']
+    KERNAL_TIMEOUT=request.json['KERNAL_TIMEOUT']
+    SHELL_TIMEOUT=request.json['SHELL_TIMEOUT']
+    SYNC_CONST=request.json['SYNC_CONST']
+    CLUSTER_SIZE=request.json['CLUSTER_SIZE']
+    header=[HOST,LOCALHOST,PORT,KERNAL_TIMEOUT,SHELL_TIMEOUT,SYNC_CONST,CLUSTER_SIZE]
+    print("Received header ",header)
+    q = queue.Queue()
+    t1=threading.Thread(target=updateCartConfigurations,args=(header,q,))
+    t1.start()
+    t1.join()
+    result = q.get()
+    clientconfigurations()
+    return jsonify({'message': result})
 try:
     from parent_cart.bridge.Main import *
     @app.route('/bridge/hello', methods=['GET'])
@@ -245,13 +263,48 @@ try:
         public_ip = requests.get('http://httpbin.org/ip').json()['origin']
         kademlia_port = get_kademliaPort()
         return jsonify({'ip': public_ip, 'port': kademlia_port})
-
+    
+    #get
+    @app.route('/bridge/boostrap', methods =["GET"])
+    def boostrapGet():
+        q = queue.Queue()
+        t1=threading.Thread(target=loadParentPortIp,args=(q,))
+        t1.start()
+        t1.join()
+        result = q.get()
+        jsonResult = json.dumps(result)
+        return jsonResult
+    #post
     @app.route('/bridge/boostrap', methods=['POST'])
-    def boostrap():
-        node_data = request.json
-        add_boostrapNode(node_data)
+    def boostrapPost():
+        # node_data = request.json
+        # add_boostrapNode(node_data)
+        port=request.json['PORT']
+        ip =request.json['IP']
+        print("port : ",port)
+        print("ip : ",ip)
+        t1=threading.Thread(target=addParentPortIp,args=(port,ip,))
+        t1.start()
+        t1.join()
         return jsonify({'message': 'Sucessfull added to queue'})
 
+
+    #put
+    @app.route('/bridge/boostrap', methods=['PUT'])
+    def boostrapPut():
+        # node_data = request.json
+        # add_boostrapNode(node_data)
+        port=request.json['PORT']
+        ip =request.json['IP']
+        index =request.json['INDEX']
+        print("port : ",port)
+        print("ip : ",ip)
+        print("index : ",index)
+        t1=threading.Thread(target=updateParentPortIp,args=(index,port,ip,))
+        t1.start()
+        t1.join()
+        return jsonify({'message': 'Sucessfull update to queue'})
+    
     @app.route('/bridge/nabours', methods=['GET'])
     def nabours():
         peerList = get_nabourList()

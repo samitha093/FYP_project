@@ -41,14 +41,23 @@ def clientconfigurations():
     global SHELL_TIMEOUT
     global KERNAL_TIMEOUT
     global SYNC_CONST
+    global CULSTER_SIZE
 
-    row = getNetConfigurations()
+    q = queue.Queue()
+    t1=threading.Thread(target=loadCartConfigurations,args=(q,))
+    t1.start()
+    t1.join()
+    result = q.get()
+    row = result
     HOST = row[0]
     LOCALHOST = row[1]
     PORT = row[2]
     KERNAL_TIMEOUT = row[3]
-    SHELL_TIMEOUT = 3*60
-    SYNC_CONST = row[4]
+    SHELL_TIMEOUT = row[4]
+    SYNC_CONST = row[5]
+    CULSTER_SIZE =row[6]
+    print("Load network configuration : ",row)
+
 
 ########################################################################
 #------------------------------PEER   DATA-----------------------------#
@@ -161,6 +170,14 @@ def connectNetwork(type):
             print("loop call triggered")
 
 def get_config():
+    global HOST
+    global LOCALHOST
+    global PORT
+    global SHELL_TIMEOUT
+    global KERNAL_TIMEOUT
+    global SYNC_CONST
+    global CULSTER_SIZE
+    
     my_dict ={}
     my_dict['HOST'] = HOST
     my_dict['LOCALHOST'] = LOCALHOST
@@ -168,6 +185,7 @@ def get_config():
     my_dict['KERNAL_TIMEOUT'] = KERNAL_TIMEOUT
     my_dict['SHELL_TIMEOUT'] = SHELL_TIMEOUT
     my_dict['SYNC_CONST'] = SYNC_CONST
+    my_dict['CLUSTER_SIZE']=CULSTER_SIZE
     return my_dict
 
 def time_cal():
@@ -191,7 +209,7 @@ def backgroudNetworkProcess(type):
     CART_TYPE = type
     global CULSTER_SIZE
     print("NETWORKING ......")
-    #clientconfigurations()
+    clientconfigurations()
   
     global MODELPARAMETERS
     global MOBILEMODELPARAMETERS
@@ -205,7 +223,7 @@ def backgroudNetworkProcess(type):
         t1.start()
         t1.join()
         result = q.get()
-        cartData = result
+        cartData = int(result)
         print("Cart Data size: ",cartData)
         #compare size of the dataset for globla aggregation
         if cartData >= 3:
