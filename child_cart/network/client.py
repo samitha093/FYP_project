@@ -16,7 +16,6 @@ from network.enumList import *
 from network.com import *
 from network.seed import *
 from network.file import *
-from network.cartConfiguration import *
 from cache.cacheFile import *
 import queue
 
@@ -214,6 +213,7 @@ def backgroudNetworkProcess(type):
     global MODELPARAMETERS
     global MOBILEMODELPARAMETERS
     global TIME_ARRAY
+    
     while True:
         MODELPARAMETERS = encodeModelParameters()
         MOBILEMODELPARAMETERS  =encodeModelParametersForMobile()
@@ -239,9 +239,9 @@ def backgroudNetworkProcess(type):
                 receivedParametersSize = result
                 
                 #check received parameters size
-                if receivedParametersSize >= CULSTER_SIZE:
+                if receivedParametersSize >=int(CULSTER_SIZE):
                     TIME_ARRAY[3] = time.time() ## time stap 4
-                    globleAggregationProcess(MODEL,x_test_np,y_test_np,CULSTER_SIZE)
+                    globleAggregationProcess(MODEL,x_test_np,y_test_np,int(CULSTER_SIZE))
                     TIME_ARRAY[4] = time.time() ## time stap 5
                     time_cal()
                     break

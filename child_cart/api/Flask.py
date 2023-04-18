@@ -10,9 +10,7 @@ sys.path.insert(0, root_path)
 # Import the modules
 from child_cart.model.Main import *
 from child_cart.model.writeFile import *
-from child_cart.model.QRScanner import *
 from child_cart.model.writeFile import *
-from child_cart.network.cartConfiguration import *
 from child_cart.cache.cacheFile import *
 from flask_cors import CORS
 
