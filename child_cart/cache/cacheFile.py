@@ -27,10 +27,12 @@ def genCacheFile():
         if not os.path.exists(directoryReceivedModelParameter):
             os.makedirs(directoryReceivedModelParameter)
             print("Directory created: " + directoryReceivedModelParameter)
+        else:
+            print("directory exist")
     except OSError as error:
         print("Error creating directory:", error)
 
-genCacheFile()
+# genCacheFile()
 #------->>>>>>>>>>>>>>>>>>>>> dataset >>>>>>>>>>>>>>>> -------
 #*********************************cart configuration --------------------------------  
 def loadCartConfigurations(que):
