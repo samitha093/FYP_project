@@ -424,7 +424,6 @@ def get_first_n_items(n):
 #--------------------------------------- close cart data ------------------------------------------------------
 #--------------------------------------- local model ----------------------------------------------------------
 
-
 def insert_local_model(model):
     localModeWeights = model.get_weights()
     byte_data = pickle.dumps(localModeWeights)
@@ -515,17 +514,25 @@ def get_local_Mobile_Model():
 #---------------------------------------close local model ------------------------------------------------------
 
 
+#--------------------------------------- received model ----------------------------------------------------------
 
+
+#---------------------------------------close received  model ----------------------------------------------------------
 
 
 
 #---------------------- Initialization ---------------------------------------------------------
 
 #------------------------------>>>Db initialization<<<--------------------------------
-check_db_exists('cartdb')
+# check_db_exists('cartdb')
 #------------------------------>>>table initialization<<<--------------------------------
 #table init
-table_init()
+# table_init()
+
+
+#testing
+# check_db_exists('cartdb')
+# table_init()
     
 
 
