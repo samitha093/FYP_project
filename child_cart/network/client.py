@@ -16,7 +16,6 @@ from network.enumList import *
 from network.com import *
 from network.seed import *
 from network.file import *
-from network.cartConfiguration import *
 from cache.cacheFile import *
 import queue
 
@@ -46,14 +45,23 @@ def clientconfigurations():
     global SHELL_TIMEOUT
     global KERNAL_TIMEOUT
     global SYNC_CONST
+    global CULSTER_SIZE
 
-    row = getNetConfigurations()
+    q = queue.Queue()
+    t1=threading.Thread(target=loadCartConfigurations,args=(q,))
+    t1.start()
+    t1.join()
+    result = q.get()
+    row = result
     HOST = row[0]
     LOCALHOST = row[1]
     PORT = row[2]
     KERNAL_TIMEOUT = row[3]
-    SHELL_TIMEOUT = 3*60
-    SYNC_CONST = row[4]
+    SHELL_TIMEOUT = row[4]
+    SYNC_CONST = row[5]
+    CULSTER_SIZE =row[6]
+    print("Load network configuration : ",row)
+
 
 ########################################################################
 #------------------------------PEER   DATA-----------------------------#
@@ -168,6 +176,14 @@ def connectNetwork():
         time.sleep(5)
 
 def get_config():
+    global HOST
+    global LOCALHOST
+    global PORT
+    global SHELL_TIMEOUT
+    global KERNAL_TIMEOUT
+    global SYNC_CONST
+    global CULSTER_SIZE
+    
     my_dict ={}
     my_dict['HOST'] = HOST
     my_dict['LOCALHOST'] = LOCALHOST
@@ -175,6 +191,7 @@ def get_config():
     my_dict['KERNAL_TIMEOUT'] = KERNAL_TIMEOUT
     my_dict['SHELL_TIMEOUT'] = SHELL_TIMEOUT
     my_dict['SYNC_CONST'] = SYNC_CONST
+    my_dict['CLUSTER_SIZE']=CULSTER_SIZE
     return my_dict
 
 def time_cal():
@@ -197,10 +214,17 @@ def backgroudNetworkProcess(type):
     global y_test_np
     CART_TYPE = type
     print("NETWORKING ......")
-    #clientconfigurations()
+
+    clientconfigurations()
+  
+    global MODELPARAMETERS
+    global MOBILEMODELPARAMETERS
+    global TIME_ARRAY
+    
     t0=threading.Thread(target=connectNetwork)
     t0.daemon = True
     t0.start()
+
     while True:
         MODELPARAMETERS = encodeModelParameters()
         MOBILEMODELPARAMETERS  =encodeModelParametersForMobile()
@@ -211,7 +235,7 @@ def backgroudNetworkProcess(type):
         t1.start()
         t1.join()
         result = q.get()
-        cartData = result
+        cartData = int(result)
         print("Cart Data size: ",cartData)
         #compare size of the dataset for globla aggregation
         if cartData >= 3:
@@ -227,9 +251,9 @@ def backgroudNetworkProcess(type):
                 receivedParametersSize = result
 
                 #check received parameters size
-                if receivedParametersSize >= CULSTER_SIZE:
+                if receivedParametersSize >=int(CULSTER_SIZE):
                     TIME_ARRAY[3] = time.time() ## time stap 4
-                    globleAggregationProcess(MODEL,x_test_np,y_test_np,CULSTER_SIZE)
+                    globleAggregationProcess(MODEL,x_test_np,y_test_np,int(CULSTER_SIZE))
                     TIME_ARRAY[4] = time.time() ## time stap 5
                     break
                 else:
