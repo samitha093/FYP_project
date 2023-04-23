@@ -27,12 +27,10 @@ def genCacheFile():
         if not os.path.exists(directoryReceivedModelParameter):
             os.makedirs(directoryReceivedModelParameter)
             print("Directory created: " + directoryReceivedModelParameter)
-        else:
-            print("directory exist")
     except OSError as error:
         print("Error creating directory:", error)
 
-# genCacheFile()
+genCacheFile()
 #------->>>>>>>>>>>>>>>>>>>>> dataset >>>>>>>>>>>>>>>> -------
 #*********************************cart configuration --------------------------------  
 def loadCartConfigurations(que):
@@ -45,7 +43,7 @@ def loadCartConfigurations(que):
         else:
             print("The file", filename, "does not exist in the current path.")
             # Define the header array
-            header1 = ['10.101', '10.250', '9000', '60', '1']
+            header1 = ['10.101.45.25', '10.250.265.45', '9000', '60', '300','1','5']
             cartConfigurations_lock.acquire()
             # Save the header array to a cache file
             with open(filename, 'wb') as f:
@@ -84,7 +82,7 @@ def updateCartConfigurations(header1,que):
         # Print the header array to verify it was loaded correctly
         print("Updated configuration data:", header2)
         cartConfigurations_lock.release()
-        que.put(header2)
+        que.put("200")
         return header2
 
     except Exception as e:
