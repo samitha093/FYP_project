@@ -48,39 +48,24 @@ def responceModel(msgTo, data, msgFrom="SERVER"):
     }
 
 def reqirementHandler(data):
-    global MOBILEDATARECORDER
-    global DATARECORDER
-    global server
-    #############################################################
-    ##Clustering Process Start        ---------------------------
+    global MOBILEDATARECORDER,DATARECORDER,DeviceTable
     User = data.get("Sender")
     req = data.get("Data")
     if req[0] == "PEERTYPE":
         if req[1] == "KERNEL":
             print(User, " : ",req[1])
-            if len(DeviceTable) >= clusterSize:
-                temptable  = DeviceTable[:clusterSize]
-                new_array = list(temptable)
-                del DeviceTable[:clusterSize]
-                ClusterId = generateId(12)
-                ClusterTable[ClusterId] = new_array
-                print("Custer created : ",ClusterId," : ",ClusterTable.get(ClusterId))
-            ##Clustering Process END          ---------------------------
-                defineCluster = ["CLUSTERID",ClusterId, "PEERLIST",ClusterTable.get(ClusterId)]
-                tempData = responceModel(User,defineCluster)
-                time.sleep(5)
-                mailBox = DATARECORDER.get(User)
-                mailBox.append(tempData)
-            else:
-                time.sleep(5)
-                dataError = ["ERROR","There were not enough SHELL peers available at that time. Please try again later."]
-                tempData = responceModel(User,dataError)
-                mailBox = DATARECORDER.get(User)
-                mailBox.append(tempData)
-        elif req[1] == "SHELL":
+        if req[1] == "SHELL":
             DeviceTable.append(User)
-            # set_data_on_dht(server)
             print(User, " : ",req[1])
+    elif req[0] == "PEERLIST":
+        tempData = responceModel(User,DeviceTable)
+        mailBox = DATARECORDER.get(User)
+        mailBox.append(tempData)
+    elif req[0] == "NBRLIST":
+        mynabourList = get_nabourList()
+        tempData = responceModel(User,mynabourList)
+        mailBox = DATARECORDER.get(User)
+        mailBox.append(tempData)
     elif req[0] == "EXIT":
         print("exit request from : ",User)
         if User in DeviceTable:
@@ -366,14 +351,19 @@ def bidge_server(host = '172.20.2.3'):
     global HOST, KademliaNetwork
     HOST = 'http://' + host
 
-    # thread1 = threading.Thread(target=function_1)
-    # thread2 = threading.Thread(target=function_2)
-    # thread3 = threading.Thread(target=function_3)
+    thread1 = threading.Thread(target=function_1)
+    thread2 = threading.Thread(target=function_2)
+    thread3 = threading.Thread(target=function_3)
     thread4 = threading.Thread(target=function_4, args=(host,))
+    
+    thread1.daemon = True
+    thread2.daemon = True
+    thread3.daemon = True
+    thread4.daemon = True
 
-    # thread1.start()
-    # thread2.start()
-    # thread3.start()
+    thread1.start()
+    thread2.start()
+    thread3.start()
     thread4.start()
 
     try:

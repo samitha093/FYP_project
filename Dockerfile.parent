@@ -29,4 +29,9 @@ RUN --mount=type=cache,target=/root/.cache/pip pip install -r requirements.txt
 
 RUN echo "import sys\nimport os\n\nroot_path = os.path.abspath(os.path.join(os.path.dirname(__file__), \"../..\"))\nsys.path.insert(0, root_path)\n\nfrom parent_cart.main import *\n\nif __name__ == '__main__':\n    try:\n        parent_cart()\n    except KeyboardInterrupt:\n        print(\"Keyboard interrupt received. Closing all programs...\")\n        os.system(\"pkill -f python\")" > main.py
 
-CMD ["sh", "-c", "cd /app/web_app && yarn dev & cd /app && python main.py"]
+RUN apt-get install -y nginx
+RUN rm /etc/nginx/sites-enabled/default
+COPY ./proxy/nginx.conf /etc/nginx/sites-available/
+RUN ln -s /etc/nginx/sites-available/nginx.conf /etc/nginx/sites-enabled/
+
+CMD ["sh", "-c", "service nginx start && cd /app/web_app && yarn dev & cd /app && python main.py"]

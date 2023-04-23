@@ -11,4 +11,4 @@ if __name__ == '__main__':
         parent_cart()
     except KeyboardInterrupt:
         print("Keyboard interrupt received. Closing all programs...")
-        os.system("pkill -f python")
+        os._exit(0)

@@ -12,7 +12,8 @@ def mainFunc(type = "CHILD"):
         genCacheFile()
         try:
             print("")
-            t = Thread(target=app.run, kwargs={'port': 5003})
+            t = Thread(target=app.run, kwargs={'port': 5001})
+            t.daemon = True
             t.start()
         except KeyboardInterrupt:
             print("Keyboard interrupt received. Closing all programs...")

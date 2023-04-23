@@ -52,6 +52,7 @@ class peerCom:
         self.is_running = True
         try:
             self.receiver_thread = threading.Thread(target=self.receiver)
+            self.receiver_thread.daemon = True
             self.receiver_thread.start()
         except:
             print(errMsg.MSG003.value)
@@ -61,7 +62,7 @@ class peerCom:
 
     def isData_Reciving(self):
         return self.continueData
-    
+
     def isReadyForClose(self):
         return self.readForClose
 
@@ -103,6 +104,7 @@ class peerCom:
         self.is_running = True
         try:
             self.sender_thread = threading.Thread(target=self.sender)
+            self.sender_thread.daemon = True
             self.sender_thread.start()
         except:
             print(errMsg.MSG003.value)
@@ -115,6 +117,7 @@ class peerCom:
             while self.is_running:
                 if(len(self.SENDQUE) > 0):
                     toDumpData = self.SENDQUE[0].copy()
+                    print("****Network Module Send : ",toDumpData.get("Data")[0]," : FROM : ",toDumpData.get("Sender")," : TO : ", toDumpData.get("Receiver"))
                     data = pickle.dumps(toDumpData)
                     self.SENDQUE.remove(self.SENDQUE[0])
                     data_size = sys.getsizeof(data)
@@ -127,9 +130,9 @@ class peerCom:
                     else:
                         print(errMsg.MSG010.value,data_size_kb, "KB")
                         print(errMsg.MSG009.value)
-                    if toDumpData.get("Data")[0] == "MODELPARAMETERS":
-                        print("Model parameters sended. time to logout from cluster")
-                        self.readForClose = True
+                    # if toDumpData.get("Data")[0] == "MODELPARAMETERS":
+                    #     print("Model parameters sended. time to logout from cluster")
+                    #     self.readForClose = True
                     time.sleep(5)
         except:
             print(errMsg.MSG003.value)
