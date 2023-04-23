@@ -23,5 +23,6 @@ def Bridge():
 def parent_cart():
     # Bridge()
     bridge_thread = threading.Thread(target=Bridge)
+    bridge_thread.daemon = True
     bridge_thread.start()
     child_cart("LOCAL")
