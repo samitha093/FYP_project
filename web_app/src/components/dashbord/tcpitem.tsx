@@ -16,7 +16,8 @@ const Tcpitem: React.FC<AppProps> = ({ darkMode }) => {
   const [SyncConstant, setSyncConstant] = useState(1);
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:5001/network/config')
+    const myHost = sessionStorage.getItem('host');
+    axios.get(`${myHost}/network/config`)
       .then(response => {
         setRemoteHost(response.data.message.HOST);
         setLocalHost(response.data.message.LOCALHOST);

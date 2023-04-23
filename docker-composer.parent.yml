@@ -22,4 +22,4 @@ services:
       FLp2p:
     restart: on-failure:3
     ports:
-      - "1400-1500:1420"
+      - "1800-1900:80"
