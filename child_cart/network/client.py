@@ -108,8 +108,8 @@ def mainFunn(RECIVER_TIMEOUT, SYNC_CONST, SOCKRTHOST=HOST):
         print("USER TYPE  : ",MODE)
         print("USER ID    : ",TEMPUSERID)
         if MODE == conctionType.KERNEL.value:
-            MODELPARAMETERLIST = communicationProx(mySocket,TEMPUSERID,MODE,RECIVER_TIMEOUT,MODELPARAMETERS)
-            RECIVED_MODELPARAMETERLIST.append(MODELPARAMETERLIST)
+            MODELPARAMETER = communicationProx(mySocket,TEMPUSERID,MODE,RECIVER_TIMEOUT,MODELPARAMETERS)
+            RECIVED_MODELPARAMETERLIST.append(MODELPARAMETER)
             # TIME_ARRAY[1] = time.time() ##time stap 2
             # print("LIST")
             # print("length : ",len(MODELPARAMETERLIST))
@@ -251,18 +251,19 @@ def backgroudNetworkProcess(type):
                 receivedParametersSize = result
 
                 #check received parameters size
-                if receivedParametersSize >=int(CULSTER_SIZE):
+                if receivedParametersSize >= CULSTER_SIZE:
+                    conType("SHELL")
+                    mySocket.close(0,TEMPUSERID)
+                    Stop_loop()
                     TIME_ARRAY[3] = time.time() ## time stap 4
-                    globleAggregationProcess(MODEL,x_test_np,y_test_np,int(CULSTER_SIZE))
+                    globleAggregationProcess(MODEL,x_test_np,y_test_np,CULSTER_SIZE) # need use new thread
                     TIME_ARRAY[4] = time.time() ## time stap 5
                     break
                 else:
                     print("Connecting as kernal")
                     conType="KERNEL"
                     time.sleep(20)
-                    Stop_loop()
-                    mySocket.close(0,TEMPUSERID)
         else:
-            print("Connecting as SHELL for send Models")
+            print("Connecting as SHELL")
             conType("SHELL")
-        time.sleep(5)
+        time.sleep(1)
