@@ -357,13 +357,13 @@ def bidge_server(host = '172.20.2.3'):
     HOST = 'http://' + host
 
     thread1 = threading.Thread(target=function_1)
-    # thread2 = threading.Thread(target=function_2)
-    # thread3 = threading.Thread(target=function_3)
+    thread2 = threading.Thread(target=function_2)
+    thread3 = threading.Thread(target=function_3)
     thread4 = threading.Thread(target=function_4)
 
     thread1.start()
-    # thread2.start()
-    # thread3.start()
+    thread2.start()
+    thread3.start()
     thread4.start()
 
     try:
