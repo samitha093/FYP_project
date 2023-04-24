@@ -36,17 +36,24 @@ class peerCom:
         self.readForClose = False
 
     def connect(self):
-        try:
-            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.socket.connect((self.host, self.port))
-            data = self.socket.recv(1024)
-            self.USERID = repr(data.decode('utf-8'))[1:-1]
-            return self.USERID
-        except:
-            print(errMsg.MSG002.value)
-            self.closeWait = False
-            self.close(0,self.USERID)
-            sys.exit(0)
+        failCount = 0
+        while True:
+            try:
+                self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self.socket.connect((self.host, self.port))
+                data = self.socket.recv(1024)
+                self.USERID = repr(data.decode('utf-8'))[1:-1]
+                break
+            except Exception as e:
+                print(f"Error: {str(e)}")
+                failCount += 1
+                time.sleep(5)
+                if failCount >10:
+                    self.closeWait = False
+                    self.close(0,self.USERID)
+                    sys.exit(0)
+                continue
+        return self.USERID
 
     def start_receiver(self):
         self.is_running = True

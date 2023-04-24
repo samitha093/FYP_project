@@ -55,11 +55,11 @@ def clientconfigurations():
     row = result
     HOST = row[0]
     LOCALHOST = row[1]
-    PORT = row[2]
-    KERNAL_TIMEOUT = row[3]
-    SHELL_TIMEOUT = row[4]
-    SYNC_CONST = row[5]
-    CULSTER_SIZE =row[6]
+    PORT = int(row[2])
+    KERNAL_TIMEOUT = int(row[3])
+    SHELL_TIMEOUT = int(row[4])
+    SYNC_CONST = int(row[5])
+    CULSTER_SIZE = int(row[6])
     print("Load network configuration : ",row)
 
 
