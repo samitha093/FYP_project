@@ -228,18 +228,18 @@ def backgroudNetworkProcess(type):
 
                 #check received parameters size
                 if receivedParametersSize >= CULSTER_SIZE:
-                    conType("SHELL")
-                    mySocket.close(0,TEMPUSERID)
-                    Stop_loop()
+                    if conType != "SHELL":
+                        conType("SHELL")
                     TIME_ARRAY[3] = time.time() ## time stap 4
                     globleAggregationProcess(MODEL,x_test_np,y_test_np,CULSTER_SIZE) # need use new thread
                     TIME_ARRAY[4] = time.time() ## time stap 5
                     break
                 else:
-                    print("Connecting as kernal")
-                    conType="KERNEL"
-                    time.sleep(20)
+                    if conType != "KERNEL":
+                        conType="KERNEL"
+                        mySocket.close(0,TEMPUSERID)
+                        time.sleep(10)
         else:
-            print("Connecting as SHELL")
-            conType("SHELL")
-        time.sleep(1)
+            if conType != "SHELL":
+                conType("SHELL")
+        time.sleep(10)
