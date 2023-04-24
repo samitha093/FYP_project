@@ -7,6 +7,7 @@ import traceback
 from aiohttp import web
 import sys
 import time
+import requests
 
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, root_path)
@@ -47,7 +48,7 @@ def responceModel(msgTo, data, msgFrom="SERVER"):
         'Data':data
     }
 
-def reqirementHandler(data):
+async def reqirementHandler(data):
     global MOBILEDATARECORDER,DATARECORDER,DeviceTable
     User = data.get("Sender")
     req = data.get("Data")
@@ -58,12 +59,14 @@ def reqirementHandler(data):
             DeviceTable.append(User)
             print(User, " : ",req[1])
     elif req[0] == "PEERLIST":
-        tempData = responceModel(User,DeviceTable)
+        tempData = responceModel(User,["PEERLIST",DeviceTable])
         mailBox = DATARECORDER.get(User)
         mailBox.append(tempData)
     elif req[0] == "NBRLIST":
-        mynabourList = get_nabourList()
-        tempData = responceModel(User,mynabourList)
+        url = 'http://localhost:5001/bridge/nabours'
+        response = requests.get(url)
+        nbrlist = response.json()['message']
+        tempData = responceModel(User,["NBRLIST",nbrlist])
         mailBox = DATARECORDER.get(User)
         mailBox.append(tempData)
     elif req[0] == "EXIT":
@@ -80,7 +83,7 @@ def reqirementHandler(data):
         mobilemailBox = MOBILEDATARECORDER.get(req[1])
         mobilemailBox.append(data)
 
-def requestHandler(data):
+async def requestHandler(data):
     User = data.get("Receiver")
     req = data.get("Data")
     if req[0] == "MODELREQUEST":
@@ -130,7 +133,7 @@ async def handle_client(reader, writer):
                     print("####ERROR ON ",mailBox[0].get("Data")[1]," : ", userId,)
                     client_disconnected = True
                 mailBox.remove(mailBox[0])
-            await asyncio.sleep(2)
+            await asyncio.sleep(1)
 
     #coroutine to process received data
     async def process_data(data_chunks):
@@ -139,9 +142,9 @@ async def handle_client(reader, writer):
         decordedData = pickle.loads(data)
         print("****BRIDGE recived : ",decordedData.get("Data")[0]," : FROM : ",decordedData.get("Sender")," : TO : ", decordedData.get("Receiver"))
         if decordedData.get("Receiver") == "SERVER":
-            reqirementHandler(decordedData)
+            asyncio.create_task(reqirementHandler(decordedData))
         else:
-            requestHandler(decordedData)
+            asyncio.create_task(requestHandler(decordedData))
 
     # coroutine for receiving data from the client
     async def receive_data():
@@ -319,9 +322,9 @@ def function_3():
         loop.run_until_complete(asyncio.gather(*pending_tasks, return_exceptions=True))
         loop.close()
 
-def function_4(host):
+def function_4():
     global KademliaNetwork
-    KademliaNetwork.create_bootstrap_node(host)
+    KademliaNetwork.create_bootstrap_node()
 
 def get_kademliaPort():
     global KademliaNetwork, KademliaPort
@@ -340,8 +343,10 @@ def add_boostrapNode(data):
 
 def get_nabourList():
     global KademliaNetwork
+    print("boostrap node list getting started...")
     try:
         peerList = asyncio.run(KademliaNetwork.getnabourList())
+        print("boostrap node list getting completed...")
         print("nabour list : ",peerList)
         return peerList
     except Exception as e:
@@ -352,18 +357,13 @@ def bidge_server(host = '172.20.2.3'):
     HOST = 'http://' + host
 
     thread1 = threading.Thread(target=function_1)
-    thread2 = threading.Thread(target=function_2)
-    thread3 = threading.Thread(target=function_3)
-    thread4 = threading.Thread(target=function_4, args=(host,))
-    
-    thread1.daemon = True
-    thread2.daemon = True
-    thread3.daemon = True
-    thread4.daemon = True
+    # thread2 = threading.Thread(target=function_2)
+    # thread3 = threading.Thread(target=function_3)
+    thread4 = threading.Thread(target=function_4)
 
     thread1.start()
-    thread2.start()
-    thread3.start()
+    # thread2.start()
+    # thread3.start()
     thread4.start()
 
     try:

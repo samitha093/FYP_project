@@ -6,9 +6,10 @@ class kademlia_network:
     def __init__(self):
         self.server = Server()
         self.event_loop = asyncio.get_event_loop()
+        self.event_loop2 = asyncio.get_event_loop()
         self.port = 0
 
-    def create_bootstrap_node(self,host):
+    def create_bootstrap_node(self):
         while True:
             myport = random.randint(49152, 65535)
             try:
@@ -19,6 +20,7 @@ class kademlia_network:
             except OSError:
                 continue
         try:
+            self.event_loop2.run_forever()
             self.event_loop.run_forever()
         except KeyboardInterrupt:
             pass
