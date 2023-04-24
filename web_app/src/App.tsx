@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTheme } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import "./App.css";
@@ -19,7 +19,10 @@ function App() {
   const toggleSettings = () => {
     setSettings(!settings);
   };
-
+useEffect(() => {
+  // sessionStorage.setItem('host', 'http://127.0.0.1:'+ window.location.port+'/api');
+  sessionStorage.setItem('host', 'http://127.0.0.1:5001');
+}, []);
   return (
     <div style={{ backgroundColor: darkMode ? theme.colors.gray[700] : "white", height:"100vh" ,overflow: 'hidden' }} >
       <Nav darkMode={darkMode} toggleDarkMode={toggleDarkMode} settings={settings} toggleSettings={toggleSettings} />

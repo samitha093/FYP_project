@@ -61,7 +61,8 @@ const Store: React.FC<AppProps> = ({ darkMode }) => {
      const [productList, setProductList] = useState<Product[]>([]);
 
      useEffect(() => {
-       axios.get<Product[]>('http://127.0.0.1:5001/threands')
+      const myHost = sessionStorage.getItem('host');
+       axios.get<Product[]>(`${myHost}/threands`)
          .then(response => {
           //  console.log(response.data);
            setProductList(response.data);

@@ -23,7 +23,8 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
   const [BoostrapArray, setBoostrapArray] = useState<any>([]);
   const [NabourArray, setNabourArray] = useState<any>([]);
   useEffect(() => {
-    axios.get('http://127.0.0.1:5001/bridge/hello')
+    const myHost = sessionStorage.getItem('host');
+    axios.get(`${myHost}/bridge/hello`)
       .then(response => {
         setIsBridge(true)
       })
@@ -33,7 +34,8 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
   }, []);
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:5001/bridge/nabours')
+    const myHost = sessionStorage.getItem('host');
+    axios.get(`${myHost}/bridge/nabours`)
       .then(response => {
         setNabourArray(response.data.message)
       })
@@ -43,8 +45,8 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
   }, []);
   const handledataSave = (e: any) => {
     setBoostrapArray([...BoostrapArray, e])
-    //create new link using post request
-    axios.post('http://127.0.0.1:5001/bridge/boostrap', {
+    const myHost = sessionStorage.getItem('host');
+    axios.post(`${myHost}/bridge/boostrap`, {
       ip: e.ip,
       port: e.port
     })

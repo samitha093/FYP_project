@@ -49,7 +49,8 @@ const NodeItem: React.FC<AppProps> = ({ darkMode }) => {
     setPortError('');
   };
   useEffect(() => {
-    axios.get('http://127.0.0.1:5001/bridge/node')
+    const myHost = sessionStorage.getItem('host');
+    axios.get(`${myHost}/bridge/node`)
       .then(response => {
         setIp(response.data.ip);
         setPort(response.data.port)
