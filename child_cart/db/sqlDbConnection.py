@@ -3,6 +3,7 @@ import mysql.connector
 from model.dataSetGenerator import *
 from model.modelGenerator import *
 import tensorflow as tf
+# import sqlite3
 
 def connect_db():
     # Establishing a connection to the MySQL database
@@ -12,17 +13,19 @@ def connect_db():
         password="root",
         database="cartdb"
     )
+    # cnx = sqlite3.connect('cartdb.db')
+    
     return cnx
 #------------------------------------ db define------------------------------------------------
 
 #create db
 def create_db(dbName):
     # Establishing a connection to the MySQL server
-    cnx = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="root"
-    )
+    # cnx = mysql.connector.connect(
+    #     host="localhost",
+    #     user="root",
+    #     password="root"
+    # )
     
     # Creating a cursor object
     cursor = cnx.cursor()
@@ -533,8 +536,7 @@ def get_local_Mobile_Model():
 #testing
 # check_db_exists('cartdb')
 # table_init()
-    
-
+# cnx = sqlite3.connect('cartdb.db')
 
 
 #----------------------close Initialization ---------------------------------------------------------
