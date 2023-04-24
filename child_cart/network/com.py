@@ -1,6 +1,7 @@
 import time
 import os
 import sys
+import random
 
 # Get the path to the root directory
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -39,10 +40,17 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS):
                 mySocket.queueClean(x)
                 if tempData[0] == "PEERLIST":
                     print("PEER LIST : ",tempData[1])
+                    if len(tempData[1])>0:
+                        modelReq = ["MODELREQUEST"]
+                        random_index = random.randint(0, len(tempData[1])-1)
+                        print(random_index)
+                        # mySocket.request(requestModel(USERID,modelReq,x))
+                        # print("SEND MODEL REQUEST TO : ",x)
                 elif tempData[0] == "NBRLIST":
                     print("NBR LIST : ",tempData[1])
                 elif tempData[0] == "MODELPARAMETERS":
-                    print("Model parameters recived")
+                    print("MODEL PARAMETERS RECIVED FROM : ",x.get("Sender"))
+                    MODELPARAMETERLIST.append(x)
                 else:
                     print("unknown message",x)
         time.sleep(1)
