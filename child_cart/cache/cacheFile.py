@@ -109,6 +109,7 @@ def loadDatasetCsv(que):
         df = pd.read_pickle(filename)
         datasetCsv_lock.release()
         que.put(df)
+        print(df)
         return df
     
     except Exception as e:

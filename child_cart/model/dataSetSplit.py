@@ -28,8 +28,10 @@ def splitDataset():
         print("Error occurred while loading the CSV file:", e)
         
     # Split the data into training and testing sets
-    train_data, test_data, train_labels, test_labels = train_test_split(df[['Month','Gender']], df['Item'], test_size=0.2)
-
+    try:
+        train_data, test_data, train_labels, test_labels = train_test_split(df[['Month','Gender']], df['Item'], test_size=0.2)
+    except Exception as e:
+            print("Error :", e)
     #convert to numpy
     x_train_np = train_data.to_numpy()
     x_test_np = test_data.to_numpy()
