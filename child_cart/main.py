@@ -7,6 +7,7 @@ sys.path.insert(0, root_path)
 from child_cart.api.Flask import *
 from child_cart.cache.cacheFile import *
 from child_cart.db.sqlDbConnection import *
+from child_cart.cache.cacheFile import *
 
 def mainFunc(type = "CHILD"):
     try:
@@ -21,7 +22,7 @@ def mainFunc(type = "CHILD"):
             os.system("pkill -f python")
 
         try:
-            # print("")
+            print("")
             backgroudNetworkProcess(type)
         except KeyboardInterrupt:
             print("Keyboard interrupt received. Closing all programs...")
