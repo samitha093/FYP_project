@@ -221,9 +221,9 @@ def backgroudNetworkProcess(type):
     global MOBILEMODELPARAMETERS
     global TIME_ARRAY
     
-    t0=threading.Thread(target=connectNetwork)
-    t0.daemon = True
-    t0.start()
+    # t0=threading.Thread(target=connectNetwork)
+    # t0.daemon = True
+    # t0.start()
 
     while True:
         MODELPARAMETERS = encodeModelParameters()
@@ -238,7 +238,7 @@ def backgroudNetworkProcess(type):
         cartData = int(result)
         print("Cart Data size: ",cartData)
         #compare size of the dataset for globla aggregation
-        if cartData >= 3:
+        if cartData >= 0:
             print("Connecting as KERNEL for globla aggregation")
             while True:
                 # receivedParametersSize = getReceivedModelParameterLength()
@@ -252,6 +252,7 @@ def backgroudNetworkProcess(type):
 
                 #check received parameters size
                 if receivedParametersSize >= CULSTER_SIZE:
+                    print("SHELL")
                     if conType != "SHELL":
                         conType("SHELL")
                     TIME_ARRAY[3] = time.time() ## time stap 4
@@ -259,6 +260,7 @@ def backgroudNetworkProcess(type):
                     TIME_ARRAY[4] = time.time() ## time stap 5
                     break
                 else:
+                    print("KERNAL")
                     if conType != "KERNEL":
                         conType="KERNEL"
                         mySocket.close(0,TEMPUSERID)
