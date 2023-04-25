@@ -21,11 +21,11 @@ def connect_db():
 #create db
 def create_db(dbName):
     # Establishing a connection to the MySQL server
-    # cnx = mysql.connector.connect(
-    #     host="localhost",
-    #     user="root",
-    #     password="root"
-    # )
+    cnx = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="root"
+    )
     
     # Creating a cursor object
     cursor = cnx.cursor()
@@ -211,7 +211,8 @@ def table_init():
         columns = ["MONTH INT", "ITEM INT","GENDER INT"]
         create_table(tableName, columns) 
         data = DatasetGenerator(100)
-        insert_dataset_data(tableName, data)
+        values_array = data[['Month', 'Item', 'Gender']].values
+        insert_dataset_data(tableName, values_array)
         
     #local model data table creation
     tableName="localModelData"
@@ -437,11 +438,11 @@ def insert_local_model(model):
     cursor.execute(select_query, ("local_cart_Model",))
     result = cursor.fetchone()
     if result is not None:
-        print("Model exists. Updating row...")
+        print("Cart Model exists. Updating row...")
         update_query = "UPDATE localModelData SET MODEL = %s WHERE MODELDESCRIPTION = %s"
         cursor.execute(update_query, (byte_data, "local_cart_Model"))
     else:
-        print("Model does not exist. Inserting new row...")
+        print("Mobile Model does not exist. Inserting new row...")
         insert_query = "INSERT INTO localModelData (MODELDESCRIPTION, MODEL) VALUES (%s, %s)"
         cursor.execute(insert_query, ("local_cart_Model", byte_data))
     cnx.commit()
@@ -534,8 +535,8 @@ def get_local_Mobile_Model():
 
 
 #testing
-# check_db_exists('cartdb')
-# table_init()
+check_db_exists('cartdb')
+table_init()
 # cnx = sqlite3.connect('cartdb.db')
 
 

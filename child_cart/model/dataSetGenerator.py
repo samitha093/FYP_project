@@ -76,11 +76,11 @@ def DatasetGenerator(datasetSize):
     df["Item"] = df["Item"].astype(int)
     df["Gender"] = df["Gender"].astype(int)
     try:
-        # df.to_csv('dataset/dataset.csv', index=False)
-        values_array = df[['Month', 'Item', 'Gender']].values
-        # print(type(values_array))
-        print("Dataset Generated ")
-        return values_array
+        # # df.to_csv('dataset/dataset.csv', index=False)
+        # values_array = df[['Month', 'Item', 'Gender']].values
+        # # print(type(values_array))
+        # print("Dataset Generated ")
+        return df
     except Exception as e:
         print("Error occurred while generating or saving dataset:", e)
 

@@ -346,28 +346,33 @@ def deleteCartDataItems(itemCount,que):
 # deleteCartDataItems(2)
 def getCartDataLenght(que):
     global cartData_lock
+    print("size1")
     filename = "cache/cartData.pkl"
     try:
-        cartData_lock.acquire()
-        with open(filename, 'rb') as f:
-            cartData = pickle.load(f) 
-        cartDataSize=len(cartData)
-        cartData_lock.release()
-        que.put(cartDataSize)
-        return cartDataSize
-    except FileNotFoundError:
-        cartData_lock.acquire()
-        print("The file", filename, "does not exist in the current path.")
-        # load the csv file into a pandas dataframe
-        header = [['Month', 'Item', 'Gender']]
-        # Save the header array to a cache file
-        with open(filename, 'wb') as f:
-            pickle.dump(header, f)
-        cartDataSize = len(header)
-        cartData_lock.release()
-        
-        que.put(cartDataSize)
-        return cartDataSize
+        if os.path.isfile(filename):
+            cartData_lock.acquire()
+            print("The file", filename, "exists in the current path.")
+            with open(filename, 'rb') as f:
+                cartData = pickle.load(f) 
+            cartDataSize=len(cartData)
+            cartData_lock.release()
+            cartDataSize=cartDataSize-1
+            que.put(cartDataSize)
+            return cartDataSize
+        else:
+            print("The file", filename, "does not exists in the current path.")
+            header = [['Month', 'Item', 'Gender']]
+            # Save the header array to a cache file
+            cartData_lock.acquire()
+            with open(filename, 'wb') as f:
+                pickle.dump(header, f)
+            cartDataSize = len(header)
+            cartData_lock.release()
+            print("size  ",cartDataSize)
+            cartDataSize=cartDataSize-1
+            que.put(cartDataSize)
+            return cartDataSize
+
     except (pickle.UnpicklingError, EOFError) as e:
         print("Error loading data from", filename, ":")
         print(e)
@@ -591,6 +596,6 @@ def getReceivedModelParameterLength(que):
     except:
         print("Error: Failed to count files in directory.")
         count = 0
-        
+    print("Number of model files:", count)
     que.put(count)
     return count

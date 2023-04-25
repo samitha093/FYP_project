@@ -4,9 +4,10 @@ import os
 from threading import Thread
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, root_path)
-# from child_cart.api.Flask import *
+from child_cart.api.Flask import *
 from child_cart.cache.cacheFile import *
 from child_cart.db.sqlDbConnection import *
+from child_cart.cache.cacheFile import *
 
 def mainFunc(type = "CHILD"):
     try:
@@ -22,7 +23,7 @@ def mainFunc(type = "CHILD"):
 
         try:
             print("")
-            # backgroudNetworkProcess(type)
+            backgroudNetworkProcess(type)
         except KeyboardInterrupt:
             print("Keyboard interrupt received. Closing all programs...")
             os.system("pkill -f python")
