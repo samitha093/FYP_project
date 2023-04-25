@@ -137,9 +137,6 @@ class peerCom:
                     else:
                         print(errMsg.MSG010.value,data_size_kb, "KB")
                         print(errMsg.MSG009.value)
-                    # if toDumpData.get("Data")[0] == "MODELPARAMETERS":
-                    #     print("Model parameters sended. time to logout from cluster")
-                    #     self.readForClose = True
                     time.sleep(5)
         except:
             print(errMsg.MSG003.value)
