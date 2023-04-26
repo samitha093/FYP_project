@@ -210,6 +210,7 @@ def time_cal():
 def backgroudNetworkProcess(type):
     global MODELPARAMETERS, MOBILEMODELPARAMETERS,TIME_ARRAY,TEMPUSERID
     global CART_TYPE,CULSTER_SIZE,conType
+    global RECIVED_MODELPARAMETERLIST
     global x_test_np
     global y_test_np
     CART_TYPE = type
@@ -224,7 +225,7 @@ def backgroudNetworkProcess(type):
     # t0=threading.Thread(target=connectNetwork)
     # t0.daemon = True
     # t0.start()
-
+    localModelAnalize(x_test_np,y_test_np)
     while True:
         MODELPARAMETERS = encodeModelParameters()
         MOBILEMODELPARAMETERS  =encodeModelParametersForMobile()
@@ -249,7 +250,15 @@ def backgroudNetworkProcess(type):
                 t1.join()
                 result = q.get()
                 receivedParametersSize = result
-
+                #check received parameters accuracy and save or drop
+                for item in RECIVED_MODELPARAMETERLIST:
+                    if "MODELPARAMETERS" in item['Data']:
+                        receivedData = item['Data'][1]
+                        print("receivedData------------------->>>>>>>")
+                        receivingModelAnalize(receivedData,x_test_np,y_test_np)
+                
+                RECIVED_MODELPARAMETERLIST=[]
+                
                 #check received parameters size
                 if receivedParametersSize >= CULSTER_SIZE:
                     print("SHELL")
@@ -257,6 +266,7 @@ def backgroudNetworkProcess(type):
                         conType("SHELL")
                     TIME_ARRAY[3] = time.time() ## time stap 4
                     globleAggregationProcess(MODEL,x_test_np,y_test_np,CULSTER_SIZE) # need use new thread
+                    localModelAnalize(x_test_np,y_test_np)
                     TIME_ARRAY[4] = time.time() ## time stap 5
                     break
                 else:
