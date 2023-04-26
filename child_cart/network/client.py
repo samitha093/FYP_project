@@ -110,16 +110,6 @@ def mainFunn(RECIVER_TIMEOUT, SYNC_CONST, SOCKRTHOST=HOST):
         if MODE == conctionType.KERNEL.value:
             MODELPARAMETER = communicationProx(mySocket,TEMPUSERID,MODE,RECIVER_TIMEOUT,MODELPARAMETERS)
             RECIVED_MODELPARAMETERLIST.append(MODELPARAMETER)
-            # TIME_ARRAY[1] = time.time() ##time stap 2
-            # print("LIST")
-            # print("length : ",len(MODELPARAMETERLIST))
-            # localModelAnalize(x_test_np,y_test_np)
-            # for item in MODELPARAMETERLIST:
-            #     if "MODELPARAMETERS" in item['Data']:
-            #         receivedData = item['Data'][1]
-            #         print("receivedData------------------->>>>>>>")
-            #         receivingModelAnalize(receivedData,x_test_np,y_test_np)
-            # TIME_ARRAY[2] = time.time() ##time stap 3
         if MODE == conctionType.SHELL.value:
             seedProx(mySocket,TEMPUSERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,RECIVER_TIMEOUT)
     except Exception as e:
@@ -256,9 +246,7 @@ def backgroudNetworkProcess(type):
                         receivedData = item['Data'][1]
                         print("receivedData------------------->>>>>>>")
                         receivingModelAnalize(receivedData,x_test_np,y_test_np)
-                
                 RECIVED_MODELPARAMETERLIST=[]
-                
                 #check received parameters size
                 if receivedParametersSize >= CULSTER_SIZE:
                     print("SHELL")
