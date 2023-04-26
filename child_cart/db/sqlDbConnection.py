@@ -388,7 +388,8 @@ def insert_cart_data(table_name, row):
     cursor.close()
     cnx.close()
 # data_array = [1, 4, 1]
-# insert_cart_data("cartData", data_array)
+# for i in range(4):
+#     insert_cart_data("cartData", data_array)
 
 def delete_first_n_items(n):
     cnx = connect_db()
@@ -424,6 +425,18 @@ def get_first_n_items(n):
 
 # first_three_items = get_first_n_items(3)
 # print(first_three_items)
+
+def length_local_models(table_name):
+    cnx = connect_db()
+    cursor = cnx.cursor()
+    cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
+    result = cursor.fetchone()[0]
+    cnx.close()
+    return result
+
+# tableName="cartData"
+# size=length_local_models(tableName)
+# print("lenght : ",size)
 
 #--------------------------------------- close cart data ------------------------------------------------------
 #--------------------------------------- local model ----------------------------------------------------------
@@ -519,11 +532,65 @@ def get_local_Mobile_Model():
 
 
 #--------------------------------------- received model ----------------------------------------------------------
+def insert_received_model(model_parameters):
+    byte_data = pickle.dumps(model_parameters)
+    cnx = connect_db()
+    cursor = cnx.cursor()
+    sql = "INSERT INTO receivedModelData (MODELDESCRIPTION, MODEL) VALUES (%s, %s)"
+    values = ("receivedModel", byte_data)
+    cursor.execute(sql, values)
+    cnx.commit()
+    cursor.close()
+    cnx.close()
+    print("Received model inserted successfully.")
 
+# model=create_model()
+# localModeWeights = model.get_weights()
+# for i in range(4):
+#     insert_received_model(localModeWeights)
+
+def get_received_models():
+    cnx = connect_db()
+    cursor = cnx.cursor()
+    sql = "SELECT MODEL FROM receivedModelData"
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    model_weight= []
+    for row in rows:
+        model = pickle.loads(row[0])
+        model_weight.append(model)
+    cursor.close()
+    cnx.close()
+    return model_weight
+
+# models = get_received_models()
+# print(len(models))
+
+def delete_all_received_models():
+    cnx = connect_db()
+    cursor = cnx.cursor()
+    sql = "DELETE FROM receivedModelData"
+    cursor.execute(sql)
+    cnx.commit()
+    cursor.close()
+    cnx.close()
+    print("All received models deleted successfully.")
+    
+# delete_all_received_models()
+
+def length_received_models(table_name):
+    cnx = connect_db()
+    cursor = cnx.cursor()
+    cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
+    result = cursor.fetchone()[0]
+    cnx.close()
+    return result
+
+# tableName="receivedModelData"
+# size=length_received_models(tableName)
+# print("lenght : ",size)
 
 #---------------------------------------close received  model ----------------------------------------------------------
-
-
 
 #---------------------- Initialization ---------------------------------------------------------
 
@@ -535,8 +602,8 @@ def get_local_Mobile_Model():
 
 
 #testing
-check_db_exists('cartdb')
-table_init()
+# check_db_exists('cartdb')
+# table_init()
 # cnx = sqlite3.connect('cartdb.db')
 
 
