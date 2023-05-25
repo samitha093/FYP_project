@@ -212,9 +212,10 @@ def backgroudNetworkProcess(type):
     global MOBILEMODELPARAMETERS
     global TIME_ARRAY
     
-    # t0=threading.Thread(target=connectNetwork)
-    # t0.daemon = True
-    # t0.start()
+    t0=threading.Thread(target=connectNetwork)
+    t0.daemon = True
+    t0.start()
+    
     localModelAnalize(x_test_np,y_test_np)
     while True:
         MODELPARAMETERS = encodeModelParameters()
@@ -229,9 +230,20 @@ def backgroudNetworkProcess(type):
         cartData = int(result)
         print("Cart Data size: ",cartData)
         #compare size of the dataset for globla aggregation
-        if cartData >= 0:
+        if cartData >= 100:
+
             print("Connecting as KERNEL for globla aggregation")
             while True:
+                ### tread lock @ISURU
+                TEMPRECIVED_MODELPARAMETERLIST = RECIVED_MODELPARAMETERLIST.copy()
+                RECIVED_MODELPARAMETERLIST=[]
+                #check received parameters accuracy and save or drop
+                for item in TEMPRECIVED_MODELPARAMETERLIST:
+                    if "MODELPARAMETERS" in item['Data']:
+                        receivedData = item['Data'][1]
+                        print("receivedData------------------->>>>>>>")
+                        receivingModelAnalize(receivedData,x_test_np,y_test_np)
+                TEMPRECIVED_MODELPARAMETERLIST=[]
                 # receivedParametersSize = getReceivedModelParameterLength()
 
                 q = queue.Queue()
@@ -240,18 +252,13 @@ def backgroudNetworkProcess(type):
                 t1.join()
                 result = q.get()
                 receivedParametersSize = result
-                #check received parameters accuracy and save or drop
-                for item in RECIVED_MODELPARAMETERLIST:
-                    if "MODELPARAMETERS" in item['Data']:
-                        receivedData = item['Data'][1]
-                        print("receivedData------------------->>>>>>>")
-                        receivingModelAnalize(receivedData,x_test_np,y_test_np)
-                RECIVED_MODELPARAMETERLIST=[]
+
                 #check received parameters size
                 if receivedParametersSize >= CULSTER_SIZE:
-                    print("SHELL")
+                    print("Connection change to SHELL")
                     if conType != "SHELL":
-                        conType("SHELL")
+                        conType = "SHELL"
+                    #stop existing connection @lakshan
                     TIME_ARRAY[3] = time.time() ## time stap 4
                     globleAggregationProcess(MODEL,x_test_np,y_test_np,CULSTER_SIZE) # need use new thread
                     localModelAnalize(x_test_np,y_test_np)
@@ -260,10 +267,11 @@ def backgroudNetworkProcess(type):
                 else:
                     print("KERNAL")
                     if conType != "KERNEL":
-                        conType="KERNEL"
+                        conType = "KERNEL"
+                        #stop existing connection @lakshan
                         mySocket.close(0,TEMPUSERID)
                         time.sleep(10)
         else:
             if conType != "SHELL":
-                conType("SHELL")
+                conType = "SHELL"
         time.sleep(10)
