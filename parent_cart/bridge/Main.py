@@ -64,6 +64,7 @@ async def reqirementHandler(data):
         mailBox.append(tempData)
     elif req[0] == "NBRLIST":
         url = 'http://localhost:5001/bridge/nabours'
+        # url = 'http://localhost:5001/bridge/nabours'
         response = requests.get(url)
         nbrlist = response.json()['message']
         tempData = responceModel(User,["NBRLIST",nbrlist])
