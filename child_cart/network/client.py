@@ -18,6 +18,9 @@ from network.seed import *
 from network.file import *
 from cache.cacheFile import *
 import queue
+import threading
+
+lock = threading.Lock()
 
 HOST = '141.145.200.6'
 LOCALHOST = '141.145.200.6'
@@ -235,8 +238,14 @@ def backgroudNetworkProcess(type):
             print("Connecting as KERNEL for globla aggregation")
             while True:
                 ### tread lock @ISURU
+                
+                # Acquire the lock
+                lock.acquire()
                 TEMPRECIVED_MODELPARAMETERLIST = RECIVED_MODELPARAMETERLIST.copy()
                 RECIVED_MODELPARAMETERLIST=[]
+                # Release the lock                
+                lock.release()
+                
                 #check received parameters accuracy and save or drop
                 for item in TEMPRECIVED_MODELPARAMETERLIST:
                     if "MODELPARAMETERS" in item['Data']:
