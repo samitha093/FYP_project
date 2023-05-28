@@ -14,7 +14,7 @@ def mainFunc(type = "CHILD"):
         # print("")
         # genCacheFile()
         try:
-            # print("")
+            print("")
             t = Thread(target=app.run, kwargs={'port': 5001})
             t.start()
         except KeyboardInterrupt:
