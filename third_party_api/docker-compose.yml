@@ -1,0 +1,14 @@
+version: '3'
+services:
+  express:
+    image: express
+    deploy:
+      replicas: 1
+    build:
+      context:  ./app
+      dockerfile:  Dockerfile
+    stdin_open: true
+    tty: true
+    restart: on-failure:3
+    ports:
+      - "3000:3000"

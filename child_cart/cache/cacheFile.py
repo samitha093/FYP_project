@@ -7,6 +7,7 @@ import pickle
 import tensorflow as tf
 import glob
 import threading
+import queue
 
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, root_path)
@@ -230,9 +231,9 @@ def updateParentPortIp(index,port,ip):
 
 
 # for i in range(1000):
-port = "1000"
-ip = "55.99.88"
-index=1
+# port = "1000"
+# ip = "55.99.88"
+# index=1
 # addParentPortIp(port,ip)
 # updateParentPortIp(index,port,ip)
 # loadParentPortIp()
@@ -272,7 +273,7 @@ def loadCartData(que):
 # loadCartData()
 def updataCartData(new_row,que):
     global cartData_lock
-    print("tred start : ",new_row)
+    # print("tred start : ",new_row)
     try:
 
         filename = "cache/cartData.pkl"
@@ -291,7 +292,7 @@ def updataCartData(new_row,que):
         with open(filename, 'rb') as f:
             cartData = pickle.load(f)  
         cartData.append(new_row)
-        print("cache : ",new_row)
+        # print("cache : ",new_row)
         #save
         with open(filename, 'wb') as f:
             pickle.dump(cartData, f)
@@ -301,17 +302,17 @@ def updataCartData(new_row,que):
             cartData = pickle.load(f) 
         cartData_lock.release()
         que.put(cartData)
-        print("return : ",cartData)
+        # print("return : ",cartData)
         return cartData
     except Exception as e:
         print("An error occurred:", str(e))
         return None
-
-
+#add dummy data
+# q = queue.Queue()
 # for i in range(1000):
 #     new_row = [3, 0, 0]
-#     updataCartData(new_row)
-
+#     updataCartData(new_row,q)
+# print("findished")
 def deleteCartDataItems(itemCount,que):
     global cartData_lock
     try:
