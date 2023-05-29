@@ -160,53 +160,259 @@ app.get('/api/allItemsImageUrl', async (req, res) => {
     mongoose.connection.close();
   }
 });
+/**
+* @swagger
+* /api/addItems:
+*   post:
+*     summary: Add items to the collection.
+*     requestBody:
+*       required: true
+*       content:
+*         application/json:
+*           schema:
+*             $ref: '#/components/schemas/Item'
+*     responses:
+*       201:
+*         description: Resource created successfully.
+*       500:
+*         description: Internal Server Error.
+*/
 
-// Define a route for the POST request
+const Item = require('./models/Item'); // Assuming you have a Mongoose model for your items
+
+// Function to save an Item in the "itemList" collection
+async function saveItemToCollection(item) {
+  try {
+    const collection = mongoose.connection.db.collection('itemList');
+    await collection.insertOne(item);
+  } catch (error) {
+    console.error('Error saving item:', error);
+    throw error;
+  }
+}
+// Function to update an Item in the "itemList" collection based on _id
+// Function to update an Item by ID in the "itemList" collection
+async function updateItemById(itemId, updatedItem) {
+  try {
+    const collection = mongoose.connection.db.collection('itemList');
+    const integerNumber = parseInt(itemId, 10);
+
+    const result = await collection.updateOne({ ItemId: integerNumber }, { $set: updatedItem });
+    console.log('Item updated successfully...');
+    return result.modifiedCount > 0; // Check if any document was modified
+    return true;
+  } catch (error) {
+    console.error('Error updating item:', error);
+    throw error;
+  }
+}
+// POST data
+// Function to check if an item with the given ItemId exists in the "itemList" collection
+async function doesItemIdExist(itemId) {
+  try {
+    const collection = mongoose.connection.db.collection('itemList');
+
+    // Find the item by ItemId
+    const query = { ItemId: itemId };
+    const item = await collection.findOne(query);
+
+    return item !== null; // Return true if the item exists, false otherwise
+
+  } catch (error) {
+    console.error('Error checking item existence:', error);
+    throw error;
+  }
+}
+
+// POST data
+app.post('/api/addItems', async (req, res) => {
+  try {
+    const data = req.body;
+    console.log('Data received:', data);
+
+    const itemId = data.ItemId;
+
+    await connectToDatabase(); // Connect to the database using Mongoose
+
+    // Check if the item with the given ItemId exists
+    const itemExists = await doesItemIdExist(itemId);
+
+    // Create a new Item object
+    const newItem = new Item({
+      ItemId: data.ItemId,
+      ItemName: data.ItemName,
+      ItemCategory: data.ItemCategory,
+      ItemPrice: data.ItemPrice,
+      ImageUrl: data.ImageUrl,
+    });
+    var status ="created";
+    // Save or update the item in the database
+    if (itemExists) {
+      // Item exists, update it
+      console.log(" it exits");
+      console.log(newItem.ItemId);
+      console.log(newItem);
+      const updatedItem = {
+        ItemId: data.ItemId,
+        ItemName: data.ItemName,
+        ItemCategory: data.ItemCategory,
+        ItemPrice: data.ItemPrice,
+        ImageUrl: data.ImageUrl,
+      };
+      await updateItemById(updatedItem.ItemId, updatedItem);
+      status ="updated";
+    } else {
+      console.log(" Not exits");
+      console.log(newItem.ItemId);
+      console.log(newItem);
+      // Item does not exist, insert it
+     await saveItemToCollection(newItem);
+
+    }
+
+    // Close the MongoDB connection
+    mongoose.connection.close();
+
+    res.status(201).json({ message: `Resource ${status} successfully` });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+  app.get('/api', (req, res) => {
+    res.send('Hello, from docker!');
+  });
+
 /**
  * @swagger
- * /api/addItems:
- *   post:
- *     summary: Add items to the collection.
+ * /api/updateItem/{id}:
+ *   put:
+ *     summary: Update an item in the collection.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the item to update.
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               items:
- *                 type: array
- *                 items:
- *                   type: string
- *             example:
- *               items: ["item1", "item2"]
+ *             $ref: '#/components/schemas/UpdateItemInput'
  *     responses:
- *       201:
- *         description: Resource created successfully.
+ *       200:
+ *         description: Item updated successfully.
  *       500:
  *         description: Internal Server Error.
- */  
-// POST data
-app.post('/api/addItems', async (req, res) => {post
-    try {
-        const data  = req.body;
+ */
 
-      
-        console.log(typeof data);
-        
-        console.log('data set :', data);
-        const dataset= json
-        await insertDataIntoCollection(data)
-      res.status(201).json({ message: 'Resource created successfully' });
-    } catch (error) {
-      console.error('Error:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+
+// PUT data to update an Item
+app.put('/api/updateItem/:id', async (req, res) => {
+  try {
+    const itemId = req.params.id;
+    const data = req.body;
+
+
+    // Create a new Item object
+    const updatedItem = {
+      ItemId: data.ItemId,
+      ItemName: data.ItemName,
+      ItemCategory: data.ItemCategory,
+      ItemPrice: data.ItemPrice,
+      ImageUrl: data.ImageUrl,
+    };
+    console.log(itemId);
+    console.log(updatedItem);
+    await connectToDatabase(); // Connect to the database using Mongoose
+
+    // Update the item in the database and check the result
+    const isUpdated = await updateItemById(itemId, updatedItem);
+
+    // Close the MongoDB connection
+    mongoose.connection.close();
+
+    if (isUpdated) {
+      res.json({ message: 'Item updated successfully' });
+    } else {
+      res.status(404).json({ error: 'Item not found or no changes made' });
     }
-  });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
-  app.get('/api', (req, res) => {
-    res.send('Hello, from docker!');
-  });
+
+
+
+/**
+ * @swagger
+ * /api/deleteItem/{id}:
+ *   delete:
+ *     summary: Delete an item by ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the item to delete.
+ *     responses:
+ *       200:
+ *         description: Item deleted successfully.
+ *       500:
+ *         description: Internal Server Error.
+ */
+// Function to delete an item from the "itemList" collection by ID
+async function deleteItemFromCollection(itemId) {
+  try {
+    const collection = mongoose.connection.db.collection('itemList');
+    const integerNumber = parseInt(itemId, 10);
+
+    const result = await collection.deleteOne({ ItemId: integerNumber });
+
+    if (result.deletedCount > 0) {
+      return true; // Item deleted successfully
+    } else {
+      return false; // Item not found or no changes made
+    }
+  } catch (error) {
+    console.error('Error deleting item:', error);
+    throw error;
+  }
+}
+
+// DELETE an item by ID
+app.delete('/api/deleteItem/:id', async (req, res) => {
+  try {
+    const itemId = req.params.id;
+    console.log('Id:', itemId);
+    await connectToDatabase(); // Connect to the database using Mongoose
+
+    // Delete the item from the database and check the result
+    const isDeleted = await deleteItemFromCollection(itemId);
+
+    // Close the MongoDB connection
+    mongoose.connection.close();
+
+    if (isDeleted) {
+      res.json({ message: 'Item deleted successfully' });
+    } else {
+      res.status(404).json({ error: 'Item not found or no changes made' });
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
 
 // Start the server
 app.listen(port, () => {
