@@ -1,4 +1,12 @@
 #Flask for ui handing and request handling
+import json
+import warnings
+warnings.filterwarnings("ignore", message="This is a development server. Do not use it in a production deployment.")
+
+import logging
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
+
 from flask import Flask, render_template, request, jsonify
 import os
 import sys
@@ -23,7 +31,7 @@ import queue
 
 
 selectedItem ="Item 0"
-ItemListArray = [];
+ItemListArray = []
 totalBill = 0
 currentGender = 1
 currentThreandArray=[]
@@ -44,7 +52,7 @@ def findCurrentThreandArray():
     currentThreandArray = []
     print("Category no: ",itemNum)
     # receivedList = ItemList(int(itemNum));
-    receivedList = getAllItemsByCategory(int(itemNum));
+    receivedList = getAllItemsByCategory(int(itemNum))
     # currentThreandArray.append(receivedList)
     return receivedList
 
@@ -58,7 +66,7 @@ def findCurrentThreandArray_imageList():
     currentThreandArray = []
     print("Category no: ",itemNum)
     # receivedList = ItemList_image(int(itemNum));
-    receivedList = getAllItemsImageByCategory(int(itemNum));
+    receivedList = getAllItemsImageByCategory(int(itemNum))
     
     # currentThreandArray.append(receivedList)
     return receivedList
