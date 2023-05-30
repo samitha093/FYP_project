@@ -38,6 +38,7 @@ def seedProx(mySocket,USERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,SHELL_TI
                     print("MODEL PARAMETERS SEND TO MOBILE : ",x.get("Sender"))
                 else:
                     print("UNKNOWN MESSAGE : ",x)
+                    Stop_loop()
         time.sleep(1)
     return
 
