@@ -1,12 +1,16 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { AbsoluteCenter, Box, Center, Flex } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Image } from '@chakra-ui/react';
 
 import New from './new';
 import Item from './item';
 import Sitem from './sitem';
-import Tcpitem from './tcpitem';
-import NodeItem from './node'
+import NetworkModule from './networkModule';
+import NodeItem from './node';
+import BridgeModule from './bridgeModule';
+
+import emptyimage from '../../\assets/empty.png';
 
 interface AppProps {
     darkMode: boolean;
@@ -71,7 +75,8 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
             <Flex
                 flexWrap="wrap"
             >
-                <Tcpitem darkMode={darkMode}/>
+                <NetworkModule darkMode={darkMode}/>
+                {isBridge?<BridgeModule darkMode={darkMode}/>:null}
                 {isBridge?<NodeItem darkMode={darkMode}/>:null}
                 {BoostrapArray.map((element:any, index:any)=>(
                     <Item darkMode={darkMode} key={index} data={element}/>
@@ -79,16 +84,26 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
                 {isBridge?<New darkMode={darkMode} handledataSave={handledataSave}/>:null}
             </Flex>
           </Box>
-            <Box border="1px solid" borderColor={darkMode ? "gray.600" : 'gray.300'} padding={'20px'}
+          <Box border="1px solid" borderColor={darkMode ? "gray.600" : 'gray.300'} padding={'20px'}
             w={{ base: '100%', lg: '40%' }} h={'100%'} minW={'300px'} mt={{ base: '30px', lg: '0px' }}>
-                <Flex
-                flexWrap="wrap"
-            >
+            {NabourArray.length == 0 ?
+              <Center p='4' w={'100%'} h={'100%'}>
+                <Image
+                  src={emptyimage}
+                  alt="Description of the image"
+                  boxSize="200px"
+                  objectFit="cover"
+                  opacity={0.4}
+                />
+              </Center>
+            :
+            <Flex flexWrap="wrap">
               {NabourArray.map((element:any, index:any)=>(
-                <Sitem darkMode={darkMode} key={index} data={element}/>
-                ))}
+                  <Sitem darkMode={darkMode} key={index} data={element}/>
+                  ))}
             </Flex>
-            </Box>
+            }
+          </Box>
         </Flex>
   );
 };

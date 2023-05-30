@@ -2,6 +2,7 @@ import React from 'react';
 import { MoonIcon, SunIcon, SettingsIcon } from '@chakra-ui/icons';
 import { Flex, Box, IconButton, Icon } from '@chakra-ui/react';
 import { FaHome } from 'react-icons/fa'
+import { AiOutlinePoweroff } from "react-icons/ai";
 
 interface NavProps {
   darkMode: boolean;
@@ -9,6 +10,11 @@ interface NavProps {
   settings: boolean;
   toggleSettings: () => void;
 }
+
+const logout = (e: any) => {
+  sessionStorage.setItem('isLoggedIn', 'false');
+  window.location.reload();
+};
 
 const Nav: React.FC<NavProps> = ({ darkMode, toggleDarkMode ,settings ,toggleSettings}) => {
   return (
@@ -25,6 +31,16 @@ const Nav: React.FC<NavProps> = ({ darkMode, toggleDarkMode ,settings ,toggleSet
         {/* <img src="/logo.svg" alt="Super M" className="h-8 w-8 mr-2" /> */}
       </Box>
       <Box display="flex" alignItems="center">
+      {sessionStorage.getItem('isLoggedIn') === 'true'?
+        <IconButton
+          aria-label="Open settings menu"
+          icon={<AiOutlinePoweroff/>}
+          onClick={logout}
+          mr={4}
+          variant="ghost"
+          _hover={{ bg: darkMode ? 'gray.700' : 'white' }}
+        />
+      :null}
         <IconButton
           aria-label="Toggle dark mode"
           icon={darkMode ? <SunIcon /> : <MoonIcon />}

@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AbsoluteCenter, Box, Flex, Button, Alert, AlertIcon, AlertDescription } from '@chakra-ui/react';
+import Swal from 'sweetalert2'
 
 import Dashboard from'./dashbord';
 
@@ -20,10 +21,37 @@ const Login: React.FC<AppProps> = ({darkMode}) => {
     } else {
       setErrorMessage('');
       if(username == 'admin' && password == 'admin') {
+        sessionStorage.setItem('isLoggedIn', 'true');
         setStatus(true);
       }
     }
   };
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer)
+      toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+  })
+
+  useEffect(() => {
+    if (sessionStorage.getItem('isLoggedIn') === 'true') {
+      // User is logged in
+      setStatus(true);
+      Toast.fire({
+        icon: 'success',
+        title: 'User Authentication Success'
+      })
+    } else {
+      // User is not logged in
+      setStatus(false);
+    }
+  }, []);
 
   return (
     <Flex w={'100%'}>{status? <Dashboard darkMode={darkMode} /> :

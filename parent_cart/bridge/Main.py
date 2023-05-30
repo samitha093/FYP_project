@@ -64,7 +64,6 @@ async def reqirementHandler(data):
         mailBox.append(tempData)
     elif req[0] == "NBRLIST":
         url = 'http://localhost:5001/bridge/nabours'
-        # url = 'http://localhost:5001/bridge/nabours'
         response = requests.get(url)
         nbrlist = response.json()['message']
         tempData = responceModel(User,["NBRLIST",nbrlist])
@@ -331,6 +330,9 @@ def get_kademliaPort():
     global KademliaNetwork, KademliaPort
     return KademliaNetwork.get_port()
 
+def get_ServerPort():
+    return [PORT,MOBILE_PORT,HTTPPORT]
+
 def add_boostrapNode(data):
     global KademliaNetwork
     ip_data = data['ip']
@@ -357,14 +359,14 @@ def bidge_server(host = '172.20.2.3'):
     global HOST, KademliaNetwork
     HOST = 'http://' + host
 
-    thread1 = threading.Thread(target=function_1)
-    thread2 = threading.Thread(target=function_2)
-    thread3 = threading.Thread(target=function_3)
+    # thread1 = threading.Thread(target=function_1)
+    # thread2 = threading.Thread(target=function_2)
+    # thread3 = threading.Thread(target=function_3)
     thread4 = threading.Thread(target=function_4)
 
-    thread1.start()
-    thread2.start()
-    thread3.start()
+    # thread1.start()
+    # thread2.start()
+    # thread3.start()
     thread4.start()
 
     try:

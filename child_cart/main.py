@@ -23,7 +23,7 @@ def mainFunc(type = "CHILD"):
 
         try:
             print("")
-            backgroudNetworkProcess(type)
+            # backgroudNetworkProcess(type)
         except KeyboardInterrupt:
             print("Keyboard interrupt received. Closing all programs...")
             os.system("pkill -f python")
