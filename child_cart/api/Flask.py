@@ -49,9 +49,8 @@ def findCurrentThreandArray():
     itemNum = getCurrentThreand(month,gender)
     currentThreandArray = []
     print("Category no: ",itemNum)
-    # receivedList = ItemList(int(itemNum));
+
     receivedList = getAllItemsByCategory(int(itemNum))
-    # currentThreandArray.append(receivedList)
     return receivedList
 
 def findCurrentThreandArray_imageList():
@@ -63,10 +62,8 @@ def findCurrentThreandArray_imageList():
     itemNum = getCurrentThreand(month,gender)
     currentThreandArray = []
     print("Category no: ",itemNum)
-    # receivedList = ItemList_image(int(itemNum));
+
     receivedList = getAllItemsImageByCategory(int(itemNum))
-    
-    # currentThreandArray.append(receivedList)
     return receivedList
 
 @app.route('/threands', methods =["GET"])
@@ -132,10 +129,14 @@ try:
         ip =request.json['ip']
         print("port : ",port)
         print("ip : ",ip)
-        t1=threading.Thread(target=addParentPortIp,args=(port,ip,))
+        q = queue.Queue()
+        t1=threading.Thread(target=addParentPortIp,args=(port,ip,q,))
         t1.start()
         t1.join()
-        return jsonify({'message': 'Sucessfull added to queue'})
+        result = q.get()
+        jsonResult = json.dumps(result)
+        return jsonResult
+        # return jsonify({'message': 'Sucessfull added to queue'})
 
 
     #put
@@ -147,10 +148,14 @@ try:
         print("port : ",port)
         print("ip : ",ip)
         print("index : ",index)
-        t1=threading.Thread(target=updateParentPortIp,args=(index,port,ip,))
+        q = queue.Queue()
+        t1=threading.Thread(target=updateParentPortIp,args=(index,port,ip,q))
         t1.start()
         t1.join()
-        return jsonify({'message': 'Sucessfull update to queue'})
+        result = q.get()
+        jsonResult = json.dumps(result)
+        return jsonResult
+        # return jsonify({'message': 'Sucessfull update to queue'})
     
     @app.route('/bridge/nabours', methods=['GET'])
     def nabours():

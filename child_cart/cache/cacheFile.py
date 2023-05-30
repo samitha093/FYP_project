@@ -118,26 +118,31 @@ def loadDatasetCsv(que):
         print("An error occurred:", e)
 
 #***********************************parent port ip add ********************************
+def getUpdatedList():
+    filename = "cache/parentPortIp.pkl"
+    print("The file", filename, "exists in the current path.")
+    # Load the header array from the cache file
+    parentPortIp_lock.acquire()
+    with open(filename, 'rb') as f:
+        data = pickle.load(f)  
+    
+    parentPortIp_lock.release()
+
+    print(data)
+    json_data_list = []
+
+    for item in data:
+        json_data = json.dumps({'index': item[0], 'port': item[1], 'ip': item[2]})
+        json_data_list.append(json_data)
+    rows = [json.loads(row) for row in json_data_list]
+    return rows
+
 def loadParentPortIp(que):
     global parentPortIp_lock
     try:
         filename = "cache/parentPortIp.pkl"
         if os.path.isfile(filename):
-            print("The file", filename, "exists in the current path.")
-            # Load the header array from the cache file
-            parentPortIp_lock.acquire()
-            with open(filename, 'rb') as f:
-                data = pickle.load(f)  
-            
-            parentPortIp_lock.release()
-
-            print(data)
-            json_data_list = []
-
-            for item in data:
-                json_data = json.dumps({'index': item[0], 'port': item[1], 'ip': item[2]})
-                json_data_list.append(json_data)
-            rows = [json.loads(row) for row in json_data_list]
+            rows = getUpdatedList()
             que.put(rows)
             print(rows)
             return rows
@@ -150,10 +155,14 @@ def loadParentPortIp(que):
 
     except Exception as e:
         print("An error occurred:", e)
-q = queue.Queue()
+# q = queue.Queue()
 # loadParentPortIp(q)
 #add new item
-def addParentPortIp(port,ip):
+
+        
+        
+        
+def addParentPortIp(port,ip,que):
     global parentPortIp_lock
     try:
         filename = "cache/parentPortIp.pkl"
@@ -166,7 +175,10 @@ def addParentPortIp(port,ip):
                 pickle.dump(new_row, f)
             parentPortIp_lock.release()
             print("Added")
-
+            rows = getUpdatedList()
+            que.put(rows)
+            print(rows)
+            return rows
         else: # Load the header array from the cache file
             print("The file", filename, "does exist in the current path.")
 
@@ -185,12 +197,16 @@ def addParentPortIp(port,ip):
             parentPortIp_lock.release()
             
             print("Added")
+            rows = getUpdatedList()
+            que.put(rows)
+            print(rows)
+            return rows
     except Exception as e:
         print("An error occurred:", str(e))
         return None
 
 # addParentPortIp("9000","128.1.23")
-def updateParentPortIp(index,port,ip):
+def updateParentPortIp(index,port,ip,que):
     global parentPortIp_lock
     try:
         filename = "cache/parentPortIp.pkl"
@@ -229,7 +245,10 @@ def updateParentPortIp(index,port,ip):
             # parentPortIp_lock.release()
             
             print("updated")
-            
+            rows = getUpdatedList()
+            que.put(rows)
+            print(rows)
+            return rows
             # with open(filename, 'rb') as f:
             #    portIp = pickle.load(f) 
             # print(portIp)
