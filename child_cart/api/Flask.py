@@ -1,4 +1,12 @@
 #Flask for ui handing and request handling
+import json
+import warnings
+warnings.filterwarnings("ignore", message="This is a development server. Do not use it in a production deployment.")
+
+import logging
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
+
 from flask import Flask, render_template, request, jsonify
 import os
 import sys
@@ -17,11 +25,13 @@ from child_cart.cache.cacheFile import *
 from flask_cors import CORS
 
 from child_cart.network.client import *
-from child_cart.db.dbConnect import *
+# from child_cart.db.dbConnect import *
+from child_cart.db.apiConnection import *
 import queue
 
+
 selectedItem ="Item 0"
-ItemListArray = [];
+ItemListArray = []
 totalBill = 0
 currentGender = 1
 currentThreandArray=[]
@@ -41,7 +51,8 @@ def findCurrentThreandArray():
     itemNum = getCurrentThreand(month,gender)
     currentThreandArray = []
     print("Category no: ",itemNum)
-    receivedList = ItemList(int(itemNum));
+    # receivedList = ItemList(int(itemNum));
+    receivedList = getAllItemsByCategory(int(itemNum))
     # currentThreandArray.append(receivedList)
     return receivedList
 
@@ -54,7 +65,9 @@ def findCurrentThreandArray_imageList():
     itemNum = getCurrentThreand(month,gender)
     currentThreandArray = []
     print("Category no: ",itemNum)
-    receivedList = ItemList_image(int(itemNum));
+    # receivedList = ItemList_image(int(itemNum));
+    receivedList = getAllItemsImageByCategory(int(itemNum))
+    
     # currentThreandArray.append(receivedList)
     return receivedList
 
