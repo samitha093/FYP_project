@@ -8,6 +8,7 @@ import tensorflow as tf
 import glob
 import threading
 import queue
+import json
 
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, root_path)
@@ -126,13 +127,20 @@ def loadParentPortIp(que):
             # Load the header array from the cache file
             parentPortIp_lock.acquire()
             with open(filename, 'rb') as f:
-                portIp = pickle.load(f)  
+                data = pickle.load(f)  
             
             parentPortIp_lock.release()
 
-            print(portIp)
-            que.put(portIp)
-            return portIp
+            print(data)
+            json_data_list = []
+
+            for item in data:
+                json_data = json.dumps({'index': item[0], 'port': item[1], 'ip': item[2]})
+                json_data_list.append(json_data)
+            rows = [json.loads(row) for row in json_data_list]
+            que.put(rows)
+            print(rows)
+            return rows
         else:
             print("The file", filename, "does not exist in the current path.")
             # Define the header array
@@ -142,7 +150,8 @@ def loadParentPortIp(que):
 
     except Exception as e:
         print("An error occurred:", e)
-
+q = queue.Queue()
+# loadParentPortIp(q)
 #add new item
 def addParentPortIp(port,ip):
     global parentPortIp_lock
@@ -180,7 +189,7 @@ def addParentPortIp(port,ip):
         print("An error occurred:", str(e))
         return None
 
-
+# addParentPortIp("9000","128.1.23")
 def updateParentPortIp(index,port,ip):
     global parentPortIp_lock
     try:
