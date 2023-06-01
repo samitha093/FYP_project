@@ -26,6 +26,7 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
   const [isBridge, setIsBridge] = useState(false);
   const [BoostrapArray, setBoostrapArray] = useState<any>([]);
   const [NabourArray, setNabourArray] = useState<any>([]);
+
   useEffect(() => {
     const myHost = sessionStorage.getItem('host');
     axios.get(`${myHost}/bridge/hello`)
@@ -47,8 +48,9 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
         console.error(error);
       });
   }, []);
+
   const handledataSave = (e: any) => {
-    setBoostrapArray([...BoostrapArray, e])
+    // setBoostrapArray([...BoostrapArray, e])
     const myHost = sessionStorage.getItem('host');
     axios.post(`${myHost}/bridge/boostrap`, {
       ip: e.ip,
@@ -56,11 +58,13 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
     })
       .then(response => {
         console.log(response);
+        //asign update array to setBoostrapArray
       })
       .catch(error => {
         console.log(error);
       });
   };
+
     return (
         <Flex
           justify="space-between"

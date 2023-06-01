@@ -152,7 +152,7 @@ try:
     @app.route('/bridge/boostrap', methods=['POST'])
     def boostrapPost():
         node_data = request.json
-        add_boostrapNode(node_data)
+        # add_boostrapNode(node_data)
         port=request.json['port']
         ip =request.json['ip']
         print("port : ",port)
