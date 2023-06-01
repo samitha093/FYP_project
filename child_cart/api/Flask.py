@@ -12,6 +12,8 @@ import os
 import sys
 from datetime import datetime
 
+import socket
+
 import requests
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.insert(0, root_path)
@@ -77,6 +79,21 @@ def threandsImages():
     return list
 
 #-----------------------------NEW API-----------------------------------
+
+def get_local_ip_address():
+    try:
+        # Create a socket object
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        # Connect the socket to a remote server
+        sock.connect(('8.8.8.8', 80))
+        # Get the local IP address
+        ip_address = sock.getsockname()[0]
+        # Close the socket
+        sock.close()
+        return ip_address
+    except socket.error:
+        return None
+
 @app.route('/network/config', methods=['GET'])
 def nconfig():
     config = get_config()
@@ -86,10 +103,9 @@ def nconfigPost():
     HOST=request.json['HOST']
     LOCALHOST=request.json['LOCALHOST']
     PORT=request.json['PORT']
-    KERNAL_TIMEOUT=request.json['KERNAL_TIMEOUT']
-    SHELL_TIMEOUT=request.json['SHELL_TIMEOUT']
     SYNC_CONST=request.json['SYNC_CONST']
     CLUSTER_SIZE=request.json['CLUSTER_SIZE']
+
     header=[HOST,LOCALHOST,PORT,KERNAL_TIMEOUT,SHELL_TIMEOUT,SYNC_CONST,CLUSTER_SIZE]
     print("Received header ",header)
     q = queue.Queue()
@@ -108,8 +124,17 @@ try:
     def node():
         public_ip = requests.get('http://httpbin.org/ip').json()['origin']
         kademlia_port = get_kademliaPort()
-        return jsonify({'ip': public_ip, 'port': kademlia_port})
-    
+        ip_address = get_local_ip_address()
+        if ip_address:
+            print(f"The IP address of the local machine is {ip_address}")
+        else:
+            print("Failed to retrieve the local IP address")
+            ip_address = "0.0.0.0"
+        return jsonify({'ip': public_ip,'localip':ip_address, 'port': kademlia_port})
+    @app.route('/bridge/servers', methods=['GET'])
+    def server():
+        serverPorts = get_ServerPort()
+        return jsonify({'CARTPORT': serverPorts[0], 'MOBILEPORT': serverPorts[1],'HTTPPORT':serverPorts[2]})
     #get
     @app.route('/bridge/boostrap', methods =["GET"])
     def boostrapGet():

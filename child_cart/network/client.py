@@ -23,7 +23,7 @@ import threading
 lock = threading.Lock()
 
 HOST = '141.145.200.6'
-LOCALHOST = '141.145.200.6'
+LOCALHOST = '127.0.0.1'
 PORT = 9000
 KERNAL_TIMEOUT = 60
 SHELL_TIMEOUT = 3*60
@@ -85,36 +85,39 @@ MODELPARAMETERS = bytes(1024) #set default values
 MOBILEMODELPARAMETERS  =bytes(1024) #set default values
 ########################################################################a
 
-def mainFunn(RECIVER_TIMEOUT, SYNC_CONST, SOCKRTHOST=HOST):
+def mainFunn(RECIVER_TIMEOUT, SYNC_CONST, SOCKET_HOST):
     global TIME_ARRAY,CART_TYPE,mySocket,TEMPUSERID, conType
     global x_test_np
     global y_test_np
     MODE = conType
     try:
+        #Build connection object
         while True:
             try:
-                if CART_TYPE == "CHILD":
-                    mySocket = peerCom(SOCKRTHOST, PORT, MODE, SYNC_CONST)
-                    break
-                else:
-                    print("Coneting to local server")
-                    mySocket = peerCom('localhost', PORT, MODE, SYNC_CONST)
-                    break
+                mySocket = peerCom(SOCKET_HOST, PORT, MODE, SYNC_CONST)
+                break
             except:
-                print("Error occurred while connecting localhost using", MODE, " mode ")
+                print("Error occurred while connecting to Bridge using", MODE, " mode ")
                 time.sleep(5)
                 continue
+
+        #Establish connection
         TEMPUSERID = mySocket.connect()
         print("Starting data reciver and sender")
         mySocket.start_receiver()
         mySocket.start_sender()
         print("USER TYPE  : ",MODE)
         print("USER ID    : ",TEMPUSERID)
+
+        #Connection Mode select
         if MODE == conctionType.KERNEL.value:
             MODELPARAMETER = communicationProx(mySocket,TEMPUSERID,MODE,RECIVER_TIMEOUT,MODELPARAMETERS)
+            lock.acquire()
             RECIVED_MODELPARAMETERLIST.append(MODELPARAMETER)
+            lock.release()
         if MODE == conctionType.SHELL.value:
             seedProx(mySocket,TEMPUSERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,RECIVER_TIMEOUT)
+
     except Exception as e:
         print("Error occurred while running in", MODE, " mode ")
     except KeyboardInterrupt:
@@ -156,13 +159,15 @@ def localModelAnalize(x_test_np,y_test_np):
     print("Local model Acc : ",LOCALMODELACCURACY)
 
 def connectNetwork():
-    global KERNAL_TIMEOUT, SHELL_TIMEOUT, SYNC_CONST, TIME_ARRAY, conType
+    global KERNAL_TIMEOUT, SHELL_TIMEOUT, SYNC_CONST, TIME_ARRAY, conType,MODELPARAMETERS,MOBILEMODELPARAMETERS
     while True:
         try:
             if conType == conctionType.KERNEL.value:
-                mainFunn(KERNAL_TIMEOUT,SYNC_CONST)
+                mainFunn(KERNAL_TIMEOUT,SYNC_CONST,"127.0.0.1")
             else:
-                mainFunn(KERNAL_TIMEOUT,SYNC_CONST)
+                MODELPARAMETERS = encodeModelParameters()
+                MOBILEMODELPARAMETERS  =encodeModelParametersForMobile()
+                mainFunn(SHELL_TIMEOUT,SYNC_CONST,"127.0.0.1")
             print("loop call triggered")
         except KeyboardInterrupt:
             print("Networking loop error")
@@ -201,7 +206,7 @@ def time_cal():
 
 #----------------------background process --------------------------------
 def backgroudNetworkProcess(type):
-    global MODELPARAMETERS, MOBILEMODELPARAMETERS,TIME_ARRAY,TEMPUSERID
+    global TIME_ARRAY,TEMPUSERID,mySocket
     global CART_TYPE,CULSTER_SIZE,conType
     global RECIVED_MODELPARAMETERLIST
     global x_test_np
@@ -210,19 +215,13 @@ def backgroudNetworkProcess(type):
     print("NETWORKING ......")
 
     clientconfigurations()
-  
-    global MODELPARAMETERS
-    global MOBILEMODELPARAMETERS
-    global TIME_ARRAY
-    
+
     t0=threading.Thread(target=connectNetwork)
     t0.daemon = True
     t0.start()
-    
+
     localModelAnalize(x_test_np,y_test_np)
     while True:
-        MODELPARAMETERS = encodeModelParameters()
-        MOBILEMODELPARAMETERS  =encodeModelParametersForMobile()
         # cartData = getCartDataLenght()
         q = queue.Queue()
         t1=threading.Thread(target=getCartDataLenght,args=(q,))
@@ -234,28 +233,32 @@ def backgroudNetworkProcess(type):
         print("Cart Data size: ",cartData)
         #compare size of the dataset for globla aggregation
         if cartData >= 100:
-
+            if conType != "KERNEL":
+                conType = "KERNEL"
+                print("Changed Connection Mode to " + conType)
+                mySocket.close(0,TEMPUSERID)
             print("Connecting as KERNEL for globla aggregation")
+
+            #kernel loop
             while True:
-                ### tread lock @ISURU
-                
-                # Acquire the lock
+
+                # get data from recived queue
                 lock.acquire()
                 print("Thread lock acquired")
                 TEMPRECIVED_MODELPARAMETERLIST = RECIVED_MODELPARAMETERLIST.copy()
                 RECIVED_MODELPARAMETERLIST=[]
-                # Release the lock                
                 lock.release()
                 print("Thread lock released")
+
                 #check received parameters accuracy and save or drop
                 for item in TEMPRECIVED_MODELPARAMETERLIST:
                     if "MODELPARAMETERS" in item['Data']:
                         receivedData = item['Data'][1]
-                        print("receivedData------------------->>>>>>>")
+                        print("receivedData------------------->")
                         receivingModelAnalize(receivedData,x_test_np,y_test_np)
                 TEMPRECIVED_MODELPARAMETERLIST=[]
-                # receivedParametersSize = getReceivedModelParameterLength()
 
+                #get all saved model parameters count
                 q = queue.Queue()
                 t1=threading.Thread(target=getReceivedModelParameterLength,args=(q,))
                 t1.start()
@@ -263,26 +266,23 @@ def backgroudNetworkProcess(type):
                 result = q.get()
                 receivedParametersSize = result
                 print("received model parameter size : ", receivedParametersSize)
-                #check received parameters size
-                #for aggregation start
+
+                #check received parameters count for run aggregation
                 if receivedParametersSize >= CULSTER_SIZE:
-                    print("Connection change to SHELL")
+                    print("No need more parameters")
                     if conType != "SHELL":
                         conType = "SHELL"
-                    #stop existing connection @lakshan
                     TIME_ARRAY[3] = time.time() ## time stap 4
-                    globleAggregationProcess(MODEL,x_test_np,y_test_np,CULSTER_SIZE) # need use new thread
+                    globleAggregationProcess(MODEL,x_test_np,y_test_np,CULSTER_SIZE)
                     localModelAnalize(x_test_np,y_test_np)
                     TIME_ARRAY[4] = time.time() ## time stap 5
                     break
                 else:
-                    print("KERNAL")
+                    print("Need more model parameters")
                     if conType != "KERNEL":
                         conType = "KERNEL"
-                        #stop existing connection @lakshan
                         mySocket.close(0,TEMPUSERID)
-                        time.sleep(10)
-                    time.sleep(10)
+                    time.sleep(30)
         else:
             if conType != "SHELL":
                 conType = "SHELL"

@@ -111,7 +111,6 @@ def loadDatasetCsv(que):
         df = pd.read_pickle(filename)
         datasetCsv_lock.release()
         que.put(df)
-        # print(df)
         return df
     
     except Exception as e:
@@ -374,7 +373,6 @@ def deleteCartDataItems(itemCount,que):
 # deleteCartDataItems(2)
 def getCartDataLenght(que):
     global cartData_lock
-    print("size1")
     filename = "cache/cartData.pkl"
     try:
         if os.path.isfile(filename):
@@ -396,7 +394,6 @@ def getCartDataLenght(que):
                 pickle.dump(header, f)
             cartDataSize = len(header)
             cartData_lock.release()
-            print("size  ",cartDataSize)
             cartDataSize=cartDataSize-1
             que.put(cartDataSize)
             return cartDataSize
