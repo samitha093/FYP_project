@@ -127,7 +127,7 @@ def getUpdatedList():
     
     parentPortIp_lock.release()
 
-    print(data)
+    # print(data)
     json_data_list = []
 
     for item in data:
@@ -143,12 +143,12 @@ def loadParentPortIp(que):
         if os.path.isfile(filename):
             rows = getUpdatedList()
             que.put(rows)
-            print(rows)
+            # print(rows)
             return rows
         else:
             print("The file", filename, "does not exist in the current path.")
             # Define the header array
-            print([])
+            # print([])
             que.put([])
             return []
 
@@ -173,38 +173,31 @@ def addParentPortIp(port,ip,que):
             with open(filename, 'wb') as f:
                 pickle.dump(new_row, f)
             parentPortIp_lock.release()
-            print("Added")
             rows = getUpdatedList()
             que.put(rows)
-            print(rows)
             return rows
         else: # Load the header array from the cache file
             print("The file", filename, "does exist in the current path.")
-
             parentPortIp_lock.acquire()
             with open(filename, 'rb') as f:
                portIp = pickle.load(f) 
             sizeOfPortIp=len(portIp)
             index=str(sizeOfPortIp+1)
-            new_row=[index,port,ip]
-              
+            new_row=[index,port,ip]             
             portIp.append(new_row)
- 
             #save
             with open(filename, 'wb') as f:
                 pickle.dump(portIp, f)
             parentPortIp_lock.release()
-            
-            print("Added")
             rows = getUpdatedList()
             que.put(rows)
-            print(rows)
             return rows
     except Exception as e:
         print("An error occurred:", str(e))
         return None
+# q = queue.Queue()
+# addParentPortIp("9001","128.1.23",q)
 
-# addParentPortIp("9000","128.1.23")
 def updateParentPortIp(index,port,ip,que):
     global parentPortIp_lock
     try:
@@ -217,45 +210,50 @@ def updateParentPortIp(index,port,ip,que):
             with open(filename, 'wb') as f:
                 pickle.dump(new_row, f)
             parentPortIp_lock.release()
-            print("Added")
-
         else: # Load the header array from the cache file
             print("The file", filename, "exist in the current path.")
-
-            # parentPortIp_lock.acquire()
             with open(filename, 'rb') as f:
-               portIp = pickle.load(f) 
-               
-               
+               portIp = pickle.load(f)                         
             sizeOfPortIp=len(portIp)
-            print(portIp)
             for i in range(sizeOfPortIp):
-                if(portIp[i][0] == index):
-                    
+                if(portIp[i][0] == index):                    
                     portIp[i]=[index,port,ip]
                 print(portIp[i][0])
-            # new_row=[sizeOfPortIp+1,port,ip]
-              
-            # portIp.append(new_row)
- 
             #save
             with open(filename, 'wb') as f:
                 pickle.dump(portIp, f)
-            # parentPortIp_lock.release()
-            
-            print("updated")
             rows = getUpdatedList()
             que.put(rows)
-            print(rows)
             return rows
-            # with open(filename, 'rb') as f:
-            #    portIp = pickle.load(f) 
-            # print(portIp)
-            
+
     except Exception as e:
         print("An error occurred:", str(e))
         return None
 
+def deleteParentPortIp(index, que):
+    global parentPortIp_lock
+    try:
+        filename = "cache/parentPortIp.pkl"
+        if os.path.isfile(filename):
+            with open(filename, 'rb') as f:
+                portIp = pickle.load(f)
+            sizeOfPortIp = len(portIp) 
+            index=int(index)         
+            for i in range(sizeOfPortIp):
+                if int(portIp[i][0]) == index:                   
+                    del portIp[i]
+                    break
+            with open(filename, 'wb') as f:
+                pickle.dump(portIp, f)
+            rows = getUpdatedList()
+            que.put(rows)
+            return rows
+    except Exception as e:
+        print("An error occurred:", str(e))
+        return None
+    
+# q = queue.Queue()
+# deleteParentPortIp(2,q)
 
 # for i in range(1000):
 # port = "1000"
@@ -412,7 +410,7 @@ def getCartDataLenght(que):
 def saveLocalModelData(model):
     global localModelData_lock
     
-    print("1")
+   
     localModeWeights = model.get_weights()
     # Serialize the weights using pickle
     serialized_weights = pickle.dumps(localModeWeights)
@@ -422,7 +420,7 @@ def saveLocalModelData(model):
         with open('cache/model_weights.pkl', 'wb') as f:
             f.write(serialized_weights)
         localModelData_lock.release()
-        print("2")
+    
 
     except IOError as e:
         print("Error writing model weights to cache file:", e)
@@ -430,8 +428,6 @@ def saveLocalModelData(model):
     # Convert the Keras model to a TFLite model
     converter = tf.lite.TFLiteConverter.from_keras_model(model)
     try:
-        print("3")
-        
         tflite_model = converter.convert()
     except ValueError as e:
         print("Error converting Keras model to TFLite:", e)
@@ -441,7 +437,7 @@ def saveLocalModelData(model):
         localModelData_lock.acquire()
         with open('cache/mobileModel.pkl', 'wb') as f:
             pickle.dump(tflite_model, f)
-            print("4")
+         
             
         localModelData_lock.release()
 
@@ -486,8 +482,6 @@ def loadLocalCartModelData(que):
     except (IOError, pickle.UnpicklingError) as e:
         print("Error loading model weights from cache file:", e)
         return None
-
-    
 
     
 # loadLocalCartModelData()
