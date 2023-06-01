@@ -120,6 +120,7 @@ try:
         result = q.get()
         jsonResult = json.dumps(result)
         return jsonResult
+    
     #post
     @app.route('/bridge/boostrap', methods=['POST'])
     def boostrapPost():
@@ -127,8 +128,6 @@ try:
         add_boostrapNode(node_data)
         port=request.json['port']
         ip =request.json['ip']
-        print("port : ",port)
-        print("ip : ",ip)
         q = queue.Queue()
         t1=threading.Thread(target=addParentPortIp,args=(port,ip,q,))
         t1.start()
@@ -136,8 +135,6 @@ try:
         result = q.get()
         jsonResult = json.dumps(result)
         return jsonResult
-        # return jsonify({'message': 'Sucessfull added to queue'})
-
 
     #put
     @app.route('/bridge/boostrap', methods=['PUT'])
@@ -145,9 +142,6 @@ try:
         port=request.json['port']
         ip =request.json['ip']
         index =request.json['index']
-        print("port : ",port)
-        print("ip : ",ip)
-        print("index : ",index)
         q = queue.Queue()
         t1=threading.Thread(target=updateParentPortIp,args=(index,port,ip,q))
         t1.start()
@@ -155,8 +149,20 @@ try:
         result = q.get()
         jsonResult = json.dumps(result)
         return jsonResult
-        # return jsonify({'message': 'Sucessfull update to queue'})
     
+    #delete
+    @app.route('/bridge/boostrap', methods=['DELETE'])
+    def boostrapDelete():
+        #get index from params
+        index = request.headers.get('index')
+        q = queue.Queue()
+        t1=threading.Thread(target=deleteParentPortIp,args=(index,q))
+        t1.start()
+        t1.join()
+        result = q.get()
+        jsonResult = json.dumps(result)
+        return jsonResult
+        
     @app.route('/bridge/nabours', methods=['GET'])
     def nabours():
         peerList = get_nabourList()
