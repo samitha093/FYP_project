@@ -29,7 +29,7 @@ def splitDataset():
         
     # Split the data into training and testing sets
     try:
-        train_data, test_data, train_labels, test_labels = train_test_split(df[['Month','Gender']], df['Item'], test_size=0.2)
+        train_data, test_data, train_labels, test_labels = train_test_split(df[['Month','Gender']], df['Item'], test_size=0.01)
     except Exception as e:
             print("Error :", e)
     #convert to numpy
@@ -40,8 +40,8 @@ def splitDataset():
     y_test_np = test_labels.to_numpy()
 
     #convert shape
-    x_train_np = x_train_np.reshape(8000, 2)
-    x_test_np = x_test_np.reshape(2000, 2)
+    x_train_np = x_train_np.reshape(99000, 2)
+    x_test_np = x_test_np.reshape(1000, 2)
 
     x_train_np = x_train_np.astype('float32')
     x_test_np = x_test_np.astype('float32')

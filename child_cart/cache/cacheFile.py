@@ -104,7 +104,7 @@ def loadDatasetCsv(que):
         else:
             print("The file", filename, "does not exist in the current path.")
             # load the csv file into a pandas dataframe
-            df = DatasetGenerator(10000)
+            df = DatasetGenerator(100000)
             # store the dataframe in the cache memory
             pd.DataFrame.to_pickle(df, filename)
 

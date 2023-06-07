@@ -24,54 +24,74 @@ def DatasetGenerator(datasetSize):
     df['Month'] = df['Date'].dt.month
     df['Day'] = df['Date'].dt.day
 
-    # Add the "Item" column
-    #gender 0 - male , 1- female
-    varibility = 0.8
+    # Add the "Item" and "Gender" columns
     for i, row in df.iterrows():
         month = row["Month"]
-        if month in range(1,3):
-            if random.random() <varibility:
+        randomNumber = random.random()
+        firstBreak=0.45
+        secondBreak =0.9
+        randomErroNumber = random.random()
+        if month in range(1, 4):
+            if randomNumber < firstBreak:
                 df.at[i, "Item"] = 1
-                df.at[i,"Gender"] =0
-            else:
-                df.at[i, "Item"] = random.choice([2, 3])
-                df.at[i,"Gender"] =1
-        elif month in range(3,5):
-            if random.random() <varibility:
+                df.at[i,"Gender"] = 0
+            elif randomNumber <secondBreak:
                 df.at[i, "Item"] = 2
-                df.at[i,"Gender"] =1
+                df.at[i,"Gender"] = 1
             else:
-                df.at[i, "Item"] = random.choice([3, 4])
-                df.at[i,"Gender"] =0
-        elif month in range(5,7):
-            if random.random() < varibility:
-                df.at[i, "Item"] = 3
-                df.at[i,"Gender"] =0
-            else:
-                df.at[i, "Item"] = random.choice([4, 5])
-                df.at[i,"Gender"] =1
-        elif month in range(7,9):
-            if random.random() < varibility:
-                df.at[i, "Item"] = 4
-                df.at[i,"Gender"] =1
-            else:
-                df.at[i, "Item"] = random.choice([5, 6])
-                df.at[i,"Gender"] =0
-        elif month in range(9,11):
-            if random.random() < varibility:
-                df.at[i, "Item"] = 5
-                df.at[i,"Gender"] =0
-            else:
-                df.at[i, "Item"] = random.choice([6, 1])
-                df.at[i,"Gender"] =1
-        else:
-            if random.random() < varibility:
-                df.at[i, "Item"] = 6
-                df.at[i,"Gender"] =1
-            else:
-                df.at[i, "Item"] = random.choice([1, 2])
-                df.at[i,"Gender"] =0
+                if randomErroNumber < 0.5:
+                 df.at[i, "Item"] = random.randint(1, 8)
+                 df.at[i,"Gender"] = 1
+                else:
+                 df.at[i, "Item"] = random.randint(1, 8)
+                 df.at[i,"Gender"] = 0
 
+        elif month in range(4,7):
+            if randomNumber < firstBreak:
+                df.at[i, "Item"] = 3
+                df.at[i,"Gender"] = 0
+            elif randomNumber <secondBreak:
+                df.at[i, "Item"] = 4
+                df.at[i,"Gender"] = 1
+            else:
+                if randomErroNumber < 0.5:
+                  df.at[i, "Item"] = random.randint(1, 8)
+                  df.at[i,"Gender"] = 1
+                else:
+                  df.at[i, "Item"] = random.randint(1, 8)
+                  df.at[i,"Gender"] = 0
+
+
+        elif month in range(7,10):
+            if randomNumber < firstBreak:
+                df.at[i, "Item"] = 5
+                df.at[i,"Gender"] = 0
+            elif randomNumber <secondBreak:
+                df.at[i, "Item"] = 6
+                df.at[i,"Gender"] = 1
+            else:
+                if randomErroNumber < 0.5:
+                  df.at[i, "Item"] = random.randint(1, 8)
+                  df.at[i,"Gender"] = 1
+                else:
+                  df.at[i, "Item"] = random.randint(1, 8)
+                  df.at[i,"Gender"] = 0
+
+        else:
+            if randomNumber < firstBreak:
+                df.at[i, "Item"] = 7
+                df.at[i,"Gender"] = 0
+            elif randomNumber <secondBreak:
+                df.at[i, "Item"] = 8
+                df.at[i,"Gender"] = 1
+            else:
+                if randomErroNumber < 0.5:
+                  df.at[i, "Item"] = random.randint(1, 8)
+                  df.at[i,"Gender"] = 1
+                else:
+                 df.at[i, "Item"] = random.randint(1, 8)
+                 df.at[i,"Gender"] = 0
+              
     # Ensure that the "Item" column values are integers
     df["Item"] = df["Item"].astype(int)
     df["Gender"] = df["Gender"].astype(int)
