@@ -30,6 +30,7 @@ def splitDataset():
     # Split the data into training and testing sets
     try:
         train_data, test_data, train_labels, test_labels = train_test_split(df[['Month','Gender']], df['Item'], test_size=0.01)
+        
     except Exception as e:
             print("Error :", e)
     #convert to numpy
@@ -42,7 +43,18 @@ def splitDataset():
     #convert shape
     x_train_np = x_train_np.reshape(99000, 2)
     x_test_np = x_test_np.reshape(1000, 2)
+    
+    new_array = []
 
+    for i in range(99000):
+        data =  [x_train_np[i][0], x_train_np[i][1], y_train_np[i]]
+        new_array.append(data)
+        
+    print(len(new_array))
+    
+    for i in range(10):
+        print(new_array[i])
+        
     x_train_np = x_train_np.astype('float32')
     x_test_np = x_test_np.astype('float32')
 
@@ -51,8 +63,8 @@ def splitDataset():
 
    
     # y output devide into 10 categories
-    y_train_np = to_categorical(y_train_np, 7)
-    y_test_np = to_categorical(y_test_np, 7)
+    y_train_np = to_categorical(y_train_np, 9)
+    y_test_np = to_categorical(y_test_np, 9)
    
     y_test_np = y_test_np.argmax(axis=-1)
     print("Dataset Splited")
