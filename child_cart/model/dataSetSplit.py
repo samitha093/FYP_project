@@ -12,21 +12,22 @@ root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, root_path)
 # Import the modules
 from cache.cacheFile import *
-# from model.asyncDataLoader import *
 
 train_array = []
 
 #mannulay data insert function call
-
 def dataSaveTest(train_array):
     num=0;
+    #data set size for one time insert
     oneTimeDataSetSize=2
     arrayLength=len(train_array)
+    #time for wait next insertion
+    timeForWaitInSeconds=10
     for j in range(int(arrayLength/oneTimeDataSetSize)):
-        time.sleep(5)
+        time.sleep(timeForWaitInSeconds)
         for i in range(2):
-            print(num)
-            print(train_array[i])
+            # print(num)
+            # print(train_array[i])
             # print(len(train_array))
             new_row = train_array[num]
             q = queue.Queue()
@@ -35,9 +36,9 @@ def dataSaveTest(train_array):
             t1.join()
             result = q.get()
             my_data=result
-            print(len(my_data))
-            print(type(my_data))
-            print((my_data))
+            # print(len(my_data))
+            # print(type(my_data))
+            # print((my_data))
             num +=1
 
 
@@ -78,7 +79,7 @@ def splitDataset():
         data =  [x_train_np[i][0], x_train_np[i][1], y_train_np[i]]
         train_array.append(data)
     
-    print(type(train_array)) 
+    # print(type(train_array)) 
     #apply thread to add user  seleted data set insert mannualy for testing
     thread = threading.Thread(target=dataSaveTest,args=(train_array,))
     thread.start()
@@ -95,12 +96,12 @@ def splitDataset():
     
     y_test_np = y_test_np.argmax(axis=-1)
     print("Dataset Splited")
-    for i in range(100):
-        time.sleep(3)
-        print("main thread")
+    # for i in range(100):
+    #     time.sleep(3)
+    #     print("main thread")
     return x_train_np, y_train_np,x_test_np,y_test_np
 
-splitDataset()
+
 #split recoded dataset
 def splitCartData():
     sizeOfDataset =3
