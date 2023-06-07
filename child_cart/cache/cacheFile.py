@@ -332,12 +332,15 @@ def updataCartData(new_row,que):
     except Exception as e:
         print("An error occurred:", str(e))
         return None
-#add dummy data
+# add dummy data
 # q = queue.Queue()
-# for i in range(1000):
+# for i in range(10):
 #     new_row = [3, 0, 0]
 #     updataCartData(new_row,q)
+    
 # print("findished")
+# loadCartData(q)
+
 def deleteCartDataItems(itemCount,que):
     global cartData_lock
     try:

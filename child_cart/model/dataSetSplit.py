@@ -5,15 +5,45 @@ from keras.utils import to_categorical
 import os
 import sys
 import queue
-
+import threading
+import time
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 # Add the root and client4 directories to the Python path
 sys.path.insert(0, root_path)
 # Import the modules
 from cache.cacheFile import *
+# from model.asyncDataLoader import *
+
+train_array = []
+
+#mannulay data insert function call
+
+def dataSaveTest(train_array):
+    num=0;
+    oneTimeDataSetSize=2
+    arrayLength=len(train_array)
+    for j in range(int(arrayLength/oneTimeDataSetSize)):
+        time.sleep(5)
+        for i in range(2):
+            print(num)
+            print(train_array[i])
+            # print(len(train_array))
+            new_row = train_array[num]
+            q = queue.Queue()
+            t1=threading.Thread(target=updataCartData,args=(new_row,q,))
+            t1.start()
+            t1.join()
+            result = q.get()
+            my_data=result
+            print(len(my_data))
+            print(type(my_data))
+            print((my_data))
+            num +=1
+
 
 #split generated dataset
 def splitDataset():
+    global train_array
     #Load  the dataset from the CSV file
     try:
         # df = loadDatasetCsv()
@@ -44,32 +74,33 @@ def splitDataset():
     x_train_np = x_train_np.reshape(99000, 2)
     x_test_np = x_test_np.reshape(1000, 2)
     
-    new_array = []
-
     for i in range(99000):
         data =  [x_train_np[i][0], x_train_np[i][1], y_train_np[i]]
-        new_array.append(data)
-        
-    print(len(new_array))
+        train_array.append(data)
     
-    for i in range(10):
-        print(new_array[i])
-        
+    print(type(train_array)) 
+    #apply thread to add user  seleted data set insert mannualy for testing
+    thread = threading.Thread(target=dataSaveTest,args=(train_array,))
+    thread.start()
+    
     x_train_np = x_train_np.astype('float32')
     x_test_np = x_test_np.astype('float32')
 
     x_train_np /= 12
     x_test_np /= 12
 
-   
     # y output devide into 10 categories
     y_train_np = to_categorical(y_train_np, 9)
     y_test_np = to_categorical(y_test_np, 9)
-   
+    
     y_test_np = y_test_np.argmax(axis=-1)
     print("Dataset Splited")
+    for i in range(100):
+        time.sleep(3)
+        print("main thread")
     return x_train_np, y_train_np,x_test_np,y_test_np
 
+splitDataset()
 #split recoded dataset
 def splitCartData():
     sizeOfDataset =3
