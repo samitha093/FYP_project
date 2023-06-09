@@ -16,7 +16,7 @@ from cache.cacheFile import *
 train_array = []
 
 #mannulay data insert function call
-def dataSaveTest(train_array):
+def dataSaveTest(train_array,oneTimeDataSetSize,timeForWaitInSeconds):
     num=0;
     #data set size for one time insert
     oneTimeDataSetSize=250
@@ -56,7 +56,7 @@ def dataSaveTest(train_array):
 
 
 #split generated dataset
-def splitDataset():
+def splitDataset(oneTimeDataSetSize,timeForWaitInSeconds):
     global train_array
     #Load  the dataset from the CSV file
     try:
@@ -94,7 +94,7 @@ def splitDataset():
     
     # print(type(train_array)) 
     #apply thread to add user  seleted data set insert mannualy for testing
-    thread = threading.Thread(target=dataSaveTest,args=(train_array,))
+    thread = threading.Thread(target=dataSaveTest,args=(train_array,oneTimeDataSetSize,timeForWaitInSeconds))
     thread.start()
     
     x_train_np = x_train_np.astype('float32')

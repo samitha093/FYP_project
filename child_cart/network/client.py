@@ -42,7 +42,9 @@ TIME_ARRAY = [0] * 5
 MODEL=create_model()
 #define size for training
 dataSetSizeForTraining = 250
-x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
+#time delay define for wait for second dataset adding
+timeForWaitInSeconds = 60
+x_train_np, y_train_np,x_test_np,y_test_np =splitDataset(dataSetSizeForTraining,timeForWaitInSeconds)
 
 def clientconfigurations():
     global HOST
