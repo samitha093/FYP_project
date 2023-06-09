@@ -233,7 +233,7 @@ def backgroudNetworkProcess(type):
         cartData = int(result)
         print("Cart Data size: ",cartData)
         #compare size of the dataset for globla aggregation
-        if cartData >= 100:
+        if cartData >= 250:
             if conType != "KERNEL":
                 conType = "KERNEL"
                 print("Changed Connection Mode to " + conType)

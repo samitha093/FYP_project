@@ -19,27 +19,40 @@ train_array = []
 def dataSaveTest(train_array):
     num=0;
     #data set size for one time insert
-    oneTimeDataSetSize=2
+    oneTimeDataSetSize=250
     arrayLength=len(train_array)
     #time for wait next insertion
     timeForWaitInSeconds=10
-    for j in range(int(arrayLength/oneTimeDataSetSize)):
+    lengthOfLoop=int(arrayLength/oneTimeDataSetSize)
+    for j in range(lengthOfLoop):
         time.sleep(timeForWaitInSeconds)
-        for i in range(2):
-            # print(num)
-            # print(train_array[i])
-            # print(len(train_array))
-            new_row = train_array[num]
-            q = queue.Queue()
-            t1=threading.Thread(target=updataCartData,args=(new_row,q,))
-            t1.start()
-            t1.join()
-            result = q.get()
-            my_data=result
-            # print(len(my_data))
-            # print(type(my_data))
-            # print((my_data))
-            num +=1
+        q = queue.Queue()
+        t1=threading.Thread(target=getCartDataLenght,args=(q,))
+        t1.daemon = True
+        t1.start()
+        t1.join()
+        result = q.get()
+        cartDataLength = int(result)
+        # print("Cart Data size: ",cartDataLength)
+        if(cartDataLength <oneTimeDataSetSize):
+            for i in range(oneTimeDataSetSize):
+                # print(num)
+                # print(train_array[i])
+                # print(len(train_array))
+                new_row = train_array[num]
+                q = queue.Queue()
+                t1=threading.Thread(target=updataCartData,args=(new_row,q,))
+                t1.start()
+                t1.join()
+                result = q.get()
+                my_data=result
+                # print(len(my_data))
+                # print(type(my_data))
+                # print((my_data))
+                num +=1
+            # print("Cart data add")
+        else:
+          lengthOfLoop +=1
 
 
 #split generated dataset
@@ -101,6 +114,7 @@ def splitDataset():
     #     print("main thread")
     return x_train_np, y_train_np,x_test_np,y_test_np
 
+splitDataset()
 
 #split recoded dataset
 def splitCartData():
