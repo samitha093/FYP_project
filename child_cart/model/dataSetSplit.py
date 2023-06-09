@@ -114,11 +114,11 @@ def splitDataset():
     #     print("main thread")
     return x_train_np, y_train_np,x_test_np,y_test_np
 
-splitDataset()
+# splitDataset()
 
 #split recoded dataset
-def splitCartData():
-    sizeOfDataset =3
+def splitCartData(sizeOfDataset):
+    sizeOfDataset =250
     #Load  the dataset from the CSV file
     print("READ DATA SET")
     try:
@@ -143,13 +143,13 @@ def splitCartData():
     y_train_np = train_labels.to_numpy()
 
     #convert shape
-    x_train_np = x_train_np.reshape(3, 2)
+    x_train_np = x_train_np.reshape(sizeOfDataset, 2)
     x_train_np = x_train_np.astype('float32')
 
 
     x_train_np /= 12
     # y output devide into 10 categories
-    y_train_np = to_categorical(y_train_np, 7)
+    y_train_np = to_categorical(y_train_np, 9)
     
     return x_train_np, y_train_np
 # splitCartData()

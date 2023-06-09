@@ -22,12 +22,12 @@ def resetProject():
 
 
 #remove stored data in carData file
-def recodeDataRemove():
+def recodeDataRemove(dataSetSizeForTraining):
     try:
         #3 mean number of records
         # deleteCartDataItems(3)
         q = queue.Queue()
-        t1=threading.Thread(target=deleteCartDataItems,args=(3,q,))
+        t1=threading.Thread(target=deleteCartDataItems,args=(dataSetSizeForTraining,q,))
         t1.start()
         t1.join()
         result = q.get()
@@ -37,7 +37,7 @@ def recodeDataRemove():
         print("Error occurred while writing data to the CSV file:", e)  
 
 #Globle aggregation process
-def globleAggregationProcess(model,x_test_np,y_test_np,CULSTER_SIZE):
+def globleAggregationProcess(model,x_test_np,y_test_np,CULSTER_SIZE,dataSetSizeForTraining):
           print("Strat local training ------->")
           try:
             #  localModelWeights=loadLocalCartModelData()
@@ -54,20 +54,19 @@ def globleAggregationProcess(model,x_test_np,y_test_np,CULSTER_SIZE):
              print("Error occurred while loading model weights:", e)
 
           #traing model using cartdata
-          print("Split dataset")
-          x_train,y_train = splitCartData()
-          continuoustrainModel(model,x_train,y_train)
+          print("Split local dataset")
+          x_train,y_train = splitCartData(dataSetSizeForTraining)
+          model = continuoustrainModel(model,x_train,y_train)
           #test model using local data
-          getModelAccuracy(model,x_test_np,y_test_np)
+          localModelAccuray = getModelAccuracy(model,x_test_np,y_test_np)
           #adding differential privacy
           differentialPrivacy(model,x_test_np,y_test_np)
           #clear the csv file
-          recodeDataRemove()
+          recodeDataRemove(dataSetSizeForTraining)
           #aggregate the models
           modelAggregation(model,x_test_np,y_test_np,CULSTER_SIZE)
           #remove received files
-          print("5")
-          
+                  
           removeFiles()
           return "Aggregated"
 

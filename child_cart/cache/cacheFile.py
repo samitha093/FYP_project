@@ -341,7 +341,7 @@ def updataCartData(new_row,que):
 # print("findished")
 # loadCartData(q)
 
-def deleteCartDataItems(itemCount,que):
+def deleteCartDataItemstaItems(itemCount,que):
     global cartData_lock
     try:
         cartData_lock.acquire()

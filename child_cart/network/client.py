@@ -40,6 +40,8 @@ CART_TYPE = ""
 LOCALMODELACCURACY =0
 TIME_ARRAY = [0] * 5
 MODEL=create_model()
+#define size for training
+dataSetSizeForTraining = 250
 x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
 
 def clientconfigurations():
@@ -209,7 +211,7 @@ def time_cal():
 def backgroudNetworkProcess(type):
     global TIME_ARRAY,TEMPUSERID,mySocket
     global CART_TYPE,CULSTER_SIZE,conType
-    global RECIVED_MODELPARAMETERLIST
+    global RECIVED_MODELPARAMETERLIST ,dataSetSizeForTraining
     global x_test_np
     global y_test_np
     CART_TYPE = type
@@ -274,7 +276,7 @@ def backgroudNetworkProcess(type):
                     if conType != "SHELL":
                         conType = "SHELL"
                     TIME_ARRAY[3] = time.time() ## time stap 4
-                    globleAggregationProcess(MODEL,x_test_np,y_test_np,CULSTER_SIZE)
+                    globleAggregationProcess(MODEL,x_test_np,y_test_np,CULSTER_SIZE,dataSetSizeForTraining)
                     localModelAnalize(x_test_np,y_test_np)
                     TIME_ARRAY[4] = time.time() ## time stap 5
                     break
