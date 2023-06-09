@@ -34,7 +34,9 @@ def dataSaveTest(train_array,oneTimeDataSetSize,timeForWaitInSeconds):
         result = q.get()
         cartDataLength = int(result)
         # print("Cart Data size: ",cartDataLength)
-        if(cartDataLength <oneTimeDataSetSize):
+        if(cartDataLength < oneTimeDataSetSize):
+            if(num >= 98000):
+                num =0
             for i in range(oneTimeDataSetSize):
                 # print(num)
                 # print(train_array[i])
