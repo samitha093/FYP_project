@@ -73,6 +73,11 @@ def modelAggregation(model,x_test_np,y_test_np,CULSTER_SIZE):
     print("Aggregated model ------>>")
     acc = getModelAccuracy(model,x_test_np,y_test_np)
 
+    #write aggregated results in text file
+    with open('aggregatedModelAccuracy.txt', 'a') as file:
+    # Write the number to the file
+        file.write(str(acc) + '\n')
+
     print("Aggregrated sucessfuly  ")
 
     #save averaged parameters
@@ -95,6 +100,7 @@ def aggregateRecModels(aggregation_cluster_size,parameterArray,acc_array,x_test_
         print("Aggregated --->>")
         kernal_Model.set_weights(averaged_weights)
         acc_array[size-1] = int(getModelAccuracy(kernal_Model,x_test_np,y_test_np))
-    
  
     return averaged_weights
+
+
