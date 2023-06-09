@@ -19,10 +19,10 @@ train_array = []
 def dataSaveTest(train_array,oneTimeDataSetSize,timeForWaitInSeconds):
     num=0;
     #data set size for one time insert
-    oneTimeDataSetSize=250
+    # oneTimeDataSetSize=250
     arrayLength=len(train_array)
     #time for wait next insertion
-    timeForWaitInSeconds=10
+    # timeForWaitInSeconds=10
     lengthOfLoop=int(arrayLength/oneTimeDataSetSize)
     for j in range(lengthOfLoop):
         time.sleep(timeForWaitInSeconds)
@@ -55,7 +55,7 @@ def dataSaveTest(train_array,oneTimeDataSetSize,timeForWaitInSeconds):
             # print("Cart data add")
         else:
           lengthOfLoop +=1
-
+    print("dataset 250 added")
 
 #split generated dataset
 def splitDataset(oneTimeDataSetSize,timeForWaitInSeconds):
