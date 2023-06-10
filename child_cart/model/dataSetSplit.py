@@ -38,9 +38,6 @@ def dataSaveTest(train_array,oneTimeDataSetSize,timeForWaitInSeconds):
             if(num >= 98000):
                 num =0
             for i in range(oneTimeDataSetSize):
-                # print(num)
-                # print(train_array[i])
-                # print(len(train_array))
                 new_row = train_array[num]
                 q = queue.Queue()
                 t1=threading.Thread(target=updataCartData,args=(new_row,q,))
@@ -48,11 +45,7 @@ def dataSaveTest(train_array,oneTimeDataSetSize,timeForWaitInSeconds):
                 t1.join()
                 result = q.get()
                 my_data=result
-                # print(len(my_data))
-                # print(type(my_data))
-                # print((my_data))
                 num +=1
-            # print("Cart data add")
         else:
           lengthOfLoop +=1
     print("dataset 250 added")
@@ -93,8 +86,7 @@ def splitDataset(oneTimeDataSetSize,timeForWaitInSeconds):
     for i in range(99000):
         data =  [x_train_np[i][0], x_train_np[i][1], y_train_np[i]]
         train_array.append(data)
-    
-    # print(type(train_array)) 
+
     #apply thread to add user  seleted data set insert mannualy for testing
     thread = threading.Thread(target=dataSaveTest,args=(train_array,oneTimeDataSetSize,timeForWaitInSeconds))
     thread.start()
