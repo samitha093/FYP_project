@@ -14,16 +14,16 @@ class kademlia_network:
     def __init__(self):
         self.server = Server()
         self.event_loop = asyncio.new_event_loop()
-        self.port = 0
+        self.isAvailabale = False
 
-    def create_bootstrap_node(self):
+    def create_bootstrap_node(self,myport):
         # self.event_loop.set_debug(True)
         while True:
-            myport = random.randint(49152, 65535)
+            # myport = random.randint(49152, 65535)
+            self.isAvailabale = True
             try:
                 self.event_loop.run_until_complete(self.server.listen(myport))
                 print("Boostrap node Stared on : ",myport)
-                self.port = myport
                 break
             except OSError:
                 continue
@@ -32,11 +32,7 @@ class kademlia_network:
         except KeyboardInterrupt:
             pass
         finally:
-            self.server.stop()
-            self.event_loop.close()
-
-    def get_port(self):
-        return self.port
+            print("Stoped Kademlia server ")
 
     async def connect_bootstrap_node(self,bootstrap_ip,bootstrap_port):
         bootstrap_node = (bootstrap_ip, int(bootstrap_port))
@@ -55,3 +51,11 @@ class kademlia_network:
         result = await asyncio.create_task(self.server.get(key))
         print("Data : ",result)
         return result
+    
+    def ServerStatus_bootstrap_node(self):
+        return self.isAvailabale
+    
+    def stop_server(self):
+        self.server.stop()
+        self.event_loop.stop()
+        self.isAvailabale = False

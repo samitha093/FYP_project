@@ -122,15 +122,18 @@ try:
         return jsonify({'message': "ok"})
     @app.route('/bridge/node', methods=['GET'])
     def node():
-        public_ip = requests.get('http://httpbin.org/ip').json()['origin']
-        kademlia_port = get_kademliaPort()
-        ip_address = get_local_ip_address()
-        if ip_address:
-            print(f"The IP address of the local machine is {ip_address}")
+        if getNodeStatus() is True:
+            public_ip = requests.get('http://httpbin.org/ip').json()['origin']
+            kademlia_port = get_kademliaPort()
+            ip_address = get_local_ip_address()
+            if ip_address:
+                print(f"The IP address of the local machine is {ip_address}")
+            else:
+                print("Failed to retrieve the local IP address")
+                ip_address = "0.0.0.0"
+            return jsonify({'ip': public_ip,'localip':ip_address, 'port': kademlia_port})
         else:
-            print("Failed to retrieve the local IP address")
-            ip_address = "0.0.0.0"
-        return jsonify({'ip': public_ip,'localip':ip_address, 'port': kademlia_port})
+            return jsonify({"port":0})
     @app.route('/bridge/servers', methods=['GET'])
     def server():
         serverPorts = get_ServerPort()
@@ -149,8 +152,6 @@ try:
     #post
     @app.route('/bridge/boostrap', methods=['POST'])
     def boostrapPost():
-        node_data = request.json
-        # add_boostrapNode(node_data)
         port=request.json['port']
         ip =request.json['ip']
         q = queue.Queue()
@@ -179,7 +180,7 @@ try:
     @app.route('/bridge/boostrap', methods=['DELETE'])
     def boostrapDelete():
         #get index from params
-        index = request.headers.get('index')
+        index = request.json['index']
         q = queue.Queue()
         t1=threading.Thread(target=deleteParentPortIp,args=(index,q))
         t1.start()
@@ -187,6 +188,13 @@ try:
         result = q.get()
         jsonResult = json.dumps(result)
         return jsonResult
+
+    #API for kademlia server reset
+    @app.route('/bridge/kademlia', methods=['POST'])
+    def kademlia():
+        boostrapArray =  request.data
+        kademliaData = boostrapSetup(boostrapArray)
+        return kademliaData
         
     @app.route('/bridge/nabours', methods=['GET'])
     def nabours():

@@ -11,22 +11,16 @@ from child_cart.cache.cacheFile import *
 
 def mainFunc(type = "CHILD"):
     try:
-        # print("")
-        # genCacheFile()
-        try:
-            print("")
-            t = Thread(target=app.run, kwargs={'port': 5001})
-            t.start()
-        except KeyboardInterrupt:
-            print("Keyboard interrupt received. Closing all programs...")
-            os.system("pkill -f python")
+        # starting network module
+        # network_thread = Thread(target=backgroudNetworkProcess, args=(type,))
+        # network_thread.start()
 
-        try:
-            print("")
-            # backgroudNetworkProcess(type)
-        except KeyboardInterrupt:
-            print("Keyboard interrupt received. Closing all programs...")
-            os.system("pkill -f python")
+        #starting Flask Api module
+        print("Flask API Server Started on : ",5001)
+        app.run(port=5001, debug=False)
+
     except Exception as e:
         print("An error occurred:", e)
 
+def ChildCart():
+    mainFunc()

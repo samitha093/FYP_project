@@ -2,6 +2,7 @@ import asyncio
 from asyncore import loop
 import os
 import pickle
+import socket
 import threading
 import traceback
 from aiohttp import web
@@ -16,7 +17,7 @@ from bridge.rndGen import *
 from bridge.util import *
 from bridge.kademlia import *
 
-HOST = ''
+HOST = 'http://localhost'
 BOOSTRAP_HOST=''
 BOOSTRAP_PORT = 0
 PORT = 9000
@@ -39,7 +40,10 @@ MOBILEDATARECORDER = {}
 DATARECORDER = {}
 
 KademliaNetwork = kademlia_network()
-KademliaPort = 0
+KademliaPort = 4000
+kademlaNodes = []
+nodeRestart = False
+nodeSet = False
 
 def responceModel(msgTo, data, msgFrom="SERVER"):
     return {
@@ -240,7 +244,7 @@ def function_1():
     async def cart_Server():
         global cart_server_task
         server = await asyncio.start_server(handle_client, '', PORT)
-        print(f"Server Stared on {''}:{PORT}")
+        print(f"Cart Proxy  Server Stared on {''}:{PORT}")
         try:
             async with server:
                 asyncio.create_task(server.serve_forever())
@@ -252,7 +256,7 @@ def function_1():
             print("cart server stopped.")
         server.close()
         await server.wait_closed()
-        print("Server Shutdown : ",PORT)
+        print("Cart Proxy Server Shutdown : ",PORT)
     try:
         asyncio.run(cart_Server())
     except:
@@ -265,7 +269,7 @@ def function_2():
     async def mobile_Server():
         global mobile_server_task
         mobile_server_task = await asyncio.start_server(handle_mobile, '', MOBILE_PORT)
-        print(f"Server Stared on {''}:{MOBILE_PORT}")
+        print(f"Mobile Proxy  Server Stared on {''}:{MOBILE_PORT}")
         try:
             async with mobile_server_task:
                 asyncio.create_task(mobile_server_task.serve_forever())
@@ -322,16 +326,49 @@ def function_3():
         loop.run_until_complete(asyncio.gather(*pending_tasks, return_exceptions=True))
         loop.close()
 
+def get_ServerPort():
+    return [PORT,MOBILE_PORT,HTTPPORT]
+
 def function_4():
-    global KademliaNetwork
-    KademliaNetwork.create_bootstrap_node()
+    global KademliaNetwork, KademliaPort
+    KademliaNetwork.create_bootstrap_node(KademliaPort)
 
 def get_kademliaPort():
     global KademliaNetwork, KademliaPort
-    return KademliaNetwork.get_port()
+    return KademliaPort
 
-def get_ServerPort():
-    return [PORT,MOBILE_PORT,HTTPPORT]
+def get_local_ip_address():
+    try:
+        # Create a socket object
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        # Connect the socket to a remote server
+        sock.connect(('8.8.8.8', 80))
+        # Get the local IP address
+        ip_address = sock.getsockname()[0]
+        # Close the socket
+        sock.close()
+        return ip_address
+    except socket.error:
+        return None
+
+def getNodeStatus():
+    global KademliaNetwork
+    return KademliaNetwork.ServerStatus_bootstrap_node()
+
+def boostrapSetup(data):
+    global kademlaNodes, nodeSet, nodeRestart, KademliaNetwork
+    # print(data.decode("utf-8"))
+    kademlaNodes = data
+    ServerStatus = KademliaNetwork.ServerStatus_bootstrap_node()
+    if ServerStatus is True:
+        KademliaNetwork.stop_server()
+    ServerStatus = KademliaNetwork.ServerStatus_bootstrap_node()
+    if nodeSet is False and ServerStatus is False:
+        nodeSet = True
+    public_ip = requests.get('http://httpbin.org/ip').json()['origin']
+    kademlia_port = get_kademliaPort()
+    ip_address = get_local_ip_address()
+    return {"localip":ip_address,"ip":public_ip,"port":kademlia_port}
 
 def add_boostrapNode(data):
     global KademliaNetwork
@@ -355,23 +392,25 @@ def get_nabourList():
     except Exception as e:
         traceback.print_exc()
 
-def bidge_server(host = '172.20.2.3'):
-    global HOST, KademliaNetwork
-    HOST = 'http://' + host
+def bidge_server():
+    global KademliaNetwork, kademlaNodes, nodeSet, nodeRestart
 
-    # thread1 = threading.Thread(target=function_1)
-    # thread2 = threading.Thread(target=function_2)
-    # thread3 = threading.Thread(target=function_3)
-    thread4 = threading.Thread(target=function_4)
+    thread1 = threading.Thread(target=function_1) #port : 9000
+    thread2 = threading.Thread(target=function_2) #port : 8000
+    thread3 = threading.Thread(target=function_3) #port : 5000
 
-    # thread1.start()
-    # thread2.start()
-    # thread3.start()
-    thread4.start()
+    thread1.start()
+    thread2.start()
+    thread3.start()
 
     try:
         while True:
             time.sleep(5)
+            if nodeSet is True :
+                nodeSet = False
+                thread4 = threading.Thread(target=function_4)
+                thread4.start()
+
             # name =input("What is the boostrap port? ")
             # print("Hello, " + name + "!")
             ######get cash settings for boostrap nodes #####
@@ -387,11 +426,3 @@ def bidge_server(host = '172.20.2.3'):
     except:
         print("Program stopped: Rutime exception")
     print("All threads finished.")
-
-
-
-## last part (global peer conection)
-# peerList = KademliaNetwork.getnabourList()
-# print("nabour list : ",peerList)
-
-## lst part (global peer conection peer avalability)

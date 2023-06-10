@@ -13,16 +13,10 @@ sys.path.insert(0, root_path)
 from child_cart.main import *
 from parent_cart.bridge.Main import *
 
-def child_cart(design):
-    mainFunc(design)
-
-def Bridge():
-    # host is the parent cart ip address
-    bidge_server(host = '172.20.2.3')
-
 def parent_cart():
-    # Bridge()
-    bridge_thread = threading.Thread(target=Bridge)
+    #bridge module
+    bridge_thread = threading.Thread(target=bidge_server)
     bridge_thread.daemon = True
     bridge_thread.start()
-    child_cart("LOCAL")
+    #child cart
+    ChildCart()
