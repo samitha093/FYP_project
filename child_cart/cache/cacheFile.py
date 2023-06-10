@@ -129,12 +129,17 @@ def getUpdatedList():
 
     # print(data)
     json_data_list = []
+    # print(data)
+    # Convert the list to a list of dictionaries
+    result = [{'index': item[0], 'port': item[1], 'ip': item[2]} for item in data]
 
-    for item in data:
-        json_data = json.dumps({'index': item[0], 'port': item[1], 'ip': item[2]})
-        json_data_list.append(json_data)
-    rows = [json.loads(row) for row in json_data_list]
-    return rows
+    # Convert the list of dictionaries to a JSON object
+    json_object = json.dumps(result)
+
+    # print(json_object)
+    # print(rows)
+    return json_object
+
 
 def loadParentPortIp(que):
     global parentPortIp_lock
@@ -154,13 +159,12 @@ def loadParentPortIp(que):
 
     except Exception as e:
         print("An error occurred:", e)
+
 # q = queue.Queue()
 # loadParentPortIp(q)
-#add new item
 
-        
-        
-        
+
+#add new item
 def addParentPortIp(port,ip,que):
     global parentPortIp_lock
     try:
@@ -196,7 +200,7 @@ def addParentPortIp(port,ip,que):
         print("An error occurred:", str(e))
         return None
 # q = queue.Queue()
-# addParentPortIp("9001","128.1.23",q)
+# addParentPortIp("9001","128.10.23.15",q)
 
 def updateParentPortIp(index,port,ip,que):
     global parentPortIp_lock

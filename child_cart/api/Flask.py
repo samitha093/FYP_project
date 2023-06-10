@@ -141,8 +141,8 @@ try:
         t1.start()
         t1.join()
         result = q.get()
-        jsonResult = json.dumps(result)
-        return jsonResult
+        # jsonResult = json.dumps(result)
+        return result
     
     #post
     @app.route('/bridge/boostrap', methods=['POST'])
@@ -156,8 +156,8 @@ try:
         t1.start()
         t1.join()
         result = q.get()
-        jsonResult = json.dumps(result)
-        return jsonResult
+        # jsonResult = json.dumps(result)
+        return result
 
     #put
     @app.route('/bridge/boostrap', methods=['PUT'])
@@ -170,8 +170,8 @@ try:
         t1.start()
         t1.join()
         result = q.get()
-        jsonResult = json.dumps(result)
-        return jsonResult
+        # jsonResult = json.dumps(result)
+        return result
     
     #delete
     @app.route('/bridge/boostrap', methods=['DELETE'])
@@ -183,8 +183,8 @@ try:
         t1.start()
         t1.join()
         result = q.get()
-        jsonResult = json.dumps(result)
-        return jsonResult
+        # jsonResult = json.dumps(result)
+        return result
         
     @app.route('/bridge/nabours', methods=['GET'])
     def nabours():
