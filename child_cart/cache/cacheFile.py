@@ -10,10 +10,10 @@ import threading
 import queue
 import json
 
-root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.insert(0, root_path)
-from model.dataSetGenerator import *
-from model.modelGenerator import *
+from child_cart.model.dataSetGenerator import *
+from child_cart.model.modelGenerator import *
 cwd = os.getcwd()
 cartConfigurations_lock = threading.Lock()
 datasetCsv_lock = threading.Lock()
@@ -293,13 +293,15 @@ def loadCartData(que):
         df = pd.DataFrame(cartData[1:], columns=cartData[0])
         cartData_lock.release()
         que.put(df)
-        
+        # print(df)
         return df
     
     except Exception as e:
         print("An error occurred:", e)
 
-# loadCartData()
+# q = queue.Queue()
+# loadCartData(q)
+
 def updataCartData(new_row,que):
     global cartData_lock
     # print("tred start : ",new_row)
@@ -338,12 +340,14 @@ def updataCartData(new_row,que):
         return None
 # add dummy data
 # q = queue.Queue()
-# for i in range(10):
+# for i in range(2):
 #     new_row = [3, 0, 0]
 #     updataCartData(new_row,q)
-    
+
 # print("findished")
+# q = queue.Queue()
 # loadCartData(q)
+
 
 def deleteCartDataItemstaItems(itemCount,que):
     global cartData_lock
@@ -376,8 +380,8 @@ def deleteCartDataItemstaItems(itemCount,que):
         print("Error occurred: ", str(e))
         return None
 
-
-# deleteCartDataItems(2)
+# q = queue.Queue()
+# deleteCartDataItemstaItems(38,q)
 def getCartDataLenght(que):
     global cartData_lock
     filename = "cache/cartData.pkl"

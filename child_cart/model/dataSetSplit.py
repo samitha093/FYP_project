@@ -7,11 +7,11 @@ import sys
 import queue
 import threading
 import time
-root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 # Add the root and client4 directories to the Python path
 sys.path.insert(0, root_path)
 # Import the modules
-from cache.cacheFile import *
+from child_cart.cache.cacheFile import *
 
 train_array = []
 
@@ -108,7 +108,7 @@ def splitDataset(oneTimeDataSetSize,timeForWaitInSeconds):
     #     print("main thread")
     return x_train_np, y_train_np,x_test_np,y_test_np
 
-# splitDataset()
+# splitDataset(20,2)
 
 #split recoded dataset
 def splitCartData(sizeOfDataset):

@@ -1,5 +1,7 @@
 #Flask for ui handing and request handling
 import json
+import threading
+import queue
 import warnings
 warnings.filterwarnings("ignore", message="This is a development server. Do not use it in a production deployment.")
 
@@ -32,6 +34,7 @@ selectedItem ="Item 0"
 ItemListArray = []
 totalBill = 0
 currentGender = 1
+currentMonth = 11
 currentThreandArray=[]
 
 app = Flask(__name__, template_folder='../templates')
@@ -192,3 +195,35 @@ try:
         return jsonify({'message': peerList})
 except FileNotFoundError:
     print("Main.py file not found")
+
+#api for user selected items save into cart
+"""
+Json object look like this
+  [{
+    "item": "5"
+  },
+  {
+    "item": "6"
+  },
+  {
+    "item": "7"
+  }
+  ]
+  """
+@app.route('/cartItems', methods=['POST'])
+def cartItemsPost():
+    global currentGender,currentMonth
+    data = request.get_json()  # Retrieve the JSON object from the request
+    # print("data : ",data)
+    for item in data:
+        item_value = int(item['item']) # Access the 'item' key within each object
+        # print("item_value : ",item_value)
+        new_row=[currentMonth,item_value,currentGender]
+        q = queue.Queue()
+        t1=threading.Thread(target=updataCartData,args=(new_row,q,))
+        t1.start()
+        t1.join()
+        result = q.get()
+
+    return jsonify({'message': "added"})
+
