@@ -30,6 +30,9 @@ SHELL_TIMEOUT = 3*60
 SYNC_CONST = 1
 CULSTER_SIZE = 3
 
+HOSTHISTORT = ""
+HOSTLIST = []
+
 mySocket = None
 conType = "SHELL"
 RECIVED_MODELPARAMETERLIST =[]
@@ -86,6 +89,7 @@ MOBILEMODELPARAMETERS  =bytes(1024) #set default values
 ########################################################################a
 
 def mainFunn(RECIVER_TIMEOUT, SYNC_CONST, SOCKET_HOST):
+    print("New connection starting with ", SOCKET_HOST)
     global TIME_ARRAY,CART_TYPE,mySocket,TEMPUSERID, conType
     global x_test_np
     global y_test_np
@@ -103,6 +107,8 @@ def mainFunn(RECIVER_TIMEOUT, SYNC_CONST, SOCKET_HOST):
 
         #Establish connection
         TEMPUSERID = mySocket.connect()
+        if TEMPUSERID == "":
+            return
         print("Starting data reciver and sender")
         mySocket.start_receiver()
         mySocket.start_sender()
@@ -162,16 +168,34 @@ def connectNetwork():
     global KERNAL_TIMEOUT, SHELL_TIMEOUT, SYNC_CONST, TIME_ARRAY, conType,MODELPARAMETERS,MOBILEMODELPARAMETERS
     while True:
         try:
+            print("loop call triggered - Start")
             if conType == conctionType.KERNEL.value:
-                mainFunn(KERNAL_TIMEOUT,SYNC_CONST,"127.0.0.1")
+                mainFunn(KERNAL_TIMEOUT,SYNC_CONST,hostSelector())
             else:
                 MODELPARAMETERS = encodeModelParameters()
                 MOBILEMODELPARAMETERS  =encodeModelParametersForMobile()
-                mainFunn(SHELL_TIMEOUT,SYNC_CONST,"127.0.0.1")
-            print("loop call triggered")
+                mainFunn(SHELL_TIMEOUT,SYNC_CONST,hostSelector())
+            print("loop call triggered - Stop")
+            time.sleep(15)
         except KeyboardInterrupt:
             print("Networking loop error")
+        except:
+            print("host not found!")
         time.sleep(5)
+
+def hostSelector():
+    global HOSTHISTORT, HOSTLIST, LOCALHOST, HOST
+    if len(HOSTLIST) == 0:
+        if HOSTHISTORT == LOCALHOST:
+            HOSTHISTORT = HOST
+        else:
+            HOSTHISTORT = LOCALHOST
+        return HOSTHISTORT
+    else:
+        maximumNumber = len(HOSTLIST)
+        randomIndex = random.randint(0, maximumNumber - 1)
+        HOSTHISTORT = HOSTLIST[randomIndex]
+        return HOSTHISTORT
 
 def get_config():
     global HOST

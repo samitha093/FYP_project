@@ -9,10 +9,10 @@ from child_cart.cache.cacheFile import *
 from child_cart.db.sqlDbConnection import *
 from child_cart.cache.cacheFile import *
 
-def mainFunc(type = "CHILD"):
+def mainFunc(NetworkModule = True):
     try:
         # starting network module
-        if type == "CHILD":
+        if NetworkModule is True:
             network_thread = Thread(target=backgroudNetworkProcess)
             network_thread.start()
 
@@ -23,5 +23,5 @@ def mainFunc(type = "CHILD"):
     except Exception as e:
         print("An error occurred:", e)
 
-def ChildCart(type):
-    mainFunc(type)
+def ChildCart(NetworkModule):
+    mainFunc(NetworkModule)

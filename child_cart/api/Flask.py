@@ -115,7 +115,14 @@ def nconfigPost():
     result = q.get()
     clientconfigurations()
     return jsonify({'message': result})
+
 try:
+    from parent_cart.bridge.Main import *
+    create_api_endpoint = True
+except ImportError:
+    create_api_endpoint = False
+
+if create_api_endpoint:
     from parent_cart.bridge.Main import *
     @app.route('/bridge/hello', methods=['GET'])
     def hello():
@@ -200,5 +207,3 @@ try:
     def nabours():
         peerList = get_nabourList()
         return jsonify(peerList)
-except FileNotFoundError:
-    print("Main.py file not found")
