@@ -205,13 +205,12 @@ def time_cal():
 
 
 #----------------------background process --------------------------------
-def backgroudNetworkProcess(type):
+def backgroudNetworkProcess():
     global TIME_ARRAY,TEMPUSERID,mySocket
     global CART_TYPE,CULSTER_SIZE,conType
     global RECIVED_MODELPARAMETERLIST
     global x_test_np
     global y_test_np
-    CART_TYPE = type
     print("NETWORKING ......")
 
     clientconfigurations()

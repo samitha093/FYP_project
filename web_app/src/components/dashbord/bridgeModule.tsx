@@ -16,9 +16,9 @@ const BridgeModule: React.FC<AppProps> = ({ darkMode }) => {
     const myHost = sessionStorage.getItem('host');
     axios.get(`${myHost}/bridge/servers`)
       .then(response => {
-        setCartPort(response.data.message.CARTPORT);
-        setMobilePort(response.data.message.MOBILEPORT);
-        setHTTPPort(response.data.message.HTTPPORT);
+        setCartPort(response.data.CARTPORT);
+        setMobilePort(response.data.MOBILEPORT);
+        setHTTPPort(response.data.HTTPPORT);
       })
       .catch(error => {
         console.error(error);
