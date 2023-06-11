@@ -330,8 +330,8 @@ def get_ServerPort():
     return [PORT,MOBILE_PORT,HTTPPORT]
 
 def function_4():
-    global KademliaNetwork, KademliaPort
-    KademliaNetwork.create_bootstrap_node(KademliaPort)
+    global KademliaNetwork, KademliaPort,kademlaNodes
+    KademliaNetwork.create_bootstrap_node(KademliaPort, kademlaNodes)
 
 def get_kademliaPort():
     global KademliaNetwork, KademliaPort
@@ -383,14 +383,18 @@ def add_boostrapNode(data):
 
 def get_nabourList():
     global KademliaNetwork
-    print("boostrap node list getting started...")
-    try:
-        peerList = asyncio.run(KademliaNetwork.getnabourList())
-        print("boostrap node list getting completed...")
-        print("nabour list : ",peerList)
-        return peerList
-    except Exception as e:
-        traceback.print_exc()
+    ServerStatus = KademliaNetwork.ServerStatus_bootstrap_node()
+    if ServerStatus is True:
+        print("boostrap node list getting started...")
+        try:
+            peerList = asyncio.run(KademliaNetwork.getnabourList())
+            print("boostrap node list getting completed...")
+            print("nabour list : ",peerList)
+            return peerList
+        except Exception as e:
+            traceback.print_exc()
+    else:
+        return []
 
 def bidge_server():
     global KademliaNetwork, kademlaNodes, nodeSet, nodeRestart

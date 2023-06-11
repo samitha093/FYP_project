@@ -34,15 +34,7 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
     axios.get(`${myHost}/bridge/hello`)
       .then(response => {
         setIsBridge(true)
-        //get nabour list
-        // axios.get(`${myHost}/bridge/nabours`)
-        //   .then(response => {
-        //     setNabourArray(response.data.message)
-        //   })
-        //   .catch(error => {
-        //     console.error(error);
-        //   });
-        //get history boostrap nodes
+        // get history boostrap nodes
         axios.get(`${myHost}/bridge/boostrap`)
           .then(response => {
             setBoostrapArray(response.data)
@@ -74,7 +66,6 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
 
   const handleCloseClick = (e: any) => {
     setBoostrapArray([])
-    console.log(e)
     const myHost = sessionStorage.getItem('host');
     axios
       .delete(`${myHost}/bridge/boostrap`, {
@@ -84,12 +75,26 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
       })
       .then((response) => {
         setBoostrapArray(response.data)
-        console.log(response.data)
+        // console.log(response.data)
       })
       .catch((error) => {
         console.log(error);
       });
   };
+
+  const refreshNabourList =()=>{
+    setNabourArray([])
+    const myHost = sessionStorage.getItem('host');
+      // get nabour list
+      axios.get(`${myHost}/bridge/nabours`)
+        .then(response => {
+          setNabourArray(response.data)
+          // console.log(response.data)
+        })
+        .catch(error => {
+          console.error(error);
+        });
+  }
 
     return (
         <Flex
@@ -113,6 +118,7 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
             color="white"
             boxShadow="lg"
             _hover={{ bg: "teal.700" }}
+            onClick={refreshNabourList}
           >
             <RepeatIcon />
           </Button>

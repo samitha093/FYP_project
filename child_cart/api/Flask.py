@@ -175,7 +175,7 @@ try:
         result = q.get()
         jsonResult = json.dumps(result)
         return jsonResult
-    
+
     #delete
     @app.route('/bridge/boostrap', methods=['DELETE'])
     def boostrapDelete():
@@ -195,10 +195,10 @@ try:
         boostrapArray =  request.data
         kademliaData = boostrapSetup(boostrapArray)
         return kademliaData
-        
+
     @app.route('/bridge/nabours', methods=['GET'])
     def nabours():
         peerList = get_nabourList()
-        return jsonify({'message': peerList})
+        return jsonify(peerList)
 except FileNotFoundError:
     print("Main.py file not found")

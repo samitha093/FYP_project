@@ -19,4 +19,4 @@ def parent_cart():
     bridge_thread.daemon = True
     bridge_thread.start()
     #child cart
-    ChildCart()
+    ChildCart(type = "PARENT")

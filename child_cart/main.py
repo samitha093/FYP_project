@@ -12,8 +12,9 @@ from child_cart.cache.cacheFile import *
 def mainFunc(type = "CHILD"):
     try:
         # starting network module
-        # network_thread = Thread(target=backgroudNetworkProcess, args=(type,))
-        # network_thread.start()
+        if type == "CHILD":
+            network_thread = Thread(target=backgroudNetworkProcess)
+            network_thread.start()
 
         #starting Flask Api module
         print("Flask API Server Started on : ",5001)
@@ -22,5 +23,5 @@ def mainFunc(type = "CHILD"):
     except Exception as e:
         print("An error occurred:", e)
 
-def ChildCart():
-    mainFunc()
+def ChildCart(type):
+    mainFunc(type)
