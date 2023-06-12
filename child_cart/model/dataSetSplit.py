@@ -52,7 +52,7 @@ def dataSaveTest(train_array,oneTimeDataSetSize,timeForWaitInSeconds):
 
 #split generated dataset
 def splitDataset(oneTimeDataSetSize,timeForWaitInSeconds):
-    global train_array
+    # global train_array
     #Load  the dataset from the CSV file
     try:
         # df = loadDatasetCsv()
@@ -83,13 +83,13 @@ def splitDataset(oneTimeDataSetSize,timeForWaitInSeconds):
     x_train_np = x_train_np.reshape(99000, 2)
     x_test_np = x_test_np.reshape(1000, 2)
     
-    for i in range(99000):
-        data =  [x_train_np[i][0], x_train_np[i][1], y_train_np[i]]
-        train_array.append(data)
+    # for i in range(99000):
+    #     data =  [x_train_np[i][0], x_train_np[i][1], y_train_np[i]]
+    #     train_array.append(data)
 
-    #apply thread to add user  seleted data set insert mannualy for testing
-    thread = threading.Thread(target=dataSaveTest,args=(train_array,oneTimeDataSetSize,timeForWaitInSeconds))
-    thread.start()
+    # #apply thread to add user  seleted data set insert mannualy for testing
+    # thread = threading.Thread(target=dataSaveTest,args=(train_array,oneTimeDataSetSize,timeForWaitInSeconds))
+    # thread.start()
     
     x_train_np = x_train_np.astype('float32')
     x_test_np = x_test_np.astype('float32')
