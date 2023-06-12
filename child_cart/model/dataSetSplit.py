@@ -15,43 +15,6 @@ from child_cart.cache.cacheFile import *
 
 train_array = []
 num=0
-#mannulay data insert function call
-def dataSaveTest():
-    global train_array,num
-    oneTimeDataSetSize =250 
-    #data set size for one time insert
-    # oneTimeDataSetSize=250
-    arrayLength=len(train_array)
-    #time for wait next insertion
-    # timeForWaitInSeconds=10
-    lengthOfLoop=int(arrayLength/oneTimeDataSetSize)
-
-    q = queue.Queue()
-    t1=threading.Thread(target=getCartDataLenght,args=(q,))
-    t1.daemon = True
-    t1.start()
-    t1.join()
-    result = q.get()
-    cartDataLength = int(result)
-    # print("Cart Data size: ",cartDataLength)
-    if(cartDataLength < oneTimeDataSetSize):
-        if(num >= 98000):
-            num =0
-        for i in range(oneTimeDataSetSize):
-            new_row = train_array[num]
-            q = queue.Queue()
-            t1=threading.Thread(target=updataCartData,args=(new_row,q,))
-            t1.start()
-            t1.join()
-            result = q.get()
-            my_data=result
-            num +=1
-
-        print("dataset 250 added")
-        return "dataset 250 added"
-    else:
-        print("currently have 250 dataset. No need to add!")
-        return "currently have 250 dataset. No need to add!"
 
 #split generated dataset
 def splitDataset():
@@ -150,3 +113,43 @@ def splitCartData(sizeOfDataset):
     
     return x_train_np, y_train_np
 # splitCartData()
+
+
+
+#mannulay data insert function call
+def dataSaveTest():
+    global train_array,num
+    oneTimeDataSetSize =250 
+    #data set size for one time insert
+    # oneTimeDataSetSize=250
+    arrayLength=len(train_array)
+    #time for wait next insertion
+    # timeForWaitInSeconds=10
+    lengthOfLoop=int(arrayLength/oneTimeDataSetSize)
+
+    q = queue.Queue()
+    t1=threading.Thread(target=getCartDataLenght,args=(q,))
+    t1.daemon = True
+    t1.start()
+    t1.join()
+    result = q.get()
+    cartDataLength = int(result)
+    # print("Cart Data size: ",cartDataLength)
+    if(cartDataLength < oneTimeDataSetSize):
+        if(num >= 98000):
+            num =0
+        for i in range(oneTimeDataSetSize):
+            new_row = train_array[num]
+            q = queue.Queue()
+            t1=threading.Thread(target=updataCartData,args=(new_row,q,))
+            t1.start()
+            t1.join()
+            result = q.get()
+            my_data=result
+            num +=1
+
+        print("dataset 250 added")
+        return "dataset 250 added"
+    else:
+        print("currently have 250 dataset. No need to add!")
+        return "currently have 250 dataset. No need to add!"

@@ -124,22 +124,13 @@ def getUpdatedList():
     parentPortIp_lock.acquire()
     with open(filename, 'rb') as f:
         data = pickle.load(f)  
-    
     parentPortIp_lock.release()
-
-    # print(data)
     json_data_list = []
-    # print(data)
     # Convert the list to a list of dictionaries
     result = [{'index': item[0], 'port': item[1], 'ip': item[2]} for item in data]
-
     # Convert the list of dictionaries to a JSON object
     json_object = json.dumps(result)
-
-    # print(json_object)
-    # print(rows)
     return json_object
-
 
 def loadParentPortIp(que):
     global parentPortIp_lock
@@ -148,21 +139,16 @@ def loadParentPortIp(que):
         if os.path.isfile(filename):
             rows = getUpdatedList()
             que.put(rows)
-            # print(rows)
             return rows
         else:
             print("The file", filename, "does not exist in the current path.")
-            # Define the header array
-            # print([])
             que.put([])
             return []
-
     except Exception as e:
         print("An error occurred:", e)
 
-# q = queue.Queue()
+q = queue.Queue()
 # loadParentPortIp(q)
-
 
 #add new item
 def addParentPortIp(port,ip,que):
@@ -199,8 +185,8 @@ def addParentPortIp(port,ip,que):
     except Exception as e:
         print("An error occurred:", str(e))
         return None
-# q = queue.Queue()
-# addParentPortIp("9001","128.10.23.15",q)
+q = queue.Queue()
+# addParentPortIp("1000","128.10.23.15",q)
 
 def updateParentPortIp(index,port,ip,que):
     global parentPortIp_lock
@@ -220,20 +206,23 @@ def updateParentPortIp(index,port,ip,que):
                portIp = pickle.load(f)                         
             sizeOfPortIp=len(portIp)
             for i in range(sizeOfPortIp):
-                if(portIp[i][0] == index):                    
-                    portIp[i]=[index,port,ip]
-                print(portIp[i][0])
+                if(int(portIp[i][0] )== int(index)):  
+                    portIp[i]=[str(index),port,ip]
             #save
             with open(filename, 'wb') as f:
                 pickle.dump(portIp, f)
             rows = getUpdatedList()
             que.put(rows)
             return rows
-
     except Exception as e:
         print("An error occurred:", str(e))
         return None
 
+q = queue.Queue()
+port = "2500"
+ip = "55.99.88"
+index="2"
+# updateParentPortIp(index,port,ip,q)
 def deleteParentPortIp(index, que):
     global parentPortIp_lock
     try:
@@ -242,13 +231,15 @@ def deleteParentPortIp(index, que):
             with open(filename, 'rb') as f:
                 portIp = pickle.load(f)
             sizeOfPortIp = len(portIp) 
-            index=int(index)         
-            for i in range(sizeOfPortIp):
-                if int(portIp[i][0]) == index:                   
-                    del portIp[i]
-                    break
+            #length of cartDataSet
+            index=int(index)
+            port =portIp[sizeOfPortIp-1][1]
+            ip =portIp[sizeOfPortIp-1][2]
+            del portIp[sizeOfPortIp-1]
             with open(filename, 'wb') as f:
                 pickle.dump(portIp, f)
+            #rewrite
+            updateParentPortIp(str(index),str(port),str(ip),que)
             rows = getUpdatedList()
             que.put(rows)
             return rows
@@ -256,17 +247,8 @@ def deleteParentPortIp(index, que):
         print("An error occurred:", str(e))
         return None
     
-# q = queue.Queue()
-# deleteParentPortIp(2,q)
-
-# for i in range(1000):
-# port = "1000"
-# ip = "55.99.88"
-# index=1
-# addParentPortIp(port,ip)
-# updateParentPortIp(index,port,ip)
-# loadParentPortIp()
-
+q = queue.Queue()
+# deleteParentPortIp("2",q)
 
 # loadDatasetCsv()
 #*********************************CartData --Customer Data------------------
