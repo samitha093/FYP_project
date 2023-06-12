@@ -237,3 +237,7 @@ def cartItemsPost():
 
     return jsonify({'message': "added"})
 
+@app.route('/cartTestItems', methods=['POST'])
+def cartTestItems():
+   response= dataSaveTest()  
+   return jsonify({'message': response})
