@@ -228,6 +228,7 @@ def backgroudNetworkProcess(type):
     localModelAnalize(x_test_np,y_test_np)
     while True:
         # cartData = getCartDataLenght()
+        #add
         q = queue.Queue()
         t1=threading.Thread(target=getCartDataLenght,args=(q,))
         t1.daemon = True
