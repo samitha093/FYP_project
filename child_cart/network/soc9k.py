@@ -48,10 +48,11 @@ class peerCom:
                 print(f"Error: {str(e)}")
                 failCount += 1
                 time.sleep(5)
-                if failCount >10:
+                if failCount >5:
                     self.closeWait = False
                     self.close(0,self.USERID)
-                    sys.exit(0)
+                    # sys.exit(0)
+                    break
                 continue
         return self.USERID
 
@@ -65,7 +66,7 @@ class peerCom:
             print(errMsg.MSG003.value)
             self.closeWait = False
             self.close(0,self.USERID)
-            sys.exit(0)
+            # sys.exit(0)
 
     def isData_Reciving(self):
         return self.continueData
