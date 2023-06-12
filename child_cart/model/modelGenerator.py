@@ -14,7 +14,7 @@ def create_model():
         model.add(Dense(512, activation='relu', input_shape=(2,)))
         model.add(Dense(512, activation='relu'))
         #used in the output layer of a neural network when we want to predict a probability distribution over multiple classes.
-        model.add(Dense(7, activation='softmax'))
+        model.add(Dense(9, activation='softmax'))
         model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
         print("Initialized model")
         return model 

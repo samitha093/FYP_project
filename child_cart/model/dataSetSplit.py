@@ -5,15 +5,57 @@ from keras.utils import to_categorical
 import os
 import sys
 import queue
-
-root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+import threading
+import time
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 # Add the root and client4 directories to the Python path
 sys.path.insert(0, root_path)
 # Import the modules
-from cache.cacheFile import *
+from child_cart.cache.cacheFile import *
+
+train_array = []
+num=0
+#mannulay data insert function call
+def dataSaveTest():
+    global train_array,num
+    oneTimeDataSetSize =250 
+    #data set size for one time insert
+    # oneTimeDataSetSize=250
+    arrayLength=len(train_array)
+    #time for wait next insertion
+    # timeForWaitInSeconds=10
+    lengthOfLoop=int(arrayLength/oneTimeDataSetSize)
+
+    q = queue.Queue()
+    t1=threading.Thread(target=getCartDataLenght,args=(q,))
+    t1.daemon = True
+    t1.start()
+    t1.join()
+    result = q.get()
+    cartDataLength = int(result)
+    # print("Cart Data size: ",cartDataLength)
+    if(cartDataLength < oneTimeDataSetSize):
+        if(num >= 98000):
+            num =0
+        for i in range(oneTimeDataSetSize):
+            new_row = train_array[num]
+            q = queue.Queue()
+            t1=threading.Thread(target=updataCartData,args=(new_row,q,))
+            t1.start()
+            t1.join()
+            result = q.get()
+            my_data=result
+            num +=1
+
+        print("dataset 250 added")
+        return "dataset 250 added"
+    else:
+        print("currently have 250 dataset. No need to add!")
+        return "currently have 250 dataset. No need to add!"
 
 #split generated dataset
 def splitDataset():
+    global train_array
     #Load  the dataset from the CSV file
     try:
         # df = loadDatasetCsv()
@@ -29,7 +71,8 @@ def splitDataset():
         
     # Split the data into training and testing sets
     try:
-        train_data, test_data, train_labels, test_labels = train_test_split(df[['Month','Gender']], df['Item'], test_size=0.2)
+        train_data, test_data, train_labels, test_labels = train_test_split(df[['Month','Gender']], df['Item'], test_size=0.01)
+        
     except Exception as e:
             print("Error :", e)
     #convert to numpy
@@ -40,27 +83,39 @@ def splitDataset():
     y_test_np = test_labels.to_numpy()
 
     #convert shape
-    x_train_np = x_train_np.reshape(8000, 2)
-    x_test_np = x_test_np.reshape(2000, 2)
+    x_train_np = x_train_np.reshape(99000, 2)
+    x_test_np = x_test_np.reshape(1000, 2)
+    
+    for i in range(99000):
+        data =  [x_train_np[i][0], x_train_np[i][1], y_train_np[i]]
+        train_array.append(data)
 
+    # #apply thread to add user  seleted data set insert mannualy for testing
+    # thread = threading.Thread(target=dataSaveTest,args=(train_array,oneTimeDataSetSize,timeForWaitInSeconds))
+    # thread.start()
+    
     x_train_np = x_train_np.astype('float32')
     x_test_np = x_test_np.astype('float32')
 
     x_train_np /= 12
     x_test_np /= 12
 
-   
     # y output devide into 10 categories
-    y_train_np = to_categorical(y_train_np, 7)
-    y_test_np = to_categorical(y_test_np, 7)
-   
+    y_train_np = to_categorical(y_train_np, 9)
+    y_test_np = to_categorical(y_test_np, 9)
+    
     y_test_np = y_test_np.argmax(axis=-1)
     print("Dataset Splited")
+    # for i in range(100):
+    #     time.sleep(3)
+    #     print("main thread")
     return x_train_np, y_train_np,x_test_np,y_test_np
 
+# splitDataset(20,2)
+
 #split recoded dataset
-def splitCartData():
-    sizeOfDataset =3
+def splitCartData(sizeOfDataset):
+    sizeOfDataset =250
     #Load  the dataset from the CSV file
     print("READ DATA SET")
     try:
@@ -85,13 +140,13 @@ def splitCartData():
     y_train_np = train_labels.to_numpy()
 
     #convert shape
-    x_train_np = x_train_np.reshape(3, 2)
+    x_train_np = x_train_np.reshape(sizeOfDataset, 2)
     x_train_np = x_train_np.astype('float32')
 
 
     x_train_np /= 12
     # y output devide into 10 categories
-    y_train_np = to_categorical(y_train_np, 7)
+    y_train_np = to_categorical(y_train_np, 9)
     
     return x_train_np, y_train_np
 # splitCartData()
