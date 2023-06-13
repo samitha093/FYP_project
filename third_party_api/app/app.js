@@ -411,7 +411,21 @@ app.delete('/api/deleteItem/:id', async (req, res) => {
   }
 });
 
-
+/**
+ * @swagger
+ * /api/publicip:
+ *   get:
+ *     summary: get public ip.
+ *     responses:
+ *       200:
+ *         description: send public ip.
+ *       500:
+ *         description: Internal Server Error.
+ */
+app.get('/api/publicip', (req, res) => {
+  const ipAddress = req.connection.remoteAddress;
+  res.send(ipAddress);
+});
 
 
 // Start the server
