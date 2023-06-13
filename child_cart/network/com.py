@@ -49,6 +49,8 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS):
                         x = x_data[random_index]
                         mySocket.request(requestModel(USERID,modelReq,x))
                         print("SEND MODEL REQUEST TO : ",x)
+                    else:
+                        break
                 elif tempData[0] == "NBRLIST":
                     print("NBR LIST : ",tempData[1])
                     saveOrUpdateNBRList(tempData[1])
