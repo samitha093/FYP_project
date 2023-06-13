@@ -69,7 +69,7 @@ async def reqirementHandler(data):
     elif req[0] == "NBRLIST":
         url = 'http://localhost:5001/bridge/nabours'
         response = requests.get(url)
-        nbrlist = response.json()['message']
+        nbrlist = response.json()
         tempData = responceModel(User,["NBRLIST",nbrlist])
         mailBox = DATARECORDER.get(User)
         mailBox.append(tempData)

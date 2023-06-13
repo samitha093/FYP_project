@@ -50,9 +50,26 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
 
 
   const handledataSave = (e: any) => {
+    setBoostrapArray([])
     // setBoostrapArray([...BoostrapArray, e])
     const myHost = sessionStorage.getItem('host');
     axios.post(`${myHost}/bridge/boostrap`, {
+      ip: e.ip,
+      port: e.port
+    })
+      .then(response => {
+      setBoostrapArray(response.data)
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+  const handledataUpdate = (e: any) => {
+    setBoostrapArray([])
+    const myHost = sessionStorage.getItem('host');
+    axios.put(`${myHost}/bridge/boostrap`, {
+      index: e.index,
       ip: e.ip,
       port: e.port
     })
@@ -69,7 +86,7 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
     const myHost = sessionStorage.getItem('host');
     axios
       .delete(`${myHost}/bridge/boostrap`, {
-        data: {
+        headers: {
           index: e,
         },
       })
@@ -132,7 +149,7 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
                 {isBridge?<BridgeModule darkMode={darkMode}/>:null}
                 {isBridge?<NodeItem darkMode={darkMode} nodeArray={BoostrapArray}/>:null}
                 {BoostrapArray.map((element:any, index:any)=>(
-                    <Item darkMode={darkMode} key={index} data={element} handledataremove={handleCloseClick}/>
+                    <Item darkMode={darkMode} key={index} data={element} handledataremove={handleCloseClick} handlerdataUpdate={handledataUpdate}/>
                 ))}
                 {isBridge?<New darkMode={darkMode} handledataSave={handledataSave}/>:null}
             </Flex>
