@@ -159,7 +159,7 @@ def addParentPortIp(port,ip,que):
         if not os.path.isfile(filename):
             # print("The file", filename, "exists in the current path.")
             print("The file", filename, "does not exist in the current path.")
-            new_row=[["1",port,ip]]
+            new_row=[[1,port,ip]]
             parentPortIp_lock.acquire()
             with open(filename, 'wb') as f:
                 pickle.dump(new_row, f)
@@ -173,7 +173,7 @@ def addParentPortIp(port,ip,que):
             with open(filename, 'rb') as f:
                portIp = pickle.load(f) 
             sizeOfPortIp=len(portIp)
-            index=str(sizeOfPortIp+1)
+            index=(sizeOfPortIp+1)
             new_row=[index,port,ip]             
             portIp.append(new_row)
             #save
@@ -196,7 +196,7 @@ def updateParentPortIp(index,port,ip,que):
         if not os.path.isfile(filename):
             # print("The file", filename, "exists in the current path.")
             print("The file", filename, "does not exist in the current path.")
-            new_row=[["1",port,ip]]
+            new_row=[[1,port,ip]]
             parentPortIp_lock.acquire()
             with open(filename, 'wb') as f:
                 pickle.dump(new_row, f)
@@ -208,7 +208,7 @@ def updateParentPortIp(index,port,ip,que):
             sizeOfPortIp=len(portIp)
             for i in range(sizeOfPortIp):
                 if(int(portIp[i][0] )== int(index)):  
-                    portIp[i]=[str(index),port,ip]
+                    portIp[i]=[index,port,ip]
             #save
             with open(filename, 'wb') as f:
                 pickle.dump(portIp, f)
@@ -234,16 +234,21 @@ def deleteParentPortIp(index, que):
             sizeOfPortIp = len(portIp) 
             #length of cartDataSet
             index=int(index)
-            port =portIp[sizeOfPortIp-1][1]
-            ip =portIp[sizeOfPortIp-1][2]
-            del portIp[sizeOfPortIp-1]
-            with open(filename, 'wb') as f:
-                pickle.dump(portIp, f)
-            #rewrite
-            updateParentPortIp(str(index),str(port),str(ip),que)
-            rows = getUpdatedList()
-            que.put(rows)
-            return rows
+            if(index >int(sizeOfPortIp)):
+                rows = getUpdatedList()
+                que.put(rows)
+                return rows
+            else:
+                port =portIp[sizeOfPortIp-1][1]
+                ip =portIp[sizeOfPortIp-1][2]
+                del portIp[sizeOfPortIp-1]
+                with open(filename, 'wb') as f:
+                    pickle.dump(portIp, f)
+                #rewrite
+                updateParentPortIp(index,str(port),str(ip),que)
+                rows = getUpdatedList()
+                que.put(rows)
+                return rows
     except Exception as e:
         print("An error occurred:", str(e))
         return None
@@ -670,8 +675,9 @@ data = {
     "zipcode": "5000"
   }
 }
+# data ={ [1, 2, 3, 4, 5] ,[1, 2, 3, 4, 5]}
 
-# saveOrUpdateNBRList(data)
+# saveOrUpdateNBRList(str(data))
 # returnList=loadNBRList()
 # print(returnList)
-
+# print(json.dumps(returnList))
