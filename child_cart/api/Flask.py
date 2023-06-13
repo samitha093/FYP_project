@@ -126,6 +126,7 @@ def nabours():
         peerList = get_nabourList()
         return jsonify(peerList)
     else:
+        #NBR List Send
         nbrList=loadNBRList()
         return jsonify(nbrList)
 
