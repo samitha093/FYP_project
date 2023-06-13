@@ -19,8 +19,6 @@ root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.insert(0, root_path)
 # Import the modules
 from child_cart.model.Main import *
-from child_cart.model.writeFile import *
-from child_cart.model.writeFile import *
 from child_cart.cache.cacheFile import *
 from flask_cors import CORS
 
@@ -153,6 +151,7 @@ if create_api_endpoint:
     def server():
         serverPorts = get_ServerPort()
         return jsonify({'CARTPORT': serverPorts[0], 'MOBILEPORT': serverPorts[1],'HTTPPORT':serverPorts[2]})
+    
     #get
     @app.route('/bridge/boostrap', methods =["GET"])
     def boostrapGet():
@@ -161,12 +160,13 @@ if create_api_endpoint:
         t1.start()
         t1.join()
         result = q.get()
-        jsonResult = json.dumps(result)
-        return jsonResult
+        return result
     
     #post
     @app.route('/bridge/boostrap', methods=['POST'])
     def boostrapPost():
+        node_data = request.json
+        add_boostrapNode(node_data)
         port=request.json['port']
         ip =request.json['ip']
         q = queue.Queue()
@@ -174,8 +174,7 @@ if create_api_endpoint:
         t1.start()
         t1.join()
         result = q.get()
-        jsonResult = json.dumps(result)
-        return jsonResult
+        return result
 
     #put
     @app.route('/bridge/boostrap', methods=['PUT'])
@@ -188,21 +187,19 @@ if create_api_endpoint:
         t1.start()
         t1.join()
         result = q.get()
-        jsonResult = json.dumps(result)
-        return jsonResult
-
+        return result
+    
     #delete
     @app.route('/bridge/boostrap', methods=['DELETE'])
     def boostrapDelete():
         #get index from params
-        index = request.json['index']
+        index = request.headers.get('index')
         q = queue.Queue()
         t1=threading.Thread(target=deleteParentPortIp,args=(index,q))
         t1.start()
         t1.join()
         result = q.get()
-        jsonResult = json.dumps(result)
-        return jsonResult
+        return result
 
     #API for kademlia server reset
     @app.route('/bridge/kademlia', methods=['POST'])
@@ -210,3 +207,48 @@ if create_api_endpoint:
         boostrapArray =  request.data
         kademliaData = boostrapSetup(boostrapArray)
         return kademliaData
+
+
+#     @app.route('/bridge/nabours', methods=['GET'])
+#     def nabours():
+#         peerList = get_nabourList()
+#         return jsonify(peerList)
+
+
+#api for user selected items save into cart
+"""
+Json object look like this
+  [{
+    "item": "5"
+  },
+  {
+    "item": "6"
+  },
+  {
+    "item": "7"
+  }
+  ]
+  """
+@app.route('/cartItems', methods=['POST'])
+def cartItemsPost():
+    global currentGender,currentMonth
+    data = request.get_json()  # Retrieve the JSON object from the request
+    # print("data : ",data)
+    for item in data:
+        item_value = int(item['item']) # Access the 'item' key within each object
+        # print("item_value : ",item_value)
+        new_row=[currentMonth,item_value,currentGender]
+        q = queue.Queue()
+        t1=threading.Thread(target=updataCartData,args=(new_row,q,))
+        t1.start()
+        t1.join()
+        result = q.get()
+
+    return jsonify({'message': "added"})
+    
+#mannual data adding for testing
+@app.route('/cartTestItems', methods=['POST'])
+def cartTestItems():
+   response= dataSaveTest()  
+   return jsonify({'message': response})
+
