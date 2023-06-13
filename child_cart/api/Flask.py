@@ -122,11 +122,12 @@ except ImportError:
 
 @app.route('/bridge/nabours', methods=['GET'])
 def nabours():
-    if create_api_endpoint:
+    if False:
         peerList = get_nabourList()
         return jsonify(peerList)
     else:
-        return jsonify({'message': "no data"})
+        nbrList=loadNBRList()
+        return jsonify(nbrList)
 
 if create_api_endpoint:
     from parent_cart.bridge.Main import *

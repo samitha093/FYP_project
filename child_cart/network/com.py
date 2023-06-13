@@ -12,6 +12,7 @@ sys.path.insert(0, root_path)
 # Import the modules
 from network.util import *
 from network.errorList import *
+from cache.cacheFile import *
 
 def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS):
     CLUSTERID = ""
@@ -50,6 +51,7 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS):
                         print("SEND MODEL REQUEST TO : ",x)
                 elif tempData[0] == "NBRLIST":
                     print("NBR LIST : ",tempData[1])
+                    saveOrUpdateNBRList(tempData[1])
                 elif tempData[0] == "MODELPARAMETERS":
                     print("MODEL PARAMETERS RECIVED FROM : ",x.get("Sender"))
                     MODELPARAMETERLIST.append(x)

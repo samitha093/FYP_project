@@ -22,6 +22,7 @@ localModelData_lock = threading.Lock()
 localMobileModelData_lock = threading.Lock()
 receivedModelData_lock = threading.Lock()
 parentPortIp_lock = threading.Lock()
+nbrList_lock = threading.Lock()
 #--------------------check cache file-----------------
 def genCacheFile():
     directoryReceivedModelParameter = "cache"
@@ -397,13 +398,11 @@ def getCartDataLenght(que):
 
 #getCartDataLenght()
 
-#------->>>>>>>>>>>>>>>>>>>>> Model >>>>>>>>>>>>>>>> -------
+#---------------------------------------Model ------------------------------------
 #*********************************------------------
 #save local ML model 
 def saveLocalModelData(model):
     global localModelData_lock
-    
-   
     localModeWeights = model.get_weights()
     # Serialize the weights using pickle
     serialized_weights = pickle.dumps(localModeWeights)
@@ -436,8 +435,6 @@ def saveLocalModelData(model):
 
     except IOError as e:
         print("Error writing TFLite model to cache file:", e)
-
- 
 
 # model=create_model()
 # saveLocalModelData(model)
@@ -481,7 +478,6 @@ def loadLocalCartModelData(que):
 def loadLocalMobileModelData(que):
     #mobile model
     global localMobileModelData_lock
-
     filename = "cache/mobileModel.pkl"
     if os.path.isfile(filename):
         print("The file", filename, "exists in the current path.")
@@ -515,11 +511,10 @@ def loadLocalMobileModelData(que):
         return None
 
 
-#-------------------------Receiving model------------------
+#-------------------------Receiving model-----------------------
 #save received ML model 
 def saveReceivedModelData(receivedModelWeights):
     global receivedModelData_lock
-
     try:
         receivedModelData_lock.acquire()
         # Count the number of files in the current directory that match the pattern
@@ -545,8 +540,6 @@ def saveReceivedModelData(receivedModelWeights):
 
 def loadReceivedModelData(CULSTER_SIZE,que):
     global receivedModelData_lock
-    
-
     count = len(glob.glob("cache/receivedModelWeight_*.pkl"))
     # Print the count
     print("Number of model files:", count)
@@ -613,3 +606,71 @@ def getReceivedModelParameterLength(que):
     print("Number of model files:", count)
     que.put(count)
     return count
+
+#-------------------------NBR LIST----------------------------------
+#save or update list
+def saveOrUpdateNBRList(NBRLIST):
+    global nbrList_lock
+    try:
+        filename = "cache/nbrList.pkl"
+        if not os.path.isfile(filename):
+            print("The file", filename, "does not exist in the current path.")
+            new_row = [NBRLIST]  # Wrap NBRLIST in a list
+            nbrList_lock.acquire()
+            with open(filename, 'wb') as f:
+                pickle.dump(new_row, f)
+            print("New list added")
+            nbrList_lock.release()
+        else:
+            print("The file", filename, "exists in the current path.")
+            nbrList_lock.acquire()
+            with open(filename, 'rb') as f:
+                existingNbrList = pickle.load(f)
+            existingNbrList[0] = NBRLIST  # Update the first element of the list
+            with open(filename, 'wb') as f:
+                pickle.dump(existingNbrList, f)
+            nbrList_lock.release()
+            print("List updated")
+        with open(filename, 'rb') as f:
+            returnList = pickle.load(f)
+        # print(returnList[0])
+        return returnList[0]
+    except Exception as e:
+        print("An error occurred:", str(e))
+
+def loadNBRList():
+    global nbrList_lock
+    try:
+        nbrList_lock.acquire()
+        filename = "cache/nbrList.pkl"
+        if os.path.isfile(filename):
+            print("The file", filename, "exists in the current path.")
+            with open(filename, 'rb') as f:
+                returnList = pickle.load(f)
+                # print(returnList[0])
+            nbrList_lock.release()
+            return returnList[0]
+        else:
+            print("The file", filename, "does not exist in the current path.")
+            nbrList_lock.release()
+            return []
+    
+    except Exception as e:
+        print("An error occurred:", e)
+
+data = {
+  "name": "Bisadi lakshan",
+  "age": 40,
+  "email": "johndoe@example.com",
+  "address": {
+    "street": "123 Main St",
+    "city": "New York",
+    "state": "NY",
+    "zipcode": "5000"
+  }
+}
+
+# saveOrUpdateNBRList(data)
+# returnList=loadNBRList()
+# print(returnList)
+
