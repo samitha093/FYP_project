@@ -122,7 +122,7 @@ except ImportError:
 
 @app.route('/bridge/nabours', methods=['GET'])
 def nabours():
-    if False:
+    if create_api_endpoint:
         peerList = get_nabourList()
         return jsonify(peerList)
     else:
