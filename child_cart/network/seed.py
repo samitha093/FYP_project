@@ -36,6 +36,8 @@ def seedProx(mySocket,USERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,SHELL_TI
                     mobilemodelparameters = ["SENDMOBILEMODELPARAMETERS",x.get("Data")[1],MOBILEMODELPARAMETERS]
                     mySocket.request(requestModel(USERID,mobilemodelparameters,x.get("Sender")))
                     print("MODEL PARAMETERS SEND TO MOBILE : ",x.get("Sender"))
+                elif tempData[0] == "NBRLIST":
+                    print("NBR LIST : ",tempData[1])
                 else:
                     print("UNKNOWN MESSAGE : ",x)
                     Stop_loop()
