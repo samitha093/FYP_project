@@ -7,9 +7,10 @@ interface AppProps {
   darkMode: boolean;
   data:any;
   handledataremove:any;
+  handlerdataUpdate:any;
 }
 
-const Item: React.FC<AppProps> = ({ darkMode, data, handledataremove }) => {
+const Item: React.FC<AppProps> = ({ darkMode, data, handledataremove, handlerdataUpdate }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [ip, setIp] = useState('192.168.34.56');
   const [port, setPort] = useState('55687');
@@ -41,17 +42,18 @@ const Item: React.FC<AppProps> = ({ darkMode, data, handledataremove }) => {
         setPortError(port ? '' : 'Port number is required');
         return;
       }
-  
+
       if (!/^(\d{0,2}|1\d{0,2}|2[0-4]\d|25[0-5])(\.(\d{0,2}|1\d{0,2}|2[0-4]\d|25[0-5])){3}$/.test(ip)) {
         setIpError('Invalid IP address');
         return;
       }
-  
+
       if (!/^\d+$/.test(port) || parseInt(port, 10) <= 0 || parseInt(port, 10) > 65535) {
         setPortError('Invalid port number');
         return;
       }
     // Handle saving IP and port
+    handlerdataUpdate({"index":index,"ip":ip,"port":port})
     onClose();
   };
 
