@@ -120,6 +120,14 @@ try:
 except ImportError:
     create_api_endpoint = False
 
+@app.route('/bridge/nabours', methods=['GET'])
+def nabours():
+    if create_api_endpoint:
+        peerList = get_nabourList()
+        return jsonify(peerList)
+    else:
+        return jsonify({'message': "no data"})
+
 if create_api_endpoint:
     from parent_cart.bridge.Main import *
     @app.route('/bridge/hello', methods=['GET'])
@@ -200,10 +208,11 @@ if create_api_endpoint:
         kademliaData = boostrapSetup(boostrapArray)
         return kademliaData
 
-    @app.route('/bridge/nabours', methods=['GET'])
-    def nabours():
-        peerList = get_nabourList()
-        return jsonify(peerList)
+
+#     @app.route('/bridge/nabours', methods=['GET'])
+#     def nabours():
+#         peerList = get_nabourList()
+#         return jsonify(peerList)
 
 
 #api for user selected items save into cart
@@ -242,3 +251,4 @@ def cartItemsPost():
 def cartTestItems():
    response= dataSaveTest()  
    return jsonify({'message': response})
+

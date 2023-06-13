@@ -26,10 +26,10 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS):
     ################################################################################
     peerTypeReq = ["PEERTYPE",MODE]
     mySocket.request(requestModel(USERID,peerTypeReq))
-    peerListReq = ["PEERLIST"]
-    mySocket.request(requestModel(USERID,peerListReq))
     peernbrReq = ["NBRLIST"]
     mySocket.request(requestModel(USERID,peernbrReq))
+    peerListReq = ["PEERLIST"]
+    mySocket.request(requestModel(USERID,peerListReq))
 
     while True: #----------------------GET Cluster-------------------------
         tempDataSet = mySocket.RECIVEQUE.copy()
