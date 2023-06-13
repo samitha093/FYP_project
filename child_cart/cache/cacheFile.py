@@ -607,7 +607,7 @@ def getReceivedModelParameterLength(que):
     que.put(count)
     return count
 
-#-------------------------NBR LIST----------------------------------
+#-----------------------------NBR LIST----------------------------------
 #save or update list
 def saveOrUpdateNBRList(NBRLIST):
     global nbrList_lock
@@ -638,6 +638,7 @@ def saveOrUpdateNBRList(NBRLIST):
     except Exception as e:
         print("An error occurred:", str(e))
 
+#read NBR list
 def loadNBRList():
     global nbrList_lock
     try:
@@ -659,7 +660,7 @@ def loadNBRList():
         print("An error occurred:", e)
 
 data = {
-  "name": "Bisadi lakshan",
+  "name": "Isuru lakshan",
   "age": 40,
   "email": "johndoe@example.com",
   "address": {
