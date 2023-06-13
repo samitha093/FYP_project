@@ -213,7 +213,6 @@ if create_api_endpoint:
     #     peerList = get_nabourList()
     #     return jsonify(peerList)
 
-
 #api for user selected items save into cart
 """
 Json object look like this
@@ -250,3 +249,4 @@ def cartItemsPost():
 def cartTestItems():
    response= dataSaveTest()  
    return jsonify({'message': response})
+
