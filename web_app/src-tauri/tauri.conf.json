@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "Smart Cart",
-    "version": "0.1.0"
+    "version": "2.0.0"
   },
   "tauri": {
     "allowlist": {
@@ -19,6 +19,11 @@
       }
     },
     "bundle": {
+      "windows": {
+        "webviewInstallMode": {
+          "type": "offlineInstaller"
+        }
+      },
       "active": true,
       "icon": [
         "icons/32x32.png",
