@@ -11,6 +11,7 @@ sys.path.insert(0, root_path)
 # Import the modules
 from network.util import *
 from network.errorList import *
+from cache.cacheFile import *
 
 ModelParamLoop = True
 
@@ -42,6 +43,7 @@ def seedProx(mySocket,USERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,SHELL_TI
                     print("MODEL PARAMETERS SEND TO MOBILE : ",x.get("Sender"))
                 elif tempData[0] == "NBRLIST":
                     print("NBR LIST : ",tempData[1])
+                    saveOrUpdateNBRList(tempData[1])
                 else:
                     print("UNKNOWN MESSAGE : ",x)
                     Stop_loop()

@@ -126,7 +126,8 @@ def nabours():
         peerList = get_nabourList()
         return jsonify(peerList)
     else:
-        return jsonify({'message': "no data"})
+        nbrList=loadNBRList()
+        return jsonify(nbrList)
 
 if create_api_endpoint:
     from parent_cart.bridge.Main import *
