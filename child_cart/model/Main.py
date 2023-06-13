@@ -27,7 +27,7 @@ def recodeDataRemove():
         #3 mean number of records
         # deleteCartDataItems(3)
         q = queue.Queue()
-        t1=threading.Thread(target=deleteCartDataItems,args=(3,q,))
+        t1=threading.Thread(target=deleteCartDataItems,args=(250,q,))
         t1.start()
         t1.join()
         result = q.get()
@@ -38,39 +38,11 @@ def recodeDataRemove():
 
 #Globle aggregation process
 def globleAggregationProcess(model,x_test_np,y_test_np,CULSTER_SIZE):
-          print("Strat local training ------->")
-          try:
-            #  localModelWeights=loadLocalCartModelData()
-             q = queue.Queue()
-             t1=threading.Thread(target=loadLocalCartModelData,args=(q,))
-             t1.start()
-             t1.join()
-             result = q.get()
-             localModelWeights= result
-             
-             model.set_weights(localModelWeights)
-             print("Model weights loaded successfully!")
-          except Exception as e:
-             print("Error occurred while loading model weights:", e)
-
-          #traing model using cartdata
-          print("Split dataset")
-          x_train,y_train = splitCartData()
-          continuoustrainModel(model,x_train,y_train)
-          #test model using local data
-          getModelAccuracy(model,x_test_np,y_test_np)
-          #adding differential privacy
-          differentialPrivacy(model,x_test_np,y_test_np)
-          #clear the csv file
-          recodeDataRemove()
           #aggregate the models
           modelAggregation(model,x_test_np,y_test_np,CULSTER_SIZE)
           #remove received files
-          print("5")
-          
           removeFiles()
           return "Aggregated"
-
 
 def differentialPrivacy(model,x_test_np,y_test_np):
     print("Starting adding differential privacy ------->")
@@ -133,4 +105,30 @@ def differentialPrivacy(model,x_test_np,y_test_np):
            break
       
        x=x+1
+#local model training and adding differntial privacy
+def localModelTraing(model,x_test_np,y_test_np):
+    print("Strat local training ------->")
+    try:
+    #  localModelWeights=loadLocalCartModelData()
+        q = queue.Queue()
+        t1=threading.Thread(target=loadLocalCartModelData,args=(q,))
+        t1.start()
+        t1.join()
+        result = q.get()
+        localModelWeights= result
+        
+        model.set_weights(localModelWeights)
+        print("Model weights loaded successfully!")
+    except Exception as e:
+        print("Error occurred while loading model weights:", e)
 
+    #traing model using cartdata
+    print("Split dataset")
+    x_train,y_train = splitCartData()
+    model = continuoustrainModel(model,x_train,y_train)
+    #test model using local data
+    getModelAccuracy(model,x_test_np,y_test_np)
+    #adding differential privacy
+    differentialPrivacy(model,x_test_np,y_test_np)
+    #clear the csv file
+    recodeDataRemove()

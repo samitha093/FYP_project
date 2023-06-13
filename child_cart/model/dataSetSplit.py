@@ -77,7 +77,7 @@ def splitDataset():
 # splitDataset(20,2)
 
 #split recoded dataset
-def splitCartData(sizeOfDataset):
+def splitCartData():
     sizeOfDataset =250
     #Load  the dataset from the CSV file
     print("READ DATA SET")

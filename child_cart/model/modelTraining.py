@@ -14,12 +14,9 @@ def continuoustrainModel(model,train_data1,train_labels1):
 
     model.fit(train_data1, train_labels1, epochs=1, batch_size=128, validation_split=0.2, callbacks=[early_stopping])
     #save model data
-    # saveLocalModelData(model)
     t1=threading.Thread(target=saveLocalModelData,args=(model,))
     t1.start()
     t1.join()
-    
-    
     print("Localy trained and saved model parameters")
     return model
    
