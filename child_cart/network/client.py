@@ -234,7 +234,7 @@ def time_cal():
 def backgroudNetworkProcess():
     global TIME_ARRAY,TEMPUSERID,mySocket
     global CART_TYPE,CULSTER_SIZE,conType
-    global RECIVED_MODELPARAMETERLIST
+    global RECIVED_MODELPARAMETERLIST,MODEL
     global x_test_np
     global y_test_np
     print("NETWORKING ......")
@@ -258,6 +258,8 @@ def backgroudNetworkProcess():
         print("Cart Data size: ",cartData)
         #compare size of the dataset for globla aggregation
         if cartData >= 250:
+            #local model training
+            localModelTraing(MODEL,x_test_np,y_test_np)
             if conType != "KERNEL":
                 conType = "KERNEL"
                 print("Changed Connection Mode to " + conType)

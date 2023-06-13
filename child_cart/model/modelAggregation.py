@@ -82,7 +82,6 @@ def modelAggregation(model,x_test_np,y_test_np,CULSTER_SIZE):
     t1.join()
    
 def aggregateRecModels(aggregation_cluster_size,parameterArray,acc_array,x_test_np,y_test_np):
-    
     size =aggregation_cluster_size
     kernal_Model=create_model()
     kernal_Model.set_weights(parameterArray[size-1])
@@ -95,6 +94,4 @@ def aggregateRecModels(aggregation_cluster_size,parameterArray,acc_array,x_test_
         print("Aggregated --->>")
         kernal_Model.set_weights(averaged_weights)
         acc_array[size-1] = int(getModelAccuracy(kernal_Model,x_test_np,y_test_np))
-    
- 
     return averaged_weights

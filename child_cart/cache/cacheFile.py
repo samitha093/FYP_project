@@ -93,6 +93,11 @@ def updateCartConfigurations(header1,que):
 
 # header1 = ['10.11111', '000', '5554', '85', '5200']
 # updateCartConfigurations(header1)
+
+
+
+
+
 #*********************************DataSet --accuracy check csv data-----------------------------
 def loadDatasetCsv(que):
     global datasetCsv_lock
@@ -336,8 +341,7 @@ def updataCartData(new_row,que):
 # q = queue.Queue()
 # loadCartData(q)
 
-
-def deleteCartDataItemstaItems(itemCount,que):
+def deleteCartDataItems(itemCount,que):
     global cartData_lock
     try:
         cartData_lock.acquire()
