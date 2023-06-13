@@ -236,7 +236,8 @@ def cartItemsPost():
         result = q.get()
 
     return jsonify({'message': "added"})
-
+    
+#mannual data adding for testing
 @app.route('/cartTestItems', methods=['POST'])
 def cartTestItems():
    response= dataSaveTest()  
