@@ -208,12 +208,10 @@ if create_api_endpoint:
         kademliaData = boostrapSetup(boostrapArray)
         return kademliaData
 
-
-#     @app.route('/bridge/nabours', methods=['GET'])
-#     def nabours():
-#         peerList = get_nabourList()
-#         return jsonify(peerList)
-
+    # @app.route('/bridge/nabours', methods=['GET'])
+    # def nabours():
+    #     peerList = get_nabourList()
+    #     return jsonify(peerList)
 
 #api for user selected items save into cart
 """
