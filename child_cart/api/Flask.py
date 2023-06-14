@@ -138,7 +138,7 @@ if create_api_endpoint:
     @app.route('/bridge/node', methods=['GET'])
     def node():
         if getNodeStatus() is True:
-            public_ip = requests.get('http://httpbin.org/ip').json()['origin']
+            public_ip = requests.get('http://20.193.137.241:3000/api/publicip')
             kademlia_port = get_kademliaPort()
             ip_address = get_local_ip_address()
             if ip_address:
