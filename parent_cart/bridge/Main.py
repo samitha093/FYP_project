@@ -10,12 +10,12 @@ import sys
 import time
 import requests
 
-root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.insert(0, root_path)
 
-from bridge.rndGen import *
-from bridge.util import *
-from bridge.kademlia import *
+from parent_cart.bridge.rndGen import *
+from parent_cart.bridge.util import *
+from parent_cart.bridge.kademlia import *
 
 HOST = 'http://localhost'
 BOOSTRAP_HOST=''

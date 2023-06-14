@@ -3,14 +3,14 @@ import sys
 import absl.logging
 absl.logging.set_verbosity(absl.logging.ERROR)
 # Get the path to the root directory
-root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 # Add the root and client4 directories to the Python path
 sys.path.insert(0, root_path)
 # Import the modules
-from model.modelGenerator import *
-from model.modelAccuracy import *
-from model.dataSetSplit import *
-from cache.cacheFile import *
+from child_cart.model.modelGenerator import *
+from child_cart.model.modelAccuracy import *
+from child_cart.model.dataSetSplit import *
+from child_cart.cache.cacheFile import *
 # model aggregation when cart training after  -- aggregate 3 models----
 def modelAggregation(model,x_test_np,y_test_np,CULSTER_SIZE):
     print("Strat aggregation process -------->")

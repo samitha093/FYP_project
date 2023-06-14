@@ -4,19 +4,19 @@ import time
 import os
 import pandas as pd
 # Get the path to the root directory
-root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 # Add the root and client4 directories to the Python path
 sys.path.insert(0, root_path)
 # Import the modules
-from model.Main import *
-from model.encodeParameter import *
-from model.fileHandle import *
-from network.soc9k import *
-from network.enumList import *
-from network.com import *
-from network.seed import *
-from network.file import *
-from cache.cacheFile import *
+from child_cart.model.Main import *
+from child_cart.model.encodeParameter import *
+from child_cart.model.fileHandle import *
+from child_cart.network.soc9k import *
+from child_cart.network.enumList import *
+from child_cart.network.com import *
+from child_cart.network.seed import *
+from child_cart.network.file import *
+from child_cart.cache.cacheFile import *
 import queue
 import threading
 
