@@ -717,7 +717,8 @@ def saveOrUpdateLogData(Log):
                 logData = pickle.load(f)
             rows = logData  # Get the entire list
             logData_lock.release()
-            print(rows)
+            json_data = json.dumps(rows)
+            print(json_data)
             return rows
     except Exception as e:
         print("An error occurred:", str(e))
@@ -728,7 +729,7 @@ def saveOrUpdateLogData(Log):
 # Log={"localModel: 20"}
 #log of local model and received model and aggregated model accuracy
 data = {
-    "iteration": 1,
+    "iteration": 3,
     "localModel": {"id": "0001", "value": True, "accuracy": 0.58},
     "receivedModel": [
         {"id": "0001", "value": True, "accuracy": 0.88},
@@ -740,9 +741,8 @@ data = {
 }
 # json_data = json.dumps(data)
 # print(json_data)
-saveOrUpdateLogData(data)
+# saveOrUpdateLogData(data)
 #load log results
-
 
 #read logData 
 def loadLogData():
@@ -756,7 +756,9 @@ def loadLogData():
                 returnList = pickle.load(f)
                 # print(returnList[0])
             logData_lock.release()
-            return returnList
+            json_data = json.dumps(returnList)
+            print(json_data)
+            return json_data
         else:
             print("The file", filename, "does not exist in the current path.")
             logData_lock.release()
@@ -766,5 +768,4 @@ def loadLogData():
         print("An error occurred:", e)
 
 # results=loadLogData()
-# json_data = json.dumps(results)
-# print(json_data)
+# print(results)
