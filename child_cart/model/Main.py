@@ -127,8 +127,10 @@ def localModelTraing(model,x_test_np,y_test_np):
     x_train,y_train = splitCartData()
     model = continuoustrainModel(model,x_train,y_train)
     #test model using local data
-    getModelAccuracy(model,x_test_np,y_test_np)
+    modelAcc =  getModelAccuracy(model,x_test_np,y_test_np)
     #adding differential privacy
     differentialPrivacy(model,x_test_np,y_test_np)
     #clear the csv file
     recodeDataRemove()
+
+    return modelAcc
