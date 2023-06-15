@@ -3,19 +3,19 @@ import sys
 import csv
 import numpy as np
 # Get the path to the root directory
-root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 # Add the root and client4 directories to the Python path
 sys.path.insert(0, root_path)
 # Import the modules
-from model.modelGenerator import *
-from model.modelTraining import *
-from model.modelAccuracy import *
-from model.dataSetSplit import *
-from model.modelAggregation import *
-from model.fileHandle import *
+from child_cart.model.modelGenerator import *
+from child_cart.model.modelTraining import *
+from child_cart.model.modelAccuracy import *
+from child_cart.model.dataSetSplit import *
+from child_cart.model.modelAggregation import *
+from child_cart.model.fileHandle import *
 import queue
 
-from cache.cacheFile import *
+from child_cart.cache.cacheFile import *
 #cart initialisation remove files that have alredy having
 def resetProject():
     resetModelData()
@@ -27,7 +27,7 @@ def recodeDataRemove():
         #3 mean number of records
         # deleteCartDataItems(3)
         q = queue.Queue()
-        t1=threading.Thread(target=deleteCartDataItems,args=(3,q,))
+        t1=threading.Thread(target=deleteCartDataItems,args=(250,q,))
         t1.start()
         t1.join()
         result = q.get()
@@ -38,39 +38,11 @@ def recodeDataRemove():
 
 #Globle aggregation process
 def globleAggregationProcess(model,x_test_np,y_test_np,CULSTER_SIZE):
-          print("Strat local training ------->")
-          try:
-            #  localModelWeights=loadLocalCartModelData()
-             q = queue.Queue()
-             t1=threading.Thread(target=loadLocalCartModelData,args=(q,))
-             t1.start()
-             t1.join()
-             result = q.get()
-             localModelWeights= result
-             
-             model.set_weights(localModelWeights)
-             print("Model weights loaded successfully!")
-          except Exception as e:
-             print("Error occurred while loading model weights:", e)
-
-          #traing model using cartdata
-          print("Split dataset")
-          x_train,y_train = splitCartData()
-          continuoustrainModel(model,x_train,y_train)
-          #test model using local data
-          getModelAccuracy(model,x_test_np,y_test_np)
-          #adding differential privacy
-          differentialPrivacy(model,x_test_np,y_test_np)
-          #clear the csv file
-          recodeDataRemove()
           #aggregate the models
           modelAggregation(model,x_test_np,y_test_np,CULSTER_SIZE)
           #remove received files
-          print("5")
-          
           removeFiles()
           return "Aggregated"
-
 
 def differentialPrivacy(model,x_test_np,y_test_np):
     print("Starting adding differential privacy ------->")
@@ -133,4 +105,32 @@ def differentialPrivacy(model,x_test_np,y_test_np):
            break
       
        x=x+1
+#local model training and adding differntial privacy
+def localModelTraing(model,x_test_np,y_test_np):
+    print("Strat local training ------->")
+    try:
+    #  localModelWeights=loadLocalCartModelData()
+        q = queue.Queue()
+        t1=threading.Thread(target=loadLocalCartModelData,args=(q,))
+        t1.start()
+        t1.join()
+        result = q.get()
+        localModelWeights= result
+        
+        model.set_weights(localModelWeights)
+        print("Model weights loaded successfully!")
+    except Exception as e:
+        print("Error occurred while loading model weights:", e)
 
+    #traing model using cartdata
+    print("Split dataset")
+    x_train,y_train = splitCartData()
+    model = continuoustrainModel(model,x_train,y_train)
+    #test model using local data
+    modelAcc =  getModelAccuracy(model,x_test_np,y_test_np)
+    #adding differential privacy
+    differentialPrivacy(model,x_test_np,y_test_np)
+    #clear the csv file
+    recodeDataRemove()
+
+    return modelAcc

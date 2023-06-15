@@ -4,15 +4,15 @@ import sys
 import random
 
 # Get the path to the root directory
-root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 
 # Add the root and client4 directories to the Python path
 sys.path.insert(0, root_path)
 
 # Import the modules
-from network.util import *
-from network.errorList import *
-from cache.cacheFile import *
+from child_cart.network.util import *
+from child_cart.network.errorList import *
+from child_cart.cache.cacheFile import *
 
 def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS):
     CLUSTERID = ""

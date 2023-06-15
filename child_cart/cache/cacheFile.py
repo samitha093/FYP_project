@@ -23,6 +23,7 @@ localMobileModelData_lock = threading.Lock()
 receivedModelData_lock = threading.Lock()
 parentPortIp_lock = threading.Lock()
 nbrList_lock = threading.Lock()
+logData_lock = threading.Lock()
 #--------------------check cache file-----------------
 def genCacheFile():
     directoryReceivedModelParameter = "cache"
@@ -93,6 +94,11 @@ def updateCartConfigurations(header1,que):
 
 # header1 = ['10.11111', '000', '5554', '85', '5200']
 # updateCartConfigurations(header1)
+
+
+
+
+
 #*********************************DataSet --accuracy check csv data-----------------------------
 def loadDatasetCsv(que):
     global datasetCsv_lock
@@ -336,8 +342,7 @@ def updataCartData(new_row,que):
 # q = queue.Queue()
 # loadCartData(q)
 
-
-def deleteCartDataItemstaItems(itemCount,que):
+def deleteCartDataItems(itemCount,que):
     global cartData_lock
     try:
         cartData_lock.acquire()
@@ -681,3 +686,86 @@ data = {
 # returnList=loadNBRList()
 # print(returnList)
 # print(json.dumps(returnList))
+
+#---------------------------------------log results---------------------------------
+#save or update
+def saveOrUpdateLogData(Log):
+    global logData_lock
+    try:
+        filename = "cache/logData.pkl"
+        if not os.path.isfile(filename):
+            print("The file", filename, "does not exist in the current path.")
+            new_row = [Log]  # Wrap Log in a list
+            logData_lock.acquire()
+            with open(filename, 'wb') as f:
+                pickle.dump(new_row, f)
+            with open(filename, 'rb') as f:
+                logData = pickle.load(f)
+            rows = logData  # Get the entire list
+            logData_lock.release()
+            print(rows)
+            return rows
+        else:
+            print("The file", filename, "does exist in the current path.")
+            logData_lock.acquire()
+            with open(filename, 'rb') as f:
+                logData = pickle.load(f)
+            logData.append(Log)  # Append the new Log to the existing list
+            with open(filename, 'wb') as f:
+                pickle.dump(logData, f)
+            with open(filename, 'rb') as f:
+                logData = pickle.load(f)
+            rows = logData  # Get the entire list
+            logData_lock.release()
+            json_data = json.dumps(rows)
+            print(json_data)
+            return rows
+    except Exception as e:
+        print("An error occurred:", str(e))
+        return None
+
+
+
+# Log={"localModel: 20"}
+#log of local model and received model and aggregated model accuracy
+data = {
+    "iteration": 3,
+    "localModel": {"id": "0001", "value": True, "accuracy": 0.58},
+    "receivedModel": [
+        {"id": "0001", "value": True, "accuracy": 0.88},
+        {"id": "0002", "value": True, "accuracy": 0.88},
+        {"id": "0003", "value": True, "accuracy": 0.88},
+        {"id": "0004", "value": True, "accuracy": 0.88}
+    ],
+    "aggregatedModel": {"id": "0005", "value": True, "accuracy": 0.92}
+}
+# json_data = json.dumps(data)
+# print(json_data)
+# saveOrUpdateLogData(data)
+#load log results
+
+#read logData 
+def loadLogData():
+    global logData_lock
+    try:
+        logData_lock.acquire()
+        filename = "cache/logData.pkl"
+        if os.path.isfile(filename):
+            print("The file", filename, "exists in the current path.")
+            with open(filename, 'rb') as f:
+                returnList = pickle.load(f)
+                # print(returnList[0])
+            logData_lock.release()
+            json_data = json.dumps(returnList)
+            print(json_data)
+            return json_data
+        else:
+            print("The file", filename, "does not exist in the current path.")
+            logData_lock.release()
+            return []
+    
+    except Exception as e:
+        print("An error occurred:", e)
+
+# results=loadLogData()
+# print(results)

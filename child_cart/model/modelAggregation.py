@@ -3,14 +3,14 @@ import sys
 import absl.logging
 absl.logging.set_verbosity(absl.logging.ERROR)
 # Get the path to the root directory
-root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 # Add the root and client4 directories to the Python path
 sys.path.insert(0, root_path)
 # Import the modules
-from model.modelGenerator import *
-from model.modelAccuracy import *
-from model.dataSetSplit import *
-from cache.cacheFile import *
+from child_cart.model.modelGenerator import *
+from child_cart.model.modelAccuracy import *
+from child_cart.model.dataSetSplit import *
+from child_cart.cache.cacheFile import *
 # model aggregation when cart training after  -- aggregate 3 models----
 def modelAggregation(model,x_test_np,y_test_np,CULSTER_SIZE):
     print("Strat aggregation process -------->")
@@ -82,7 +82,6 @@ def modelAggregation(model,x_test_np,y_test_np,CULSTER_SIZE):
     t1.join()
    
 def aggregateRecModels(aggregation_cluster_size,parameterArray,acc_array,x_test_np,y_test_np):
-    
     size =aggregation_cluster_size
     kernal_Model=create_model()
     kernal_Model.set_weights(parameterArray[size-1])
@@ -95,6 +94,4 @@ def aggregateRecModels(aggregation_cluster_size,parameterArray,acc_array,x_test_
         print("Aggregated --->>")
         kernal_Model.set_weights(averaged_weights)
         acc_array[size-1] = int(getModelAccuracy(kernal_Model,x_test_np,y_test_np))
-    
- 
     return averaged_weights

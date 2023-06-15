@@ -252,3 +252,10 @@ def cartTestItems():
    response= dataSaveTest()  
    return jsonify({'message': response})
 
+#api for log data
+
+@app.route('/logData', methods =["GET"])
+def logData():
+    results=loadLogData()
+    # print(results)
+    return results
