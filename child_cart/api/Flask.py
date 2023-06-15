@@ -31,15 +31,21 @@ import queue
 selectedItem ="Item 0"
 ItemListArray = []
 totalBill = 0
-currentGender = 1
+currentGender = 0
 currentThreandArray=[]
 
-app = Flask(__name__, template_folder='../templates')
+# app = Flask(__name__, template_folder='../../web_app/dist', static_folder='../../web_app/dist/assets')
+app = Flask(__name__, template_folder='./dist', static_folder='./dist/assets')
 CORS(app)  # Enable CORS for all routes
 
 headings=("Name","Number","Price","Amount","Total price")
 
+@app.route('/', methods=['GET'])
+def example():
+    # Example endpoint that renders an HTML template
+    return render_template('index.html')
 #find current threand
+
 def findCurrentThreandArray():
     global currentThreandArray
     global currentGender
