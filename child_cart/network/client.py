@@ -44,6 +44,9 @@ TIME_ARRAY = [0] * 5
 MODEL=create_model()
 x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
 
+LOGLOCALMODEL =""
+LOGRECEIVEDMODEL =[]
+
 def clientconfigurations():
     global HOST
     global LOCALHOST
@@ -131,7 +134,7 @@ def mainFunn(RECIVER_TIMEOUT, SYNC_CONST, SOCKET_HOST):
     except KeyboardInterrupt:
         print("Thread was interrupted.")
 
-def receivingModelAnalize(encoded_message,x_test_np,y_test_np):
+def receivingModelAnalize(encoded_message,senderId,x_test_np,y_test_np):
     print("Received model analysis ")
     global MODEL
     global LOCALMODELACCURACY
@@ -140,14 +143,19 @@ def receivingModelAnalize(encoded_message,x_test_np,y_test_np):
     MODEL.set_weights(model_weights)
     recievedModelAcc = getModelAccuracy(MODEL,x_test_np,y_test_np)
     print("Received model Acc : ",recievedModelAcc)
+    #received model status 
+    status="False"
     if(recievedModelAcc < LOCALMODELACCURACY + stepSize ) and (recievedModelAcc > LOCALMODELACCURACY - stepSize ):
         # saveReceivedModelData(model_weights)
+        status="True"
         t1=threading.Thread(target=saveReceivedModelData,args=(model_weights,))
         t1.start()
         t1.join()
         print("Received model Accept!")
     else:
-        print("Received model Droped!")
+        print("Received model Droped!")   
+    #save received model status     
+    create_received_models(senderId, status, recievedModelAcc)
 
 # def localModelAnalize(x_test_np,y_test_np):
 #     print("Local model analysis ")
@@ -235,7 +243,7 @@ def backgroudNetworkProcess():
     global TIME_ARRAY,TEMPUSERID,mySocket
     global CART_TYPE,CULSTER_SIZE,conType
     global RECIVED_MODELPARAMETERLIST,MODEL
-    global LOCALMODELACCURACY
+    global LOCALMODELACCURACY,LOGLOCALMODEL,LOGRECEIVEDMODEL
     global x_test_np
     global y_test_np
     print("NETWORKING ......")
@@ -261,6 +269,10 @@ def backgroudNetworkProcess():
         if cartData >= 250:
             #local model training
             LOCALMODELACCURACY = localModelTraing(MODEL,x_test_np,y_test_np)
+            #local model log data
+            localModelIndex= getLengthOfLogData()
+            currentLocalModelIndex =str(localModelIndex)
+            LOGLOCALMODEL = create_model(currentLocalModelIndex, "True", LOCALMODELACCURACY)
             # localModelAnalize(x_test_np,y_test_np)
             
             if conType != "KERNEL":
@@ -284,8 +296,9 @@ def backgroudNetworkProcess():
                 for item in TEMPRECIVED_MODELPARAMETERLIST:
                     if "MODELPARAMETERS" in item['Data']:
                         receivedData = item['Data'][1]
+                        receivedSender =item['Sender']
                         print("receivedData------------------->")
-                        receivingModelAnalize(receivedData,x_test_np,y_test_np)
+                        receivingModelAnalize(receivedData,receivedSender,x_test_np,y_test_np)
                 TEMPRECIVED_MODELPARAMETERLIST=[]
 
                 #get all saved model parameters count
@@ -303,7 +316,7 @@ def backgroudNetworkProcess():
                     if conType != "SHELL":
                         conType = "SHELL"
                     TIME_ARRAY[3] = time.time() ## time stap 4
-                    globleAggregationProcess(MODEL,x_test_np,y_test_np,CULSTER_SIZE)
+                    globleAggregationProcess(MODEL,x_test_np,y_test_np,CULSTER_SIZE,LOGLOCALMODEL,LOGRECEIVEDMODEL)
                     # localModelAnalize(x_test_np,y_test_np)
                     TIME_ARRAY[4] = time.time() ## time stap 5
                     break
@@ -317,3 +330,18 @@ def backgroudNetworkProcess():
             if conType != "SHELL":
                 conType = "SHELL"
         time.sleep(10)
+
+
+#----------------------log result funtions --------------------------------
+def create_model(id, value, accuracy):
+    return {
+        "id": id,
+        "value": value,
+        "accuracy": accuracy
+    }
+
+def create_received_models(id, value, accuracy):
+    global LOGRECEIVEDMODEL
+    model = create_model(id, value, accuracy)
+    LOGRECEIVEDMODEL.append(model)
+
