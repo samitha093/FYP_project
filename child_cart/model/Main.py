@@ -3,19 +3,19 @@ import sys
 import csv
 import numpy as np
 # Get the path to the root directory
-root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 # Add the root and client4 directories to the Python path
 sys.path.insert(0, root_path)
 # Import the modules
-from model.modelGenerator import *
-from model.modelTraining import *
-from model.modelAccuracy import *
-from model.dataSetSplit import *
-from model.modelAggregation import *
-from model.fileHandle import *
+from child_cart.model.modelGenerator import *
+from child_cart.model.modelTraining import *
+from child_cart.model.modelAccuracy import *
+from child_cart.model.dataSetSplit import *
+from child_cart.model.modelAggregation import *
+from child_cart.model.fileHandle import *
 import queue
 
-from cache.cacheFile import *
+from child_cart.cache.cacheFile import *
 #cart initialisation remove files that have alredy having
 def resetProject():
     resetModelData()
@@ -127,8 +127,10 @@ def localModelTraing(model,x_test_np,y_test_np):
     x_train,y_train = splitCartData()
     model = continuoustrainModel(model,x_train,y_train)
     #test model using local data
-    getModelAccuracy(model,x_test_np,y_test_np)
+    modelAcc =  getModelAccuracy(model,x_test_np,y_test_np)
     #adding differential privacy
     differentialPrivacy(model,x_test_np,y_test_np)
     #clear the csv file
     recodeDataRemove()
+
+    return modelAcc

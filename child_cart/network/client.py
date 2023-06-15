@@ -4,19 +4,19 @@ import time
 import os
 import pandas as pd
 # Get the path to the root directory
-root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 # Add the root and client4 directories to the Python path
 sys.path.insert(0, root_path)
 # Import the modules
-from model.Main import *
-from model.encodeParameter import *
-from model.fileHandle import *
-from network.soc9k import *
-from network.enumList import *
-from network.com import *
-from network.seed import *
-from network.file import *
-from cache.cacheFile import *
+from child_cart.model.Main import *
+from child_cart.model.encodeParameter import *
+from child_cart.model.fileHandle import *
+from child_cart.network.soc9k import *
+from child_cart.network.enumList import *
+from child_cart.network.com import *
+from child_cart.network.seed import *
+from child_cart.network.file import *
+from child_cart.cache.cacheFile import *
 import queue
 import threading
 
@@ -135,7 +135,7 @@ def receivingModelAnalize(encoded_message,x_test_np,y_test_np):
     print("Received model analysis ")
     global MODEL
     global LOCALMODELACCURACY
-    stepSize =30
+    stepSize =10
     model_weights=decodeModelParameters(encoded_message)
     MODEL.set_weights(model_weights)
     recievedModelAcc = getModelAccuracy(MODEL,x_test_np,y_test_np)
@@ -149,22 +149,22 @@ def receivingModelAnalize(encoded_message,x_test_np,y_test_np):
     else:
         print("Received model Droped!")
 
-def localModelAnalize(x_test_np,y_test_np):
-    print("Local model analysis ")
-    global MODEL
-    global LOCALMODELACCURACY
-    # localModelWeights=loadLocalCartModelData()
+# def localModelAnalize(x_test_np,y_test_np):
+#     print("Local model analysis ")
+#     global MODEL
+#     global LOCALMODELACCURACY
+#     # localModelWeights=loadLocalCartModelData()
 
-    q = queue.Queue()
-    t1=threading.Thread(target=loadLocalCartModelData,args=(q,))
-    t1.start()
-    t1.join()
-    result = q.get()
-    localModelWeights= result
+#     q = queue.Queue()
+#     t1=threading.Thread(target=loadLocalCartModelData,args=(q,))
+#     t1.start()
+#     t1.join()
+#     result = q.get()
+#     localModelWeights= result
 
-    MODEL.set_weights(localModelWeights)
-    LOCALMODELACCURACY = getModelAccuracy(MODEL,x_test_np,y_test_np)
-    print("Local model Acc : ",LOCALMODELACCURACY)
+#     MODEL.set_weights(localModelWeights)
+#     LOCALMODELACCURACY = getModelAccuracy(MODEL,x_test_np,y_test_np)
+#     print("Local model Acc : ",LOCALMODELACCURACY)
 
 def connectNetwork():
     global KERNAL_TIMEOUT, SHELL_TIMEOUT, SYNC_CONST, TIME_ARRAY, conType,MODELPARAMETERS,MOBILEMODELPARAMETERS
@@ -235,6 +235,7 @@ def backgroudNetworkProcess():
     global TIME_ARRAY,TEMPUSERID,mySocket
     global CART_TYPE,CULSTER_SIZE,conType
     global RECIVED_MODELPARAMETERLIST,MODEL
+    global LOCALMODELACCURACY
     global x_test_np
     global y_test_np
     print("NETWORKING ......")
@@ -245,7 +246,7 @@ def backgroudNetworkProcess():
     t0.daemon = True
     t0.start()
 
-    localModelAnalize(x_test_np,y_test_np)
+    
     while True:
         # cartData = getCartDataLenght()
         q = queue.Queue()
@@ -259,7 +260,9 @@ def backgroudNetworkProcess():
         #compare size of the dataset for globla aggregation
         if cartData >= 250:
             #local model training
-            localModelTraing(MODEL,x_test_np,y_test_np)
+            LOCALMODELACCURACY = localModelTraing(MODEL,x_test_np,y_test_np)
+            # localModelAnalize(x_test_np,y_test_np)
+            
             if conType != "KERNEL":
                 conType = "KERNEL"
                 print("Changed Connection Mode to " + conType)
@@ -301,7 +304,7 @@ def backgroudNetworkProcess():
                         conType = "SHELL"
                     TIME_ARRAY[3] = time.time() ## time stap 4
                     globleAggregationProcess(MODEL,x_test_np,y_test_np,CULSTER_SIZE)
-                    localModelAnalize(x_test_np,y_test_np)
+                    # localModelAnalize(x_test_np,y_test_np)
                     TIME_ARRAY[4] = time.time() ## time stap 5
                     break
                 else:
