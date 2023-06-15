@@ -72,12 +72,12 @@ def findCurrentThreandArray_imageList():
     receivedList = getAllItemsImageByCategory(int(itemNum))
     return receivedList
 
-@app.route('/threands', methods =["GET"])
+@app.route('/threands', methods =["GET"]) # type: ignore
 def threands():
     list =findCurrentThreandArray()
     return list
 #list of threands images
-@app.route('/threandsImages', methods =["GET"])
+@app.route('/threandsImages', methods =["GET"]) # type: ignore
 def threandsImages():
     list =findCurrentThreandArray_imageList()
     return list
@@ -260,7 +260,7 @@ def cartTestItems():
 
 #api for log data
 
-@app.route('/logData', methods =["GET"])
+@app.route('/logData', methods =["GET"]) # type: ignore
 def logData():
     results=loadLogData()
     # print(results)
