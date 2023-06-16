@@ -71,7 +71,7 @@ def modelAggregation(model,x_test_np,y_test_np,CULSTER_SIZE):
     print("Weighted averating added")
     model.set_weights(averageWeight)
     print("Aggregated model ------>>")
-    acc = getModelAccuracy(model,x_test_np,y_test_np)
+    accAggregatedModel = getModelAccuracy(model,x_test_np,y_test_np)
 
     print("Aggregrated sucessfuly  ")
 
@@ -80,7 +80,8 @@ def modelAggregation(model,x_test_np,y_test_np,CULSTER_SIZE):
     t1=threading.Thread(target=saveLocalModelData,args=(model,))
     t1.start()
     t1.join()
-   
+    return accAggregatedModel
+    
 def aggregateRecModels(aggregation_cluster_size,parameterArray,acc_array,x_test_np,y_test_np):
     size =aggregation_cluster_size
     kernal_Model=create_model()

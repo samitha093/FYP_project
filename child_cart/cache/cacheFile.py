@@ -703,7 +703,7 @@ def saveOrUpdateLogData(Log):
                 logData = pickle.load(f)
             rows = logData  # Get the entire list
             logData_lock.release()
-            print(rows)
+            # print(rows)
             return rows
         else:
             print("The file", filename, "does exist in the current path.")
@@ -718,7 +718,7 @@ def saveOrUpdateLogData(Log):
             rows = logData  # Get the entire list
             logData_lock.release()
             json_data = json.dumps(rows)
-            print(json_data)
+            # print(json_data)
             return rows
     except Exception as e:
         print("An error occurred:", str(e))
@@ -729,15 +729,15 @@ def saveOrUpdateLogData(Log):
 # Log={"localModel: 20"}
 #log of local model and received model and aggregated model accuracy
 data = {
-    "iteration": 3,
-    "localModel": {"id": "0001", "value": True, "accuracy": 0.58},
+    "iteration": 1,
+    "localModel": {"id": "0001", "value": "True", "accuracy": 0.58},
     "receivedModel": [
-        {"id": "0001", "value": True, "accuracy": 0.88},
-        {"id": "0002", "value": True, "accuracy": 0.88},
-        {"id": "0003", "value": True, "accuracy": 0.88},
-        {"id": "0004", "value": True, "accuracy": 0.88}
+        {"id": "0001", "value": "True", "accuracy": 0.88},
+        {"id": "0002", "value": "True", "accuracy": 0.88},
+        {"id": "0003", "value": "True", "accuracy": 0.88},
+        {"id": "0004", "value": "True", "accuracy": 0.88}
     ],
-    "aggregatedModel": {"id": "0005", "value": True, "accuracy": 0.92}
+    "aggregatedModel": {"id": "0005", "value": "True", "accuracy": 0.92}
 }
 # json_data = json.dumps(data)
 # print(json_data)
@@ -757,7 +757,7 @@ def loadLogData():
                 # print(returnList[0])
             logData_lock.release()
             json_data = json.dumps(returnList)
-            print(json_data)
+            # print(json_data)
             return json_data
         else:
             print("The file", filename, "does not exist in the current path.")
@@ -769,3 +769,32 @@ def loadLogData():
 
 # results=loadLogData()
 # print(results)
+
+
+#get length logData
+def getLengthOfLogData():
+    global logData_lock
+    try:
+        logData_lock.acquire()
+        filename = "cache/logData.pkl"
+        if os.path.isfile(filename):
+            print("The file", filename, "exists in the current path.")
+            with open(filename, 'rb') as f:
+                returnList = pickle.load(f)
+                # print(returnList[0])
+            logData_lock.release()
+            lengthOfDataLog = len(returnList)
+            # print(lengthOfDataLog)
+            return lengthOfDataLog
+        else:
+            print("The file", filename, "does not exist in the current path.")
+            logData_lock.release()
+            # print("0")
+            return 0
+    
+    except Exception as e:
+        print("An error occurred:", e)
+
+# results=loadLogData()
+# print(results)
+# getLengthOfLogData()

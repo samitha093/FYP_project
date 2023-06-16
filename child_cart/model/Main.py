@@ -37,12 +37,22 @@ def recodeDataRemove():
         print("Error occurred while writing data to the CSV file:", e)  
 
 #Globle aggregation process
-def globleAggregationProcess(model,x_test_np,y_test_np,CULSTER_SIZE):
+def globleAggregationProcess(model,x_test_np,y_test_np,CULSTER_SIZE,LOGLOCALMODEL,LOGRECEIVEDMODEL):
           #aggregate the models
-          modelAggregation(model,x_test_np,y_test_np,CULSTER_SIZE)
+          aggregatedModelAcc = modelAggregation(model,x_test_np,y_test_np,CULSTER_SIZE)
+          # aggregated model details gathered
+          nextId = int(LOGLOCALMODEL['id'])+1
+          aggregatedModel = modelLogTemplate(str(nextId), "True", aggregatedModelAcc)
           #remove received files
           removeFiles()
+          #create one iteration whole data
+          data = createFinalLog(nextId,LOGLOCALMODEL,LOGRECEIVEDMODEL,aggregatedModel)
+          #save in cache log data
+          saveOrUpdateLogData(data)
+          #write log data to txt file
+          writeLogData(nextId, aggregatedModelAcc)
           return "Aggregated"
+
 
 def differentialPrivacy(model,x_test_np,y_test_np):
     print("Starting adding differential privacy ------->")
@@ -72,7 +82,7 @@ def differentialPrivacy(model,x_test_np,y_test_np):
         stopRange =5
         # Get the model weights
         model_weights = model.get_weights()
-        tempModel=create_model()
+        tempModel=modelLogTemplate()
 
         print("Add differntial privacy----->")
         # Add Gaussian noise to the model weights
@@ -134,3 +144,38 @@ def localModelTraing(model,x_test_np,y_test_np):
     recodeDataRemove()
 
     return modelAcc
+
+#------------------------------log functions----------------
+#create one model data
+def modelLogTemplate(id, value, accuracy):
+    return {
+        "id": id,
+        "value": value,
+        "accuracy": accuracy
+    }
+#create one iteration all data
+def createFinalLog(iteration,localModel,receivedModel,aggregatedModel):
+    data = {
+        "iteration": iteration,
+        "localModel":localModel,
+        "receivedModel": receivedModel,
+        "aggregatedModel": aggregatedModel
+    }
+    return data
+
+#write aggregation data into txt file
+def writeLogData(iteration, accuracy):
+    # Format the data string using an f-string
+    data = f"iteration: {iteration}, accuracy: {accuracy}"
+
+    # Specify the file path
+    file_path = "aggregatedModelData.txt"
+
+    # Open the file in append mode
+    with open(file_path, 'a') as file:
+        # Write the data to the file
+        file.write(data + "\n")
+
+    print("Data appended to file successfully.")
+
+
