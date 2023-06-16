@@ -40,6 +40,7 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         with:
+          token: ${{ secrets.RELEASE_TOKEN }}
           tag_name: v1.0.0
           release_name: Release v1.0.0
           body: |
