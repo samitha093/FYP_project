@@ -12,7 +12,7 @@ services:
   parent_cart:
     image: parent_cart
     deploy:
-      replicas: 3
+      replicas: 1
     build:
       context:  ./
       dockerfile:  Dockerfile.parent
@@ -27,7 +27,7 @@ services:
   child_cart:
     image: child_cart
     deploy:
-      replicas: 7
+      replicas: 5
     build:
       context:  ./
       dockerfile:  Dockerfile.child

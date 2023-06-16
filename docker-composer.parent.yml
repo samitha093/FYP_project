@@ -1,25 +1,20 @@
 version: '3.1'
-#create network interface
-networks:
-  FLp2p:
-    name: FLp2p
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
 services:
 #init server
   parent_cart:
     image: parent_cart
     deploy:
-      replicas: 5
+      replicas: 1
     build:
       context:  ./
       dockerfile:  Dockerfile.parent
     stdin_open: true
     tty: true
-    networks:
-      FLp2p:
     restart: on-failure:3
     ports:
-      - "1800-1900:80"
+      - "3000:80"
+      - "5001:5001"
+      - "5000:5000"
+      - "8000:8000"
+      - "9000:9000"
+      - "4000:4000"
