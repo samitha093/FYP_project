@@ -27,6 +27,9 @@ jobs:
       - name: Change working directory to web_app
         run: cd web_app
 
+      - name: List contents of web_app directory
+        run: ls
+
       - name: Install Node dependencies
         run: yarn install
 
@@ -35,7 +38,7 @@ jobs:
 
       - name: Return to root directory
         run: cd ..
-        
+
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
