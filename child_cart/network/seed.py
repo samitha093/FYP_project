@@ -18,6 +18,7 @@ ModelParamLoop = True
 def seedProx(mySocket,USERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,SHELL_TIMEOUT):
     global ModelParamLoop
     print(errMsg.MSG004.value)
+    ModelParamLoop = True
     # register peer type
     peerTypeReq = ["PEERTYPE",MODE]
     mySocket.request(requestModel(USERID,peerTypeReq))
