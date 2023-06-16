@@ -40,7 +40,7 @@ jobs:
         run: pip install twine
 
       - name: List files in dist directory
-        run: ls -R dist
+        run: ls -R dist/C_main
       
       - name: Publish package to PyPI
         run: |
