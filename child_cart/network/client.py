@@ -41,7 +41,7 @@ TEMPUSERID = ""
 CART_TYPE = ""
 LOCALMODELACCURACY =0
 TIME_ARRAY = [0] * 5
-MODEL=create_model()
+MODEL=modelLogTemplate()
 x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
 
 LOGLOCALMODEL =""
@@ -155,7 +155,7 @@ def receivingModelAnalize(encoded_message,senderId,x_test_np,y_test_np):
     else:
         print("Received model Droped!")   
     #save received model status     
-    create_received_models(senderId, status, recievedModelAcc)
+    receivedModelsLog(senderId, status, recievedModelAcc)
 
 # def localModelAnalize(x_test_np,y_test_np):
 #     print("Local model analysis ")
@@ -272,7 +272,7 @@ def backgroudNetworkProcess():
             #local model log data
             localModelIndex= getLengthOfLogData()
             currentLocalModelIndex =str(localModelIndex)
-            LOGLOCALMODEL = create_model(currentLocalModelIndex, "True", LOCALMODELACCURACY)
+            LOGLOCALMODEL = modelLogTemplate(currentLocalModelIndex, "True", LOCALMODELACCURACY)
             # localModelAnalize(x_test_np,y_test_np)
             
             if conType != "KERNEL":
@@ -333,15 +333,15 @@ def backgroudNetworkProcess():
 
 
 #----------------------log result funtions --------------------------------
-def create_model(id, value, accuracy):
+def modelLogTemplate(id, value, accuracy):
     return {
         "id": id,
         "value": value,
         "accuracy": accuracy
     }
 
-def create_received_models(id, value, accuracy):
+def receivedModelsLog(id, value, accuracy):
     global LOGRECEIVEDMODEL
-    model = create_model(id, value, accuracy)
+    model = modelLogTemplate(id, value, accuracy)
     LOGRECEIVEDMODEL.append(model)
 

@@ -42,32 +42,17 @@ def globleAggregationProcess(model,x_test_np,y_test_np,CULSTER_SIZE,LOGLOCALMODE
           aggregatedModelAcc = modelAggregation(model,x_test_np,y_test_np,CULSTER_SIZE)
           # aggregated model details gathered
           nextId = int(LOGLOCALMODEL['id'])+1
-          aggregatedModel = create_model(str(nextId), "True", aggregatedModelAcc)
+          aggregatedModel = modelLogTemplate(str(nextId), "True", aggregatedModelAcc)
           #remove received files
           removeFiles()
           #create one iteration whole data
-          data = create_data(nextId,LOGLOCALMODEL,LOGRECEIVEDMODEL,aggregatedModel)
+          data = createFinalLog(nextId,LOGLOCALMODEL,LOGRECEIVEDMODEL,aggregatedModel)
           #save in cache log data
           saveOrUpdateLogData(data)
           #write log data to txt file
           writeLogData(nextId, aggregatedModelAcc)
           return "Aggregated"
-#create one model data
-def create_model(id, value, accuracy):
-    return {
-        "id": id,
-        "value": value,
-        "accuracy": accuracy
-    }
-#create one iteration all data
-def create_data(iteration,localModel,receivedModel,aggregatedModel):
-    data = {
-        "iteration": iteration,
-        "localModel":localModel,
-        "receivedModel": receivedModel,
-        "aggregatedModel": aggregatedModel
-    }
-    return data
+
 
 def differentialPrivacy(model,x_test_np,y_test_np):
     print("Starting adding differential privacy ------->")
@@ -97,7 +82,7 @@ def differentialPrivacy(model,x_test_np,y_test_np):
         stopRange =5
         # Get the model weights
         model_weights = model.get_weights()
-        tempModel=create_model()
+        tempModel=modelLogTemplate()
 
         print("Add differntial privacy----->")
         # Add Gaussian noise to the model weights
@@ -160,6 +145,23 @@ def localModelTraing(model,x_test_np,y_test_np):
 
     return modelAcc
 
+#------------------------------log functions----------------
+#create one model data
+def modelLogTemplate(id, value, accuracy):
+    return {
+        "id": id,
+        "value": value,
+        "accuracy": accuracy
+    }
+#create one iteration all data
+def createFinalLog(iteration,localModel,receivedModel,aggregatedModel):
+    data = {
+        "iteration": iteration,
+        "localModel":localModel,
+        "receivedModel": receivedModel,
+        "aggregatedModel": aggregatedModel
+    }
+    return data
 
 #write aggregation data into txt file
 def writeLogData(iteration, accuracy):
