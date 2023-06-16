@@ -41,7 +41,7 @@ TEMPUSERID = ""
 CART_TYPE = ""
 LOCALMODELACCURACY =0
 TIME_ARRAY = [0] * 5
-MODEL=modelLogTemplate()
+MODEL=create_model()
 x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
 
 LOGLOCALMODEL =""
@@ -138,7 +138,7 @@ def receivingModelAnalize(encoded_message,senderId,x_test_np,y_test_np):
     print("Received model analysis ")
     global MODEL
     global LOCALMODELACCURACY
-    stepSize =10
+    stepSize =30
     model_weights=decodeModelParameters(encoded_message)
     MODEL.set_weights(model_weights)
     recievedModelAcc = getModelAccuracy(MODEL,x_test_np,y_test_np)
