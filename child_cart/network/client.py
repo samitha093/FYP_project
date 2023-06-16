@@ -232,7 +232,7 @@ def time_cal():
 
 #----------------------background process --------------------------------
 def backgroudNetworkProcess():
-    global TIME_ARRAY,TEMPUSERID,mySocket
+    global TIME_ARRAY,TEMPUSERID,mySocket, cartType
     global CART_TYPE,CULSTER_SIZE,conType
     global RECIVED_MODELPARAMETERLIST,MODEL
     global LOCALMODELACCURACY
@@ -245,7 +245,6 @@ def backgroudNetworkProcess():
     t0=threading.Thread(target=connectNetwork)
     t0.daemon = True
     t0.start()
-
     
     while True:
         # cartData = getCartDataLenght()

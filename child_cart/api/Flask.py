@@ -27,6 +27,7 @@ from child_cart.network.client import *
 from child_cart.db.apiConnection import *
 import queue
 
+	
 
 selectedItem ="Item 0"
 ItemListArray = []
@@ -34,8 +35,10 @@ totalBill = 0
 currentGender = 0
 currentThreandArray=[]
 
-# app = Flask(__name__, template_folder='../../web_app/dist', static_folder='../../web_app/dist/assets')
-app = Flask(__name__, template_folder='./dist', static_folder='./dist/assets')
+CartType = False
+
+app = Flask(__name__, template_folder='../../web_app/dist', static_folder='../../web_app/dist/assets')
+# app = Flask(__name__, template_folder='./dist', static_folder='./dist/assets')
 CORS(app)  # Enable CORS for all routes
 
 headings=("Name","Number","Price","Amount","Total price")
@@ -50,7 +53,7 @@ def findCurrentThreandArray():
     global currentThreandArray
     global currentGender
     #get current threand
-    month =1
+    month = datetime.now().month
     gender = currentGender
     itemNum = getCurrentThreand(month,gender)
     currentThreandArray = []
@@ -71,6 +74,14 @@ def findCurrentThreandArray_imageList():
 
     receivedList = getAllItemsImageByCategory(int(itemNum))
     return receivedList
+
+def SetParent(type):
+    global CartType
+    if type == "PARENT":
+        CartType = True
+    else:
+        CartType = False
+    print("Cart Type Set as : ",type)
 
 @app.route('/threands', methods =["GET"]) # type: ignore
 def threands():
@@ -104,11 +115,14 @@ def nconfig():
     return jsonify({'message': config})
 @app.route('/network/config', methods=['POST'])
 def nconfigPost():
-    HOST=request.json['HOST']
-    LOCALHOST=request.json['LOCALHOST']
-    PORT=request.json['PORT']
-    SYNC_CONST=request.json['SYNC_CONST']
-    CLUSTER_SIZE=request.json['CLUSTER_SIZE']
+    data = request.json
+    if data is None:
+        raise ValueError("No JSON data found")
+    HOST=data['HOST']
+    LOCALHOST=data['LOCALHOST']
+    PORT=data['PORT']
+    SYNC_CONST=data['SYNC_CONST']
+    CLUSTER_SIZE=data['CLUSTER_SIZE']
 
     header=[HOST,LOCALHOST,PORT,KERNAL_TIMEOUT,SHELL_TIMEOUT,SYNC_CONST,CLUSTER_SIZE]
     print("Received header ",header)
@@ -140,7 +154,13 @@ if create_api_endpoint:
     from parent_cart.bridge.Main import *
     @app.route('/bridge/hello', methods=['GET'])
     def hello():
-        return jsonify({'message': "ok"})
+        if CartType is True:
+            return jsonify({'message': "ok"})
+        else:
+            response = jsonify({'message': 'error'})
+            response.status_code = 403
+            return response
+
     @app.route('/bridge/node', methods=['GET'])
     def node():
         if getNodeStatus() is True:
@@ -173,10 +193,12 @@ if create_api_endpoint:
     #post
     @app.route('/bridge/boostrap', methods=['POST'])
     def boostrapPost():
-        node_data = request.json
-        add_boostrapNode(node_data)
-        port=request.json['port']
-        ip =request.json['ip']
+        data = request.json
+        if data is None:
+            raise ValueError("No JSON data found")
+        add_boostrapNode(data)
+        port=data['port']
+        ip =data['ip']
         q = queue.Queue()
         t1=threading.Thread(target=addParentPortIp,args=(port,ip,q,))
         t1.start()
@@ -187,9 +209,12 @@ if create_api_endpoint:
     #put
     @app.route('/bridge/boostrap', methods=['PUT'])
     def boostrapPut():
-        port=request.json['port']
-        ip =request.json['ip']
-        index =request.json['index']
+        data = request.json
+        if data is None:
+            raise ValueError("No JSON data found")
+        port=data['port']
+        ip =data['ip']
+        index =data['index']
         q = queue.Queue()
         t1=threading.Thread(target=updateParentPortIp,args=(index,port,ip,q))
         t1.start()
@@ -237,13 +262,15 @@ Json object look like this
   """
 @app.route('/cartItems', methods=['POST'])
 def cartItemsPost():
-    global currentGender,currentMonth
+    global currentGender
+    
     data = request.get_json()  # Retrieve the JSON object from the request
     # print("data : ",data)
     for item in data:
         item_value = int(item['item']) # Access the 'item' key within each object
         # print("item_value : ",item_value)
-        new_row=[currentMonth,item_value,currentGender]
+        month = datetime.now().month
+        new_row=[month,item_value,currentGender]
         q = queue.Queue()
         t1=threading.Thread(target=updataCartData,args=(new_row,q,))
         t1.start()
