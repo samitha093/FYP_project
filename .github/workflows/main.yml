@@ -39,7 +39,10 @@ jobs:
       - name: Install twine
         run: pip install twine
 
+      - name: List files in dist directory
+        run: ls dist
+
       - name: Publish package to PyPI
         run: |
           cd dist
-          twine upload --repository-url https://upload.pypi.org/legacy/ *.tar.gz
+          twine upload --repository-url https://upload.pypi.org/legacy/ dist/C_main.exe
