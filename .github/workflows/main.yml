@@ -40,9 +40,9 @@ jobs:
         run: pip install twine
 
       - name: List files in dist directory
-        run: ls dist/C_main
+        run: ls dist
       
       - name: Publish package to PyPI
         run: |
           cd dist
-          twine upload --repository-url https://upload.pypi.org/legacy/ dist/C_main
+          twine upload --repository-url https://upload.pypi.org/legacy/ dist/CHILD_CART_V1.exe
