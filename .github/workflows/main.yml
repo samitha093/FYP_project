@@ -20,9 +20,9 @@ jobs:
           python-version: 3.x
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v2.4.0
         with:
-          node-version: 14
+          node-version: 16
 
       - name: Change working directory to web_app
         run: cd web_app
