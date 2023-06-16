@@ -49,6 +49,7 @@ def globleAggregationProcess(model,x_test_np,y_test_np,CULSTER_SIZE,LOGLOCALMODE
           data = createFinalLog(nextId,LOGLOCALMODEL,LOGRECEIVEDMODEL,aggregatedModel)
           #save in cache log data
           saveOrUpdateLogData(data)
+          print("LOG DATA : ",data)
           #write log data to txt file
           writeLogData(nextId, aggregatedModelAcc)
           return "Aggregated"
@@ -82,7 +83,7 @@ def differentialPrivacy(model,x_test_np,y_test_np):
         stopRange =5
         # Get the model weights
         model_weights = model.get_weights()
-        tempModel=modelLogTemplate()
+        tempModel=create_model()
 
         print("Add differntial privacy----->")
         # Add Gaussian noise to the model weights
@@ -177,5 +178,6 @@ def writeLogData(iteration, accuracy):
         file.write(data + "\n")
 
     print("Data appended to file successfully.")
+    print(data)
 
 

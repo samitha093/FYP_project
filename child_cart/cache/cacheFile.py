@@ -703,7 +703,7 @@ def saveOrUpdateLogData(Log):
                 logData = pickle.load(f)
             rows = logData  # Get the entire list
             logData_lock.release()
-            # print(rows)
+            print(rows)
             return rows
         else:
             print("The file", filename, "does exist in the current path.")
@@ -719,6 +719,7 @@ def saveOrUpdateLogData(Log):
             logData_lock.release()
             json_data = json.dumps(rows)
             # print(json_data)
+            print(rows)
             return rows
     except Exception as e:
         print("An error occurred:", str(e))
