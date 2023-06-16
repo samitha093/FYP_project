@@ -34,4 +34,4 @@ jobs:
         run: pip install -r requirements.txt
       
       - name: Create Child cart package
-        run: pyinstaller --onefile --add-data "web_app/dist;web_app/dist" C_main.py
+        run: pyinstaller --onefile --add-data "web_app/dist:web_app/dist" C_main.py
