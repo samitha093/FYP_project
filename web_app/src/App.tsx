@@ -20,8 +20,8 @@ function App() {
     setSettings(!settings);
   };
 useEffect(() => {
-  sessionStorage.setItem('host', 'http://127.0.0.1:'+ window.location.port+'/api');
-  // sessionStorage.setItem('host', 'http://127.0.0.1:5001');
+  // sessionStorage.setItem('host', 'http://127.0.0.1:'+ window.location.port+'/api');
+  sessionStorage.setItem('host', 'http://127.0.0.1:5001');
 }, []);
   return (
     <div style={{ backgroundColor: darkMode ? theme.colors.gray[700] : "white", height:"100vh" ,overflow: 'hidden' }} >

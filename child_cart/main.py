@@ -23,5 +23,6 @@ def mainFunc(NetworkModule = True):
     except Exception as e:
         print("An error occurred:", e)
 
-def ChildCart(NetworkModule):
+def ChildCart(NetworkModule, type = "PARENT"):
+    SetParent(type)
     mainFunc(NetworkModule)
