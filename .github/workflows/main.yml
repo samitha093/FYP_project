@@ -45,4 +45,4 @@ jobs:
       - name: Publish package to PyPI
         run: |
           cd dist
-          twine upload --repository-url https://upload.pypi.org/legacy/ dist/CHILD_CART_V1.exe
+          twine upload --repository-url https://upload.pypi.org/legacy/ CHILD_CART_V1.exe
