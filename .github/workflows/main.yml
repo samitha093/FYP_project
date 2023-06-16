@@ -20,23 +20,38 @@ jobs:
           python-version: 3.x
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v2.4.0
         with:
-          node-version: 14
-
-      - name: Change working directory to web_app
-        run: cd web_app
+          node-version: 16
 
       - name: Install Node dependencies
-        run: yarn install
+        run: cd web_app && yarn install
 
       - name: Build project with Yarn
-        run: yarn build
+        run: cd web_app && yarn build
 
-      - name: Return to root directory
-        run: cd ..
-        
       - name: Install Python dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+        run: pip install -r requirements.txt
+
+      - name: Create Child cart package
+        run: pyinstaller --onefile --add-data "web_app/dist:web_app/dist" --name CHILD_CART_LINUX C_main.py
+
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        with:
+          tag_name: v3.0.0
+          release_name: Release v3.0.0
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/CHILD_CART_V1
+          asset_name: CHILD_CART_V1
+          asset_content_type: application/octet-stream
