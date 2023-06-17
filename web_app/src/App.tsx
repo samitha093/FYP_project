@@ -6,6 +6,7 @@ import "./App.css";
 import Nav from "./components/navbar/nav";
 import Settings from "./components/dashbord/settings";
 import Home from "./components/checkout/home"
+import Log from "./components/dashbord/log";
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -24,18 +25,19 @@ useEffect(() => {
   // sessionStorage.setItem('host', 'http://127.0.0.1:5001');
 }, []);
   return (
-    <div style={{ backgroundColor: darkMode ? theme.colors.gray[700] : "white", height:"100vh" ,overflow: 'hidden' }} >
-      <Nav darkMode={darkMode} toggleDarkMode={toggleDarkMode} settings={settings} toggleSettings={toggleSettings} />
-      <div className="main-content" style={{ overflow: 'hidden' }}>
-        <AnimatePresence>
-          {settings ? (
-              <Settings darkMode={darkMode} />
-          ) : (
-              <Home darkMode={darkMode} />
-          )}
-        </AnimatePresence>
-      </div>
-    </div>
+    <Log />
+    // <div style={{ backgroundColor: darkMode ? theme.colors.gray[700] : "white", height:"100vh" ,overflow: 'hidden' }} >
+    //   <Nav darkMode={darkMode} toggleDarkMode={toggleDarkMode} settings={settings} toggleSettings={toggleSettings} />
+    //   <div className="main-content" style={{ overflow: 'hidden' }}>
+    //     <AnimatePresence>
+    //       {settings ? (
+    //           <Settings darkMode={darkMode} />
+    //       ) : (
+    //           <Home darkMode={darkMode} />
+    //       )}
+    //     </AnimatePresence>
+    //   </div>
+    // </div>
   );
 }
 
