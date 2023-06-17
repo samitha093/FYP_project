@@ -44,7 +44,7 @@ TIME_ARRAY = [0] * 5
 MODEL=create_model()
 x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
 #initial model Training
-initialModelTraining(MODEL,x_train_np, y_train_np,x_test_np,y_test_np)
+# initialModelTraining(MODEL,x_train_np, y_train_np,x_test_np,y_test_np)
 LOGLOCALMODEL =""
 LOGRECEIVEDMODEL =[]
 datasetSize =250
@@ -73,24 +73,8 @@ def clientconfigurations():
     print("Load network configuration : ",row)
 
 
-########################################################################
-#------------------------------PEER   DATA-----------------------------#
-# MODELPARAMETERS  = bytes(1024)  # 1 KB
-# MODELPARAMETERS  = bytes(100*1024)  # 100 KB
-# MODELPARAMETERS  = bytes(1024*1024)  # 1 MB
-# MODELPARAMETERS  = bytes(3*1024*1024)  # 3 MB
-# MODELPARAMETERS  = bytes(5*1024*1024)  # 5 MB
-MODELPARAMETERS = bytes(1024) #set default values
-########################################################################
-
-########################################################################
-#------------------------------MOBILE MODEL----------------------------#
-# MOBILEMODELPARAMETERS  = "jhjhhkhkhkl"
-# MOBILEMODELPARAMETERS  = bytes(1024)  # 1 KB
-# MOBILEMODELPARAMETERS  = bytes(1024*1024)  # 1 MB
-# MOBILEMODELPARAMETERS  = bytes(5*1024*1024)  # 5 MB
-MOBILEMODELPARAMETERS  =bytes(1024) #set default values
-########################################################################a
+MODELPARAMETERS = bytes(1024) 
+MOBILEMODELPARAMETERS  =bytes(1024)
 
 def mainFunn(RECIVER_TIMEOUT, SYNC_CONST, SOCKET_HOST):
     print("New connection starting with ", SOCKET_HOST)
@@ -148,7 +132,7 @@ def receivingModelAnalize(encoded_message,senderId,x_test_np,y_test_np):
     status="False"
     if(recievedModelAcc < LOCALMODELACCURACY + stepSize ) and (recievedModelAcc > LOCALMODELACCURACY - stepSize ):
         saveReceivedModelData(model_weights)
-        # status="True"
+        status="True"
         # t1=threading.Thread(target=saveReceivedModelData,args=(model_weights,))
         # t1.start()
         # t1.join()
@@ -157,23 +141,6 @@ def receivingModelAnalize(encoded_message,senderId,x_test_np,y_test_np):
         print("Received model Droped!")   
     #save received model status     
     receivedModelsLog(senderId, status, recievedModelAcc)
-
-# def localModelAnalize(x_test_np,y_test_np):
-#     print("Local model analysis ")
-#     global MODEL
-#     global LOCALMODELACCURACY
-#     # localModelWeights=loadLocalCartModelData()
-
-#     q = queue.Queue()
-#     t1=threading.Thread(target=loadLocalCartModelData,args=(q,))
-#     t1.start()
-#     t1.join()
-#     result = q.get()
-#     localModelWeights= result
-
-#     MODEL.set_weights(localModelWeights)
-#     LOCALMODELACCURACY = getModelAccuracy(MODEL,x_test_np,y_test_np)
-#     print("Local model Acc : ",LOCALMODELACCURACY)
 
 def connectNetwork():
     global KERNAL_TIMEOUT, SHELL_TIMEOUT, SYNC_CONST, TIME_ARRAY, conType,MODELPARAMETERS,MOBILEMODELPARAMETERS
