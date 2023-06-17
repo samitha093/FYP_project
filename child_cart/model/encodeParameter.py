@@ -20,13 +20,13 @@ def encodeModelParameters():
     print("Encoding ----------------> ")
     model = create_model()
     try:
-        # model_weights= loadLocalCartModelData()
-        q = queue.Queue()
-        t1=threading.Thread(target=loadLocalCartModelData,args=(q,))
-        t1.start()
-        t1.join()
-        result = q.get()
-        model_weights= result
+        model_weights= loadLocalCartModelData()
+        # q = queue.Queue()
+        # t1=threading.Thread(target=loadLocalCartModelData,args=(q,))
+        # t1.start()
+        # t1.join()
+        # result = q.get()
+        # model_weights= result
 
         print("Model weights loaded successfully!")
     except Exception as e:
@@ -49,14 +49,14 @@ def encodeModelParameters():
 def encodeModelParametersForMobile():
         
     try:
-        # tflite_model_bytes = loadLocalMobileModelData()
+        tflite_model_bytes = loadLocalMobileModelData()
         
-        q = queue.Queue()
-        t1=threading.Thread(target=loadLocalMobileModelData,args=(q,))
-        t1.start()
-        t1.join()
-        result = q.get()
-        tflite_model_bytes = result
+        # q = queue.Queue()
+        # t1=threading.Thread(target=loadLocalMobileModelData,args=(q,))
+        # t1.start()
+        # t1.join()
+        # result = q.get()
+        # tflite_model_bytes = result
         
         print("Model data read successfully!")
     except Exception as e:

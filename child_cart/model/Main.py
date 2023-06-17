@@ -22,15 +22,15 @@ def resetProject():
 
 
 #remove stored data in carData file
-def recodeDataRemove():
+def recodeDataRemove(datasetSize):
     try:
         #3 mean number of records
         # deleteCartDataItems(3)
-        q = queue.Queue()
-        t1=threading.Thread(target=deleteCartDataItems,args=(250,q,))
-        t1.start()
-        t1.join()
-        result = q.get()
+        # q = queue.Queue()
+        # t1=threading.Thread(target=deleteCartDataItems,args=(datasetSize,q,))
+        # t1.start()
+        # t1.join()
+        result =deleteCartDataItems(datasetSize)
         print("Removed training data")
 
     except Exception as e:
@@ -58,13 +58,13 @@ def globleAggregationProcess(model,x_test_np,y_test_np,CULSTER_SIZE,LOGLOCALMODE
 def differentialPrivacy(model,x_test_np,y_test_np):
     print("Starting adding differential privacy ------->")
     try:
-        # localModelWeights=loadLocalCartModelData()
-        q = queue.Queue()
-        t1=threading.Thread(target=loadLocalCartModelData,args=(q,))
-        t1.start()
-        t1.join()
-        result = q.get()
-        localModelWeights= result
+        localModelWeights=loadLocalCartModelData()
+        # q = queue.Queue()
+        # t1=threading.Thread(target=loadLocalCartModelData,args=(q,))
+        # t1.start()
+        # t1.join()
+        # result = q.get()
+        # localModelWeights= result
         
         model.set_weights(localModelWeights)
         print("Model weights loaded successfully!")
@@ -99,10 +99,10 @@ def differentialPrivacy(model,x_test_np,y_test_np):
             print(differentialPrivacyModelAccuracy)
             
             print("Stop loop process")
-            # saveLocalModelData(tempModel)
-            t1=threading.Thread(target=saveLocalModelData,args=(tempModel,))
-            t1.start()
-            t1.join()
+            saveLocalModelData(tempModel)
+            # t1=threading.Thread(target=saveLocalModelData,args=(tempModel,))
+            # t1.start()
+            # t1.join()
             return True
         
         else:
@@ -116,35 +116,38 @@ def differentialPrivacy(model,x_test_np,y_test_np):
            break
       
        x=x+1
+       
 #local model training and adding differntial privacy
-def localModelTraing(model,x_test_np,y_test_np):
+def localModelTraing(model,x_test_np,y_test_np,datasetSize):
     print("Strat local training ------->")
     try:
-    #  localModelWeights=loadLocalCartModelData()
-        q = queue.Queue()
-        t1=threading.Thread(target=loadLocalCartModelData,args=(q,))
-        t1.start()
-        t1.join()
-        result = q.get()
-        localModelWeights= result
+        localModelWeights=loadLocalCartModelData()
+        # q = queue.Queue()
+        # t1=threading.Thread(target=loadLocalCartModelData,args=(q,))
+        # t1.start()
+        # t1.join()
+        # result = q.get()
+        
+        # localModelWeights= result
         
         model.set_weights(localModelWeights)
         print("Model weights loaded successfully!")
+        #traing model using cartdata
+        print("Split dataset")
+        x_train,y_train = splitCartData(datasetSize)
+        model = continuoustrainModel(model,x_train,y_train)
+        #test model using local data
+        modelAcc =  getModelAccuracy(model,x_test_np,y_test_np)
+        #adding differential privacy
+        differentialPrivacy(model,x_test_np,y_test_np)
+        #clear the csv file
+        recodeDataRemove(datasetSize)
+
+        return modelAcc
     except Exception as e:
         print("Error occurred while loading model weights:", e)
 
-    #traing model using cartdata
-    print("Split dataset")
-    x_train,y_train = splitCartData()
-    model = continuoustrainModel(model,x_train,y_train)
-    #test model using local data
-    modelAcc =  getModelAccuracy(model,x_test_np,y_test_np)
-    #adding differential privacy
-    differentialPrivacy(model,x_test_np,y_test_np)
-    #clear the csv file
-    recodeDataRemove()
 
-    return modelAcc
 
 #------------------------------log functions----------------
 #create one model data
@@ -178,6 +181,43 @@ def writeLogData(iteration, accuracy):
         file.write(data + "\n")
 
     print("Data appended to file successfully.")
-    print(data)
+    # print(data)
 
 
+
+#-----------------------------------cart initial model training----------------------------
+
+def initialModelTraining(MODEL,x_train_np, y_train_np,x_test_np,y_test_np):
+    print("Initial model training")
+    initalDataSetSize=1000
+    dataSaveTest(initalDataSetSize)
+    localModelTraing(MODEL,x_test_np,y_test_np,initalDataSetSize)
+    print("Completed Initial model training")
+
+#loop 
+
+    # first=0
+    # value=250
+    # for i in range(10):
+    #     print("Iteration No : ",i)
+    #     initalDataSetSize=250
+    #     dataSaveTest(initalDataSetSize)
+    #     localModelTraing(MODEL,x_test_np,y_test_np,initalDataSetSize)
+    #     print("Completed Initial model training")
+
+
+#test
+        # print("Iteration No : ",i)
+        # gap =250
+        # localModelWeights=loadLocalCartModelData()
+        # #set weights
+        # MODEL.set_weights(localModelWeights)
+        # MODEL = continuoustrainModel(MODEL,x_train_np[first:value],y_train_np[first:value])
+        # modelAcc =  getModelAccuracy(MODEL,x_test_np,y_test_np)
+        # print("lenth ",len(x_test_np))
+        # print("Model accuracy : ",modelAcc)
+        # print("length ", len(x_train_np))
+        # # localModelTraing(MODEL,x_test_np,y_test_np,gap)
+        # first=first+gap
+        # value=value+gap
+        # print("Completed Initial model training")

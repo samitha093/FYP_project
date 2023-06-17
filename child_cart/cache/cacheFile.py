@@ -100,7 +100,7 @@ def updateCartConfigurations(header1,que):
 
 
 #*********************************DataSet --accuracy check csv data-----------------------------
-def loadDatasetCsv(que):
+def loadDatasetCsv():
     global datasetCsv_lock
     try:
         datasetCsv_lock.acquire()
@@ -117,7 +117,7 @@ def loadDatasetCsv(que):
 
         df = pd.read_pickle(filename)
         datasetCsv_lock.release()
-        que.put(df)
+        # que.put(df)
         return df
     
     except Exception as e:
@@ -264,7 +264,7 @@ q = queue.Queue()
 
 # loadDatasetCsv()
 #*********************************CartData --Customer Data------------------
-def loadCartData(que):
+def loadCartData():
     global cartData_lock
     try:
         cartData_lock.acquire()
@@ -286,7 +286,7 @@ def loadCartData(que):
 
         df = pd.DataFrame(cartData[1:], columns=cartData[0])
         cartData_lock.release()
-        que.put(df)
+        # que.put(df)
         # print(df)
         return df
     
@@ -296,7 +296,7 @@ def loadCartData(que):
 # q = queue.Queue()
 # loadCartData(q)
 
-def updataCartData(new_row,que):
+def updataCartData(new_row):
     global cartData_lock
     # print("tred start : ",new_row)
     try:
@@ -326,7 +326,7 @@ def updataCartData(new_row,que):
         with open(filename, 'rb') as f:
             cartData = pickle.load(f) 
         cartData_lock.release()
-        que.put(cartData)
+        # que.put(cartData)
         # print("return : ",cartData)
         return cartData
     except Exception as e:
@@ -342,7 +342,7 @@ def updataCartData(new_row,que):
 # q = queue.Queue()
 # loadCartData(q)
 
-def deleteCartDataItems(itemCount,que):
+def deleteCartDataItems(itemCount):
     global cartData_lock
     try:
         cartData_lock.acquire()
@@ -367,7 +367,7 @@ def deleteCartDataItems(itemCount,que):
             pickle.dump(cartData, f)
             
         cartData_lock.release()
-        que.put(cartData)
+        # que.put(cartData)
         return cartData
     except Exception as e:
         print("Error occurred: ", str(e))
@@ -375,7 +375,7 @@ def deleteCartDataItems(itemCount,que):
 
 # q = queue.Queue()
 # deleteCartDataItemstaItems(38,q)
-def getCartDataLenght(que):
+def getCartDataLenght():
     global cartData_lock
     filename = "cache/cartData.pkl"
     try:
@@ -387,7 +387,7 @@ def getCartDataLenght(que):
             cartDataSize=len(cartData)
             cartData_lock.release()
             cartDataSize=cartDataSize-1
-            que.put(cartDataSize)
+            # que.put(cartDataSize)
             return cartDataSize
         else:
             print("The file", filename, "does not exists in the current path.")
@@ -399,7 +399,7 @@ def getCartDataLenght(que):
             cartDataSize = len(header)
             cartData_lock.release()
             cartDataSize=cartDataSize-1
-            que.put(cartDataSize)
+            # que.put(cartDataSize)
             return cartDataSize
 
     except (pickle.UnpicklingError, EOFError) as e:
@@ -449,7 +449,7 @@ def saveLocalModelData(model):
 # model=create_model()
 # saveLocalModelData(model)
 
-def loadLocalCartModelData(que):
+def loadLocalCartModelData():
     #cart model weights
     global localModelData_lock
     # localModelData_lock.acquire()
@@ -477,7 +477,7 @@ def loadLocalCartModelData(que):
             serialized_weights = f.read()
             localModeWeights = pickle.loads(serialized_weights)
             localModelData_lock.release()
-            que.put(localModeWeights)
+            # que.put(localModeWeights)
             return localModeWeights
     except (IOError, pickle.UnpicklingError) as e:
         print("Error loading model weights from cache file:", e)
@@ -485,7 +485,7 @@ def loadLocalCartModelData(que):
 
     
 # loadLocalCartModelData()
-def loadLocalMobileModelData(que):
+def loadLocalMobileModelData():
     #mobile model
     global localMobileModelData_lock
     filename = "cache/mobileModel.pkl"
@@ -513,7 +513,7 @@ def loadLocalMobileModelData(que):
         with open('cache/mobileModel.pkl', 'rb') as f:
             mobileModel = pickle.load(f)
             localMobileModelData_lock.release()
-            que.put(mobileModel)
+            # que.put(mobileModel)
 
             return mobileModel
     except (IOError, pickle.UnpicklingError) as e:
@@ -548,7 +548,7 @@ def saveReceivedModelData(receivedModelWeights):
 # weights = model.get_weights()
 # saveReceivedModelData(weights)
 
-def loadReceivedModelData(CULSTER_SIZE,que):
+def loadReceivedModelData(CULSTER_SIZE):
     global receivedModelData_lock
     count = len(glob.glob("cache/receivedModelWeight_*.pkl"))
     # Print the count
@@ -568,12 +568,12 @@ def loadReceivedModelData(CULSTER_SIZE,que):
             receivedModelWeights[i] = None
     print("Load receivedModelWeight")
     
-    que.put(receivedModelWeights)
+    # que.put(receivedModelWeights)
     return receivedModelWeights
 
 # loadReceivedModelData()
 
-def deleteReceivedModelWeights(q):
+def deleteReceivedModelWeights():
     global receivedModelData_lock
 
     try:
@@ -602,7 +602,7 @@ def deleteReceivedModelWeights(q):
         
 # deleteReceivedModelWeights()
 
-def getReceivedModelParameterLength(que):
+def getReceivedModelParameterLength():
     global receivedModelData_lock
 
     try:
@@ -614,7 +614,7 @@ def getReceivedModelParameterLength(que):
         print("Error: Failed to count files in directory.")
         count = 0
     print("Number of model files:", count)
-    que.put(count)
+    # que.put(count)
     return count
 
 #-----------------------------NBR LIST----------------------------------

@@ -11,16 +11,16 @@ from child_cart.model.modelGenerator import *
 from child_cart.cache.cacheFile import *
 #remove the file from the initModelParameters
 def removeFiles():
-    # deleteReceivedModelWeights()
-    q = queue.Queue()
-    t1=threading.Thread(target=deleteReceivedModelWeights,args=(q,))
-    t1.start()
-    t1.join()
+    deleteReceivedModelWeights()
+    # q = queue.Queue()
+    # t1=threading.Thread(target=deleteReceivedModelWeights,args=(q,))
+    # t1.start()
+    # t1.join()
     print("Removed receivedModelParameters")
 
 def resetModelData():
     model =create_model()
-    # saveLocalModelData(model)
-    t1=threading.Thread(target=saveLocalModelData,args=(model,))
-    t1.start()
-    t1.join()
+    saveLocalModelData(model)
+    # t1=threading.Thread(target=saveLocalModelData,args=(model,))
+    # t1.start()
+    # t1.join()
