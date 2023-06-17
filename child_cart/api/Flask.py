@@ -271,18 +271,19 @@ def cartItemsPost():
         # print("item_value : ",item_value)
         month = datetime.now().month
         new_row=[month,item_value,currentGender]
-        q = queue.Queue()
-        t1=threading.Thread(target=updataCartData,args=(new_row,q,))
-        t1.start()
-        t1.join()
-        result = q.get()
+        # q = queue.Queue()
+        # t1=threading.Thread(target=updataCartData,args=(new_row,q,))
+        # t1.start()
+        # t1.join()
+        result =updataCartData(new_row)
 
     return jsonify({'message': "added"})
     
 #mannual data adding for testing
 @app.route('/cartTestItems', methods=['POST'])
 def cartTestItems():
-   response= dataSaveTest()  
+   dataSetSize=250
+   response= dataSaveTest(dataSetSize)  
    return jsonify({'message': response})
 
 #api for log data
