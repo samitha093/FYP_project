@@ -21,13 +21,13 @@ def splitDataset():
     global train_array
     #Load  the dataset from the CSV file
     try:
-        # df = loadDatasetCsv()
-        q = queue.Queue()
-        t1=threading.Thread(target=loadDatasetCsv,args=(q,))
-        t1.start()
-        t1.join()
-        result = q.get()
-        df = result
+        df = loadDatasetCsv()
+        # q = queue.Queue()
+        # t1=threading.Thread(target=loadDatasetCsv,args=(q,))
+        # t1.start()
+        # t1.join()
+        # result = q.get()
+        # df = result
         print("CSV file loaded successfully!")
     except Exception as e:
         print("Error occurred while loading the CSV file:", e)
@@ -50,7 +50,8 @@ def splitDataset():
     x_test_np = x_test_np.reshape(1000, 2)
     
     for i in range(99000):
-        data =  [x_train_np[i][0], x_train_np[i][1], y_train_np[i]]
+        #month ,gender ,item
+        data =  [x_train_np[i][0], y_train_np[i], x_train_np[i][1]]
         train_array.append(data)
 
     # #apply thread to add user  seleted data set insert mannualy for testing
@@ -77,18 +78,18 @@ def splitDataset():
 # splitDataset(20,2)
 
 #split recoded dataset
-def splitCartData():
-    sizeOfDataset =250
+def splitCartData(sizeOfDataset):
+    # sizeOfDataset =250
     #Load  the dataset from the CSV file
     print("READ DATA SET")
     try:
-        # my_data = loadCartData()
-        q = queue.Queue()
-        t1=threading.Thread(target=loadCartData,args=(q,))
-        t1.start()
-        t1.join()
-        result = q.get()
-        my_data=result
+        my_data = loadCartData()
+        # q = queue.Queue()
+        # t1=threading.Thread(target=loadCartData,args=(q,))
+        # t1.start()
+        # t1.join()
+        # result = q.get()
+        # my_data=result
         print(type(my_data))
         print("CSV file loaded successfully!")
     except Exception as e:
@@ -117,39 +118,42 @@ def splitCartData():
 
 
 #mannulay data insert function call
-def dataSaveTest():
+def dataSaveTest(oneTimeDataSetSize):
     global train_array,num
-    oneTimeDataSetSize =250 
+    # oneTimeDataSetSize =250 
     #data set size for one time insert
     # oneTimeDataSetSize=250
     arrayLength=len(train_array)
+    #print array length
+    print("Array length: ",arrayLength)
+
     #time for wait next insertion
     # timeForWaitInSeconds=10
     lengthOfLoop=int(arrayLength/oneTimeDataSetSize)
 
-    q = queue.Queue()
-    t1=threading.Thread(target=getCartDataLenght,args=(q,))
-    t1.daemon = True
-    t1.start()
-    t1.join()
-    result = q.get()
+    # q = queue.Queue()
+    # t1=threading.Thread(target=getCartDataLenght,args=(q,))
+    # t1.daemon = True
+    # t1.start()
+    # t1.join()
+    result = getCartDataLenght()
     cartDataLength = int(result)
-    # print("Cart Data size: ",cartDataLength)
+    print("Cart Data size: ",cartDataLength)
     if(cartDataLength < oneTimeDataSetSize):
         if(num >= 98000):
             num =0
         for i in range(oneTimeDataSetSize):
             new_row = train_array[num]
-            q = queue.Queue()
-            t1=threading.Thread(target=updataCartData,args=(new_row,q,))
-            t1.start()
-            t1.join()
-            result = q.get()
-            my_data=result
+            # q = queue.Queue()
+            # t1=threading.Thread(target=updataCartData,args=(new_row,q,))
+            # t1.start()
+            # t1.join()
+            # result = q.get()
+            my_data=updataCartData(new_row)
             num +=1
 
-        print("dataset 250 added")
-        return "dataset 250 added"
+        print("dataset ",oneTimeDataSetSize," added")
+        return "dataset added"
     else:
-        print("currently have 250 dataset. No need to add!")
-        return "currently have 250 dataset. No need to add!"
+        print("currently have ",oneTimeDataSetSize," dataset. No need to add!")
+        return "currently have ",oneTimeDataSetSize," No need to add!"
