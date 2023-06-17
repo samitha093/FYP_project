@@ -50,7 +50,7 @@ def splitDataset():
     x_test_np = x_test_np.reshape(1000, 2)
     
     for i in range(99000):
-        #month ,gender ,item
+        #month ,item,gender
         data =  [x_train_np[i][0], y_train_np[i], x_train_np[i][1]]
         train_array.append(data)
 
