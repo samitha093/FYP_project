@@ -24,6 +24,7 @@ receivedModelData_lock = threading.Lock()
 parentPortIp_lock = threading.Lock()
 nbrList_lock = threading.Lock()
 logData_lock = threading.Lock()
+init_lock = threading.Lock()
 #--------------------check cache file-----------------
 def genCacheFile():
     directoryReceivedModelParameter = "cache"
@@ -111,6 +112,9 @@ def loadDatasetCsv():
         else:
             print("The file", filename, "does not exist in the current path.")
             # load the csv file into a pandas dataframe
+                #initialization added to device
+            intData={"initialization": "False"}
+            saveOrUpdateInitialization(intData)
             df = DatasetGenerator(100000)
             # store the dataframe in the cache memory
             pd.DataFrame.to_pickle(df, filename)
@@ -381,7 +385,7 @@ def getCartDataLenght():
     try:
         if os.path.isfile(filename):
             cartData_lock.acquire()
-            print("The file", filename, "exists in the current path.")
+            # print("The file", filename, "exists in the current path.")
             with open(filename, 'rb') as f:
                 cartData = pickle.load(f) 
             cartDataSize=len(cartData)
@@ -799,3 +803,77 @@ def getLengthOfLogData():
 # results=loadLogData()
 # print(results)
 # getLengthOfLogData()
+
+#--------------------------------project initial data ---------------------------------
+import json
+
+def saveOrUpdateInitialization(Log):
+    global init_lock
+    try:
+        filename = "cache/initialization.pkl"
+        if not os.path.isfile(filename):
+            print("The file", filename, "does not exist in the current path.")
+            new_row = {"initialization": Log}  # Create a dictionary with the updated Log value
+            init_lock.acquire()
+            with open(filename, 'wb') as f:
+                pickle.dump(new_row, f)
+            with open(filename, 'rb') as f:
+                logData = pickle.load(f)
+            rows = logData  # Get the entire dictionary
+            init_lock.release()
+            # data = {'initialization': {'initialization': 'True'}}
+            value = logData['initialization']['initialization']
+            # print(value)
+            return value
+        else:
+            print("The file", filename, "does exist in the current path.")
+            init_lock.acquire()
+            with open(filename, 'rb') as f:
+                logData = pickle.load(f)
+            logData["initialization"] = Log  # Update the value of the "initialization" key in the dictionary
+            with open(filename, 'wb') as f:
+                pickle.dump(logData, f)
+            with open(filename, 'rb') as f:
+                logData = pickle.load(f)
+            rows = logData  # Get the entire dictionary
+            init_lock.release()
+            json_data = json.dumps(rows)
+            # data = {'initialization': {'initialization': 'True'}}
+            value = logData['initialization']['initialization']
+            # print(value)
+            return value
+    except Exception as e:
+        print("An error occurred:", str(e))
+        return None
+
+
+
+# intData={"initialization": "True"}
+# saveOrUpdateInitialization(intData)
+
+
+#read logData 
+def loadInitData():
+    global init_lock
+    try:
+        init_lock.acquire()
+        filename = "cache/initialization.pkl"
+        if os.path.isfile(filename):
+            print("The file", filename, "exists in the current path.")
+            with open(filename, 'rb') as f:
+                returnList = pickle.load(f)
+                # print(returnList[0])
+            init_lock.release()
+            value = returnList['initialization']['initialization']
+            # print(value)
+            return value
+        else:
+            print("The file", filename, "does not exist in the current path.")
+            init_lock.release()
+            return "False"
+    
+    except Exception as e:
+        print("An error occurred:", e)
+
+# result=loadInitData()
+# print("location status  : ",result)

@@ -44,7 +44,7 @@ TIME_ARRAY = [0] * 5
 MODEL=create_model()
 x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
 #initial model Training
-initialModelTraining(MODEL,x_train_np, y_train_np,x_test_np,y_test_np)
+# initialModelTraining(MODEL,x_train_np, y_train_np,x_test_np,y_test_np)
 LOGLOCALMODEL =""
 LOGRECEIVEDMODEL =[]
 datasetSize =250
@@ -250,6 +250,25 @@ def backgroudNetworkProcess():
     print("NETWORKING ......")
 
     clientconfigurations()
+
+    result=loadInitData()
+    # print("status : ",result)
+    if(result == "False"):
+        while True:
+            # print("WHILE LOOP STARTED")
+            result =getCartDataLenght()
+            cartData = int(result)
+            # print("Cart Data size: ",cartData)
+            #compare size of the dataset for globla aggregation
+            if cartData >= datasetSize:
+                #local model training
+                LOCALMODELACCURACY = localModelTraing(MODEL,x_test_np,y_test_np,datasetSize)
+                print("WHILE LOOP STOP")
+                intData={"initialization": "True"}
+                saveOrUpdateInitialization(intData)
+                result=loadInitData()
+                # print("status : ",result)
+                break
 
     t0=threading.Thread(target=connectNetwork)
     t0.daemon = True
