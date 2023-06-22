@@ -125,7 +125,19 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
           console.error(error);
         });
   }
-
+  const refreshLogDataList =()=>{
+    setNabourArray([])
+    const myHost = sessionStorage.getItem('host');
+      // get nabour list
+      axios.get(`${myHost}/bridge/nabours`)
+        .then(response => {
+          setNabourArray(response.data)
+          // console.log(response.data)
+        })
+        .catch(error => {
+          console.error(error);
+        });
+  }
     return (
         <Flex
           justify="space-between"
@@ -156,8 +168,13 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
             color="white"
             boxShadow="lg"
             _hover={{ bg: "teal.700" }}
-            onClick={refreshNabourList}
+            onClick={
+              
+              refreshNabourList}
           >
+
+
+
             <RepeatIcon />
           </Button>
           {isTrueButton1?

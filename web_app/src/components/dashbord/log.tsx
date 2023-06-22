@@ -4,122 +4,13 @@ import { Container, Table } from 'react-bootstrap';
 const Log = () => {
 
   //this is correct
-  // const [logData, setLogData] = useState<Array<{
-  //   iteration: number;
-  //   localModel: { id: string; value: boolean; accuracy: number };
-  //   receivedModel: Array<{ id: string; value: boolean; accuracy: number }>;
-  //   aggregatedModel: { id: string; value: boolean; accuracy: number };
-  // }>>([]);
+  const [logData, setLogData] = useState<Array<{
+    iteration: number;
+    localModel: { id: string; value: boolean; accuracy: number };
+    receivedModel: Array<{ id: string; value: boolean; accuracy: number }>;
+    aggregatedModel: { id: string; value: boolean; accuracy: number };
+  }>>([]);
 
-//this is for demo only
-    const [logData, setLogData] = useState([
-      {
-        iteration: 1,
-        localModel: {
-          id: "0001",
-          value: "True",
-          accuracy: 20
-        },
-        receivedModel: [
-          {
-            id: "00#1",
-            value: "True",
-            accuracy: 30
-          },
-          {
-            id: "00#2",
-            value: "False",
-            accuracy: 5
-          },
-          {
-            id: "00#3",
-            value: "False",
-            accuracy: 60
-          },
-          {
-            id: "00#4",
-            value: "True",
-            accuracy: 0.28
-          }
-        ],
-        aggregatedModel: {
-          id: "0002",
-          value: "True",
-          accuracy: 44
-        }
-      },
-      {
-        iteration: 2,
-        localModel: {
-          id: "0002",
-          value: "True",
-          accuracy: 32
-        },
-        receivedModel: [
-          {
-            id: "00#8",
-            value: "True",
-            accuracy: 38
-          },
-          {
-            id: "00#7",
-            value: "True",
-            accuracy: 25
-          },
-          {
-            id: "00#3",
-            value: "False",
-            accuracy: 8
-          },
-          {
-            id: "00#4",
-            value: "True",
-            accuracy: 40
-          }
-        ],
-        aggregatedModel: {
-          id: "0003",
-          value: "True",
-          accuracy: 42
-        }
-      }, 
-        {
-        iteration: 3,
-        localModel: {
-          id: "0003",
-          value: "True",
-          accuracy: 44
-        },
-        receivedModel: [
-          {
-            id: "00#5",
-            value: "True",
-            accuracy: 38
-          },
-          {
-            id: "00#6",
-            value: "True",
-            accuracy: 45
-          },
-          {
-            id: "00#4",
-            value: "False",
-            accuracy: 75
-          },
-          {
-            id: "00#2",
-            value: "False",
-            accuracy: 10
-          }
-        ],
-        aggregatedModel: {
-          id: "0004",
-          value: "True",
-          accuracy: 51
-        }
-      }
-    ]);
-  
 
   useEffect(() => {
     fetchData();
@@ -160,9 +51,9 @@ const Log = () => {
   <td>{log.iteration}</td>
   <td>{log.localModel.id}</td>
   <td>{log.localModel.accuracy}</td>
-  <td style={{ backgroundColor: log.receivedModel[0].value === "False" ? "red" : "white" }}>{log.receivedModel[0].id}</td>
-  <td style={{ backgroundColor: log.receivedModel[0].value === "False" ? "red" : "white" }}>{log.receivedModel[0].accuracy}</td>
-  <td style={{ backgroundColor: log.receivedModel[0].value === "False" ? "red" : "white" }}>{log.receivedModel[0].value === "False" ? "Reject" : "Accept"}</td>
+  <td style={{ backgroundColor: log.receivedModel[0].value === false ? "red" : "white" }}>{log.receivedModel[0].id}</td>
+  <td style={{ backgroundColor: log.receivedModel[0].value === false? "red" : "white" }}>{log.receivedModel[0].accuracy}</td>
+  <td style={{ backgroundColor: log.receivedModel[0].value === false ? "red" : "white" }}>{log.receivedModel[0].value === false ? "Reject" : "Accept"}</td>
   <td>{log.aggregatedModel.id}</td>
   <td>{log.aggregatedModel.accuracy}</td>
 </tr>
@@ -171,9 +62,9 @@ const Log = () => {
     <td></td>
     <td></td>
     <td></td>
-    <td style={{ backgroundColor: model.value === "False" ? "red" : "white" }}>{model.id}</td>
-    <td style={{ backgroundColor: model.value === "False" ? "red" : "white" }}>{model.accuracy}</td>
-    <td style={{ backgroundColor: model.value === "False" ? "red" : "white" }}> {model.value === "False" ? "Reject" : "Accept"}</td>
+    <td style={{ backgroundColor: model.value === false ? "red" : "white" }}>{model.id}</td>
+    <td style={{ backgroundColor: model.value === false ? "red" : "white" }}>{model.accuracy}</td>
+    <td style={{ backgroundColor: model.value === false ? "red" : "white" }}> {model.value === false ? "Reject" : "Accept"}</td>
     <td></td>
     <td></td>
   </tr>
@@ -194,3 +85,116 @@ const Log = () => {
 
 
 export default Log;
+
+
+
+
+//this is for demo only
+    // const [logData, setLogData] = useState([
+    //   {
+    //     iteration: 1,
+    //     localModel: {
+    //       id: "0001",
+    //       value: "True",
+    //       accuracy: 20
+    //     },
+    //     receivedModel: [
+    //       {
+    //         id: "00#1",
+    //         value: "True",
+    //         accuracy: 30
+    //       },
+    //       {
+    //         id: "00#2",
+    //         value: "False",
+    //         accuracy: 5
+    //       },
+    //       {
+    //         id: "00#3",
+    //         value: "False",
+    //         accuracy: 60
+    //       },
+    //       {
+    //         id: "00#4",
+    //         value: "True",
+    //         accuracy: 0.28
+    //       }
+    //     ],
+    //     aggregatedModel: {
+    //       id: "0002",
+    //       value: "True",
+    //       accuracy: 44
+    //     }
+    //   },
+    //   {
+    //     iteration: 2,
+    //     localModel: {
+    //       id: "0002",
+    //       value: "True",
+    //       accuracy: 32
+    //     },
+    //     receivedModel: [
+    //       {
+    //         id: "00#8",
+    //         value: "True",
+    //         accuracy: 38
+    //       },
+    //       {
+    //         id: "00#7",
+    //         value: "True",
+    //         accuracy: 25
+    //       },
+    //       {
+    //         id: "00#3",
+    //         value: "False",
+    //         accuracy: 8
+    //       },
+    //       {
+    //         id: "00#4",
+    //         value: "True",
+    //         accuracy: 40
+    //       }
+    //     ],
+    //     aggregatedModel: {
+    //       id: "0003",
+    //       value: "True",
+    //       accuracy: 42
+    //     }
+    //   }, 
+    //     {
+    //     iteration: 3,
+    //     localModel: {
+    //       id: "0003",
+    //       value: "True",
+    //       accuracy: 44
+    //     },
+    //     receivedModel: [
+    //       {
+    //         id: "00#5",
+    //         value: "True",
+    //         accuracy: 38
+    //       },
+    //       {
+    //         id: "00#6",
+    //         value: "True",
+    //         accuracy: 45
+    //       },
+    //       {
+    //         id: "00#4",
+    //         value: "False",
+    //         accuracy: 75
+    //       },
+    //       {
+    //         id: "00#2",
+    //         value: "False",
+    //         accuracy: 10
+    //       }
+    //     ],
+    //     aggregatedModel: {
+    //       id: "0004",
+    //       value: "True",
+    //       accuracy: 51
+    //     }
+    //   }
+    // ]);
+  
