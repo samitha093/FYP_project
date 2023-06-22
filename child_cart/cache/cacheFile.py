@@ -735,11 +735,11 @@ def saveOrUpdateLogData(Log):
 #log of local model and received model and aggregated model accuracy
 
 data = {
-    "iteration": 1,
+    "iteration": 5,
     "localModel": {"id": "0001", "value": True, "accuracy": 0.58},
     "receivedModel": [
         {"id": "0001", "value": False, "accuracy": 0.88},
-        {"id": "0002", "value": True, "accuracy": 0.88},
+        {"id": "0002", "value": False, "accuracy": 0.88},
         {"id": "0003", "value": False, "accuracy": 0.88},
         {"id": "0004", "value": True, "accuracy": 0.88}
     ],
@@ -747,8 +747,8 @@ data = {
 }
 # json_data = json.dumps(data)
 # print(json_data)
-for i in range(4):
-    saveOrUpdateLogData(data)
+# for i in range(1):
+#     saveOrUpdateLogData(data)
 #load log results
 
 #read logData 
