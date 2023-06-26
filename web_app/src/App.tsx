@@ -6,9 +6,7 @@ import "./App.css";
 import Nav from "./components/navbar/nav";
 import Settings from "./components/dashbord/settings";
 import Home from "./components/checkout/home"
-import Log from "./components/dashbord/log";
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap/dist/js/bootstrap.js';
+
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
