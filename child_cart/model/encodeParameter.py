@@ -7,12 +7,12 @@ import sys
 import queue
 
 # Get the path to the root directory
-root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 # Add the root and client4 directories to the Python path
 sys.path.insert(0, root_path)
 # Import the modules
-from model.modelGenerator import *
-from cache.cacheFile import *
+from child_cart.model.modelGenerator import *
+from child_cart.cache.cacheFile import *
 #---------------------------------------Encode-----------------------
 #encode for cart 
 def encodeModelParameters():
@@ -20,13 +20,13 @@ def encodeModelParameters():
     print("Encoding ----------------> ")
     model = create_model()
     try:
-        # model_weights= loadLocalCartModelData()
-        q = queue.Queue()
-        t1=threading.Thread(target=loadLocalCartModelData,args=(q,))
-        t1.start()
-        t1.join()
-        result = q.get()
-        model_weights= result
+        model_weights= loadLocalCartModelData()
+        # q = queue.Queue()
+        # t1=threading.Thread(target=loadLocalCartModelData,args=(q,))
+        # t1.start()
+        # t1.join()
+        # result = q.get()
+        # model_weights= result
 
         print("Model weights loaded successfully!")
     except Exception as e:
@@ -49,14 +49,14 @@ def encodeModelParameters():
 def encodeModelParametersForMobile():
         
     try:
-        # tflite_model_bytes = loadLocalMobileModelData()
+        tflite_model_bytes = loadLocalMobileModelData()
         
-        q = queue.Queue()
-        t1=threading.Thread(target=loadLocalMobileModelData,args=(q,))
-        t1.start()
-        t1.join()
-        result = q.get()
-        tflite_model_bytes = result
+        # q = queue.Queue()
+        # t1=threading.Thread(target=loadLocalMobileModelData,args=(q,))
+        # t1.start()
+        # t1.join()
+        # result = q.get()
+        # tflite_model_bytes = result
         
         print("Model data read successfully!")
     except Exception as e:

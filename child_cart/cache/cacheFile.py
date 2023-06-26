@@ -10,10 +10,10 @@ import threading
 import queue
 import json
 
-root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.insert(0, root_path)
-from model.dataSetGenerator import *
-from model.modelGenerator import *
+from child_cart.model.dataSetGenerator import *
+from child_cart.model.modelGenerator import *
 cwd = os.getcwd()
 cartConfigurations_lock = threading.Lock()
 datasetCsv_lock = threading.Lock()
@@ -22,6 +22,9 @@ localModelData_lock = threading.Lock()
 localMobileModelData_lock = threading.Lock()
 receivedModelData_lock = threading.Lock()
 parentPortIp_lock = threading.Lock()
+nbrList_lock = threading.Lock()
+logData_lock = threading.Lock()
+init_lock = threading.Lock()
 #--------------------check cache file-----------------
 def genCacheFile():
     directoryReceivedModelParameter = "cache"
@@ -92,8 +95,13 @@ def updateCartConfigurations(header1,que):
 
 # header1 = ['10.11111', '000', '5554', '85', '5200']
 # updateCartConfigurations(header1)
+
+
+
+
+
 #*********************************DataSet --accuracy check csv data-----------------------------
-def loadDatasetCsv(que):
+def loadDatasetCsv():
     global datasetCsv_lock
     try:
         datasetCsv_lock.acquire()
@@ -104,13 +112,16 @@ def loadDatasetCsv(que):
         else:
             print("The file", filename, "does not exist in the current path.")
             # load the csv file into a pandas dataframe
-            df = DatasetGenerator(10000)
+                #initialization added to device
+            intData={"initialization": "False"}
+            saveOrUpdateInitialization(intData)
+            df = DatasetGenerator(100000)
             # store the dataframe in the cache memory
             pd.DataFrame.to_pickle(df, filename)
 
         df = pd.read_pickle(filename)
         datasetCsv_lock.release()
-        que.put(df)
+        # que.put(df)
         return df
     
     except Exception as e:
@@ -124,17 +135,13 @@ def getUpdatedList():
     parentPortIp_lock.acquire()
     with open(filename, 'rb') as f:
         data = pickle.load(f)  
-    
     parentPortIp_lock.release()
-
-    # print(data)
     json_data_list = []
-
-    for item in data:
-        json_data = json.dumps({'index': item[0], 'port': item[1], 'ip': item[2]})
-        json_data_list.append(json_data)
-    rows = [json.loads(row) for row in json_data_list]
-    return rows
+    # Convert the list to a list of dictionaries
+    result = [{'index': item[0], 'port': item[1], 'ip': item[2]} for item in data]
+    # Convert the list of dictionaries to a JSON object
+    json_object = json.dumps(result)
+    return json_object
 
 def loadParentPortIp(que):
     global parentPortIp_lock
@@ -143,24 +150,18 @@ def loadParentPortIp(que):
         if os.path.isfile(filename):
             rows = getUpdatedList()
             que.put(rows)
-            # print(rows)
             return rows
         else:
             print("The file", filename, "does not exist in the current path.")
-            # Define the header array
-            # print([])
             que.put([])
             return []
-
     except Exception as e:
         print("An error occurred:", e)
-# q = queue.Queue()
-# loadParentPortIp(q)
-#add new item
 
-        
-        
-        
+q = queue.Queue()
+# loadParentPortIp(q)
+
+#add new item
 def addParentPortIp(port,ip,que):
     global parentPortIp_lock
     try:
@@ -168,7 +169,7 @@ def addParentPortIp(port,ip,que):
         if not os.path.isfile(filename):
             # print("The file", filename, "exists in the current path.")
             print("The file", filename, "does not exist in the current path.")
-            new_row=[["1",port,ip]]
+            new_row=[[1,port,ip]]
             parentPortIp_lock.acquire()
             with open(filename, 'wb') as f:
                 pickle.dump(new_row, f)
@@ -182,7 +183,7 @@ def addParentPortIp(port,ip,que):
             with open(filename, 'rb') as f:
                portIp = pickle.load(f) 
             sizeOfPortIp=len(portIp)
-            index=str(sizeOfPortIp+1)
+            index=(sizeOfPortIp+1)
             new_row=[index,port,ip]             
             portIp.append(new_row)
             #save
@@ -195,8 +196,8 @@ def addParentPortIp(port,ip,que):
     except Exception as e:
         print("An error occurred:", str(e))
         return None
-# q = queue.Queue()
-# addParentPortIp("9001","128.1.23",q)
+q = queue.Queue()
+# addParentPortIp("1000","128.10.23.15",q)
 
 def updateParentPortIp(index,port,ip,que):
     global parentPortIp_lock
@@ -205,7 +206,7 @@ def updateParentPortIp(index,port,ip,que):
         if not os.path.isfile(filename):
             # print("The file", filename, "exists in the current path.")
             print("The file", filename, "does not exist in the current path.")
-            new_row=[["1",port,ip]]
+            new_row=[[1,port,ip]]
             parentPortIp_lock.acquire()
             with open(filename, 'wb') as f:
                 pickle.dump(new_row, f)
@@ -216,20 +217,23 @@ def updateParentPortIp(index,port,ip,que):
                portIp = pickle.load(f)                         
             sizeOfPortIp=len(portIp)
             for i in range(sizeOfPortIp):
-                if(portIp[i][0] == index):                    
+                if(int(portIp[i][0] )== int(index)):  
                     portIp[i]=[index,port,ip]
-                print(portIp[i][0])
             #save
             with open(filename, 'wb') as f:
                 pickle.dump(portIp, f)
             rows = getUpdatedList()
             que.put(rows)
             return rows
-
     except Exception as e:
         print("An error occurred:", str(e))
         return None
 
+q = queue.Queue()
+port = "2500"
+ip = "55.99.88"
+index="2"
+# updateParentPortIp(index,port,ip,q)
 def deleteParentPortIp(index, que):
     global parentPortIp_lock
     try:
@@ -238,35 +242,33 @@ def deleteParentPortIp(index, que):
             with open(filename, 'rb') as f:
                 portIp = pickle.load(f)
             sizeOfPortIp = len(portIp) 
-            index=int(index)         
-            for i in range(sizeOfPortIp):
-                if int(portIp[i][0]) == index:                   
-                    del portIp[i]
-                    break
-            with open(filename, 'wb') as f:
-                pickle.dump(portIp, f)
-            rows = getUpdatedList()
-            que.put(rows)
-            return rows
+            #length of cartDataSet
+            index=int(index)
+            if(index >int(sizeOfPortIp)):
+                rows = getUpdatedList()
+                que.put(rows)
+                return rows
+            else:
+                port =portIp[sizeOfPortIp-1][1]
+                ip =portIp[sizeOfPortIp-1][2]
+                del portIp[sizeOfPortIp-1]
+                with open(filename, 'wb') as f:
+                    pickle.dump(portIp, f)
+                #rewrite
+                updateParentPortIp(index,str(port),str(ip),que)
+                rows = getUpdatedList()
+                que.put(rows)
+                return rows
     except Exception as e:
         print("An error occurred:", str(e))
         return None
     
-# q = queue.Queue()
-# deleteParentPortIp(2,q)
-
-# for i in range(1000):
-# port = "1000"
-# ip = "55.99.88"
-# index=1
-# addParentPortIp(port,ip)
-# updateParentPortIp(index,port,ip)
-# loadParentPortIp()
-
+q = queue.Queue()
+# deleteParentPortIp("2",q)
 
 # loadDatasetCsv()
 #*********************************CartData --Customer Data------------------
-def loadCartData(que):
+def loadCartData():
     global cartData_lock
     try:
         cartData_lock.acquire()
@@ -288,15 +290,17 @@ def loadCartData(que):
 
         df = pd.DataFrame(cartData[1:], columns=cartData[0])
         cartData_lock.release()
-        que.put(df)
-        
+        # que.put(df)
+        # print(df)
         return df
     
     except Exception as e:
         print("An error occurred:", e)
 
-# loadCartData()
-def updataCartData(new_row,que):
+# q = queue.Queue()
+# loadCartData(q)
+
+def updataCartData(new_row):
     global cartData_lock
     # print("tred start : ",new_row)
     try:
@@ -326,19 +330,23 @@ def updataCartData(new_row,que):
         with open(filename, 'rb') as f:
             cartData = pickle.load(f) 
         cartData_lock.release()
-        que.put(cartData)
+        # que.put(cartData)
         # print("return : ",cartData)
         return cartData
     except Exception as e:
         print("An error occurred:", str(e))
         return None
-#add dummy data
+# add dummy data
 # q = queue.Queue()
-# for i in range(1000):
+# for i in range(2):
 #     new_row = [3, 0, 0]
 #     updataCartData(new_row,q)
+
 # print("findished")
-def deleteCartDataItems(itemCount,que):
+# q = queue.Queue()
+# loadCartData(q)
+
+def deleteCartDataItems(itemCount):
     global cartData_lock
     try:
         cartData_lock.acquire()
@@ -363,27 +371,27 @@ def deleteCartDataItems(itemCount,que):
             pickle.dump(cartData, f)
             
         cartData_lock.release()
-        que.put(cartData)
+        # que.put(cartData)
         return cartData
     except Exception as e:
         print("Error occurred: ", str(e))
         return None
 
-
-# deleteCartDataItems(2)
-def getCartDataLenght(que):
+# q = queue.Queue()
+# deleteCartDataItemstaItems(38,q)
+def getCartDataLenght():
     global cartData_lock
     filename = "cache/cartData.pkl"
     try:
         if os.path.isfile(filename):
             cartData_lock.acquire()
-            print("The file", filename, "exists in the current path.")
+            # print("The file", filename, "exists in the current path.")
             with open(filename, 'rb') as f:
                 cartData = pickle.load(f) 
             cartDataSize=len(cartData)
             cartData_lock.release()
             cartDataSize=cartDataSize-1
-            que.put(cartDataSize)
+            # que.put(cartDataSize)
             return cartDataSize
         else:
             print("The file", filename, "does not exists in the current path.")
@@ -395,7 +403,7 @@ def getCartDataLenght(que):
             cartDataSize = len(header)
             cartData_lock.release()
             cartDataSize=cartDataSize-1
-            que.put(cartDataSize)
+            # que.put(cartDataSize)
             return cartDataSize
 
     except (pickle.UnpicklingError, EOFError) as e:
@@ -404,13 +412,11 @@ def getCartDataLenght(que):
 
 #getCartDataLenght()
 
-#------->>>>>>>>>>>>>>>>>>>>> Model >>>>>>>>>>>>>>>> -------
+#---------------------------------------Model ------------------------------------
 #*********************************------------------
 #save local ML model 
 def saveLocalModelData(model):
     global localModelData_lock
-    
-   
     localModeWeights = model.get_weights()
     # Serialize the weights using pickle
     serialized_weights = pickle.dumps(localModeWeights)
@@ -444,12 +450,10 @@ def saveLocalModelData(model):
     except IOError as e:
         print("Error writing TFLite model to cache file:", e)
 
- 
-
 # model=create_model()
 # saveLocalModelData(model)
 
-def loadLocalCartModelData(que):
+def loadLocalCartModelData():
     #cart model weights
     global localModelData_lock
     # localModelData_lock.acquire()
@@ -477,7 +481,7 @@ def loadLocalCartModelData(que):
             serialized_weights = f.read()
             localModeWeights = pickle.loads(serialized_weights)
             localModelData_lock.release()
-            que.put(localModeWeights)
+            # que.put(localModeWeights)
             return localModeWeights
     except (IOError, pickle.UnpicklingError) as e:
         print("Error loading model weights from cache file:", e)
@@ -485,10 +489,9 @@ def loadLocalCartModelData(que):
 
     
 # loadLocalCartModelData()
-def loadLocalMobileModelData(que):
+def loadLocalMobileModelData():
     #mobile model
     global localMobileModelData_lock
-
     filename = "cache/mobileModel.pkl"
     if os.path.isfile(filename):
         print("The file", filename, "exists in the current path.")
@@ -514,7 +517,7 @@ def loadLocalMobileModelData(que):
         with open('cache/mobileModel.pkl', 'rb') as f:
             mobileModel = pickle.load(f)
             localMobileModelData_lock.release()
-            que.put(mobileModel)
+            # que.put(mobileModel)
 
             return mobileModel
     except (IOError, pickle.UnpicklingError) as e:
@@ -522,11 +525,10 @@ def loadLocalMobileModelData(que):
         return None
 
 
-#-------------------------Receiving model------------------
+#-------------------------Receiving model-----------------------
 #save received ML model 
 def saveReceivedModelData(receivedModelWeights):
     global receivedModelData_lock
-
     try:
         receivedModelData_lock.acquire()
         # Count the number of files in the current directory that match the pattern
@@ -550,10 +552,8 @@ def saveReceivedModelData(receivedModelWeights):
 # weights = model.get_weights()
 # saveReceivedModelData(weights)
 
-def loadReceivedModelData(CULSTER_SIZE,que):
+def loadReceivedModelData(CULSTER_SIZE):
     global receivedModelData_lock
-    
-
     count = len(glob.glob("cache/receivedModelWeight_*.pkl"))
     # Print the count
     print("Number of model files:", count)
@@ -572,12 +572,12 @@ def loadReceivedModelData(CULSTER_SIZE,que):
             receivedModelWeights[i] = None
     print("Load receivedModelWeight")
     
-    que.put(receivedModelWeights)
+    # que.put(receivedModelWeights)
     return receivedModelWeights
 
 # loadReceivedModelData()
 
-def deleteReceivedModelWeights(q):
+def deleteReceivedModelWeights():
     global receivedModelData_lock
 
     try:
@@ -606,7 +606,7 @@ def deleteReceivedModelWeights(q):
         
 # deleteReceivedModelWeights()
 
-def getReceivedModelParameterLength(que):
+def getReceivedModelParameterLength():
     global receivedModelData_lock
 
     try:
@@ -618,5 +618,264 @@ def getReceivedModelParameterLength(que):
         print("Error: Failed to count files in directory.")
         count = 0
     print("Number of model files:", count)
-    que.put(count)
+    # que.put(count)
     return count
+
+#-----------------------------NBR LIST----------------------------------
+#save or update list
+def saveOrUpdateNBRList(NBRLIST):
+    global nbrList_lock
+    try:
+        filename = "cache/nbrList.pkl"
+        if not os.path.isfile(filename):
+            print("The file", filename, "does not exist in the current path.")
+            new_row = [NBRLIST]  # Wrap NBRLIST in a list
+            nbrList_lock.acquire()
+            with open(filename, 'wb') as f:
+                pickle.dump(new_row, f)
+            print("New list added")
+            nbrList_lock.release()
+        else:
+            print("The file", filename, "exists in the current path.")
+            nbrList_lock.acquire()
+            with open(filename, 'rb') as f:
+                existingNbrList = pickle.load(f)
+            existingNbrList[0] = NBRLIST  # Update the first element of the list
+            with open(filename, 'wb') as f:
+                pickle.dump(existingNbrList, f)
+            nbrList_lock.release()
+            print("List updated")
+        with open(filename, 'rb') as f:
+            returnList = pickle.load(f)
+        # print(returnList[0])
+        return returnList[0]
+    except Exception as e:
+        print("An error occurred:", str(e))
+
+#read NBR list
+def loadNBRList():
+    global nbrList_lock
+    try:
+        nbrList_lock.acquire()
+        filename = "cache/nbrList.pkl"
+        if os.path.isfile(filename):
+            print("The file", filename, "exists in the current path.")
+            with open(filename, 'rb') as f:
+                returnList = pickle.load(f)
+                # print(returnList[0])
+            nbrList_lock.release()
+            return returnList[0]
+        else:
+            print("The file", filename, "does not exist in the current path.")
+            nbrList_lock.release()
+            return []
+    
+    except Exception as e:
+        print("An error occurred:", e)
+
+data = {
+  "name": "Isuru lakshan",
+  "age": 40,
+  "email": "johndoe@example.com",
+  "address": {
+    "street": "123 Main St",
+    "city": "New York",
+    "state": "NY",
+    "zipcode": "5000"
+  }
+}
+# data ={ [1, 2, 3, 4, 5] ,[1, 2, 3, 4, 5]}
+
+# saveOrUpdateNBRList(str(data))
+# returnList=loadNBRList()
+# print(returnList)
+# print(json.dumps(returnList))
+
+#---------------------------------------log results---------------------------------
+#save or update
+def saveOrUpdateLogData(Log):
+    global logData_lock
+    try:
+        filename = "cache/logData.pkl"
+        if not os.path.isfile(filename):
+            print("The file", filename, "does not exist in the current path.")
+            new_row = [Log]  # Wrap Log in a list
+            logData_lock.acquire()
+            with open(filename, 'wb') as f:
+                pickle.dump(new_row, f)
+            with open(filename, 'rb') as f:
+                logData = pickle.load(f)
+            rows = logData  # Get the entire list
+            logData_lock.release()
+            print(rows)
+            return rows
+        else:
+            print("The file", filename, "does exist in the current path.")
+            logData_lock.acquire()
+            with open(filename, 'rb') as f:
+                logData = pickle.load(f)
+            logData.append(Log)  # Append the new Log to the existing list
+            with open(filename, 'wb') as f:
+                pickle.dump(logData, f)
+            with open(filename, 'rb') as f:
+                logData = pickle.load(f)
+            rows = logData  # Get the entire list
+            logData_lock.release()
+            json_data = json.dumps(rows)
+            # print(json_data)
+            print(rows)
+            return rows
+    except Exception as e:
+        print("An error occurred:", str(e))
+        return None
+
+
+
+# Log={"localModel: 20"}
+#log of local model and received model and aggregated model accuracy
+
+data = {
+    "iteration": 5,
+    "localModel": {"id": "0001", "value": True, "accuracy": 0.58},
+    "receivedModel": [
+        {"id": "0001", "value": False, "accuracy": 0.88},
+        {"id": "0002", "value": False, "accuracy": 0.88},
+        {"id": "0003", "value": False, "accuracy": 0.88},
+        {"id": "0004", "value": True, "accuracy": 0.88}
+    ],
+    "aggregatedModel": {"id": "0005", "value": True, "accuracy": 0.92}
+}
+# json_data = json.dumps(data)
+# print(json_data)
+# for i in range(1):
+#     saveOrUpdateLogData(data)
+#load log results
+
+#read logData 
+def loadLogData():
+    global logData_lock
+    try:
+        logData_lock.acquire()
+        filename = "cache/logData.pkl"
+        if os.path.isfile(filename):
+            print("The file", filename, "exists in the current path.")
+            with open(filename, 'rb') as f:
+                returnList = pickle.load(f)
+                # print(returnList[0])
+            logData_lock.release()
+            json_data = json.dumps(returnList)
+            # print(json_data)
+            return json_data
+        else:
+            print("The file", filename, "does not exist in the current path.")
+            logData_lock.release()
+            return []
+    
+    except Exception as e:
+        print("An error occurred:", e)
+
+# results=loadLogData()
+# print(results)
+
+
+#get length logData
+def getLengthOfLogData():
+    global logData_lock
+    try:
+        logData_lock.acquire()
+        filename = "cache/logData.pkl"
+        if os.path.isfile(filename):
+            print("The file", filename, "exists in the current path.")
+            with open(filename, 'rb') as f:
+                returnList = pickle.load(f)
+                # print(returnList[0])
+            logData_lock.release()
+            lengthOfDataLog = len(returnList)
+            # print(lengthOfDataLog)
+            return lengthOfDataLog
+        else:
+            print("The file", filename, "does not exist in the current path.")
+            logData_lock.release()
+            # print("0")
+            return 0
+    
+    except Exception as e:
+        print("An error occurred:", e)
+
+# results=loadLogData()
+# print(results)
+# getLengthOfLogData()
+
+#--------------------------------project initial data ---------------------------------
+import json
+
+def saveOrUpdateInitialization(Log):
+    global init_lock
+    try:
+        filename = "cache/initialization.pkl"
+        if not os.path.isfile(filename):
+            print("The file", filename, "does not exist in the current path.")
+            new_row = {"initialization": Log}  # Create a dictionary with the updated Log value
+            init_lock.acquire()
+            with open(filename, 'wb') as f:
+                pickle.dump(new_row, f)
+            with open(filename, 'rb') as f:
+                logData = pickle.load(f)
+            rows = logData  # Get the entire dictionary
+            init_lock.release()
+            # data = {'initialization': {'initialization': 'True'}}
+            value = logData['initialization']['initialization']
+            # print(value)
+            return value
+        else:
+            print("The file", filename, "does exist in the current path.")
+            init_lock.acquire()
+            with open(filename, 'rb') as f:
+                logData = pickle.load(f)
+            logData["initialization"] = Log  # Update the value of the "initialization" key in the dictionary
+            with open(filename, 'wb') as f:
+                pickle.dump(logData, f)
+            with open(filename, 'rb') as f:
+                logData = pickle.load(f)
+            rows = logData  # Get the entire dictionary
+            init_lock.release()
+            json_data = json.dumps(rows)
+            # data = {'initialization': {'initialization': 'True'}}
+            value = logData['initialization']['initialization']
+            # print(value)
+            return value
+    except Exception as e:
+        print("An error occurred:", str(e))
+        return None
+
+
+
+# intData={"initialization": "True"}
+# saveOrUpdateInitialization(intData)
+
+
+#read logData 
+def loadInitData():
+    global init_lock
+    try:
+        init_lock.acquire()
+        filename = "cache/initialization.pkl"
+        if os.path.isfile(filename):
+            print("The file", filename, "exists in the current path.")
+            with open(filename, 'rb') as f:
+                returnList = pickle.load(f)
+                # print(returnList[0])
+            init_lock.release()
+            value = returnList['initialization']['initialization']
+            # print(value)
+            return value
+        else:
+            print("The file", filename, "does not exist in the current path.")
+            init_lock.release()
+            return "False"
+    
+    except Exception as e:
+        print("An error occurred:", e)
+
+# result=loadInitData()
+# print("location status  : ",result)

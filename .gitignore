@@ -35,6 +35,7 @@ node_modules
 
 # testing
 coverage/
+child_cart/cache/test.py
 
 # production
 build/
@@ -73,3 +74,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+*.spec
+C_main.spec
+P_main.spec

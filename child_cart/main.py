@@ -9,24 +9,20 @@ from child_cart.cache.cacheFile import *
 from child_cart.db.sqlDbConnection import *
 from child_cart.cache.cacheFile import *
 
-def mainFunc(type = "CHILD"):
+def mainFunc(NetworkModule = True):
     try:
-        # print("")
-        # genCacheFile()
-        try:
-            print("")
-            t = Thread(target=app.run, kwargs={'port': 5001})
-            t.start()
-        except KeyboardInterrupt:
-            print("Keyboard interrupt received. Closing all programs...")
-            os.system("pkill -f python")
+        # starting network module
+        if NetworkModule is True:
+            network_thread = Thread(target=backgroudNetworkProcess)
+            network_thread.start()
 
-        try:
-            print("")
-            # backgroudNetworkProcess(type)
-        except KeyboardInterrupt:
-            print("Keyboard interrupt received. Closing all programs...")
-            os.system("pkill -f python")
+        #starting Flask Api module
+        print("Flask API Server Started on : ",5001)
+        app.run(port=5001, debug=False)
+
     except Exception as e:
         print("An error occurred:", e)
 
+def ChildCart(NetworkModule, type = "PARENT"):
+    SetParent(type)
+    mainFunc(NetworkModule)

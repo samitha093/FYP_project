@@ -30,7 +30,9 @@ const Slider: React.FC<AppProps> = ({ darkMode }) => {
   };
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:5001/threandsImages')
+    const myHost = sessionStorage.getItem('host');
+    axios.get(`${myHost}/threandsImages`)
+    // axios.get('http://127.0.0.1:5001/threandsImages')
       .then(response => {
         setImages(response.data);
       })

@@ -7,16 +7,16 @@ import os
 
 
 # Get the path to the root directory
-root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 
 # Add the root and client4 directories to the Python path
 sys.path.insert(0, root_path)
 
 # Import the modules
-from network.util import *
-from network.errorList import *
-from network.filesender import *
-from network.enumList import *
+from child_cart.network.util import *
+from child_cart.network.errorList import *
+from child_cart.network.filesender import *
+from child_cart.network.enumList import *
 
 class peerCom:
     def __init__(self, host, port, Mtype, SYNC_CONST):
@@ -48,10 +48,11 @@ class peerCom:
                 print(f"Error: {str(e)}")
                 failCount += 1
                 time.sleep(5)
-                if failCount >10:
+                if failCount >5:
                     self.closeWait = False
                     self.close(0,self.USERID)
-                    sys.exit(0)
+                    # sys.exit(0)
+                    break
                 continue
         return self.USERID
 
@@ -65,7 +66,7 @@ class peerCom:
             print(errMsg.MSG003.value)
             self.closeWait = False
             self.close(0,self.USERID)
-            sys.exit(0)
+            # sys.exit(0)
 
     def isData_Reciving(self):
         return self.continueData

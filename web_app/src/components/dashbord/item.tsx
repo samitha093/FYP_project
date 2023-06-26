@@ -1,21 +1,39 @@
 import { Box, Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Button, useDisclosure } from '@chakra-ui/react';
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import Swal from 'sweetalert2'
 
 interface AppProps {
   darkMode: boolean;
   data:any;
+  handledataremove:any;
+  handlerdataUpdate:any;
 }
 
-const Item: React.FC<AppProps> = ({ darkMode, data }) => {
+const Item: React.FC<AppProps> = ({ darkMode, data, handledataremove, handlerdataUpdate }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [ip, setIp] = useState('192.168.34.56');
   const [port, setPort] = useState('55687');
   const [ipError, setIpError] = useState('');
   const [portError, setPortError] = useState('');
+  const [index, setindex] = useState(0);
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer)
+      toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+  })
 
   useEffect(() => {
     setIp(data.ip);
     setPort(data.port);
+    setindex(data.index)
   }, []);
 
   const handleSave = () => {
@@ -24,17 +42,18 @@ const Item: React.FC<AppProps> = ({ darkMode, data }) => {
         setPortError(port ? '' : 'Port number is required');
         return;
       }
-  
+
       if (!/^(\d{0,2}|1\d{0,2}|2[0-4]\d|25[0-5])(\.(\d{0,2}|1\d{0,2}|2[0-4]\d|25[0-5])){3}$/.test(ip)) {
         setIpError('Invalid IP address');
         return;
       }
-  
+
       if (!/^\d+$/.test(port) || parseInt(port, 10) <= 0 || parseInt(port, 10) > 65535) {
         setPortError('Invalid port number');
         return;
       }
     // Handle saving IP and port
+    handlerdataUpdate({"index":index,"ip":ip,"port":port})
     onClose();
   };
 
@@ -54,6 +73,27 @@ const Item: React.FC<AppProps> = ({ darkMode, data }) => {
     setPortError('');
   };
 
+  const handleCloseClick = () => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "Do you need delete this boostrap node",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handledataremove(index)
+        Toast.fire({
+          icon: 'success',
+          title: 'Removed boostrap node'
+        })
+      }
+    })
+
+  };
+
   return (
     <>
       <Flex
@@ -69,9 +109,8 @@ const Item: React.FC<AppProps> = ({ darkMode, data }) => {
         mb={'10px'}
         position="relative"
         overflow={'hidden'}
-        onClick={onOpen}
       >
-        <Flex margin={'0px'} h={'inherit'} w={'100%'} color={darkMode ? "white" : "black"} align="center" pl={'20px'}>
+        <Flex margin={'0px'} h={'inherit'} w={'100%'} color={darkMode ? "white" : "black"} align="center" pl={'20px'} onClick={onOpen}>
           <Box>
             Remote Host: {ip}
             <Box>
@@ -90,6 +129,17 @@ const Item: React.FC<AppProps> = ({ darkMode, data }) => {
           borderTopLeftRadius="20px"
         >
           Boostrap
+        </Box>
+        <Box
+          position="absolute"
+          top="0"
+          right="0"
+          w="auto"
+          p={'10px 20px'}
+          color="red"
+          onClick={handleCloseClick}
+        >
+          X
         </Box>
       </Flex>
       <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>

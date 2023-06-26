@@ -4,14 +4,15 @@ import sys
 import random
 
 # Get the path to the root directory
-root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 
 # Add the root and client4 directories to the Python path
 sys.path.insert(0, root_path)
 
 # Import the modules
-from network.util import *
-from network.errorList import *
+from child_cart.network.util import *
+from child_cart.network.errorList import *
+from child_cart.cache.cacheFile import *
 
 def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS):
     CLUSTERID = ""
@@ -26,10 +27,10 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS):
     ################################################################################
     peerTypeReq = ["PEERTYPE",MODE]
     mySocket.request(requestModel(USERID,peerTypeReq))
-    peerListReq = ["PEERLIST"]
-    mySocket.request(requestModel(USERID,peerListReq))
     peernbrReq = ["NBRLIST"]
     mySocket.request(requestModel(USERID,peernbrReq))
+    peerListReq = ["PEERLIST"]
+    mySocket.request(requestModel(USERID,peerListReq))
 
     while True: #----------------------GET Cluster-------------------------
         tempDataSet = mySocket.RECIVEQUE.copy()
@@ -48,8 +49,11 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS):
                         x = x_data[random_index]
                         mySocket.request(requestModel(USERID,modelReq,x))
                         print("SEND MODEL REQUEST TO : ",x)
+                    else:
+                        break
                 elif tempData[0] == "NBRLIST":
                     print("NBR LIST : ",tempData[1])
+                    saveOrUpdateNBRList(tempData[1])
                 elif tempData[0] == "MODELPARAMETERS":
                     print("MODEL PARAMETERS RECIVED FROM : ",x.get("Sender"))
                     MODELPARAMETERLIST.append(x)

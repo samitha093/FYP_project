@@ -5,7 +5,7 @@ services:
   child_cart:
     image: child_cart
     deploy:
-      replicas: 10
+      replicas: 1
     build:
       context:  ./
       dockerfile:  Dockerfile.child
@@ -13,4 +13,4 @@ services:
     tty: true
     restart: on-failure:3
     ports:
-      - "5001-5010:5001"
+      - "5001:5001"
