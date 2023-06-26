@@ -147,14 +147,21 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
           flexDir={{ base: 'column', lg: 'row' }}
           overflow={'scroll'}
         >
-      <VStack spacing={4} margin={4}>
-          <Button colorScheme="blue" leftIcon={<SettingsIcon />} onClick={handleClickButton1}>
 
-          </Button>
-          <Button colorScheme="blue" leftIcon={< CalendarIcon />}  onClick={handleClickButton2}>
-  
-          </Button>
+<VStack spacing={6} margin={0} mr={4}>
+
+<Button colorScheme="blue" onClick={handleClickButton2} height="60px" display="flex" alignItems="center">
+  <SettingsIcon style={{ marginRight: '5px' }} />
+
+</Button>
+
+<Button colorScheme="blue" onClick={handleClickButton1} height="60px" display="flex" alignItems="center">
+  <CalendarIcon style={{ marginRight: '5px' }} />
+</Button>
+
+
         </VStack>
+
           <Button
             pos="fixed"
             bottom="7"
@@ -177,7 +184,7 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
 
             <RepeatIcon />
           </Button>
-          {isTrueButton1?
+          {!isTrueButton1?
           <> 
                 <Box border="1px solid" borderColor={darkMode ? "gray.600" : 'gray.300'} padding={'20px'}
                 mr={{ base: '0', lg: '30px' }} w={{ base: '100%', lg: '60%' }} h={'100%'} minW={'300px'}
