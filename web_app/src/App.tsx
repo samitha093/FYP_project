@@ -6,9 +6,7 @@ import "./App.css";
 import Nav from "./components/navbar/nav";
 import Settings from "./components/dashbord/settings";
 import Home from "./components/checkout/home"
-import Log from "./components/dashbord/log";
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap/dist/js/bootstrap.js';
+
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -23,8 +21,8 @@ function App() {
     setSettings(!settings);
   };
 useEffect(() => {
-  sessionStorage.setItem('host', 'http://127.0.0.1:'+ window.location.port+'/api');
-  // sessionStorage.setItem('host', 'http://127.0.0.1:5001');
+  // sessionStorage.setItem('host', 'http://127.0.0.1:'+ window.location.port+'/api');
+  sessionStorage.setItem('host', 'http://127.0.0.1:5001');
 }, []);
   return (
     <div style={{ backgroundColor: darkMode ? theme.colors.gray[700] : "white", height:"100vh" ,overflow: 'hidden' }} >
