@@ -178,45 +178,46 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
             <RepeatIcon />
           </Button>
           {isTrueButton1?
-          <> 
-                <Box border="1px solid" borderColor={darkMode ? "gray.600" : 'gray.300'} padding={'20px'}
-                mr={{ base: '0', lg: '30px' }} w={{ base: '100%', lg: '60%' }} h={'100%'} minW={'300px'}
-                overflow="auto">
-                  <Flex
-                      flexWrap="wrap"
-                  >
-                      <NetworkModule darkMode={darkMode}/>
-                      {isBridge?<BridgeModule darkMode={darkMode}/>:null}
-                      {isBridge?<NodeItem darkMode={darkMode} nodeArray={BoostrapArray}/>:null}
-                      {BoostrapArray.map((element:any, index:any)=>(
-                          <Item darkMode={darkMode} key={index} data={element} handledataremove={handleCloseClick} handlerdataUpdate={handledataUpdate}/>
-                      ))}
-                      {isBridge?<New darkMode={darkMode} handledataSave={handledataSave}/>:null}
-                  </Flex>
-                </Box>
-                <Box border="1px solid" borderColor={darkMode ? "gray.600" : 'gray.300'} padding={'20px'}
-                  w={{ base: '100%', lg: '40%' }} h={'100%'} minW={'300px'} mt={{ base: '30px', lg: '0px' }}
-                  overflow="auto">
-                  {NabourArray.length == 0 ?
-                    <Center p='4' w={'100%'} h={'100%'}>
-                      <Image
-                        src={emptyimage}
-                        alt="Description of the image"
-                        boxSize="200px"
-                        objectFit="cover"
-                        opacity={0.4}
-                      />
-                    </Center>
-                  :
-                  <Flex flexWrap="wrap">
-                    {NabourArray.map((element:any, index:any)=>(
-                        <Sitem darkMode={darkMode} key={index} data={element}/>
-                        ))}
-                  </Flex>
-                  }
-                </Box>
-          </>
-          :<Log/>}
+          <Log/>
+          
+        :<> 
+        <Box border="1px solid" borderColor={darkMode ? "gray.600" : 'gray.300'} padding={'20px'}
+        mr={{ base: '0', lg: '30px' }} w={{ base: '100%', lg: '60%' }} h={'100%'} minW={'300px'}
+        overflow="auto">
+          <Flex
+              flexWrap="wrap"
+          >
+              <NetworkModule darkMode={darkMode}/>
+              {isBridge?<BridgeModule darkMode={darkMode}/>:null}
+              {isBridge?<NodeItem darkMode={darkMode} nodeArray={BoostrapArray}/>:null}
+              {BoostrapArray.map((element:any, index:any)=>(
+                  <Item darkMode={darkMode} key={index} data={element} handledataremove={handleCloseClick} handlerdataUpdate={handledataUpdate}/>
+              ))}
+              {isBridge?<New darkMode={darkMode} handledataSave={handledataSave}/>:null}
+          </Flex>
+        </Box>
+        <Box border="1px solid" borderColor={darkMode ? "gray.600" : 'gray.300'} padding={'20px'}
+          w={{ base: '100%', lg: '40%' }} h={'100%'} minW={'300px'} mt={{ base: '30px', lg: '0px' }}
+          overflow="auto">
+          {NabourArray.length == 0 ?
+            <Center p='4' w={'100%'} h={'100%'}>
+              <Image
+                src={emptyimage}
+                alt="Description of the image"
+                boxSize="200px"
+                objectFit="cover"
+                opacity={0.4}
+              />
+            </Center>
+          :
+          <Flex flexWrap="wrap">
+            {NabourArray.map((element:any, index:any)=>(
+                <Sitem darkMode={darkMode} key={index} data={element}/>
+                ))}
+          </Flex>
+          }
+        </Box>
+  </>}
         </Flex>
   );
 };
