@@ -165,14 +165,15 @@ if create_api_endpoint:
     def node():
         if getNodeStatus() is True:
             public_ip = requests.get('http://20.193.137.241:3000/api/publicip')
+            Pip = public_ip.content.decode('utf-8').split(':')[-1]
             kademlia_port = get_kademliaPort()
             ip_address = get_local_ip_address()
             if ip_address:
-                print(f"The IP address of the local machine is {ip_address}")
+                print(f"The IP address of the local machine is {ip_address} & {Pip}")
             else:
                 print("Failed to retrieve the local IP address")
                 ip_address = "0.0.0.0"
-            return jsonify({'ip': public_ip,'localip':ip_address, 'port': kademlia_port})
+            return jsonify({'ip': Pip,'localip':ip_address, 'port': kademlia_port})
         else:
             return jsonify({"port":0})
     @app.route('/bridge/servers', methods=['GET'])
