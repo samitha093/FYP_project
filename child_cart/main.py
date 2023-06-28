@@ -18,7 +18,7 @@ def mainFunc(NetworkModule = True):
 
         #starting Flask Api module
         print("Flask API Server Started on : ",5001)
-        app.run(port=5001, debug=False)
+        app.run(port=5001, debug=False, host="0.0.0.0")
 
     except Exception as e:
         print("An error occurred:", e)
