@@ -1,5 +1,16 @@
 import React, { useEffect, useState } from 'react';
-// import { Container, Table } from 'react-bootstrap';
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer,
+  Container,
+} from '@chakra-ui/react'
 
 const Log = () => {
 
@@ -10,7 +21,6 @@ const Log = () => {
     receivedModel: Array<{ id: string; value: boolean; accuracy: number }>;
     aggregatedModel: { id: string; value: boolean; accuracy: number };
   }>>([]);
-
 
   useEffect(() => {
     fetchData();
@@ -27,64 +37,54 @@ const Log = () => {
   };
 
   return (
-    <div>test</div>
-//     <Container>
-//     <h1 className="text-center text-primary fw-bold">Log</h1>
-
-//     {logData.length ? (
-//       <Table striped bordered responsive className="mt-3" style={{ margin: '0 auto' }}>
-//   <thead className="thead-dark">
-//     <tr className="text-center align-middle">
-//       <th>Iteration</th>
-//       <th>Local Model Id</th>
-//       <th>Local Model Accuracy</th>
-//       <th>Received Model Id</th>
-//       <th>Received Model Accuracy</th>
-//       <th>Received Model Value</th>
-//       <th>Aggregated Model Id</th>
-//       <th>Aggregated Model Accuracy</th>
-//     </tr>
-//   </thead>
-//   <tbody>
-//     {logData.map((log, index) => (
-//       <React.Fragment key={index}>
-//        <tr>
-//   <td>{log.iteration}</td>
-//   <td>{log.localModel.id}</td>
-//   <td>{log.localModel.accuracy}</td>
-//   <td style={{ backgroundColor: log.receivedModel[0].value === false ? "red" : "white" }}>{log.receivedModel[0].id}</td>
-//   <td style={{ backgroundColor: log.receivedModel[0].value === false? "red" : "white" }}>{log.receivedModel[0].accuracy}</td>
-//   <td style={{ backgroundColor: log.receivedModel[0].value === false ? "red" : "white" }}>{log.receivedModel[0].value === false ? "Reject" : "Accept"}</td>
-//   <td>{log.aggregatedModel.id}</td>
-//   <td>{log.aggregatedModel.accuracy}</td>
-// </tr>
-// {log.receivedModel.slice(1).map((model, i) => (
-//   <tr key={i}>
-//     <td></td>
-//     <td></td>
-//     <td></td>
-//     <td style={{ backgroundColor: model.value === false ? "red" : "white" }}>{model.id}</td>
-//     <td style={{ backgroundColor: model.value === false ? "red" : "white" }}>{model.accuracy}</td>
-//     <td style={{ backgroundColor: model.value === false ? "red" : "white" }}> {model.value === false ? "Reject" : "Accept"}</td>
-//     <td></td>
-//     <td></td>
-//   </tr>
-
-//         ))}
-//       </React.Fragment>
-//     ))}
-//   </tbody>
-// </Table>
-
-
-//     ) : (
-//       <p>Loading log data...</p>
-//     )}
-//   </Container>
-);
+<div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+  <h1 style={{ marginBottom: "20px" }}>Log Data</h1>
+  <Table size="sm">
+        <Thead>
+        <Tr>
+            <Th>Iteration</Th>
+            <Th>Local Model Id</Th>
+            <Th>Local Model Accuracy</Th>
+            <Th>Received Model Id</Th>
+            <Th>Received Model Accuracy</Th>
+            <Th>Received Model Value</Th>
+            <Th>Aggregated Model Id</Th>
+            <Th>Aggregated Model Accuracy</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+        {logData.map((log, index) => (
+      <React.Fragment key={index}>
+   <Tr>
+  <Td>{log.iteration}</Td>
+  <Td>{log.localModel.id}</Td>
+  <Td>{log.localModel.accuracy}</Td>
+  <Td style={{ backgroundColor: log.receivedModel[0].value === false ? "#91a3b0" : "white" }}>{log.receivedModel[0].id}</Td>
+  <Td style={{ backgroundColor: log.receivedModel[0].value === false? "#91a3b0" : "white" }}>{log.receivedModel[0].accuracy}</Td>
+  <Td style={{ backgroundColor: log.receivedModel[0].value === false ? "#91a3b0" : "white" }}>{log.receivedModel[0].value === false ? "Reject" : "Accept"}</Td>
+  <Td>{log.aggregatedModel.id}</Td>
+  <Td>{log.aggregatedModel.accuracy}</Td>
+</Tr>
+{log.receivedModel.slice(1).map((model, i) => (
+  <Tr key={i}>
+    <Td></Td>
+    <Td></Td>
+    <Td></Td>
+    <Td style={{ backgroundColor: model.value === false ? "#91a3b0" : "white" }}>{model.id}</Td>
+    <Td style={{ backgroundColor: model.value === false ? "#91a3b0" : "white" }}>{model.accuracy}</Td>
+    <Td style={{ backgroundColor: model.value === false ? "#91a3b0" : "white" }}> {model.value === false ? "Reject" : "Accept"}</Td>
+    <Td></Td>
+    <Td></Td>
+  </Tr>
+ ))}
+      </React.Fragment>
+    ))}
+        </Tbody>
+      </Table>
+    </div>
+  );
+  
 };
 
 
 export default Log;
-
-
