@@ -7,7 +7,8 @@ import logging
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
+import mimetypes
 import os
 import sys
 from datetime import datetime
@@ -38,6 +39,8 @@ currentThreandArray=[]
 CartType = False
 
 app = Flask(__name__, template_folder='../../web_app/dist', static_folder='../../web_app/dist/assets')
+mimetypes.add_type('text/javascript', '.js')
+mimetypes.add_type('text/css', '.css')
 # app = Flask(__name__, template_folder='./dist', static_folder='./dist/assets')
 CORS(app)  # Enable CORS for all routes
 
@@ -45,8 +48,12 @@ headings=("Name","Number","Price","Amount","Total price")
 
 @app.route('/', methods=['GET'])
 def example():
-    # Example endpoint that renders an HTML template
     return render_template('index.html')
+
+# @app.route('/assets/<filename>')
+# def serve_js(filename):
+#     return send_from_directory('assets', filename, mimetype='application/javascript')
+
 #find current threand
 
 def findCurrentThreandArray():
