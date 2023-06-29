@@ -288,7 +288,7 @@ def cartItemsPost():
     return jsonify({'message': "added"})
     
 #mannual data adding for testing
-@app.route('/cartTestItems', methods=['POST'])
+@app.route('/cartTestItems', methods=['GET'])
 def cartTestItems():
    dataSetSize=250
    response= dataSaveTest(dataSetSize)  
