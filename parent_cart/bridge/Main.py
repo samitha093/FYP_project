@@ -63,16 +63,20 @@ async def reqirementHandler(data):
             DeviceTable.append(User)
             print(User, " : ",req[1])
     elif req[0] == "PEERLIST":
+        print("Catch => Start getting peer list")
         tempData = responceModel(User,["PEERLIST",DeviceTable])
         mailBox = DATARECORDER.get(User)
         mailBox.append(tempData)
+        print("Catch => End getting peer list")
     elif req[0] == "NBRLIST":
+        print("Catch => Start getting nabour list list")
         url = 'http://localhost:5001/bridge/nabours'
         response = requests.get(url)
         nbrlist = response.json()
         tempData = responceModel(User,["NBRLIST",nbrlist])
         mailBox = DATARECORDER.get(User)
         mailBox.append(tempData)
+        print("Catch => End getting nabour list list")
     elif req[0] == "EXIT":
         print("exit request from : ",User)
         if User in DeviceTable:
@@ -357,7 +361,6 @@ def getNodeStatus():
 
 def boostrapSetup(data):
     global kademlaNodes, nodeSet, nodeRestart, KademliaNetwork
-    # print(data.decode("utf-8"))
     kademlaNodes = data
     ServerStatus = KademliaNetwork.ServerStatus_bootstrap_node()
     if ServerStatus is True:
@@ -365,10 +368,11 @@ def boostrapSetup(data):
     ServerStatus = KademliaNetwork.ServerStatus_bootstrap_node()
     if nodeSet is False and ServerStatus is False:
         nodeSet = True
-    public_ip = requests.get('http://httpbin.org/ip').json()['origin']
+    public_ip = requests.get('http://20.193.137.241:3000/api/publicip')
+    Pip = public_ip.content.decode('utf-8').split(':')[-1]
     kademlia_port = get_kademliaPort()
     ip_address = get_local_ip_address()
-    return {"localip":ip_address,"ip":public_ip,"port":kademlia_port}
+    return {"localip":ip_address,"ip":Pip,"port":kademlia_port}
 
 def add_boostrapNode(data):
     global KademliaNetwork
