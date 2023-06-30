@@ -271,9 +271,16 @@ def cartItemsPost():
     return jsonify({'message': "added"})
     
 #mannual data adding for testing
-@app.route('/cartTestItems', methods=['GET'])
-def cartTestItems():
+@app.route('/testItems', methods=['GET'])
+def testItems():
    dataSetSize=250
+   response= dataSaveTest(dataSetSize)  
+   return jsonify({'message': response})
+
+
+@app.route('/initCart', methods=['GET'])
+def initCart():
+   dataSetSize=1000
    response= dataSaveTest(dataSetSize)  
    return jsonify({'message': response})
 
