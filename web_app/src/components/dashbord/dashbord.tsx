@@ -148,19 +148,38 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
           overflow={'scroll'}
         >
 
-<VStack spacing={6} margin={0} mr={4}>
+<div style={{ display: 'flex', flexDirection: 'column', marginRight: '10px' }}>
+  <div
+    style={{
+      display: 'flex',
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+    }}
+  >
+    <Button
+      colorScheme="green"
+      onClick={handleClickButton2}
+      height="60px"
+      display="flex"
+      alignItems="center"
+      style={{ marginRight: '6px', marginBottom: '6px' }}
+    >
+      <SettingsIcon style={{ marginRight: '5px' }} />
+    </Button>
+    <Button
+      colorScheme="green"
+      onClick={handleClickButton1}
+      height="60px"
+      display="flex"
+      alignItems="center"
+      style={{ marginRight: '6px', marginBottom: '6px' }}
+    >
+      <CalendarIcon style={{ marginRight: '5px' }} />
+    </Button>
+  </div>
+</div>
 
-<Button colorScheme="blue" onClick={handleClickButton2} height="60px" display="flex" alignItems="center">
-  <SettingsIcon style={{ marginRight: '5px' }} />
-
-</Button>
-
-<Button colorScheme="blue" onClick={handleClickButton1} height="60px" display="flex" alignItems="center">
-  <CalendarIcon style={{ marginRight: '5px' }} />
-</Button>
-
-
-        </VStack>
 
           <Button
             pos="fixed"
