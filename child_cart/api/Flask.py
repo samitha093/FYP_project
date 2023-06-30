@@ -206,7 +206,6 @@ if create_api_endpoint:
         data = request.json
         if data is None:
             raise ValueError("No JSON data found")
-        add_boostrapNode(data)
         port=data['port']
         ip =data['ip']
         q = queue.Queue()
