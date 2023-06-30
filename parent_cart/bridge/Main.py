@@ -70,10 +70,15 @@ async def reqirementHandler(data):
         print("Catch => End getting peer list")
     elif req[0] == "NBRLIST":
         print("Catch => Start getting nabour list")
-        url = 'http://localhost:5001/bridge/nabours'
-        response = requests.get(url)
-        nbrlist = response.json()
-        print(nbrlist)
+        #nbr list from url
+        # url = 'http://localhost:5001/bridge/nabours'
+        # response = requests.get(url)
+        # nbrlist = response.content.decode('utf-8')
+        # print("decoded response" + nbrlist)
+        #nbr list from fcn
+        nbrlist = get_nabourList()
+        print("NBR list from function" , nbrlist)
+        #send nbr list
         tempData = responceModel(User,["NBRLIST",nbrlist])
         mailBox = DATARECORDER.get(User)
         mailBox.append(tempData)
@@ -375,16 +380,16 @@ def boostrapSetup(data):
     ip_address = get_local_ip_address()
     return {"localip":ip_address,"ip":Pip,"port":kademlia_port}
 
-def add_boostrapNode(data):
-    global KademliaNetwork
-    ip_data = data['ip']
-    port_data = data['port']
-    print ("adding boostrap link => ", ip_data,":",port_data)
-    try:
-        asyncio.run(KademliaNetwork.connect_bootstrap_node(ip_data,port_data))
-        print ("created boostrap link => ", ip_data,":",port_data)
-    except Exception as e:
-        traceback.print_exc()
+# def add_boostrapNode(data):
+#     global KademliaNetwork
+#     ip_data = data['ip']
+#     port_data = data['port']
+#     print ("adding boostrap link => ", ip_data,":",port_data)
+#     try:
+#         asyncio.run(KademliaNetwork.connect_bootstrap_node(ip_data,port_data))
+#         print ("created boostrap link => ", ip_data,":",port_data)
+#     except Exception as e:
+#         traceback.print_exc()
 
 def get_nabourList():
     global KademliaNetwork
