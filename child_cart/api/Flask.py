@@ -50,12 +50,7 @@ headings=("Name","Number","Price","Amount","Total price")
 def example():
     return render_template('index.html')
 
-# @app.route('/assets/<filename>')
-# def serve_js(filename):
-#     return send_from_directory('assets', filename, mimetype='application/javascript')
-
 #find current threand
-
 def findCurrentThreandArray():
     global currentThreandArray
     global currentGender
@@ -249,25 +244,6 @@ if create_api_endpoint:
         kademliaData = boostrapSetup(boostrapArray)
         return kademliaData
 
-    # @app.route('/bridge/nabours', methods=['GET'])
-    # def nabours():
-    #     peerList = get_nabourList()
-    #     return jsonify(peerList)
-
-#api for user selected items save into cart
-"""
-Json object look like this
-  [{
-    "item": "5"
-  },
-  {
-    "item": "6"
-  },
-  {
-    "item": "7"
-  }
-  ]
-  """
 @app.route('/cartItems', methods=['POST'])
 def cartItemsPost():
     global currentGender
@@ -295,7 +271,6 @@ def cartTestItems():
    return jsonify({'message': response})
 
 #api for log data
-
 @app.route('/logData', methods =["GET"]) # type: ignore
 def logData():
     results=loadLogData()
