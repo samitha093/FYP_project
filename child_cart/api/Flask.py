@@ -114,6 +114,8 @@ def get_local_ip_address():
 @app.route('/network/config', methods=['GET'])
 def nconfig():
     config = get_config()
+    ip_address = get_local_ip_address()
+    config['NET_IP']= ip_address
     return jsonify({'message': config})
 @app.route('/network/config', methods=['POST'])
 def nconfigPost():
@@ -144,12 +146,17 @@ except ImportError:
 
 @app.route('/bridge/nabours', methods=['GET'])
 def nabours():
-    if create_api_endpoint:
+    print("start => getting nabour list")
+    if CartType:
+        print("getting data from kademlia network")
         peerList = get_nabourList()
+        print("End => getting nabour list")
         return jsonify(peerList)
     else:
-        #NBR List Send
+        #NBR List Send from cash
+        print("getting data from cash memory")
         nbrList=loadNBRList()
+        print("End => getting nabour list")
         return jsonify(nbrList)
 
 if create_api_endpoint:
