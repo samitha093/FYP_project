@@ -41,6 +41,9 @@ TEMPUSERID = ""
 CART_TYPE = ""
 LOCALMODELACCURACY =0
 TIME_ARRAY = [0] * 5
+
+CARTDATASIZE = 0
+
 MODEL=create_model()
 x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
 #initial model Training
@@ -211,7 +214,7 @@ def backgroudNetworkProcess():
     global TIME_ARRAY,TEMPUSERID,mySocket, cartType
     global CART_TYPE,CULSTER_SIZE,conType
     global RECIVED_MODELPARAMETERLIST,MODEL
-    global LOCALMODELACCURACY,LOGLOCALMODEL,LOGRECEIVEDMODEL,datasetSize
+    global LOCALMODELACCURACY,LOGLOCALMODEL,LOGRECEIVEDMODEL,datasetSize,CARTDATASIZE
     global x_test_np
     global y_test_np
     print("NETWORKING ......")
@@ -251,7 +254,9 @@ def backgroudNetworkProcess():
         # t1.join()
         result =getCartDataLenght()
         cartData = int(result)
-        print("Cart Data size: ",cartData)
+        if(CARTDATASIZE != cartData):
+            print("Cart Data size: ",cartData)
+            CARTDATASIZE=cartData
         #compare size of the dataset for globla aggregation
         if cartData >= datasetSize:
             #local model training
@@ -260,17 +265,14 @@ def backgroudNetworkProcess():
             localModelIndex= getLengthOfLogData()
             currentLocalModelIndex =str(localModelIndex)
             LOGLOCALMODEL = modelLogTemplate(currentLocalModelIndex, "True", LOCALMODELACCURACY)
-            # localModelAnalize(x_test_np,y_test_np)
-            
+            # localModelAnalize(x_test_np,y_test_np)            
             if conType != "KERNEL":
                 conType = "KERNEL"
                 print("Changed Connection Mode to " + conType)
                 mySocket.close(0,TEMPUSERID)
             print("Connecting as KERNEL for globla aggregation")
-
             #kernel loop
             while True:
-
                 # get data from recived queue
                 lock.acquire()
                 print("Thread lock acquired")
@@ -278,7 +280,6 @@ def backgroudNetworkProcess():
                 RECIVED_MODELPARAMETERLIST=[]
                 lock.release()
                 print("Thread lock released")
-
                 #check received parameters accuracy and save or drop
                 for item in TEMPRECIVED_MODELPARAMETERLIST:
                     if "MODELPARAMETERS" in item['Data']:
@@ -287,7 +288,6 @@ def backgroudNetworkProcess():
                         print("receivedData------------------->")
                         receivingModelAnalize(receivedData,receivedSender,x_test_np,y_test_np)
                 TEMPRECIVED_MODELPARAMETERLIST=[]
-
                 #get all saved model parameters count
                 # q = queue.Queue()
                 # t1=threading.Thread(target=getReceivedModelParameterLength,args=(q,))
@@ -296,7 +296,6 @@ def backgroudNetworkProcess():
                 # result = q.get()
                 receivedParametersSize =getReceivedModelParameterLength()
                 print("received model parameter size : ", receivedParametersSize)
-
                 #check received parameters count for run aggregation
                 if receivedParametersSize >= CULSTER_SIZE:
                     print("No need more parameters")
@@ -304,6 +303,7 @@ def backgroudNetworkProcess():
                         conType = "SHELL"
                     TIME_ARRAY[3] = time.time() ## time stap 4
                     globleAggregationProcess(MODEL,x_test_np,y_test_np,CULSTER_SIZE,LOGLOCALMODEL,LOGRECEIVEDMODEL)
+                    LOGRECEIVEDMODEL =[]
                     # localModelAnalize(x_test_np,y_test_np)
                     TIME_ARRAY[4] = time.time() ## time stap 5
                     break

@@ -30,3 +30,9 @@ reup_dev:
 	docker-compose -f docker-composer.dev.yml down
 	docker-compose -f docker-composer.dev.yml build
 	docker-compose -f docker-composer.dev.yml up -d
+
+run:
+    python del.py
+
+
+
