@@ -69,14 +69,15 @@ async def reqirementHandler(data):
         mailBox.append(tempData)
         print("Catch => End getting peer list")
     elif req[0] == "NBRLIST":
-        print("Catch => Start getting nabour list list")
+        print("Catch => Start getting nabour list")
         url = 'http://localhost:5001/bridge/nabours'
         response = requests.get(url)
         nbrlist = response.json()
+        print(nbrlist)
         tempData = responceModel(User,["NBRLIST",nbrlist])
         mailBox = DATARECORDER.get(User)
         mailBox.append(tempData)
-        print("Catch => End getting nabour list list")
+        print("Catch => End getting nabour list")
     elif req[0] == "EXIT":
         print("exit request from : ",User)
         if User in DeviceTable:

@@ -50,12 +50,7 @@ headings=("Name","Number","Price","Amount","Total price")
 def example():
     return render_template('index.html')
 
-# @app.route('/assets/<filename>')
-# def serve_js(filename):
-#     return send_from_directory('assets', filename, mimetype='application/javascript')
-
 #find current threand
-
 def findCurrentThreandArray():
     global currentThreandArray
     global currentGender
@@ -119,6 +114,8 @@ def get_local_ip_address():
 @app.route('/network/config', methods=['GET'])
 def nconfig():
     config = get_config()
+    ip_address = get_local_ip_address()
+    config['NET_IP']= ip_address
     return jsonify({'message': config})
 @app.route('/network/config', methods=['POST'])
 def nconfigPost():
@@ -149,12 +146,17 @@ except ImportError:
 
 @app.route('/bridge/nabours', methods=['GET'])
 def nabours():
-    if create_api_endpoint:
+    print("start => getting nabour list")
+    if CartType:
+        print("getting data from kademlia network")
         peerList = get_nabourList()
+        print("End => getting nabour list")
         return jsonify(peerList)
     else:
-        #NBR List Send
+        #NBR List Send from cash
+        print("getting data from cash memory")
         nbrList=loadNBRList()
+        print("End => getting nabour list")
         return jsonify(nbrList)
 
 if create_api_endpoint:
@@ -249,25 +251,6 @@ if create_api_endpoint:
         kademliaData = boostrapSetup(boostrapArray)
         return kademliaData
 
-    # @app.route('/bridge/nabours', methods=['GET'])
-    # def nabours():
-    #     peerList = get_nabourList()
-    #     return jsonify(peerList)
-
-#api for user selected items save into cart
-"""
-Json object look like this
-  [{
-    "item": "5"
-  },
-  {
-    "item": "6"
-  },
-  {
-    "item": "7"
-  }
-  ]
-  """
 @app.route('/cartItems', methods=['POST'])
 def cartItemsPost():
     global currentGender
@@ -295,7 +278,6 @@ def cartTestItems():
    return jsonify({'message': response})
 
 #api for log data
-
 @app.route('/logData', methods =["GET"]) # type: ignore
 def logData():
     results=loadLogData()
