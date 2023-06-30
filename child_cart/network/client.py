@@ -223,10 +223,11 @@ def backgroudNetworkProcess():
     if(result == "False"):
         while True:
             # print("WHILE LOOP STARTED")
-            result =getCartDataLenght()
+            result = getCartDataLenght()
             cartData = int(result)
             # print("Cart Data size: ",cartData)
             #compare size of the dataset for globla aggregation
+            datasetSize=1000
             if cartData >= datasetSize:
                 #local model training
                 LOCALMODELACCURACY = localModelTraing(MODEL,x_test_np,y_test_np,datasetSize)

@@ -1,4 +1,4 @@
-import { Box, Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Button, useDisclosure } from '@chakra-ui/react';
+import { Box, Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Button, useDisclosure, Spacer } from '@chakra-ui/react';
 import axios from 'axios';
 import Swal from 'sweetalert2'
 import React, { useEffect, useState } from 'react';
@@ -15,6 +15,7 @@ const NetworkModule: React.FC<AppProps> = ({ darkMode }) => {
   const [APIport, setApiPort] = useState('5001');
   const [ClusterSize, setClusterSize] = useState('2');
   const [SyncConstant, setSyncConstant] = useState(1);
+  const [DeviceIp, setDeviceIp] = useState('10.50.70.127');
 
   useEffect(() => {
     const myHost = sessionStorage.getItem('host');
@@ -25,6 +26,8 @@ const NetworkModule: React.FC<AppProps> = ({ darkMode }) => {
         setPort(response.data.message.PORT);
         setSyncConstant(response.data.message.SYNC_CONST)
         setClusterSize(response.data.message.CLUSTER_SIZE)
+        setDeviceIp(response.data.message.NET_IP)
+        console.log(response.data.message)
       })
       .catch(error => {
         console.error(error);
@@ -52,7 +55,8 @@ const NetworkModule: React.FC<AppProps> = ({ darkMode }) => {
       LOCALHOST: localHost,
       PORT: port,
       SHELL_TIMEOUT: 300,
-      SYNC_CONST: SyncConstant
+      SYNC_CONST: SyncConstant,
+    
     };
     axios.post(`${myHost}/network/config`, requestData)
       .then(response => {
@@ -92,6 +96,7 @@ const NetworkModule: React.FC<AppProps> = ({ darkMode }) => {
     const value = e.target.value;
     setClusterSize(value);
   };
+
   return (
     <>
       <Flex
@@ -158,7 +163,25 @@ const NetworkModule: React.FC<AppProps> = ({ darkMode }) => {
             </Box>
             <Box mb="4" display="flex" flexDirection="column">
               <label htmlFor="localHost">API Port:</label>
+
+              <Flex justifyContent='center'>
+              <Box w={'30%'}>
+                <input type="text" id="localHost" value={APIport} style={{ width: '100%' }} />
+              </Box>
+              <Spacer />
+              <Box  w={'60%'}>
+                <input type="text" id="deviceIp" value={DeviceIp} style={{ width: '100%' }} />
+              </Box>
+            </Flex>
+
+   
+                        {/* <div>
               <input type="text" id="localHost" value={APIport} />
+              </div>
+              <div>
+              <input type="text" id="localHost" value={APIport} />
+              </div>
+               */}
             </Box>
             <Button w="100%" colorScheme="orange" _hover={{ bg: "orange.700" }} color="white" onClick={handleSave}>Update</Button>
           </ModalBody>
