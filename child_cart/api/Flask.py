@@ -157,7 +157,7 @@ def nabours():
         print("getting data from cash memory")
         nbrList=loadNBRList()
         print("End => getting nabour list")
-        return jsonify(nbrList)
+        return nbrList
 
 if create_api_endpoint:
     from parent_cart.bridge.Main import *
@@ -260,11 +260,7 @@ def cartItemsPost():
         item_value = int(item['item']) # Access the 'item' key within each object
         # print("item_value : ",item_value)
         month = datetime.now().month
-        new_row=[month,item_value,currentGender]
-        # q = queue.Queue()
-        # t1=threading.Thread(target=updataCartData,args=(new_row,q,))
-        # t1.start()
-        # t1.join()
+        new_row=[[month,item_value,currentGender]]
         result =updataCartData(new_row)
 
     return jsonify({'message': "added"})
@@ -279,7 +275,7 @@ def testItems():
 
 @app.route('/initcart', methods=['GET'])
 def initCart():
-   dataSetSize=1000
+   dataSetSize=3000
    response= dataSaveTest(dataSetSize)  
    return jsonify({'message': response})
 

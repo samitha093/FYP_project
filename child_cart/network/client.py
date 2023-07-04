@@ -51,6 +51,7 @@ x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
 LOGLOCALMODEL =""
 LOGRECEIVEDMODEL =[]
 datasetSize =250
+initCatasetSize=3000
 def clientconfigurations():
     global HOST
     global LOCALHOST
@@ -136,12 +137,9 @@ def receivingModelAnalize(encoded_message,senderId,x_test_np,y_test_np):
     if(recievedModelAcc < LOCALMODELACCURACY + stepSize ) and (recievedModelAcc > LOCALMODELACCURACY - stepSize ):
         saveReceivedModelData(model_weights)
         status="True"
-        # t1=threading.Thread(target=saveReceivedModelData,args=(model_weights,))
-        # t1.start()
-        # t1.join()
-        print("Received model Accept!")
+        print("Local model accuracy : ",LOCALMODELACCURACY, " Received Model ",senderId," Accuracy : ",recievedModelAcc," : ", "Received model Accept!")
     else:
-        print("Received model Droped!")   
+        print("Local model accuracy : ",LOCALMODELACCURACY, " Received Model ", senderId ," Accuracy : ",recievedModelAcc," : ", "Received model Droped!")  
     #save received model status     
     receivedModelsLog(senderId, status, recievedModelAcc)
 
@@ -214,13 +212,11 @@ def backgroudNetworkProcess():
     global TIME_ARRAY,TEMPUSERID,mySocket, cartType
     global CART_TYPE,CULSTER_SIZE,conType
     global RECIVED_MODELPARAMETERLIST,MODEL
-    global LOCALMODELACCURACY,LOGLOCALMODEL,LOGRECEIVEDMODEL,datasetSize,CARTDATASIZE
+    global LOCALMODELACCURACY,LOGLOCALMODEL,LOGRECEIVEDMODEL,datasetSize,CARTDATASIZE,initCatasetSize
     global x_test_np
     global y_test_np
     print("NETWORKING ......")
-
     clientconfigurations()
-
     result=loadInitData()
     # print("status : ",result)
     if(result == "False"):
@@ -230,10 +226,9 @@ def backgroudNetworkProcess():
             cartData = int(result)
             # print("Cart Data size: ",cartData)
             #compare size of the dataset for globla aggregation
-            datasetSize=1000
-            if cartData >= datasetSize:
+            if cartData >= initCatasetSize:
                 #local model training
-                LOCALMODELACCURACY = localModelTraing(MODEL,x_test_np,y_test_np,datasetSize)
+                LOCALMODELACCURACY = localModelTraing(MODEL,x_test_np,y_test_np,initCatasetSize)
                 print("WHILE LOOP STOP")
                 intData={"initialization": "True"}
                 saveOrUpdateInitialization(intData)
@@ -246,25 +241,23 @@ def backgroudNetworkProcess():
     t0.start()
     
     while True:
-        # cartData = getCartDataLenght()
-        # q = queue.Queue()
-        # t1=threading.Thread(target=getCartDataLenght,args=(q,))
-        # t1.daemon = True
-        # t1.start()
-        # t1.join()
         result =getCartDataLenght()
         cartData = int(result)
         if(CARTDATASIZE != cartData):
             print("Cart Data size: ",cartData)
+            print("dataset not completed")
             CARTDATASIZE=cartData
-        #compare size of the dataset for globla aggregation
+
         if cartData >= datasetSize:
+            print("dataset completed: 250")
             #local model training
             LOCALMODELACCURACY = localModelTraing(MODEL,x_test_np,y_test_np,datasetSize)
             #local model log data
             localModelIndex= getLengthOfLogData()
             currentLocalModelIndex =str(localModelIndex)
             LOGLOCALMODEL = modelLogTemplate(currentLocalModelIndex, "True", LOCALMODELACCURACY)
+            print("local model details ")
+            print(LOGLOCALMODEL)
             # localModelAnalize(x_test_np,y_test_np)            
             if conType != "KERNEL":
                 conType = "KERNEL"
@@ -288,12 +281,6 @@ def backgroudNetworkProcess():
                         print("receivedData------------------->")
                         receivingModelAnalize(receivedData,receivedSender,x_test_np,y_test_np)
                 TEMPRECIVED_MODELPARAMETERLIST=[]
-                #get all saved model parameters count
-                # q = queue.Queue()
-                # t1=threading.Thread(target=getReceivedModelParameterLength,args=(q,))
-                # t1.start()
-                # t1.join()
-                # result = q.get()
                 receivedParametersSize =getReceivedModelParameterLength()
                 print("received model parameter size : ", receivedParametersSize)
                 #check received parameters count for run aggregation
@@ -305,7 +292,7 @@ def backgroudNetworkProcess():
                     globleAggregationProcess(MODEL,x_test_np,y_test_np,CULSTER_SIZE,LOGLOCALMODEL,LOGRECEIVEDMODEL)
                     LOGRECEIVEDMODEL =[]
                     # localModelAnalize(x_test_np,y_test_np)
-                    TIME_ARRAY[4] = time.time() ## time stap 5
+                    TIME_ARRAY[4] = time.time() ## time stap 5LOGRECEIVEDMODEL
                     break
                 else:
                     print("Need more model parameters")
@@ -318,7 +305,6 @@ def backgroudNetworkProcess():
                 conType = "SHELL"
         time.sleep(10)
 
-
 #----------------------log result funtions --------------------------------
 def modelLogTemplate(id, value, accuracy):
     return {
@@ -329,6 +315,9 @@ def modelLogTemplate(id, value, accuracy):
 
 def receivedModelsLog(id, value, accuracy):
     global LOGRECEIVEDMODEL
-    model = modelLogTemplate(id, value, accuracy)
-    LOGRECEIVEDMODEL.append(model)
+    modelLog = modelLogTemplate(id, value, accuracy)
+    print("received model details ")
+    print(modelLog)
+    LOGRECEIVEDMODEL.append(modelLog)
 
+receivedModelsLog(1,true,20)
