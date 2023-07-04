@@ -46,8 +46,6 @@ CARTDATASIZE = 0
 
 MODEL=create_model()
 x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
-#initial model Training
-# initialModelTraining(MODEL,x_train_np, y_train_np,x_test_np,y_test_np)
 LOGLOCALMODEL =""
 LOGRECEIVEDMODEL =[]
 datasetSize =250
@@ -206,7 +204,6 @@ def time_cal():
         f.write("Model list anlyzing time : " + str(TIME_ARRAY[2]-TIME_ARRAY[1]) + " second\n")
         f.write("Model aggregation time : " + str(TIME_ARRAY[4]-TIME_ARRAY[3]) + " second\n\n")
 
-
 #----------------------background process --------------------------------
 def backgroudNetworkProcess():
     global TIME_ARRAY,TEMPUSERID,mySocket, cartType
@@ -221,11 +218,10 @@ def backgroudNetworkProcess():
     # print("status : ",result)
     if(result == "False"):
         while True:
-            # print("WHILE LOOP STARTED")
+            #intial model training 
+            dataSaveTest(3000)
             result = getCartDataLenght()
             cartData = int(result)
-            # print("Cart Data size: ",cartData)
-            #compare size of the dataset for globla aggregation
             if cartData >= initCatasetSize:
                 #local model training
                 LOCALMODELACCURACY = localModelTraing(MODEL,x_test_np,y_test_np,initCatasetSize)
@@ -241,8 +237,7 @@ def backgroudNetworkProcess():
     t0.start()
     
     while True:
-        result =getCartDataLenght()
-        cartData = int(result)
+        cartData =int(getCartDataLenght())
         if(CARTDATASIZE != cartData):
             print("Cart Data size: ",cartData)
             print("dataset not completed")
@@ -289,13 +284,17 @@ def backgroudNetworkProcess():
                     if conType != "SHELL":
                         conType = "SHELL"
                     TIME_ARRAY[3] = time.time() ## time stap 4
+                    print("LOCAL MODEL DETAILS: ")
+                    print(LOGLOCALMODEL)
+                    print("RECEIVED MODEL DETAILS: ")
+                    print(LOGRECEIVEDMODEL)
                     globleAggregationProcess(MODEL,x_test_np,y_test_np,CULSTER_SIZE,LOGLOCALMODEL,LOGRECEIVEDMODEL)
                     LOGRECEIVEDMODEL =[]
                     # localModelAnalize(x_test_np,y_test_np)
                     TIME_ARRAY[4] = time.time() ## time stap 5LOGRECEIVEDMODEL
                     break
                 else:
-                    print("Need more model parameters")
+                    print("Model parameters satisfied!")
                     if conType != "KERNEL":
                         conType = "KERNEL"
                         mySocket.close(0,TEMPUSERID)
@@ -316,8 +315,6 @@ def modelLogTemplate(id, value, accuracy):
 def receivedModelsLog(id, value, accuracy):
     global LOGRECEIVEDMODEL
     modelLog = modelLogTemplate(id, value, accuracy)
-    print("received model details ")
+    print("received model ",id ,"  details ")
     print(modelLog)
     LOGRECEIVEDMODEL.append(modelLog)
-
-receivedModelsLog(1,true,20)
