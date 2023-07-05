@@ -661,8 +661,8 @@ def loadNBRList():
                 returnList = pickle.load(f)
                 # print(returnList[0])
             nbrList_lock.release()
-            print(returnList[0])
-            print("Load naubour list>>>>")
+            # print(returnList[0])
+            # print("Load naubour list>>>>")
             return returnList[0]
         else:
             print("The file", filename, "does not exist in the current path.")

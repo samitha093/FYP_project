@@ -2,6 +2,8 @@ import time
 import os
 import sys
 
+import requests
+
 # Get the path to the root directory
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 
@@ -15,7 +17,7 @@ from child_cart.cache.cacheFile import *
 
 ModelParamLoop = True
 
-def seedProx(mySocket,USERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,SHELL_TIMEOUT):
+def seedProx(mySocket,USERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,SHELL_TIMEOUT,SIP):
     global ModelParamLoop
     print(errMsg.MSG004.value)
     ModelParamLoop = True
@@ -23,8 +25,12 @@ def seedProx(mySocket,USERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,SHELL_TI
     peerTypeReq = ["PEERTYPE",MODE]
     mySocket.request(requestModel(USERID,peerTypeReq))
     # request nabour list
-    peernbrReq = ["NBRLIST"]
-    mySocket.request(requestModel(USERID,peernbrReq))
+    # peernbrReq = ["NBRLIST"]
+    # mySocket.request(requestModel(USERID,peernbrReq))
+    url = 'http://'+SIP+':5001/bridge/nabours'
+    response = requests.get(url)
+    nbrlist = response.content.decode('utf-8')
+    print(nbrlist)
     ########################################################################
     while ModelParamLoop:
         tempDataSet = mySocket.RECIVEQUE.copy()
