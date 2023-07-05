@@ -13,8 +13,8 @@ from child_cart.cache.cacheFile import *
 import queue
 
 def getModelAccuracy(model,test_data1,test_labels1):
-    localModelWeights=loadLocalCartModelData()
-    model.set_weights(localModelWeights)
+    # localModelWeights=loadLocalCartModelData()
+    # model.set_weights(localModelWeights)
     #Predict model 1  test using test date
     y_pred_model_1 = model.predict(test_data1)
 

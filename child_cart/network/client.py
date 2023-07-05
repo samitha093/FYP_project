@@ -22,13 +22,14 @@ import threading
 
 lock = threading.Lock()
 
-HOST = '141.145.200.6'
+HOST = '141.145.200.12'
 LOCALHOST = '127.0.0.1'
 PORT = 9000
 KERNAL_TIMEOUT = 60
 SHELL_TIMEOUT = 3*60
 SYNC_CONST = 1
 CULSTER_SIZE = 3
+#update globle values from cache
 
 HOSTHISTORT = ""
 HOSTLIST = []
@@ -75,6 +76,8 @@ def clientconfigurations():
     print("Load network configuration : ",row)
 
 
+clientconfigurations()
+
 MODELPARAMETERS = bytes(1024) 
 MOBILEMODELPARAMETERS  =bytes(1024)
 
@@ -107,14 +110,14 @@ def mainFunn(RECIVER_TIMEOUT, SYNC_CONST, SOCKET_HOST):
 
         #Connection Mode select
         if MODE == conctionType.KERNEL.value:
-            MODELPARAMETER = communicationProx(mySocket,TEMPUSERID,MODE,RECIVER_TIMEOUT,MODELPARAMETERS,SOCKET_HOST)
+            MODELPARAMETER = communicationProx(mySocket,TEMPUSERID,MODE,RECIVER_TIMEOUT,MODELPARAMETERS)
             if len(MODELPARAMETER) == 0:
                 return
             lock.acquire()
             RECIVED_MODELPARAMETERLIST.append(MODELPARAMETER[0])
             lock.release()
         if MODE == conctionType.SHELL.value:
-            seedProx(mySocket,TEMPUSERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,RECIVER_TIMEOUT,SOCKET_HOST)
+            seedProx(mySocket,TEMPUSERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,RECIVER_TIMEOUT)
 
     except Exception as e:
         print("Error occurred while running in", MODE, " mode ")
@@ -169,14 +172,12 @@ def hostSelector():
     #     HOSTLIST.append(i[0])
     # print("Select a host from known nabour list : ",nbrList)
     if len(HOSTLIST) == 0:
-        print("seleting network config file")
         if HOSTHISTORT == LOCALHOST:
             HOSTHISTORT = HOST
         else:
             HOSTHISTORT = LOCALHOST
         return HOSTHISTORT
     else:
-        print("open to network identification")
         maximumNumber = len(HOSTLIST)
         randomIndex = random.randint(0, maximumNumber - 1)
         HOSTHISTORT = HOSTLIST[randomIndex]
@@ -221,7 +222,6 @@ def backgroudNetworkProcess():
     global x_test_np
     global y_test_np
     print("NETWORKING ......")
-    clientconfigurations()
     result=loadInitData()
     # print("status : ",result)
     if(result == "False"):
@@ -288,7 +288,7 @@ def backgroudNetworkProcess():
                 print("received model parameter size : ", receivedParametersSize)
                 #check received parameters count for run aggregation
                 if receivedParametersSize >= CULSTER_SIZE:
-                    print("No need more parameters")
+                    print("Model parameters satisfied!")
                     if conType != "SHELL":
                         conType = "SHELL"
                     TIME_ARRAY[3] = time.time() ## time stap 4
@@ -302,7 +302,7 @@ def backgroudNetworkProcess():
                     TIME_ARRAY[4] = time.time() ## time stap 5LOGRECEIVEDMODEL
                     break
                 else:
-                    print("Model parameters satisfied!")
+                    print("Model parameters not satisfied!")
                     if conType != "KERNEL":
                         conType = "KERNEL"
                         mySocket.close(0,TEMPUSERID)
