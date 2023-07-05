@@ -120,38 +120,23 @@ def splitCartData(sizeOfDataset):
 #mannulay data insert function call
 def dataSaveTest(oneTimeDataSetSize):
     global train_array,num
-    # oneTimeDataSetSize =250 
-    #data set size for one time insert
-    # oneTimeDataSetSize=250
     arrayLength=len(train_array)
     #print array length
     print("Array length: ",arrayLength)
-
-    #time for wait next insertion
-    # timeForWaitInSeconds=10
     lengthOfLoop=int(arrayLength/oneTimeDataSetSize)
-
-    # q = queue.Queue()
-    # t1=threading.Thread(target=getCartDataLenght,args=(q,))
-    # t1.daemon = True
-    # t1.start()
-    # t1.join()
     result = getCartDataLenght()
     cartDataLength = int(result)
     print("Cart Data size: ",cartDataLength)
     if(cartDataLength < oneTimeDataSetSize):
         if(num >= 98000):
             num =0
+        tempArray=[]
         for i in range(oneTimeDataSetSize):
             new_row = train_array[num]
-            # q = queue.Queue()
-            # t1=threading.Thread(target=updataCartData,args=(new_row,q,))
-            # t1.start()
-            # t1.join()
-            # result = q.get()
-            my_data=updataCartData(new_row)
+            tempArray.append(new_row)
             num +=1
-
+        my_data=updataCartData(tempArray)
+        tempArray=[]
         print("dataset ",oneTimeDataSetSize," added")
         return "dataset added"
     else:

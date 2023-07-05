@@ -290,7 +290,6 @@ def loadCartData():
 
         df = pd.DataFrame(cartData[1:], columns=cartData[0])
         cartData_lock.release()
-        # que.put(df)
         # print(df)
         return df
     
@@ -320,7 +319,9 @@ def updataCartData(new_row):
         cartData_lock.acquire()
         with open(filename, 'rb') as f:
             cartData = pickle.load(f)  
-        cartData.append(new_row)
+
+        for sublist in new_row:    
+            cartData.append(sublist)
         # print("cache : ",new_row)
         #save
         with open(filename, 'wb') as f:
@@ -337,14 +338,10 @@ def updataCartData(new_row):
         print("An error occurred:", str(e))
         return None
 # add dummy data
-# q = queue.Queue()
-# for i in range(2):
-#     new_row = [3, 0, 0]
-#     updataCartData(new_row,q)
+# new_row = [[3, 0, 0], [8, 0, 0], [2, 0, 9]]
+# updataCartData(new_row)
 
-# print("findished")
-# q = queue.Queue()
-# loadCartData(q)
+# loadCartData()
 
 def deleteCartDataItems(itemCount):
     global cartData_lock
@@ -377,8 +374,7 @@ def deleteCartDataItems(itemCount):
         print("Error occurred: ", str(e))
         return None
 
-# q = queue.Queue()
-# deleteCartDataItemstaItems(38,q)
+# deleteCartDataItemstaItems(38)
 def getCartDataLenght():
     global cartData_lock
     filename = "cache/cartData.pkl"
@@ -647,7 +643,8 @@ def saveOrUpdateNBRList(NBRLIST):
             print("List updated")
         with open(filename, 'rb') as f:
             returnList = pickle.load(f)
-        # print(returnList[0])
+        print("Naubor list:>>>>>")
+        print(returnList[0])
         return returnList[0]
     except Exception as e:
         print("An error occurred:", str(e))
@@ -664,6 +661,8 @@ def loadNBRList():
                 returnList = pickle.load(f)
                 # print(returnList[0])
             nbrList_lock.release()
+            print(returnList[0])
+            print("Load naubour list>>>>")
             return returnList[0]
         else:
             print("The file", filename, "does not exist in the current path.")
@@ -852,7 +851,6 @@ def saveOrUpdateInitialization(Log):
 
 # intData={"initialization": "True"}
 # saveOrUpdateInitialization(intData)
-
 
 #read logData 
 def loadInitData():
