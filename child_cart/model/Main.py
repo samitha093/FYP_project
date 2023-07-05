@@ -54,7 +54,6 @@ def globleAggregationProcess(model,x_test_np,y_test_np,CULSTER_SIZE,LOGLOCALMODE
           writeLogData(nextId, aggregatedModelAcc)
           return "Aggregated"
 
-
 def differentialPrivacy(model,x_test_np,y_test_np):
     print("Starting adding differential privacy ------->")
     try:
