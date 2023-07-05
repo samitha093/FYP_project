@@ -282,7 +282,7 @@ def backgroudNetworkProcess():
                 print("received model parameter size : ", receivedParametersSize)
                 #check received parameters count for run aggregation
                 if receivedParametersSize >= CULSTER_SIZE:
-                    print("No need more parameters")
+                    print("Model parameters satisfied!")
                     if conType != "SHELL":
                         conType = "SHELL"
                     TIME_ARRAY[3] = time.time() ## time stap 4
@@ -296,7 +296,7 @@ def backgroudNetworkProcess():
                     TIME_ARRAY[4] = time.time() ## time stap 5LOGRECEIVEDMODEL
                     break
                 else:
-                    print("Model parameters satisfied!")
+                    print("Model parameters not satisfied!")
                     if conType != "KERNEL":
                         conType = "KERNEL"
                         mySocket.close(0,TEMPUSERID)
