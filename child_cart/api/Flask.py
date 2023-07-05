@@ -270,7 +270,7 @@ def cartItemsPost():
 def testItems():
    dataSetSize=250
    response= dataSaveTest(dataSetSize)  
-   return jsonify({'message': response})
+   return jsonify(response)
 
 
 @app.route('/initcart', methods=['GET'])
