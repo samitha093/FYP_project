@@ -110,14 +110,14 @@ def mainFunn(RECIVER_TIMEOUT, SYNC_CONST, SOCKET_HOST):
 
         #Connection Mode select
         if MODE == conctionType.KERNEL.value:
-            MODELPARAMETER = communicationProx(mySocket,TEMPUSERID,MODE,RECIVER_TIMEOUT,MODELPARAMETERS)
+            MODELPARAMETER = communicationProx(mySocket,TEMPUSERID,MODE,RECIVER_TIMEOUT,MODELPARAMETERS, HOSTHISTORT)
             if len(MODELPARAMETER) == 0:
                 return
             lock.acquire()
             RECIVED_MODELPARAMETERLIST.append(MODELPARAMETER[0])
             lock.release()
         if MODE == conctionType.SHELL.value:
-            seedProx(mySocket,TEMPUSERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,RECIVER_TIMEOUT)
+            seedProx(mySocket,TEMPUSERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,RECIVER_TIMEOUT, HOSTHISTORT)
 
     except Exception as e:
         print("Error occurred while running in", MODE, " mode ")
