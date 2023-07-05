@@ -166,6 +166,8 @@ def connectNetwork():
 
 def hostSelector():
     global HOSTHISTORT, HOSTLIST, LOCALHOST, HOST
+    tempList = loadNBRList()
+    print(tempList)
     if len(HOSTLIST) == 0:
         if HOSTHISTORT == LOCALHOST:
             HOSTHISTORT = HOST

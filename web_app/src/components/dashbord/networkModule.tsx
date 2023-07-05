@@ -158,7 +158,7 @@ const NetworkModule: React.FC<AppProps> = ({ darkMode }) => {
               <input type="text" id="localHost" value={SyncConstant} onChange={handleSyncConstant} />
             </Box>
             <Box mb="4" display="flex" flexDirection="column">
-              <label htmlFor="clusterSize">Cluster Size:</label>
+              <label htmlFor="clusterSize">Model count</label>
               <input type="text" id="clusterSize" value={ClusterSize} onChange={handleClusterSize} />
             </Box>
             <Box mb="4" display="flex" flexDirection="column">
