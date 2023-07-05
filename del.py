@@ -37,8 +37,8 @@ for file_name in files_to_delete:
         print(f"The '{file_name}' file does not exist.")
 
 # Run the 'pyinstaller' command
-# command = 'pyinstaller --onefile --add-data "web_app/dist;web_app/dist" P_main.py'
-# subprocess.run(command, shell=True)
+command = 'pyinstaller --onefile --add-data "web_app/dist;web_app/dist" P_main.py'
+subprocess.run(command, shell=True)
 
 # Run the 'pyinstaller' command
 command = 'pyinstaller --onefile --add-data "web_app/dist;web_app/dist" C_main.py'

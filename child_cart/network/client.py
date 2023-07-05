@@ -22,13 +22,14 @@ import threading
 
 lock = threading.Lock()
 
-HOST = '141.145.200.6'
+HOST = '141.145.200.12'
 LOCALHOST = '127.0.0.1'
 PORT = 9000
 KERNAL_TIMEOUT = 60
 SHELL_TIMEOUT = 3*60
 SYNC_CONST = 1
 CULSTER_SIZE = 3
+#update globle values from cache
 
 HOSTHISTORT = ""
 HOSTLIST = []
@@ -74,6 +75,8 @@ def clientconfigurations():
     CULSTER_SIZE = int(row[6])
     print("Load network configuration : ",row)
 
+
+clientconfigurations()
 
 MODELPARAMETERS = bytes(1024) 
 MOBILEMODELPARAMETERS  =bytes(1024)
@@ -213,7 +216,6 @@ def backgroudNetworkProcess():
     global x_test_np
     global y_test_np
     print("NETWORKING ......")
-    clientconfigurations()
     result=loadInitData()
     # print("status : ",result)
     if(result == "False"):
