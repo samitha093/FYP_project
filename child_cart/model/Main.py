@@ -121,14 +121,6 @@ def localModelTraing(model,x_test_np,y_test_np,datasetSize):
     print("Strat local training ------->")
     try:
         localModelWeights=loadLocalCartModelData()
-        # q = queue.Queue()
-        # t1=threading.Thread(target=loadLocalCartModelData,args=(q,))
-        # t1.start()
-        # t1.join()
-        # result = q.get()
-        
-        # localModelWeights= result
-        
         model.set_weights(localModelWeights)
         print("Model weights loaded successfully!")
         #traing model using cartdata
