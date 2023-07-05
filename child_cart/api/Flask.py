@@ -147,7 +147,7 @@ except ImportError:
 @app.route('/bridge/nabours', methods=['GET'])
 def nabours():
     print("start => getting nabour list")
-    if not(CartType):
+    if CartType:
         print("getting data from kademlia network")
         peerList = get_nabourList()
         print("End => getting nabour list")

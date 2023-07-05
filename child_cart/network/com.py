@@ -14,7 +14,7 @@ from child_cart.network.util import *
 from child_cart.network.errorList import *
 from child_cart.cache.cacheFile import *
 
-def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS):
+def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS, SIP):
     CLUSTERID = ""
     PEERLIST = []
     MODELPARAMETERLIST = []
@@ -25,10 +25,13 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS):
     ################################################################################
     #-----------------------BEGIN----COMMUNICATION SCRIPT--------------------------#
     ################################################################################
+    # register peer type
     peerTypeReq = ["PEERTYPE",MODE]
     mySocket.request(requestModel(USERID,peerTypeReq))
-    peernbrReq = ["NBRLIST"]
-    mySocket.request(requestModel(USERID,peernbrReq))
+    # request nabour list
+    # peernbrReq = ["NBRLIST"]
+    # mySocket.request(requestModel(USERID,peernbrReq))
+    # request peer list
     peerListReq = ["PEERLIST"]
     mySocket.request(requestModel(USERID,peerListReq))
 
