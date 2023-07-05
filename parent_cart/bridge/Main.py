@@ -71,13 +71,12 @@ async def reqirementHandler(data):
     elif req[0] == "NBRLIST":
         print("Catch => Start getting nabour list")
         #nbr list from url
-        # url = 'http://localhost:5001/bridge/nabours'
-        # response = requests.get(url)
-        # nbrlist = response.content.decode('utf-8')
-        # print("decoded response" + nbrlist)
+        url = 'http://localhost:5001/bridge/nabours'
+        response = requests.get(url)
+        nbrlist = response.content.decode('utf-8')
         #nbr list from fcn
-        nbrlist = get_nabourList()
-        print("NBR list from function" , nbrlist)
+        # nbrlist = get_nabourList()
+        print("NBR list : " , nbrlist)
         #send nbr list
         tempData = responceModel(User,["NBRLIST",nbrlist])
         mailBox = DATARECORDER.get(User)
@@ -405,6 +404,7 @@ def get_nabourList():
             traceback.print_exc()
     else:
         return []
+
 
 def bidge_server():
     global KademliaNetwork, kademlaNodes, nodeSet, nodeRestart
