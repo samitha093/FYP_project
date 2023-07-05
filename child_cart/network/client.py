@@ -162,15 +162,20 @@ def connectNetwork():
 
 def hostSelector():
     global HOSTHISTORT, HOSTLIST, LOCALHOST, HOST
-    tempList = loadNBRList()
-    print(tempList)
+    nbrList = loadNBRList()
+    json_data = json.loads(nbrList)
+    for i in json_data:
+        HOSTLIST.append(i[0])
+    print("Select a host from known nabour list : ",nbrList)
     if len(HOSTLIST) == 0:
+        print("seleting network config file")
         if HOSTHISTORT == LOCALHOST:
             HOSTHISTORT = HOST
         else:
             HOSTHISTORT = LOCALHOST
         return HOSTHISTORT
     else:
+        print("open to network identification")
         maximumNumber = len(HOSTLIST)
         randomIndex = random.randint(0, maximumNumber - 1)
         HOSTHISTORT = HOSTLIST[randomIndex]
