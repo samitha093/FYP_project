@@ -3,6 +3,8 @@ import os
 import sys
 import random
 
+import requests
+
 # Get the path to the root directory
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 
@@ -31,6 +33,10 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS, SIP):
     # request nabour list
     # peernbrReq = ["NBRLIST"]
     # mySocket.request(requestModel(USERID,peernbrReq))
+    url = 'http://'+SIP+':5001/bridge/nabours'
+    response = requests.get(url)
+    nbrlist = response.content.decode('utf-8')
+    print("naber list from bridge : "nbrlist)
     # request peer list
     peerListReq = ["PEERLIST"]
     mySocket.request(requestModel(USERID,peerListReq))
