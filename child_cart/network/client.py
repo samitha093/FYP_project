@@ -149,12 +149,13 @@ def connectNetwork():
     while True:
         try:
             print("loop call triggered - Start")
+            Myhost =hostSelector() 
             if conType == conctionType.KERNEL.value:
-                mainFunn(KERNAL_TIMEOUT,SYNC_CONST,hostSelector())
+                mainFunn(KERNAL_TIMEOUT,SYNC_CONST,Myhost)
             else:
                 MODELPARAMETERS = encodeModelParameters()
                 MOBILEMODELPARAMETERS  =encodeModelParametersForMobile()
-                mainFunn(SHELL_TIMEOUT,SYNC_CONST,hostSelector())
+                mainFunn(SHELL_TIMEOUT,SYNC_CONST,Myhost)
             print("loop call triggered - Stop")
             time.sleep(15)
         except KeyboardInterrupt:
@@ -165,6 +166,11 @@ def connectNetwork():
 
 def hostSelector():
     global HOSTHISTORT, HOSTLIST, LOCALHOST, HOST
+    nbrList = loadNBRList()
+    # json_data = json.loads(nbrList)
+    # for i in json_data:
+    #     HOSTLIST.append(i[0])
+    # print("Select a host from known nabour list : ",nbrList)
     if len(HOSTLIST) == 0:
         if HOSTHISTORT == LOCALHOST:
             HOSTHISTORT = HOST
