@@ -36,7 +36,7 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS, SIP):
     url = 'http://'+SIP+':5001/bridge/nabours'
     response = requests.get(url)
     nbrlist = response.content.decode('utf-8')
-    print("naber list from bridge : "nbrlist)
+    print("naber list from bridge : ", nbrlist)
     # request peer list
     peerListReq = ["PEERLIST"]
     mySocket.request(requestModel(USERID,peerListReq))
