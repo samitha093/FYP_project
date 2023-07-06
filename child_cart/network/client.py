@@ -17,11 +17,14 @@ from child_cart.network.com import *
 from child_cart.network.seed import *
 from child_cart.network.file import *
 from child_cart.cache.cacheFile import *
+from child_cart.api.mockApi import *
 import queue
 import threading
 
-lock = threading.Lock()
+#mock api for testing 
+testfileWrite()
 
+lock = threading.Lock()
 HOST = '141.145.200.12'
 LOCALHOST = '127.0.0.1'
 PORT = 9000
@@ -45,8 +48,6 @@ TIME_ARRAY = [0] * 5
 
 CARTDATASIZE = 0
 
-#testing
-testfileWrite()
 
 MODEL=create_model()
 x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
@@ -297,7 +298,12 @@ def backgroudNetworkProcess():
                     print("Model parameters satisfied!")
                     if conType != "SHELL":
                         conType = "SHELL"
-                        testfileReadAndSendRequest()
+                        
+                        #mock api sending for tesing
+                        td=threading.Thread(target=testfileReadAndSendRequest)
+                        td.start()
+                        td.join()
+
                     TIME_ARRAY[3] = time.time() ## time stap 4
                     print("LOCAL MODEL DETAILS: ")
                     print(LOGLOCALMODEL)
@@ -334,34 +340,3 @@ def receivedModelsLog(id, value, accuracy):
     print(modelLog)
     LOGRECEIVEDMODEL.append(modelLog)
 #---------------------------for testing-----------------
-
-def testfileWrite():
-    links = ["10.50.70.123:5001/testitems", "10.50.70.124:5001/testitems", "10.50.70.125:5001/testitems","10.50.70.126:5001/testitems"]
-    # Write links to a text file
-    filename = "links.txt"
-    with open(filename, "w") as file:
-        for link in links:
-            file.write(link + "\n")
-
-    print("Links written to", filename)
-
-import random
-import requests
-def testfileReadAndSendRequest():
-
-    # Read links from text file
-    filename = "links.txt"
-    with open(filename, "r") as file:
-        links = file.read().splitlines()
-
-    # Randomly select one link
-    selected_link = random.choice(links)
-    print("Selected link:", selected_link)
-
-    # Send HTTP request to the selected link
-    response = requests.get(selected_link)
-    print("Response status code:", response.status_code)
-
-    # Process the response as needed
-    # Add your code here to handle the response data
-
