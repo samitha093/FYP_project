@@ -17,11 +17,14 @@ from child_cart.network.com import *
 from child_cart.network.seed import *
 from child_cart.network.file import *
 from child_cart.cache.cacheFile import *
+from child_cart.api.mockApi import *
 import queue
 import threading
 
-lock = threading.Lock()
+#mock api for testing 
+testfileWrite()
 
+lock = threading.Lock()
 HOST = '141.145.200.12'
 LOCALHOST = '127.0.0.1'
 PORT = 9000
@@ -44,6 +47,7 @@ LOCALMODELACCURACY =0
 TIME_ARRAY = [0] * 5
 
 CARTDATASIZE = 0
+
 
 MODEL=create_model()
 x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
@@ -294,6 +298,12 @@ def backgroudNetworkProcess():
                     print("Model parameters satisfied!")
                     if conType != "SHELL":
                         conType = "SHELL"
+                        
+                        #mock api sending for tesing
+                        td=threading.Thread(target=testfileReadAndSendRequest)
+                        td.start()
+                        td.join()
+
                     TIME_ARRAY[3] = time.time() ## time stap 4
                     print("LOCAL MODEL DETAILS: ")
                     print(LOGLOCALMODEL)
@@ -329,3 +339,4 @@ def receivedModelsLog(id, value, accuracy):
     print("received model ",id ,"  details ")
     print(modelLog)
     LOGRECEIVEDMODEL.append(modelLog)
+#---------------------------for testing-----------------
