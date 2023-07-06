@@ -156,8 +156,9 @@ class peerCom:
         modelReq = ["EXIT"]
         self.request(requestModel(USERID,modelReq))
         if self.mode == conctionType.KERNEL.value:
-            while len(self.SENDQUE) != 0 & len(self.RECIVEQUE) != 0:
-                time.sleep(2)
+            time.sleep(TIMEOUT)
+            # while len(self.SENDQUE) != 0 & len(self.RECIVEQUE) != 0:
+            #     time.sleep(2)
             self.closeNow()
         elif self.mode == conctionType.SHELL.value:
             time.sleep(TIMEOUT)
@@ -166,9 +167,13 @@ class peerCom:
             self.closeNow()
 
     def closeNow(self):
+        intervel = 0
         while True:
             if self.closeWait:
+                intervel += 1
                 time.sleep(2)
+                if intervel > 60:
+                    break
             else:
                 break
         self.is_running = False
