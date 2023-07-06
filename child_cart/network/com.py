@@ -58,14 +58,14 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS, SIP):
                         x = x_data[random_index]
                         mySocket.request(requestModel(USERID,modelReq,x))
                         print("SEND MODEL REQUEST TO : ",x)
-                    else:
-                        break
+                        timerCal = 0
                 elif tempData[0] == "NBRLIST":
                     print("NBR LIST : ",tempData[1])
                     saveOrUpdateNBRList(tempData[1])
                 elif tempData[0] == "MODELPARAMETERS":
                     print("MODEL PARAMETERS RECIVED FROM : ",x.get("Sender"))
                     MODELPARAMETERLIST.append(x)
+                    timerCal = TimerOut
                 else:
                     print("unknown message",x)
         time.sleep(1)
