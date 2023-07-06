@@ -51,6 +51,9 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS, SIP):
                 if tempData[0] == "PEERLIST":
                     print("PEER LIST : ",tempData[1])
                     if len(tempData[1])>0:
+                        current_time = time.time()
+                        seed = int(current_time)
+                        random.seed(seed
                         random_index = random.randint(0, len(tempData[1])-1)
                         print(random_index)
                         modelReq = ["MODELREQUEST"]
