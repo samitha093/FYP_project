@@ -31,6 +31,7 @@ def seedProx(mySocket,USERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,SHELL_TI
     response = requests.get(url)
     nbrlist = response.content.decode('utf-8')
     print("naber list from bridge : ", nbrlist)
+    saveOrUpdateNBRList(nbrlist)
     ########################################################################
     while ModelParamLoop:
         tempDataSet = mySocket.RECIVEQUE.copy()
