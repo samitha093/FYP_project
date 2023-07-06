@@ -285,6 +285,9 @@ def logData():
     results=loadLogData()
     # print(results)
     return results
-
-    #pprint hello   
     
+@app.route('/host', methods =["GET"]) # type: ignore
+def hostSelect():
+    results=hostSelector()
+    # print(results)
+    return results

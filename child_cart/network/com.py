@@ -51,6 +51,9 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS, SIP):
                 if tempData[0] == "PEERLIST":
                     print("PEER LIST : ",tempData[1])
                     if len(tempData[1])>0:
+                        current_time = time.time()
+                        seed = int(current_time)
+                        random.seed(seed
                         random_index = random.randint(0, len(tempData[1])-1)
                         print(random_index)
                         modelReq = ["MODELREQUEST"]
@@ -58,6 +61,7 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS, SIP):
                         x = x_data[random_index]
                         mySocket.request(requestModel(USERID,modelReq,x))
                         print("SEND MODEL REQUEST TO : ",x)
+                        timerCal = 0
                     else:
                         break
                 elif tempData[0] == "NBRLIST":
@@ -66,11 +70,12 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS, SIP):
                 elif tempData[0] == "MODELPARAMETERS":
                     print("MODEL PARAMETERS RECIVED FROM : ",x.get("Sender"))
                     MODELPARAMETERLIST.append(x)
+                    timerCal = TimerOut
                 else:
                     print("unknown message",x)
         time.sleep(1)
         timerCal +=1
-        if timerCal == TimerOut:
+        if timerCal >= TimerOut:
             break
 
     # if len(PEERLIST)>0:
