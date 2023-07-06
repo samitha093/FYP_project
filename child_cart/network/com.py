@@ -62,6 +62,8 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS, SIP):
                         mySocket.request(requestModel(USERID,modelReq,x))
                         print("SEND MODEL REQUEST TO : ",x)
                         timerCal = 0
+                    else:
+                        break
                 elif tempData[0] == "NBRLIST":
                     print("NBR LIST : ",tempData[1])
                     saveOrUpdateNBRList(tempData[1])
