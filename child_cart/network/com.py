@@ -70,7 +70,7 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS, SIP):
                     print("unknown message",x)
         time.sleep(1)
         timerCal +=1
-        if timerCal == TimerOut:
+        if timerCal >= TimerOut:
             break
 
     # if len(PEERLIST)>0:
