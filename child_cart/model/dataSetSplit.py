@@ -138,7 +138,9 @@ def dataSaveTest(oneTimeDataSetSize):
         my_data=updataCartData(tempArray)
         tempArray=[]
         print("dataset ",oneTimeDataSetSize," added")
-        return "dataset added"
+        return "Dataset added"
     else:
         print("currently have ",oneTimeDataSetSize," dataset. No need to add!")
-        return "currently have ",oneTimeDataSetSize," No need to add!"
+        return "Can not Dataset add"
+
+
