@@ -167,10 +167,13 @@ def connectNetwork():
 def hostSelector():
     global HOSTHISTORT, HOSTLIST, LOCALHOST, HOST
     nbrList = loadNBRList()
-    # json_data = json.loads(nbrList)
-    # for i in json_data:
-    #     HOSTLIST.append(i[0])
-    # print("Select a host from known nabour list : ",nbrList)
+    try:
+        json_data = json.loads(nbrList)
+        for i in json_data:
+            HOSTLIST.append(i[0])
+        print("Select a host from known nabour list : ",nbrList)
+    except :
+        pass
     if len(HOSTLIST) == 0:
         if HOSTHISTORT == LOCALHOST:
             HOSTHISTORT = HOST
