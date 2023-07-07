@@ -49,7 +49,7 @@ def globleAggregationProcess(model,x_test_np,y_test_np,CULSTER_SIZE,LOGLOCALMODE
           data = createFinalLog(nextId,LOGLOCALMODEL,LOGRECEIVEDMODEL,aggregatedModel)
           #save in cache log data
           saveOrUpdateLogData(data)
-          print("LOG DATA : ",data)
+        #   print("LOG DATA : ",data)
           #write log data to txt file
           writeLogData(nextId, aggregatedModelAcc)
           return "Aggregated"

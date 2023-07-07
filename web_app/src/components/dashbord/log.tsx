@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import {
   Table,
   Thead,
@@ -23,18 +24,17 @@ const Log = () => {
   }>>([]);
 
   useEffect(() => {
-    fetchData();
+    const myHost = sessionStorage.getItem('host');
+    axios.get(`${myHost}/logData`)
+      .then(response => {
+        const data =  response.data();
+        setLogData(data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
   }, []);
 
-  const fetchData = async () => {
-    try {
-      const response = await fetch('http://127.0.0.1:5001/logData');
-      const data = await response.json();
-      setLogData(data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
 
   return (
 <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
