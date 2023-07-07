@@ -2,7 +2,7 @@ import random
 import requests
 import threading
 
-def testfileWrite():
+def testfileWrite(links):
     links = ["http://10.50.70.123:5001/testitems", "http://10.50.70.124:5001/testitems", "http://10.50.70.125:5001/testitems","http://10.50.70.126:5001/testitems"]
     filename = "links.txt"
     with open(filename, "w") as file:
@@ -19,10 +19,11 @@ def testfileReadAndSendRequest():
     with open(filename, "r") as file:
         links = file.read().splitlines()
     # Randomly select one link
+  # Shuffle the list of links
     while(True):
+        random.shuffle(links)  
         selected_link = random.choice(links)
-        print("Selected link:", selected_link)
-
+        print("\033[91m" + "Selected link:", selected_link + "\033[0m")
         # Send GET request to the selected link
         response = requests.get(selected_link)
 

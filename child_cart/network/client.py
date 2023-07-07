@@ -22,7 +22,7 @@ import queue
 import threading
 
 #mock api for testing 
-testfileWrite()
+# testfileWrite()
 
 lock = threading.Lock()
 HOST = '141.145.200.12'
@@ -32,7 +32,9 @@ KERNAL_TIMEOUT = 60
 SHELL_TIMEOUT = 60
 SYNC_CONST = 1
 CULSTER_SIZE = 3
-#update globle values from cache
+
+FORWARD=20
+BACKWORD=5#update globle values from cache
 
 HOSTHISTORT = ""
 HOSTLIST = []
@@ -131,17 +133,17 @@ def mainFunn(RECIVER_TIMEOUT, SYNC_CONST, SOCKET_HOST):
 def receivingModelAnalize(encoded_message,senderId,x_test_np,y_test_np):
     print("Received model analysis ")
     global MODEL
-    global LOCALMODELACCURACY
-    stepSize =30
+    global LOCALMODELACCURACY,BACKWORD,FORWARD
+    # stepSize =30
     model_weights=decodeModelParameters(encoded_message)
     MODEL.set_weights(model_weights)
     recievedModelAcc = getModelAccuracy(MODEL,x_test_np,y_test_np)
     print("Received model Acc : ",recievedModelAcc)
     #received model status 
-    status="False"
-    if(recievedModelAcc < LOCALMODELACCURACY + stepSize ) and (recievedModelAcc > LOCALMODELACCURACY - stepSize ):
+    status=False
+    if(recievedModelAcc < LOCALMODELACCURACY + FORWARD ) and (recievedModelAcc > LOCALMODELACCURACY - BACKWORD ):
         saveReceivedModelData(model_weights)
-        status="True"
+        status=True
         print("Local model accuracy : ",LOCALMODELACCURACY, " Received Model ",senderId," Accuracy : ",recievedModelAcc," : ", "Received model Accept!")
     else:
         print("Local model accuracy : ",LOCALMODELACCURACY, " Received Model ", senderId ," Accuracy : ",recievedModelAcc," : ", "Received model Droped!")  
@@ -305,10 +307,10 @@ def backgroudNetworkProcess():
                         td.join()
 
                     TIME_ARRAY[3] = time.time() ## time stap 4
-                    print("LOCAL MODEL DETAILS: ")
-                    print(LOGLOCALMODEL)
-                    print("RECEIVED MODEL DETAILS: ")
-                    print(LOGRECEIVEDMODEL)
+                    # print("LOCAL MODEL DETAILS: ")
+                    # print(LOGLOCALMODEL)
+                    # print("RECEIVED MODEL DETAILS: ")
+                    # print(LOGRECEIVEDMODEL)
                     globleAggregationProcess(MODEL,x_test_np,y_test_np,CULSTER_SIZE,LOGLOCALMODEL,LOGRECEIVEDMODEL)
                     LOGRECEIVEDMODEL =[]
                     # localModelAnalize(x_test_np,y_test_np)
@@ -337,6 +339,12 @@ def receivedModelsLog(id, value, accuracy):
     global LOGRECEIVEDMODEL
     modelLog = modelLogTemplate(id, value, accuracy)
     print("received model ",id ,"  details ")
-    print(modelLog)
+    # print(modelLog)
     LOGRECEIVEDMODEL.append(modelLog)
-#---------------------------for testing-----------------
+
+#---------------------------model filtering limit update----------------
+def filteringLimitUpdate(forward,backward):
+    global FORWARD,BACKWORD
+    FORWARD =forward
+    BACKWORD = backward
+    print("Limit updated : Forward > : ",FORWARD," Backward > : ",BACKWORD)

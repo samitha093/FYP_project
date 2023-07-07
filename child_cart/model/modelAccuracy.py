@@ -12,6 +12,15 @@ from child_cart.model.modelGenerator import *
 from child_cart.cache.cacheFile import *
 import queue
 
+#model accuracy convert to last 2 digits
+def convert_last_two_digits(num):
+    integer_part = int(num) 
+    fractional_part = num - integer_part 
+    converted_fractional = int(fractional_part * 100)
+    converted_num = float(f"{integer_part}.{converted_fractional:02d}")
+    return converted_num
+
+
 def getModelAccuracy(model,test_data1,test_labels1):
     # localModelWeights=loadLocalCartModelData()
     # model.set_weights(localModelWeights)
@@ -23,9 +32,11 @@ def getModelAccuracy(model,test_data1,test_labels1):
 
     # Calculate the accuracy of the model
     
-    modelAccuracy = accuracy_score(test_labels1, y_pred_model_1)
-    print("Model  Accuracy:", modelAccuracy*100)
-    return modelAccuracy*100
+    modelAccuracy = accuracy_score(test_labels1, y_pred_model_1)*100
+    converted_acc= convert_last_two_digits(modelAccuracy)
+    print("Model  Accuracy:", converted_acc)
+    return converted_acc
+
   
 def predictionsResults(model,test_data1):
   #Predict model 1  test using test date
