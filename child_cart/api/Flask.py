@@ -292,7 +292,7 @@ def hostSelect():
     # print(results)
     return results
 
-@app.route('/imitupdate', methods=['POST'])
+@app.route('/limitupdate', methods=['POST'])
 def limitUpdate():
     data = request.get_json()  # Retrieve the JSON object from the request
     forward=data['forward']
@@ -302,11 +302,21 @@ def limitUpdate():
     return jsonify({'message': "Limit updated"})
 
 
+# {
+#   "links": [
+#     "10.50.70.123",
+#     "10.50.70.124",
+#     "10.50.70.125"
+#   ]
+# }
+#post request 
+
 @app.route('/textipwrite', methods=['POST'])
 def textIpWrite():
-    data = request.get_json()  # Retrieve the JSON object from the request
-    forward=data['forward']
-    backward =data['backward']
-    filteringLimitUpdate(forward,backward)
-
-    return jsonify({'message': "Limit updated"})
+    try:
+        data = request.get_json()  # Retrieve the JSON object from the request
+        links=data['links']
+        testfileWrite(links)
+        return jsonify({'message': "links updated to text file"})
+    except:
+        return jsonify({'message': "Can not write links this computer"})

@@ -26,14 +26,16 @@ const Log = () => {
   useEffect(() => {
     const myHost = sessionStorage.getItem('host');
     axios.get(`${myHost}/logData`)
+    // axios.get(`http://127.0.0.1:5001/logData`)
       .then(response => {
-        const data =  response.data();
+        const data = response.data;
         setLogData(data);
       })
       .catch(error => {
         console.error(error);
       });
   }, []);
+  
 
 
   return (

@@ -722,7 +722,7 @@ def saveOrUpdateLogData(Log):
             logData_lock.release()
             json_data = json.dumps(rows)
             # print(json_data)
-            print(rows)
+            # print(rows)
             return rows
     except Exception as e:
         print("An error occurred:", str(e))
@@ -744,11 +744,10 @@ data = {
     ],
     "aggregatedModel": {"id": "0005", "value": True, "accuracy": 0.92}
 }
-# json_data = json.dumps(data)
-# print(json_data)
+
 # for i in range(1):
 #     saveOrUpdateLogData(data)
-#load log results
+
 
 #read logData 
 def loadLogData():
