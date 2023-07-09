@@ -268,10 +268,13 @@ def cartItemsPost():
 #mannual data adding for testing
 @app.route('/testitems', methods=['GET'])
 def testItems():
-   dataSetSize=250
-   response= dataSaveTest(dataSetSize)  
-   return response
-
+   connectionType = getConnectionType()
+   if(connectionType == "SHELL"):
+        dataSetSize=250
+        response= dataSaveTest(dataSetSize)  
+        return response
+   else:
+        return "Can not Dataset add"
 
 @app.route('/initcart', methods=['GET'])
 def initCart():
@@ -289,7 +292,6 @@ def logData():
 @app.route('/host', methods =["GET"]) # type: ignore
 def hostSelect():
     results=hostSelector()
-    # print(results)
     return results
 
 @app.route('/limitupdate', methods=['POST'])
@@ -300,8 +302,6 @@ def limitUpdate():
     filteringLimitUpdate(forward,backward)
 
     return jsonify({'message': "Limit updated"})
-
-
 # {
 #   "links": [
 #     "10.50.70.123",

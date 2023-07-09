@@ -34,7 +34,7 @@ SYNC_CONST = 1
 CULSTER_SIZE = 3
 
 FORWARD=20
-BACKWORD=5#update globle values from cache
+BACKWORD=5 #update globle values from cache
 
 HOSTHISTORT = ""
 HOSTLIST = []
@@ -49,7 +49,6 @@ LOCALMODELACCURACY =0
 TIME_ARRAY = [0] * 5
 
 CARTDATASIZE = 0
-
 
 MODEL=create_model()
 x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
@@ -348,3 +347,8 @@ def filteringLimitUpdate(forward,backward):
     FORWARD =forward
     BACKWORD = backward
     print("Limit updated : Forward > : ",FORWARD," Backward > : ",BACKWORD)
+
+#get connection type
+def getConnectionType():
+    global conType
+    return conType
