@@ -268,10 +268,13 @@ def cartItemsPost():
 #mannual data adding for testing
 @app.route('/testitems', methods=['GET'])
 def testItems():
-   dataSetSize=250
-   response= dataSaveTest(dataSetSize)  
-   return response
-
+   connectionType = getConnectionType()
+   if(connectionType == "SHELL"):
+        dataSetSize=250
+        response= dataSaveTest(dataSetSize)  
+        return response
+   else:
+        return "Can not Dataset add"
 
 @app.route('/initcart', methods=['GET'])
 def initCart():
@@ -289,10 +292,9 @@ def logData():
 @app.route('/host', methods =["GET"]) # type: ignore
 def hostSelect():
     results=hostSelector()
-    # print(results)
     return results
 
-@app.route('/imitupdate', methods=['POST'])
+@app.route('/limitupdate', methods=['POST'])
 def limitUpdate():
     data = request.get_json()  # Retrieve the JSON object from the request
     forward=data['forward']
@@ -300,13 +302,21 @@ def limitUpdate():
     filteringLimitUpdate(forward,backward)
 
     return jsonify({'message': "Limit updated"})
-
+# {
+#   "links": [
+#     "10.50.70.123",
+#     "10.50.70.124",
+#     "10.50.70.125"
+#   ]
+# }
+#post request 
 
 @app.route('/textipwrite', methods=['POST'])
 def textIpWrite():
-    data = request.get_json()  # Retrieve the JSON object from the request
-    forward=data['forward']
-    backward =data['backward']
-    filteringLimitUpdate(forward,backward)
-
-    return jsonify({'message': "Limit updated"})
+    try:
+        data = request.get_json()  # Retrieve the JSON object from the request
+        links=data['links']
+        testfileWrite(links)
+        return jsonify({'message': "links updated to text file"})
+    except:
+        return jsonify({'message': "Can not write links this computer"})
