@@ -9,6 +9,7 @@ from aiohttp import web
 import sys
 import time
 import requests
+from collections import Counter
 
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.insert(0, root_path)
@@ -379,17 +380,6 @@ def boostrapSetup(data):
     ip_address = get_local_ip_address()
     return {"localip":ip_address,"ip":Pip,"port":kademlia_port}
 
-# def add_boostrapNode(data):
-#     global KademliaNetwork
-#     ip_data = data['ip']
-#     port_data = data['port']
-#     print ("adding boostrap link => ", ip_data,":",port_data)
-#     try:
-#         asyncio.run(KademliaNetwork.connect_bootstrap_node(ip_data,port_data))
-#         print ("created boostrap link => ", ip_data,":",port_data)
-#     except Exception as e:
-#         traceback.print_exc()
-
 def get_nabourList():
     global KademliaNetwork
     ServerStatus = KademliaNetwork.ServerStatus_bootstrap_node()
@@ -405,6 +395,32 @@ def get_nabourList():
     else:
         return []
 
+def function_sync_list():
+    global DeviceTable
+    TempDeviceTable = []
+    while True:
+        time.sleep(10) ## set as 60
+        ## check register peer list
+        for userID in DeviceTable:
+            tempData = responceModel(userID,["AVAILABEL"])
+            mailBox = DATARECORDER.get(userID)
+            mailBox.append(tempData)
+            TempDeviceTable.append(userID)
+            print("Send verivication message to : ", userID)
+        # checking not responded devices
+        string_counts = Counter(TempDeviceTable)
+        for string, count in string_counts.items():
+            if count > 3:
+                print(f"The SHELL peer : '{string}' not responded in {count} times.")
+                while string in DeviceTable:
+                    DeviceTable.remove(string)
+                while string in TempDeviceTable:
+                    TempDeviceTable.remove(string)
+
+        
+
+
+
 
 def bidge_server():
     global KademliaNetwork, kademlaNodes, nodeSet, nodeRestart
@@ -417,6 +433,9 @@ def bidge_server():
     thread2.start()
     thread3.start()
 
+    thread4 = threading.Thread(target=function_sync_list)
+    thread4.start()
+
     try:
         while True:
             time.sleep(5)
@@ -424,18 +443,6 @@ def bidge_server():
                 nodeSet = False
                 thread4 = threading.Thread(target=function_4)
                 thread4.start()
-
-            # name =input("What is the boostrap port? ")
-            # print("Hello, " + name + "!")
-            ######get cash settings for boostrap nodes #####
-            ###### get cash settings for TCP and HTTP  #####
-            ################################################
-            # try:
-            #     asyncio.run(KademliaNetwork.connect_bootstrap_node('127.0.0.1',name))
-            # except Exception as e:
-            #     traceback.print_exc()
-            ########## SYNC device table on DHT ############
-            ################################################
 
     except:
         print("Program stopped: Rutime exception")
