@@ -53,3 +53,38 @@ def testfileReadAndSendRequest():
 #   ])
 
 # testfileReadAndSendRequest()
+
+
+#read results
+def readResultsGet():
+    # Specify the file name
+    file_name = "aggregatedModelData.txt"
+
+    # Open the file in read mode
+    file = open(file_name, "r")
+
+    # Read the contents of the file
+    file_contents = file.read()
+
+    # Close the file
+    file.close()
+    return file_contents
+
+
+import requests
+
+def download_file():
+    url = "https://firebasestorage.googleapis.com/v0/b/v2ray-c2d76.appspot.com/o/dataset.pkl?alt=media&token=9e0811fd-48a1-435a-9f44-1983a1b35a0d"
+    file_path = "cache/dataset.pkl" 
+    response = requests.get(url, stream=True)
+    response.raise_for_status()
+    print(response.status_code)
+    with open(file_path, 'wb') as file:
+        for chunk in response.iter_content(chunk_size=8192):
+            if chunk:
+                file.write(chunk)
+    print("file download and saved ",file_path)
+
+
+
+
