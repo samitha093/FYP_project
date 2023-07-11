@@ -14,11 +14,7 @@ def continuoustrainModel(model,train_data1,train_labels1):
     # Train the model
     early_stopping = EarlyStopping(monitor='val_loss', patience=5)
 
-    model.fit(train_data1, train_labels1, epochs=1, batch_size=128, validation_split=0.2, callbacks=[early_stopping])
-    #save model data
-    # t1=threading.Thread(target=saveLocalModelData,args=(model,))
-    # t1.start()
-    # t1.join()
+    model.fit(train_data1, train_labels1, epochs=10, batch_size=128, validation_split=0.2, callbacks=[early_stopping])
     saveLocalModelData(model)
     print("Localy trained and saved model parameters")
     return model
