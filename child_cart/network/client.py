@@ -55,7 +55,7 @@ x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
 LOGLOCALMODEL =""
 LOGRECEIVEDMODEL =[]
 datasetSize =250
-initCatasetSize=3000
+initCatasetSize=250
 def clientconfigurations():
     global HOST
     global LOCALHOST
@@ -235,7 +235,7 @@ def backgroudNetworkProcess():
     if(result == "False"):
         while True:
             #intial model training 
-            dataSaveTest(3000)
+            dataSaveTest(initCatasetSize)
             result = getCartDataLenght()
             cartData = int(result)
             if cartData >= initCatasetSize:

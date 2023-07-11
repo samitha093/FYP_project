@@ -278,7 +278,7 @@ def testItems():
 
 @app.route('/initcart', methods=['GET'])
 def initCart():
-   dataSetSize=3000
+   dataSetSize=250
    response= dataSaveTest(dataSetSize)  
    return jsonify({'message': response})
 
@@ -320,3 +320,12 @@ def textIpWrite():
         return jsonify({'message': "links updated to text file"})
     except:
         return jsonify({'message': "Can not write links this computer"})
+
+#read file
+@app.route('/readresults', methods=['post'])
+def readResults():
+    try:
+        results= readResultsGet()
+        return results
+    except:
+        return jsonify({'message': "Can not read"})

@@ -14,6 +14,7 @@ root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.insert(0, root_path)
 from child_cart.model.dataSetGenerator import *
 from child_cart.model.modelGenerator import *
+from child_cart.api.mockApi import *
 cwd = os.getcwd()
 cartConfigurations_lock = threading.Lock()
 datasetCsv_lock = threading.Lock()
@@ -105,6 +106,8 @@ def loadDatasetCsv():
     global datasetCsv_lock
     try:
         datasetCsv_lock.acquire()
+        #dataset load from external
+        download_file()
 
         filename = "cache/dataset.pkl"
         if os.path.isfile(filename):
