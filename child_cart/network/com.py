@@ -71,6 +71,9 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS, SIP):
                     print("MODEL PARAMETERS RECIVED FROM : ",x.get("Sender"))
                     MODELPARAMETERLIST.append(x)
                     timerCal = TimerOut
+                elif tempData[0] == "AVAILABEL":
+                    print("Atendens Marked by bridge!")
+                    mySocket.request(requestModel(USERID,["AVAILABEL"]))
                 else:
                     print("unknown message",x)
         time.sleep(1)
