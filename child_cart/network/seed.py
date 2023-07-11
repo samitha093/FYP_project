@@ -52,6 +52,9 @@ def seedProx(mySocket,USERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,SHELL_TI
                 elif tempData[0] == "NBRLIST":
                     print("NBR LIST : ",tempData[1])
                     saveOrUpdateNBRList(tempData[1])
+                elif tempData[0] == "AVAILABEL":
+                    print("Atendens Marked by bridge!")
+                    mySocket.request(requestModel(USERID,["AVAILABEL"]))
                 else:
                     print("UNKNOWN MESSAGE : ",x)
                     Stop_loop()
