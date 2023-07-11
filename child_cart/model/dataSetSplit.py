@@ -22,12 +22,6 @@ def splitDataset():
     #Load  the dataset from the CSV file
     try:
         df = loadDatasetCsv()
-        # q = queue.Queue()
-        # t1=threading.Thread(target=loadDatasetCsv,args=(q,))
-        # t1.start()
-        # t1.join()
-        # result = q.get()
-        # df = result
         print("CSV file loaded successfully!")
     except Exception as e:
         print("Error occurred while loading the CSV file:", e)
