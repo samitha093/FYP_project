@@ -71,7 +71,6 @@ def differentialPrivacy(model,x_test_np,y_test_np):
         print("Error occurred while loading model weights:", e)
 
     #traing model using cartdata
-    print("Split dataset")
     #test model using local data
     print("Get Local model accuracy----->")
     localModelAccuracy = getModelAccuracy(model,x_test_np,y_test_np)
@@ -93,7 +92,7 @@ def differentialPrivacy(model,x_test_np,y_test_np):
         tempModel.set_weights(model_weights)
         print("Differential privacy model accuracy----->")
         differentialPrivacyModelAccuracy = getModelAccuracy(tempModel,x_test_np,y_test_np)
-        if( differentialPrivacyModelAccuracy > localModelAccuracy - stopRange ) and (differentialPrivacyModelAccuracy < localModelAccuracy + stopRange) :
+        if( differentialPrivacyModelAccuracy > localModelAccuracy - 0 ) and (differentialPrivacyModelAccuracy < localModelAccuracy + stopRange) :
             print(localModelAccuracy)
             print(differentialPrivacyModelAccuracy)
             
@@ -109,9 +108,9 @@ def differentialPrivacy(model,x_test_np,y_test_np):
         
     x=0
     while True:
-       print("Iteration No : ",x)
        returnVal= loopProcess()
        if returnVal == True:
+           print("After adding differential privacy Model accuray : ",x)
            break
       
        x=x+1
