@@ -1,0 +1,13 @@
+#!/bin/bash
+echo deleting cash files ...
+rm *.spec
+rm -rf build
+echo creating web app ...
+cd web_app
+yarn build
+cd ..
+echo creating python binary file for parent...
+pyinstaller --onefile --add-data "web_app/dist:web_app/dist" --name PARENT_CART_LINUX.bin P_main.py
+echo creating python binary file for child...
+pyinstaller --onefile --add-data "web_app/dist:web_app/dist" --name CHILD_CART_LINUX.bin C_main.py
+echo Build is Sucessfully completed!
