@@ -41,7 +41,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           tag_name: v3.2.0
-          release_name: Release v3.2.0
+          release_name: v3.2.0
           
       - name: check list of files
         run: |
