@@ -26,13 +26,15 @@ jobs:
 
       - name: Build project with Yarn
         run: cd web_app && yarn build
+        
+      - name: Install TensorFlow
+        run: pip install tensorflow==2.12
 
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
       - name: Create Child cart package
         run: pyinstaller --onefile --add-data "web_app/dist:web_app/dist" --name CHILD_CART_LINUX.bin C_main.py
-
 
       - name: Create GitHub Release
         id: create_release
