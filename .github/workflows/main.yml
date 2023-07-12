@@ -42,7 +42,13 @@ jobs:
         with:
           tag_name: v3.2.0
           release_name: Release v3.2.0
-
+          
+      - name: check list of files
+        run: |
+          ls
+          cd dist
+          ls
+          
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         env:
