@@ -92,7 +92,7 @@ def differentialPrivacy(model,x_test_np,y_test_np):
         tempModel.set_weights(model_weights)
         print("Differential privacy model accuracy----->")
         differentialPrivacyModelAccuracy = getModelAccuracy(tempModel,x_test_np,y_test_np)
-        if( differentialPrivacyModelAccuracy > localModelAccuracy - 0 ) and (differentialPrivacyModelAccuracy < localModelAccuracy + stopRange) :
+        if( differentialPrivacyModelAccuracy > localModelAccuracy - stopRange ) and (differentialPrivacyModelAccuracy < localModelAccuracy + stopRange) :
             print(localModelAccuracy)
             print(differentialPrivacyModelAccuracy)
             
