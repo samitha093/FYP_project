@@ -33,8 +33,8 @@ SHELL_TIMEOUT = 60
 SYNC_CONST = 1
 CULSTER_SIZE = 3
 
-FORWARD=20
-BACKWORD=5 #update globle values from cache
+FORWARD=50
+BACKWORD=20 #update globle values from cache
 
 HOSTHISTORT = ""
 HOSTLIST = []
@@ -54,7 +54,7 @@ MODEL=create_model()
 x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
 LOGLOCALMODEL =""
 LOGRECEIVEDMODEL =[]
-datasetSize =250
+datasetSize =100
 initCatasetSize=250
 def clientconfigurations():
     global HOST

@@ -32,6 +32,7 @@ cart_server_task = None
 
 
 DeviceTable = []
+TempDeviceTable = []
 ClusterTable = {}
 clusterSize = 10
 SYNC_CONST = 1
@@ -54,7 +55,7 @@ def responceModel(msgTo, data, msgFrom="SERVER"):
     }
 
 async def reqirementHandler(data):
-    global MOBILEDATARECORDER,DATARECORDER,DeviceTable
+    global MOBILEDATARECORDER,DATARECORDER,DeviceTable, TempDeviceTable
     User = data.get("Sender")
     req = data.get("Data")
     if req[0] == "PEERTYPE":
@@ -96,6 +97,9 @@ async def reqirementHandler(data):
         print("recived mobile parameters")
         mobilemailBox = MOBILEDATARECORDER.get(req[1])
         mobilemailBox.append(data)
+    elif req[0] == "AVAILABEL":
+        while User in TempDeviceTable:
+            TempDeviceTable.remove(User)
 
 async def requestHandler(data):
     User = data.get("Receiver")
@@ -396,10 +400,10 @@ def get_nabourList():
         return []
 
 def function_sync_list():
-    global DeviceTable
-    TempDeviceTable = []
+    global DeviceTable, TempDeviceTable
     while True:
         time.sleep(10) ## set as 60
+        print("SHELL list : ", DeviceTable)
         ## check register peer list
         for userID in DeviceTable:
             tempData = responceModel(userID,["AVAILABEL"])
@@ -433,8 +437,8 @@ def bidge_server():
     thread2.start()
     thread3.start()
 
-    thread4 = threading.Thread(target=function_sync_list)
-    thread4.start()
+    # thread4 = threading.Thread(target=function_sync_list)
+    # thread4.start()
 
     try:
         while True:

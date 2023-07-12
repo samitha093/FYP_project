@@ -1,3 +1,4 @@
+tensorflow==2.12.*
 aiohttp==3.8.4
 kademlia==2.2.2
 pip==21.1

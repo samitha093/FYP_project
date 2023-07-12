@@ -270,7 +270,7 @@ def cartItemsPost():
 def testItems():
    connectionType = getConnectionType()
    if(connectionType == "SHELL"):
-        dataSetSize=250
+        dataSetSize=100
         response= dataSaveTest(dataSetSize)  
         return response
    else:
