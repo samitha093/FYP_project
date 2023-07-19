@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "262708956220",
+    "firebase_url": "https://shareddb-1c201-default-rtdb.firebaseio.com",
+    "project_id": "shareddb-1c201",
+    "storage_bucket": "shareddb-1c201.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:262708956220:android:e5c0ff452bcdd94f614739",
+        "android_client_info": {
+          "package_name": "com.example.predictionapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "262708956220-s3o9sf0u61j7bl3gfu2drksj52vfouga.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKpAzPFJzI3KrVcdXZFphg7LhP-IAxx8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "262708956220-s3o9sf0u61j7bl3gfu2drksj52vfouga.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
