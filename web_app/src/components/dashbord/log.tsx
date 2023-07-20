@@ -57,10 +57,79 @@ const dataset=[
       "value": "True",
       "accuracy": 19.19
     }
+  },
+  {
+    "iteration": 2,
+    "localModel": {
+      "id": "1",
+      "value": "True",
+      "accuracy": 26.2
+    },
+    "receivedModel": [
+      {
+        "id": "DEU8m9Me3RVzD07h",
+        "value": true,
+        "accuracy": 22.8
+      },
+      {
+        "id": "2a4e0yBIBRAYlc1u",
+        "value": true,
+        "accuracy": 23.0
+      },
+      {
+        "id": "DEU8m9Me3RVzD07h",
+        "value": true,
+        "accuracy": 22.8
+      },
+      {
+        "id": "A7Gi5H4JyuLGwPSO",
+        "value": true,
+        "accuracy": 20.89
+      }
+    ],
+    "aggregatedModel": {
+      "id": "2",
+      "value": "True",
+      "accuracy": 27.2
+    }
+  },
+  {
+    "iteration": 3,
+    "localModel": {
+      "id": "2",
+      "value": "True",
+      "accuracy": 27.3
+    },
+    "receivedModel": [
+      {
+        "id": "H4OVk5JCAlPeCGYm",
+        "value": true,
+        "accuracy": 30.3
+      },
+      {
+        "id": "XaJAbJO7No3wN6Lb",
+        "value": true,
+        "accuracy": 26.9
+      },
+      {
+        "id": "iVtMotQpNfcQo5Om",
+        "value": true,
+        "accuracy": 22.9
+      },
+      {
+        "id": "2a4e0yBIBRAYlc1u",
+        "value": true,
+        "accuracy": 23.0
+      }
+    ],
+    "aggregatedModel": {
+      "id": "3",
+      "value": "True",
+      "accuracy": 27.4
+    }
   }
-  
-  
 ]
+
   return (
     <div>
       <Grid templateColumns='repeat(8, 1fr)' gap={1}>
@@ -89,9 +158,13 @@ const dataset=[
           Aggregated Model Accuracy
         </GridItem>
       </Grid>
-      {dataset.map((data, index) => (
-        <LogRow key={index} rowData={data} />
-      ))}
+   
+      <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
+        {logData.map((data, index) => (
+          <LogRow key={index} rowData={data} />
+        ))}
+      </div>
+
     </div>
   );
 };

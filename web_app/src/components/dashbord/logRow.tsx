@@ -3,65 +3,142 @@ import { Grid, GridItem } from '@chakra-ui/react';
 
 // Define the type for the receivedModel objects
 interface ReceivedData {
-  id: string;
-  value: boolean;
-  accuracy: number;
+    id: string;
+    value: boolean;
+    accuracy: number;
 }
 
 interface LogRowProps {
-  rowData: {
-    iteration: number;
-    localModel: {
-      id: string;
-      value: string;
-      accuracy: number;
+    rowData: {
+        iteration: number;
+        localModel: {
+            id: string;
+            value: string;
+            accuracy: number;
+        };
+        receivedModel: ReceivedData[]; // Use the ReceivedData type for receivedModel array
+        aggregatedModel: {
+            id: string;
+            value: string;
+            accuracy: number;
+        };
     };
-    receivedModel: ReceivedData[]; // Use the ReceivedData type for receivedModel array
-    aggregatedModel: {
-      id: string;
-      value: string;
-      accuracy: number;
-    };
-  };
 }
 
 const LogRow: React.FC<LogRowProps> = ({ rowData }) => {
-  return (
-    <div style={{
-      border: '1px solid lightgray', 
-      padding: '2px',
-    }}>
-      <Grid templateColumns='repeat(8, 1fr)' gap={1}>
-        <GridItem w='100%' h='auto' textAlign='center'>
-          {rowData.iteration}
-        </GridItem>
-        <GridItem w='100%' h='auto' textAlign='center'>
-          {rowData.localModel.id}
-        </GridItem>
-        <GridItem w='100%' h='auto' textAlign='center'>
-          {rowData.localModel.accuracy}
-        </GridItem>
+    return (
+        <div style={{
+            border: '1px solid lightgray',
+            padding: '2px',
+        }}>
+            <Grid templateColumns='repeat(8, 1fr)' gap={1}>
+                <GridItem
+                    w='100%'
+                    h='auto'
+                    textAlign='center'
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '100%', // This ensures the GridItem takes the full height
+                    }}
+                >
+                    {rowData.iteration}
+                </GridItem>
+
+                <GridItem
+                    w='100%'
+                    h='auto'
+                    textAlign='center'
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '100%', // This ensures the GridItem takes the full height
+                    }}
+                >
+                    {rowData.localModel.id}
+                </GridItem>
+                <GridItem
+                    w='100%'
+                    h='auto'
+                    textAlign='center'
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '100%', // This ensures the GridItem takes the full height
+                    }}
+                >
+                    {rowData.localModel.accuracy}
+                </GridItem>
 
 
-        <GridItem w='100%' h='auto' textAlign='center'>
-          {rowData.receivedModel[0].id}
-        </GridItem>
-        <GridItem w='100%' h='auto' textAlign='center'>
-        {rowData.receivedModel[0].accuracy}
-        </GridItem>
-        <GridItem w='100%' h='auto' textAlign='center'>
-        {rowData.receivedModel[0].value.toString()}
-        </GridItem>
+                <GridItem w='100%' h='auto' textAlign='center'>
+                    {rowData.receivedModel.map((item, index) => (
+                        <div key={index}
+                            style={{
+                                margin: '10px', // Add padding to create some space around the content
+                            }}>
+                            {item.id}
+                        </div>
+                    ))}
+                </GridItem>
+                <GridItem w='100%' h='auto' textAlign='center'>
+                    {rowData.receivedModel.map((item, index) => (
+                        <div key={index}
+                            style={{
+                                margin: '10px', // Add padding to create some space around the content
+                            }}>
+                            {item.accuracy}
+                        </div>
+                    ))}
+                </GridItem>
+                <GridItem w='100%' h='auto' textAlign='center'>
+                    {rowData.receivedModel.map((item, index) => (
+                        <div
+                            key={index}
+                            style={{
+                                color: item.value ? '#558B2F' : '#FF5722',
+                                backgroundColor: item.value ? '#DCEDC8' : '#FFCCBC',
+                                borderRadius: '5px',
+                                margin: '10px', // Add padding to create some space around the content
+                            }}
+                        >
+                            {item.value.toString()}
+                        </div>
+                    ))}
+                </GridItem>
 
-        <GridItem w='100%' h='auto' textAlign='center'>
-          {rowData.aggregatedModel.id}
-        </GridItem>
-        <GridItem w='100%' h='auto' textAlign='center'>
-          {rowData.aggregatedModel.accuracy}
-        </GridItem>
-      </Grid>
-    </div>
-  );
+                <GridItem
+                    w='100%'
+                    h='auto'
+                    textAlign='center'
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '100%', // This ensures the GridItem takes the full height
+                    }}
+                >
+                    {rowData.aggregatedModel.id}
+                </GridItem>
+                <GridItem
+                    w='100%'
+                    h='auto'
+                    textAlign='center'
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '100%', // This ensures the GridItem takes the full height
+                    }}
+                >
+                    {rowData.aggregatedModel.accuracy}
+                </GridItem>
+            </Grid>
+        </div>
+    );
 };
 
 export default LogRow;
