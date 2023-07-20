@@ -72,52 +72,59 @@
         android:text="Predicted Item"
         android:textSize="20dp" />
 
-   <!-- <Button
-        android:id="@+id/fetchDataButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Fetch Data" />
-
-    <TextView
-        android:id="@+id/dataTextView"
-        android:layout_width="380dp"
-        android:layout_height="36dp"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-    <TextView
-        android:id="@+id/receivedDataTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Received data: "
-        android:textSize="18sp"
-        android:textStyle="bold" />
     <Button
-        android:id="@+id/buttonBT"
-        android:layout_width="282dp"
+        android:id="@+id/btnConnectToCart"
+        android:layout_width="265dp"
         android:layout_height="wrap_content"
-        android:text="Bluetooth" />
+        android:onClick="onConnectToCartButtonClicked"
+        android:text="Connect to Cart" />
 
-    <Button
-        android:id="@+id/showDevicesButton"
-        android:layout_width="wrap_content"
-        android:layout_height="37dp"
-        android:onClick="onShowDevicesClick"
-        android:text="Show Paired Devices" />
+    <!-- <Button
+         android:id="@+id/fetchDataButton"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="Fetch Data" />
 
-    dialog_paired_devices.xml
-    <ListView
-        android:id="@+id/list_paired_devices"
-        android:layout_width="match_parent"
-        android:layout_height="114dp"
-        android:divider="@android:color/darker_gray"
-        android:dividerHeight="1dp"
-        android:padding="8dp" />
+     <TextView
+         android:id="@+id/dataTextView"
+         android:layout_width="380dp"
+         android:layout_height="36dp"
+         android:textSize="16sp"
+         android:textStyle="bold" />
+     <TextView
+         android:id="@+id/receivedDataTextView"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:text="Received data: "
+         android:textSize="18sp"
+         android:textStyle="bold" />
+     <Button
+         android:id="@+id/buttonBT"
+         android:layout_width="282dp"
+         android:layout_height="wrap_content"
+         android:text="Bluetooth" />
 
-    <Button
-        android:id="@+id/sendMessageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Send Message to Server" />-->
+     <Button
+         android:id="@+id/showDevicesButton"
+         android:layout_width="wrap_content"
+         android:layout_height="37dp"
+         android:onClick="onShowDevicesClick"
+         android:text="Show Paired Devices" />
+
+     dialog_paired_devices.xml
+     <ListView
+         android:id="@+id/list_paired_devices"
+         android:layout_width="match_parent"
+         android:layout_height="114dp"
+         android:divider="@android:color/darker_gray"
+         android:dividerHeight="1dp"
+         android:padding="8dp" />
+
+     <Button
+         android:id="@+id/sendMessageButton"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="Send Message to Server" />-->
 
 </LinearLayout>
 

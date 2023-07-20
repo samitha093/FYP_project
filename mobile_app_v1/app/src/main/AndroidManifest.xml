@@ -14,6 +14,12 @@
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Add permissions for camera -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+
     <application
         android:allowBackup="true"
         android:usesCleartextTraffic="true"
@@ -24,6 +30,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PredictionApp"
         tools:targetApi="31">
+        <activity
+            android:name=".ScanQRCodeActivity"
+            android:label="Scan QR Code" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

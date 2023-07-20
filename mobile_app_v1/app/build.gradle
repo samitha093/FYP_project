@@ -46,6 +46,10 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.9.1'
     implementation 'org.java-websocket:Java-WebSocket:1.5.1'
 
+    implementation 'com.google.zxing:core:3.4.1'
+    implementation 'com.journeyapps:zxing-android-embedded:4.2.0'
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
+    //implementation 'com.smarteist:autoimageslider:1.4.0'
     implementation(platform("com.google.firebase:firebase-bom:32.2.0"))
 
 }
