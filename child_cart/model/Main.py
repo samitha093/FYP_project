@@ -57,28 +57,20 @@ def globleAggregationProcess(model,x_test_np,y_test_np,CULSTER_SIZE,LOGLOCALMODE
 def differentialPrivacy(model,x_test_np,y_test_np):
     print("Starting adding differential privacy ------->")
     try:
-        localModelWeights=loadLocalCartModelData()
-        # q = queue.Queue()
-        # t1=threading.Thread(target=loadLocalCartModelData,args=(q,))
-        # t1.start()
-        # t1.join()
-        # result = q.get()
-        # localModelWeights= result
-        
+        localModelWeights=loadLocalCartModelData()    
         model.set_weights(localModelWeights)
         print("Model weights loaded successfully!")
     except Exception as e:
         print("Error occurred while loading model weights:", e)
 
-    #traing model using cartdata
-    #test model using local data
     print("Get Local model accuracy----->")
     localModelAccuracy = getModelAccuracy(model,x_test_np,y_test_np)
     
     def loopProcess():
         # Define the standard deviation of the noise
         std_dev = 0.01
-        stopRange =5
+        nextVal =5
+        backVal =5
         # Get the model weights
         model_weights = model.get_weights()
         tempModel=create_model()
@@ -91,16 +83,14 @@ def differentialPrivacy(model,x_test_np,y_test_np):
         # Set the modified weights back to the model
         tempModel.set_weights(model_weights)
         print("Differential privacy model accuracy----->")
+        if(localModelAccuracy >70):
+            backVal =0
+
         differentialPrivacyModelAccuracy = getModelAccuracy(tempModel,x_test_np,y_test_np)
-        if( differentialPrivacyModelAccuracy > localModelAccuracy - stopRange ) and (differentialPrivacyModelAccuracy < localModelAccuracy + stopRange) :
-            print(localModelAccuracy)
-            print(differentialPrivacyModelAccuracy)
-            
+        if( differentialPrivacyModelAccuracy > localModelAccuracy - backVal ) and (differentialPrivacyModelAccuracy < localModelAccuracy + nextVal) :
+            print("local model acc: ",localModelAccuracy ," differential privacy model acc: ",differentialPrivacyModelAccuracy)
             print("Stop loop process")
             saveLocalModelData(tempModel)
-            # t1=threading.Thread(target=saveLocalModelData,args=(tempModel,))
-            # t1.start()
-            # t1.join()
             return True
         
         else:
