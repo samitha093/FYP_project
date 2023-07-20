@@ -32,6 +32,7 @@ KERNAL_TIMEOUT = 60
 SHELL_TIMEOUT = 60
 SYNC_CONST = 1
 CULSTER_SIZE = 3
+connectionStatus = False
 
 FORWARD=50
 BACKWORD=20 #update globle values from cache
@@ -88,10 +89,11 @@ MOBILEMODELPARAMETERS  =bytes(1024)
 
 def mainFunn(RECIVER_TIMEOUT, SYNC_CONST, SOCKET_HOST):
     print("New connection starting with ", SOCKET_HOST)
-    global TIME_ARRAY,CART_TYPE,mySocket,TEMPUSERID, conType
+    global TIME_ARRAY,CART_TYPE,mySocket,TEMPUSERID, conType, connectionStatus
     global x_test_np
     global y_test_np
     MODE = conType
+    connectionStatus = False
     try:
         #Build connection object
         while True:
@@ -107,6 +109,7 @@ def mainFunn(RECIVER_TIMEOUT, SYNC_CONST, SOCKET_HOST):
         TEMPUSERID = mySocket.connect()
         if TEMPUSERID == "":
             return
+        connectionStatus = True
         print("Starting data reciver and sender")
         mySocket.start_receiver()
         mySocket.start_sender()
@@ -123,11 +126,14 @@ def mainFunn(RECIVER_TIMEOUT, SYNC_CONST, SOCKET_HOST):
             lock.release()
         if MODE == conctionType.SHELL.value:
             seedProx(mySocket,TEMPUSERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,RECIVER_TIMEOUT, HOSTHISTORT)
+        connectionStatus = False
 
     except Exception as e:
         print("Error occurred while running in", MODE, " mode ")
+        connectionStatus = False
     except KeyboardInterrupt:
         print("Thread was interrupted.")
+        connectionStatus = False
 
 def receivingModelAnalize(encoded_message,senderId,x_test_np,y_test_np):
     print("Received model analysis ")

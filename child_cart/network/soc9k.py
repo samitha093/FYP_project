@@ -34,6 +34,7 @@ class peerCom:
         self.USERID = ""
         self.continueData = False
         self.readForClose = False
+        self.criticalBreak = False
 
     def connect(self):
         failCount = 0
@@ -165,6 +166,8 @@ class peerCom:
             self.closeNow()
         else:
             self.closeNow()
+    def checkBreak(self):
+        return self.criticalBreak
 
     def closeNow(self):
         intervel = 0
@@ -173,6 +176,7 @@ class peerCom:
                 intervel += 1
                 time.sleep(2)
                 if intervel > 60:
+                    criticalBreak = True
                     break
             else:
                 break

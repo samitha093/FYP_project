@@ -77,43 +77,11 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS, SIP):
                 else:
                     print("unknown message",x)
         time.sleep(1)
+        if mySocket.checkBreak():
+            break
         timerCal +=1
         if timerCal >= TimerOut:
             break
-
-    # if len(PEERLIST)>0:
-    #     for x in PEERLIST:#----------------------REQUEST Model params-------------------
-    #         if x != USERID:
-    #             modelReq = ["MODELREQUEST"]
-    #             mySocket.request(requestModel(USERID,modelReq,x))
-    #             print("SEND MODEL REQUEST TO : ",x)
-    # while ModelParamLoop:#----------------------READ Model params-------------------
-    #     tempDataSet = mySocket.RECIVEQUE.copy()
-    #     if len(tempDataSet) > 0:
-    #         for x in tempDataSet:
-    #             mySocket.queueClean(x)
-    #             if x.get("Data")[0] == "MODELREQUEST":
-    #                 print("MODEL REQUEST FROM : ",x.get("Sender"))
-    #                 modelparameters = ["MODELPARAMETERS",MODELPARAMETERS]
-    #                 mySocket.request(requestModel(USERID,modelparameters,x.get("Sender")))
-    #                 print("MODEL PARAMETERS SEND TO : ",x.get("Sender"))
-    #             elif x.get("Data")[0] == "MODELPARAMETERS":
-    #                 print("MODEL PARAMETERS RECIVED FROM : ",x.get("Sender"))
-    #                 MODELPARAMETERLIST.append(x)
-    #             else:
-    #                 print("UNKNOWN MESSAGE : ",x)
-    #             timerCal =0
-    #     time.sleep(1)
-    #     timerCal +=1
-    #     if len(PEERLIST) == len(MODELPARAMETERLIST):
-    #         print("recived all model parameters which are requested")
-    #         ModelParamLoop = False
-    #     if timerCal == TimerOut:
-    #         Reciver_status = mySocket.isData_Reciving()
-    #         if Reciver_status:
-    #             timerCal = 0
-    #         else:
-    #             ModelParamLoop = False
 
     mySocket.close(0,USERID)
     return MODELPARAMETERLIST

@@ -59,6 +59,8 @@ def seedProx(mySocket,USERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,SHELL_TI
                     print("UNKNOWN MESSAGE : ",x)
                     Stop_loop()
         time.sleep(1)
+        if mySocket.checkBreak():
+            break
     return
 
 def Stop_loop():
