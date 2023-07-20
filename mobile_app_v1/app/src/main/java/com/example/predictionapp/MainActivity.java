@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-   /* private void startScanQRCodeActivity() {
+    private void startScanQRCodeActivity() {
         Intent intent = new Intent(this, ScanQRCodeActivity.class);
         startActivity(intent);
     }
@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
     // Example: Start the QR code scanning on the "Connect to Cart" button click
     public void onConnectToCartButtonClicked(View view) {
         startScanQRCodeActivity();
-    }*/
+    }
    //database access
    private void dbConnect(String v){
        // Set up the connection string to MongoDB Atlas
