@@ -139,6 +139,8 @@ def receivingModelAnalize(encoded_message,senderId,x_test_np,y_test_np):
     recievedModelAcc = getModelAccuracy(MODEL,x_test_np,y_test_np)
     print("Received model Acc : ",recievedModelAcc)
     #received model status 
+    if(LOCALMODELACCURACY > 50):
+        BACKWORD = 5
     status=False
     if(recievedModelAcc < LOCALMODELACCURACY + FORWARD ) and (recievedModelAcc > LOCALMODELACCURACY - BACKWORD ):
         saveReceivedModelData(model_weights)
@@ -260,7 +262,7 @@ def backgroudNetworkProcess():
             CARTDATASIZE=cartData
 
         if cartData >= datasetSize:
-            print("dataset completed: 250")
+            print("dataset completed")
             #local model training
             LOCALMODELACCURACY = localModelTraing(MODEL,x_test_np,y_test_np,datasetSize)
             #local model log data
@@ -306,13 +308,8 @@ def backgroudNetworkProcess():
                         td.join()
 
                     TIME_ARRAY[3] = time.time() ## time stap 4
-                    # print("LOCAL MODEL DETAILS: ")
-                    # print(LOGLOCALMODEL)
-                    # print("RECEIVED MODEL DETAILS: ")
-                    # print(LOGRECEIVEDMODEL)
                     globleAggregationProcess(MODEL,x_test_np,y_test_np,CULSTER_SIZE,LOGLOCALMODEL,LOGRECEIVEDMODEL)
                     LOGRECEIVEDMODEL =[]
-                    # localModelAnalize(x_test_np,y_test_np)
                     TIME_ARRAY[4] = time.time() ## time stap 5LOGRECEIVEDMODEL
                     break
                 else:

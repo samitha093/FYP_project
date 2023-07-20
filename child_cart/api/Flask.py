@@ -38,10 +38,10 @@ currentThreandArray=[]
 
 CartType = False
 
-app = Flask(__name__, template_folder='../../web_app/dist', static_folder='../../web_app/dist/assets')
+# app = Flask(__name__, template_folder='../../web_app/dist', static_folder='../../web_app/dist/assets')
+app = Flask(__name__, static_folder='./templates/assets')
 mimetypes.add_type('text/javascript', '.js')
 mimetypes.add_type('text/css', '.css')
-# app = Flask(__name__, template_folder='./dist', static_folder='./dist/assets')
 CORS(app)  # Enable CORS for all routes
 
 headings=("Name","Number","Price","Amount","Total price")
