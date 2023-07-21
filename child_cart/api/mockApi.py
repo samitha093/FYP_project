@@ -89,7 +89,50 @@ def download_file():
          print("An error occurred:", str(e))
 
     
+def deleteLogFile():
+    #delete current path aggregatedModelData.txt file
+    import os
+    file_to_delete = "aggregatedModelData.txt"
+    try:
+        os.remove(file_to_delete)
+        print(f"File '{file_to_delete}' has been deleted successfully.")
+    except FileNotFoundError:
+        print(f"File '{file_to_delete}' not found.")
+    except Exception as e:
+        print(f"An error occurred while deleting the file: {e}")
+    
+
+import os
+def delete_files_and_navigate_to_root(cache_folder, files_to_delete):
+    try:
+        # Get the current working directory as the root directory
+        root_directory = os.getcwd()
+
+        # Change the current working directory to the cache folder
+        cache_path = os.path.join(root_directory, cache_folder)
+        os.chdir(cache_path)
+
+        # Delete the specified files in the cache folder
+        for file in files_to_delete:
+            file_path = os.path.join(cache_path, file)
+            if os.path.exists(file_path):
+                os.remove(file_path)
+                print(f"File '{file}' has been deleted successfully.")
+            else:
+                print(f"File '{file}' not found in the cache folder.")
+
+        # Now, navigate back to the root directory
+        os.chdir(root_directory)
+        print(f"Returned to the root directory: {root_directory}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 
 
 
+def restCart():
+    deleteLogFile()
+    cache_folder = "cache"
+    files_to_delete = ["cartData.pkl", "Initialization.pkl", "model_weights.pkl"]
+    delete_files_and_navigate_to_root(cache_folder, files_to_delete)
+    return "cart reseted"
