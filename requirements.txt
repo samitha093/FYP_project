@@ -1,3 +1,4 @@
+websockets==11.0.3
 aiohttp==3.8.4
 kademlia==2.2.2
 pip==21.1
@@ -10,5 +11,5 @@ h5py==3.8.0
 keras==2.12.*
 tensorflow==2.12.*
 pandas==1.5.2
-requests
+requests==2.31.0
 pyinstaller
