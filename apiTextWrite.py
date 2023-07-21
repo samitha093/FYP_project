@@ -30,20 +30,21 @@ import threading
 #   ]
 links= [
 
-     "10.50.70.1",
+     
      "10.50.70.123",
      "10.50.70.124",
      "10.50.70.125",
      "10.50.70.126",
      "10.50.70.127",
+     "10.50.70.158",
      "10.50.70.129",
      "10.50.70.130",
      "10.50.70.131",
      "10.50.70.132",
-      
+    
      "10.50.70.134",
-     "10.50.70.45",
-     "10.50.70.46",
+    #  "10.50.70.45",
+    #  "10.50.70.46",
 
 
 
@@ -58,7 +59,8 @@ links= [
      "10.50.70.18",
      "10.50.70.17",
 
-"10.50.70.133",
+    "10.50.70.133",
+    "10.50.70.1",
   ]
 
 def ipWrite(url,num,links):
@@ -99,7 +101,7 @@ def ipWriteStart(links):
         t1.join()
 
 ##ip write function
-ipWriteStart(links)
+# ipWriteStart(links)
 
 
 #write in new file
@@ -130,27 +132,59 @@ def resultWrite(links):
 #write in new file
 # resultWrite(links)
 
-
+#---------------------limit update--------------------
 import requests
-def updatelimit(url,num):
-    response = requests.post(url)
-    if response.status_code == 200:
-        results = response.text
-        file_name = f"model_{num}.txt"
-        file = open(file_name, "w")
-        file.write(results)
-        file.close()
-        print(f"Results saved to '{file_name}' successfully.")
+import requests
+import json
+
+def updatelimit(url,data):
+    json_data = json.dumps(data) 
+    headers = {"Content-Type": "application/json"}  
+    response = requests.post(url, data=json_data, headers=headers)  
+    if response.status_code == 200:        
+        print("Updated limit successfully.")
     else:
-        print("Error: Failed to retrieve results. Status code:", response.status_code)
+        print("Error: Failed to update limit. Status code:", response.status_code)
+
 
 ##results get and save function
 def limitUpdate(links):
     mod_links = ["http://" + link + "/testitems" if ":" in link else "http://" + link + ":5001/limitupdate" for link in links]
-    print("Length  : ",len(mod_links))
+    print("Length  : ",len(mod_links))    
+    data = {"forward": "10",
+            "backward":"20"
+            }
     for i in range(len(mod_links)):
         url = mod_links[i]  
         print((url))
-        t1=threading.Thread(target=writeInNewFile,args=(url,i+1,))
+        t1=threading.Thread(target=updatelimit,args=(url,data,))
         t1.start()
         t1.join()
+
+# limitUpdate(links)
+
+#--------------------------file delete ---------------------
+
+def oneDeviceReset():
+    headers = {"Content-Type": "application/json"}  
+    response = requests.get(url, headers=headers)  
+    if response.status_code == 200:        
+        print("Reset successfully.")
+    else:
+        print("Error: Failed to reset. Status code:", response.status_code)
+
+def devicesReset(links):
+    mod_links = ["http://" + link + "/testitems" if ":" in link else "http://" + link + ":5001/restdevice" for link in links]
+    print("Length  : ",len(mod_links))    
+    data = {"forward": "10",
+            "backward":"20"
+            }
+    for i in range(len(mod_links)):
+        url = mod_links[i]  
+        print((url))
+        t1=threading.Thread(target=oneDeviceReset)
+        t1.start()
+        t1.join()
+
+
+# devicesReset(links)
