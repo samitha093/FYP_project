@@ -8,6 +8,7 @@ from child_cart.api.Flask import *
 from child_cart.cache.cacheFile import *
 from child_cart.db.sqlDbConnection import *
 from child_cart.cache.cacheFile import *
+from child_cart.mobile.serverWin import *
 
 def mainFunc(NetworkModule = True):
     try:
@@ -16,8 +17,12 @@ def mainFunc(NetworkModule = True):
             network_thread = Thread(target=backgroudNetworkProcess)
             network_thread.start()
 
+        #  strat mobile api via thread
+        mobileServer_thread = Thread(target=mobileFunC)
+        mobileServer_thread.start()
+
         #starting Flask Api module
-        print("Flask API Server Started on : ",5001)
+        print("\033[38;5;208mFlask API Server Started on :", 5001, "\033[0m")
         app.run(port=5001, debug=False, host="0.0.0.0")
 
     except Exception as e:
