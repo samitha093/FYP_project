@@ -78,6 +78,7 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS, SIP):
                     print("unknown message",x)
         time.sleep(1)
         if mySocket.checkBreak():
+            print("Critical break executed.....")
             break
         timerCal +=1
         if timerCal >= TimerOut:

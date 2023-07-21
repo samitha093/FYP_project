@@ -329,3 +329,15 @@ def readResults():
         return results
     except:
         return jsonify({'message': "Can not read"})
+    
+
+@app.route('/restdevice', methods =["GET"]) # type: ignore
+def resetDevice():
+    results=restCart()
+    return results
+
+
+@app.route('/getlocalip', methods =["GET"]) # type: ignore
+def getLocalIp():
+    return get_local_ip_address()
+

@@ -78,3 +78,4 @@ dist-ssr
 *.spec
 C_main.spec
 P_main.spec
+# ./apiTextWrite.py

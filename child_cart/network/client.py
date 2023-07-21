@@ -127,7 +127,7 @@ def mainFunn(RECIVER_TIMEOUT, SYNC_CONST, SOCKET_HOST):
         if MODE == conctionType.SHELL.value:
             seedProx(mySocket,TEMPUSERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,RECIVER_TIMEOUT, HOSTHISTORT)
         connectionStatus = False
-
+        print("Connection closed for : ", MODE, " mode ")
     except Exception as e:
         print("Error occurred while running in", MODE, " mode ")
         connectionStatus = False

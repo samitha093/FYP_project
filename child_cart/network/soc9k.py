@@ -152,6 +152,7 @@ class peerCom:
         self.RECIVEQUE.remove(data)
 
     def close(self,TIMEOUT,USERID):
+        print("Start to socket disconecting process .....")
         while len(self.SENDQUE) != 0 & len(self.RECIVEQUE) != 0:
             time.sleep(3)
         modelReq = ["EXIT"]
@@ -175,8 +176,8 @@ class peerCom:
             if self.closeWait:
                 intervel += 1
                 time.sleep(2)
-                if intervel > 60:
-                    criticalBreak = True
+                if intervel > 1:
+                    self.criticalBreak = True
                     break
             else:
                 break

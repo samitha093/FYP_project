@@ -107,7 +107,7 @@ def loadDatasetCsv():
     try:
         datasetCsv_lock.acquire()
         #dataset load from external
-        # download_file()
+        download_file()
 
         filename = "cache/dataset.pkl"
         if os.path.isfile(filename):

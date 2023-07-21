@@ -33,6 +33,7 @@ def seedProx(mySocket,USERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,SHELL_TI
     print("naber list from bridge : ", nbrlist)
     saveOrUpdateNBRList(nbrlist)
     ########################################################################
+    counter = 0
     while ModelParamLoop:
         tempDataSet = mySocket.RECIVEQUE.copy()
         if len(tempDataSet) > 0:
@@ -60,6 +61,7 @@ def seedProx(mySocket,USERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,SHELL_TI
                     Stop_loop()
         time.sleep(1)
         if mySocket.checkBreak():
+            print("Critical break executed.....")
             break
     return
 
