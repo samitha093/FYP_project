@@ -5,6 +5,7 @@ __pycache__/
 *.whl
 *.txt
 !requirements.txt
+!dockerAddCommands.txt
 /child_cart/api/templates/
 #remove testing three clients
 dataset/
