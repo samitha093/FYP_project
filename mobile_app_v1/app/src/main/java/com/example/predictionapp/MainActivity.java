@@ -34,6 +34,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import org.java_websocket.drafts.Draft;
+import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ServerHandshake;
 import org.tensorflow.lite.Interpreter;
 
@@ -60,6 +62,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import android.util.Log;
 
@@ -68,6 +72,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.zxing.integration.android.IntentIntegrator;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -80,7 +85,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String SERVER_ADDRESS = "141.145.200.6";
     private static final int SERVER_PORT = 8000;
     Button buttonBT;
-    FileTransferWebSocketClient webSocketClient;
+
+
     private EditText etName, etGender, etNIC, etCity;
     private Button sendMsgButton;
     private TextView dataTextView;
@@ -89,8 +95,8 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothReceiver bluetoothReceiver;
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothDevice selectedDevice;
-
-
+    private static final int REQUEST_CODE_QR_SCAN = 101;
+    private WebSocketAndroidClient webSocketClient;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -114,11 +120,20 @@ public class MainActivity extends AppCompatActivity {
         });
         // Initialize the WebSocket client
         Context context = getApplicationContext();
-        webSocketClient = new FileTransferWebSocketClient(context);
+        //webSocketClient = new FileTransferWebSocketClient(context);
+        webSocketClient = new WebSocketAndroidClient();
+        webSocketClient.connect();
 
+        Intent intent = getIntent();
+        String scannedUrl = intent.getStringExtra("scanned_url");
+        // Create the BiDirCom object and pass the Context and scanned URL
+        //biDirWebSocket = new BiDirCom(this, "ws://" + scannedUrl + ":9999");
 
         // Connect to the WebSocket server
-        webSocketClient.connectWebSocket();
+        //webSocketClient.connectWebSocket();
+        //biDirWebSocket.connectWebSocket();
+        // Get the scanned URL from the Intent
+
 
         // Check if the ACCESS_FINE_LOCATION permission is granted
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -133,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
 
         bluetoothReceiver = new BluetoothReceiver();
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
         //registerReceiver(receiver, filter);
         try {
             copyModelToInternalStorage(this, "model.tflite");
@@ -142,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
             // Error: Failed to copy model
         }
         //db connect
-        dbConnect("v");
+       /* dbConnect("v");
 
 
 //        //load local model
@@ -164,7 +180,8 @@ public class MainActivity extends AppCompatActivity {
 
 //                backroundProcess("V");
             }
-        }).start();
+        }).start();*/
+
 
     }
 
@@ -195,23 +212,38 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        /*if (requestCode == REQUEST_CODE_QR_SCAN && resultCode == RESULT_OK && data != null) {
+            // Get the scanned URL from the Intent
+            String scannedUrl = data.getStringExtra("scanned_url");
+
+            // Now, you can pass the URL to FileTransferWebSocketClient
+           BiDirCom webSocketClient = new BiDirCom(this, "ws://" + scannedUrl + ":9999");
+           webSocketClient.connectWebSocket();
+            Toast.makeText(this, scannedUrl, Toast.LENGTH_SHORT).show();
+        }*/
+    }
     @Override
     protected void onDestroy() {
-        webSocketClient.disconnectWebSocket();
         super.onDestroy();
+        webSocketClient.disconnect();
+
 
     }
+    public void onConnectToCartButtonClicked(View view) {
+        startQRCodeScan();
 
-    private void startScanQRCodeActivity() {
+    }
+    /*private void startScanQRCodeActivity() {
         Intent intent = new Intent(this, ScanQRCodeActivity.class);
         startActivity(intent);
-    }
+    }*/
 
     // Example: Start the QR code scanning on the "Connect to Cart" button click
-    public void onConnectToCartButtonClicked(View view) {
-        startScanQRCodeActivity();
-    }
+
    //database access
    private void dbConnect(String v){
        // Set up the connection string to MongoDB Atlas
@@ -797,4 +829,13 @@ private float modelAccuracy(String accuracyMode){
     }
 
     //http test network
+
+    private void startQRCodeScan() {
+        IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+        integrator.setPrompt("Scan a QR Code");
+        integrator.setCameraId(0); // Use the rear camera (0) or front camera (1)
+        integrator.initiateScan();
+
+    }
 }
