@@ -1,4 +1,15 @@
 
+//#####docker cli and composer install to ubuntu 18#####
+
+//admin
+sudo su
+
+//proxi configure
+sudo nano /etc/resolv.conf
+//apply following 
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+
 //docker cli
 sudo apt update
 sudo apt install apt-transport-https ca-certificates curl software-properties-common
@@ -14,13 +25,30 @@ sudo apt update -y
 sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 docker --version; docker compose version;ctr version
 
-//proxi configure
-sudo nano /etc/resolv.conf
-//apply following 
-nameserver 8.8.8.8
-nameserver 8.8.4.4
 
 sudo systemctl daemon-reload
 sudo systemctl restart docker
 
+//errorfix dpkg
+sudo rm /var/lib/apt/lists/lock
+sudo rm /var/cache/apt/archives/lock
+sudo rm /var/lib/dpkg/lock*
 
+
+
+//#####project initiate codes#####
+
+docker ps
+docker stop <container_id>
+
+docker ps -a
+docker rm <container_id>
+
+docker images
+docker rmi <image_name_or_id>
+
+docker build -t fyp .
+docker run -it --network=host fyp
+
+docker logs <container_name_or_id>
+docker exec -it <container_name_or_id> /bin/bash
