@@ -18,6 +18,7 @@ interface Product {
     price: number;
     qty: number;
     totalPrice: number;
+    url:string
 }
 
 const Checkout: React.FC<AppProps> = ({ darkMode }) => {
@@ -27,6 +28,9 @@ const Checkout: React.FC<AppProps> = ({ darkMode }) => {
     const [qrData, setqrData] = useState("");
     const [product, setproduct] = useState(false);
     const [products, setProducts] = useState<Product[]>([]);
+    const [item, setItem] = useState<Product>();
+    const [totalBill, setTotalBill] = useState(0);
+
 
     const handleQR = (e: any) => {
         if (!(e === null || e === "")) {
@@ -38,18 +42,39 @@ const Checkout: React.FC<AppProps> = ({ darkMode }) => {
         setqrData("");
         setproduct(false);
       };
-    const handleAddProduct = (e: any) => {
+    const handleAddProduct = (quantity:any) => {
+        const jsonItemData = JSON.parse(qrData);
+        var totalVal=jsonItemData.price*quantity;
         const newProduct: Product = {
             id: 1,
-            title: 'Product 1',
-            price: 99.99,
-            qty: 2,
-            totalPrice: 188.99,
+            title: jsonItemData.title,
+            price:jsonItemData.price,
+            qty: quantity,
+            totalPrice: totalVal,
+            url:jsonItemData.url
           };
           setProducts([...products, newProduct]);
+          setTotalBill(totalBill+totalVal);
+          setqrData("");
+          setproduct(false);
       };
     useEffect(() => {
         if (!(qrData === null || qrData === "")) {
+            console.log("use effect");
+            const jsonItemData = JSON.parse(qrData);
+            const newProduct: Product = {
+                id: 1,
+                title: jsonItemData.title,
+                price:jsonItemData.price,
+                qty: 1,
+                totalPrice: jsonItemData.price,
+                url:jsonItemData.url,
+              };
+              setItem(newProduct);
+
+            //   setProducts([...products, newProduct]);
+
+            // handleAddProduct(jsonItemData);
             setproduct(true);
         }
     }, [qrData]);
@@ -61,7 +86,7 @@ const Checkout: React.FC<AppProps> = ({ darkMode }) => {
                 </Box>
                 <Box flex="1" w="100%" h="66%" border="2px" borderColor={darkMode ? "gray.600" : 'gray.300'} borderRadius="30px">
                     {product?
-                    <Item darkMode={darkMode} handleProduct={handleProduct} handleAddProduct={handleAddProduct}/>
+                    <Item darkMode={darkMode} item={item} handleProduct={handleProduct} handleAddProduct={handleAddProduct}/>
                     :
                     <Flex
                         justify="space-between"
@@ -89,7 +114,7 @@ const Checkout: React.FC<AppProps> = ({ darkMode }) => {
                 </Box>
             </Box>
             <Box w="40%" h="100%" border="2px" borderColor={darkMode ? "gray.600" : 'gray.300'} borderRadius="30px">
-                <Cart darkMode={darkMode} products={products} key={JSON.stringify(products)}/>
+                <Cart darkMode={darkMode} totalBill={totalBill} products={products} key={JSON.stringify(products)}/>
             </Box>
             <Modal closeOnOverlayClick={false} isOpen={showScanner} onClose={closeScanner}>
                 <ModalOverlay />

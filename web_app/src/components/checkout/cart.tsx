@@ -7,6 +7,7 @@ import CartProduct from './cartProduct';
 interface AppCart {
     darkMode: boolean;
     products:any;
+    totalBill: number;
 }
 
 interface Product {
@@ -17,7 +18,8 @@ interface Product {
     totalPrice: number;
 }
 
-const Cart: React.FC<AppCart> = ({ darkMode , products}) => {
+
+const Cart: React.FC<AppCart> = ({ darkMode , products,totalBill}) => {
     const [productList, setproductList] = useState<Product[]>([]);
     useEffect(() => {
         setproductList(products);
@@ -53,7 +55,7 @@ const Cart: React.FC<AppCart> = ({ darkMode , products}) => {
                     textAlign: 'center',
                     }}
                 >
-                    LKR : 250000
+                    LKR : {totalBill}
                 </Box>
             </Box>
         </Flex>

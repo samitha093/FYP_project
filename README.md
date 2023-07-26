@@ -142,6 +142,77 @@ pandas==1.5.2
     https://github.com/hiway/rpcudp/commit/92bfff36740ca2fcfa77f47ceb87d3ba480083ea
 ```
 
+**Docker setup in ubuntu 18.04**
+```bash
+//admin privilage
+sudo su
+
+//proxi configure
+sudo nano /etc/resolv.conf
+//apply following 
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+
+//docker cli
+sudo apt update
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+sudo apt update
+apt-cache policy docker-ce
+sudo apt install docker-ce
+sudo systemctl status docker
+
+//docker composer
+sudo apt update -y
+sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+docker --version; docker compose version;ctr version
+
+
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+
+//errorfix dpkg
+sudo rm /var/lib/apt/lists/lock
+sudo rm /var/cache/apt/archives/lock
+sudo rm /var/lib/dpkg/lock*
+
+```
+
+**Project run in docker commands**
+```bash
+ //runnning containers
+docker ps
+//stop
+docker stop <container_id>
+
+//down contrainer see
+docker ps -a
+//down contrainers delete
+docker rm <container_id>
+
+//see docker images
+docker images
+//delete images
+docker rmi <image_name_or_id>
+
+
+//build
+docker build -t fyp .
+//start
+docker run -it --network=host fyp
+
+//current log
+docker logs <container_name_or_id>
+
+//log continues
+docker logs -f <container_name_or_id>
+docker exec -it <container_name_or_id> /bin/bash
+
+```
+
+
+
 ## File Organization
 
 ```

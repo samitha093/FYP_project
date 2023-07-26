@@ -8,24 +8,37 @@ interface AppProps {
     darkMode: boolean;
     handleProduct:any;
     handleAddProduct:any;
+    item:any;
+  
+
 }
 
-const Item: React.FC<AppProps> = ({ darkMode, handleProduct, handleAddProduct}) => {
+const Item: React.FC<AppProps> = ({ darkMode, handleProduct, handleAddProduct,item}) => {
     const [quantity, setQuantity] = useState(1);
     const [key, setKey] = useState(0);
     const [Overflow, setOverflow] = useState(false);
+    const [totalPrice, setTotalPrice] = useState(item.price);
+
 
     const handleQuantityChange = (event:any) => {
         setQuantity(event.target.value);
+   
     };
 
     const handleIncrement = () => {
-        setQuantity(quantity + 1);
+        var totalQuantity=quantity + 1;
+        setQuantity(totalQuantity);
+        var totalVal =item.price*totalQuantity;
+        setTotalPrice(totalVal);
+        
     };
 
     const handleDecrement = () => {
         if (quantity > 1) {
-        setQuantity(quantity - 1);
+        var totalQuantity=quantity - 1;
+        setQuantity(totalQuantity);
+        var totalVal =item.price*totalQuantity;
+        setTotalPrice(totalVal);
         }
     };
     const handleOverflow = debounce(() => {
@@ -37,7 +50,6 @@ const Item: React.FC<AppProps> = ({ darkMode, handleProduct, handleAddProduct}) 
           const heightInPixels = secondBox.getBoundingClientRect().height;
           console.log("overflow",isOverflowing," width ",widthInPixels, "Height", heightInPixels);
           setOverflow(isOverflowing)
-
         }
       }, 100);
       useEffect(() => {
@@ -81,14 +93,14 @@ const Item: React.FC<AppProps> = ({ darkMode, handleProduct, handleAddProduct}) 
         <Flex id="parent-box" direction="row" h="100%" flexWrap="wrap" overflow="auto" justifyContent="center" alignItems="center">
             <Box id="first-box" w='60%' h={Overflow?'60%':'100%'}   borderRadius="30px" overflow="hidden" mt={Overflow?25:0}>
                 <Center h="100%" color='white'>
-                <img src='https://5.imimg.com/data5/ANDROID/Default/2020/10/YU/QD/UL/35343054/prod-20201011-0159397534769397062872599-jpg-500x500.jpg'
+                <img src={item.url}
                  alt='product image' width='200' height='400' />
                 </Center>
             </Box>
             <Box id="second-box" w={Overflow?'100%':'40%'} h='100%' borderRadius="30px" padding="20px">
                 <Flex direction="column" justifyContent="center" alignItems="center" h="100%">
-                    <Box fontSize="20px" mb="15px">Organic Extra Virgin Olive Oil Cold Pressed Unfiltered Non-GMO Kosher 100% Pure 16.9 oz</Box>
-                    <Box fontSize="30px" color="#4CAF50" mb="15px">Price: $10.99</Box>
+                    <Box fontSize="20px" mb="15px">{item.title}</Box>
+                    <Box fontSize="30px" color="#4CAF50" mb="15px">Price: {item.price}</Box>
                     <Flex alignItems="center" mb={25}>
                     <Box fontSize="20px" mr="5px">
                         Quantity:
@@ -106,9 +118,9 @@ const Item: React.FC<AppProps> = ({ darkMode, handleProduct, handleAddProduct}) 
                     />
                     <Button onClick={handleIncrement} size="md">+</Button>
                     </Flex>
-                    <Box fontSize="35px" textAlign="center" color="orange" mb="20px">Total: $10.99</Box>
+                    <Box fontSize="35px" textAlign="center" color="orange" mb="20px">Total: {totalPrice}</Box>
                     <Flex justifyContent="center">
-                    <Button colorScheme="orange" size="lg" mr={5} onClick={handleAddProduct}>
+                    <Button colorScheme="orange" size="lg" mr={5} onClick={() => handleAddProduct(quantity)}>
                         Add to Cart
                     </Button>
                     <Button colorScheme="red" size="lg" onClick={handleProduct}>
