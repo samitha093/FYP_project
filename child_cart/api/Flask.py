@@ -341,3 +341,15 @@ def resetDevice():
 def getLocalIp():
     return get_local_ip_address()
 
+#read file
+@app.route('/getcheckoutdata', methods=['post'])
+def getCheckoutData():
+    try:
+        data = request.get_json()  # Retrieve the JSON object from the request
+        itemList=data['productList'] 
+        print("Item List ")
+        print(itemList)
+        return jsonify({'message': "Checkout Data received"})
+    except:
+        return jsonify({'message': "Checkout Data not received!"})
+    
