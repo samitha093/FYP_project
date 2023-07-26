@@ -48,7 +48,7 @@ socketio = SocketIO(app, cors_allowed_origins='*', async_mode='gevent')
 
 mimetypes.add_type('text/javascript', '.js')
 mimetypes.add_type('text/css', '.css')
-
+CORS(app)  # Enable CORS for all routes
 
 headings=("Name","Number","Price","Amount","Total price")
 
@@ -72,7 +72,7 @@ def handle_custom_event(data):
 def send_hello_to_clients():
     while True:
         socketio.emit('server_message', 'Hello from the server!')
-        sleep(5)
+        sleep(5)  # Sleep for 1 minute
 
 
 #find current threand
