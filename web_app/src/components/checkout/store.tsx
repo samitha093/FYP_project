@@ -88,7 +88,7 @@ const Store: React.FC<AppProps> = ({ darkMode }) => {
           <Flex justify="space-between" align="center" mb={20}>
             <Box>
               <Text fontSize="2xl" fontWeight="bold" mb={8}>
-                Recomanded products
+              Recommended Products
               </Text>
               <Flex
                 ref={flexRef}

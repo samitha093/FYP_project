@@ -2,7 +2,7 @@
 import json
 import warnings
 warnings.filterwarnings("ignore", message="This is a development server. Do not use it in a production deployment.")
-
+import queue
 import logging
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
@@ -31,15 +31,31 @@ from child_cart.network.client import *
 from child_cart.db.apiConnection import *
 import queue
 
-	
-
 selectedItem ="Item 0"
 ItemListArray = []
 totalBill = 0
-currentGender = 0
+currentGender = 1
 currentThreandArray=[]
 
 CartType = False
+#create queue instance
+checkoutDataQue = queue.Queue()
+
+#checkout data adding to queue
+def checkoutDataQueue(gender,month,items):
+    global checkoutDataQue
+    #clear queue
+    checkoutDataQue.queue.clear()
+    array_values = []
+    for item in items:
+        array_values.append([item, gender, month])
+    for value in array_values:
+        checkoutDataQue.put(value)
+    print("Data added to the Queue")
+    # while not checkoutDataQue.empty():
+    #     element = checkoutDataQue.get()
+    #     print(element)
+
 
 # app = Flask(__name__, template_folder='../../web_app/dist', static_folder='../../web_app/dist/assets')
 app = Flask(__name__, static_folder='./templates/assets')
@@ -80,7 +96,7 @@ def findCurrentThreandArray():
     global currentThreandArray
     global currentGender
     #get current threand
-    month = datetime.now().month
+    month = 1
     gender = currentGender
     itemNum = getCurrentThreand(month,gender)
     currentThreandArray = []
@@ -365,15 +381,16 @@ def resetDevice():
 @app.route('/getlocalip', methods =["GET"]) # type: ignore
 def getLocalIp():
     return get_local_ip_address()
+#Checkout data adding to the que
   
-#read file
 @app.route('/getcheckoutdata', methods=['post'])
 def getCheckoutData():
+    global currentGender
     try:
-        data = request.get_json()  # Retrieve the JSON object from the request
-        itemList=data['productList'] 
-        print("Item List ")
-        print(itemList)
+        product_list_str = request.json['productList']
+        product_list = json.loads(product_list_str)
+        month = datetime.now().month
+        checkoutDataQueue(currentGender,month,product_list)
         return jsonify({'message': "Checkout Data received"})
     except:
         return jsonify({'message': "Checkout Data not received!"})

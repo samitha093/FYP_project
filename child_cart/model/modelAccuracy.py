@@ -22,20 +22,22 @@ def convert_last_two_digits(num):
 
 
 def getModelAccuracy(model,test_data1,test_labels1):
-    # localModelWeights=loadLocalCartModelData()
-    # model.set_weights(localModelWeights)
-    #Predict model 1  test using test date
-    y_pred_model_1 = model.predict(test_data1)
+    try:
+      print("MODEL ACC>>>>>>>")
+      y_pred_model_1 = model.predict(test_data1)
 
-    # The predictions are in the form of probability of each class, so we will take the class with highest probability
-    y_pred_model_1 = y_pred_model_1.argmax(axis=-1)
+      # The predictions are in the form of probability of each class, so we will take the class with highest probability
+      y_pred_model_1 = y_pred_model_1.argmax(axis=-1)
 
-    # Calculate the accuracy of the model
-    
-    modelAccuracy = accuracy_score(test_labels1, y_pred_model_1)*100
-    converted_acc= convert_last_two_digits(modelAccuracy)
-    print("Model  Accuracy:", converted_acc)
-    return converted_acc
+      # Calculate the accuracy of the model
+      
+      modelAccuracy = accuracy_score(test_labels1, y_pred_model_1)*100
+      converted_acc= convert_last_two_digits(modelAccuracy)
+      print("Model  Accuracy:", converted_acc)
+      return converted_acc
+    except Exception as e:
+        print("Error occurred while model accuracy checking...:", e)
+
 
   
 def predictionsResults(model,test_data1):
