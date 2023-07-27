@@ -64,9 +64,6 @@ def splitDataset():
     
     y_test_np = y_test_np.argmax(axis=-1)
     print("Dataset Splited")
-    # for i in range(100):
-    #     time.sleep(3)
-    #     print("main thread")
     return x_train_np, y_train_np,x_test_np,y_test_np
 
 # splitDataset(20,2)
@@ -78,12 +75,6 @@ def splitCartData(sizeOfDataset):
     print("READ DATA SET")
     try:
         my_data = loadCartData()
-        # q = queue.Queue()
-        # t1=threading.Thread(target=loadCartData,args=(q,))
-        # t1.start()
-        # t1.join()
-        # result = q.get()
-        # my_data=result
         print(type(my_data))
         print("CSV file loaded successfully!")
     except Exception as e:
@@ -103,7 +94,6 @@ def splitCartData(sizeOfDataset):
 
 
     x_train_np /= 12
-    # y output devide into 10 categories
     y_train_np = to_categorical(y_train_np, 9)
     
     return x_train_np, y_train_np
