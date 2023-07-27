@@ -13,6 +13,9 @@ import os
 import sys
 from datetime import datetime
 
+from flask_socketio import SocketIO
+from gevent import spawn, sleep
+
 import socket
 
 import requests
@@ -56,6 +59,9 @@ def checkoutDataQueue(gender,month,items):
 
 # app = Flask(__name__, template_folder='../../web_app/dist', static_folder='../../web_app/dist/assets')
 app = Flask(__name__, static_folder='./templates/assets')
+app.config['SECRET_KEY'] = 'your_secret_key_here'
+socketio = SocketIO(app, cors_allowed_origins='*', async_mode='gevent')
+
 mimetypes.add_type('text/javascript', '.js')
 mimetypes.add_type('text/css', '.css')
 CORS(app)  # Enable CORS for all routes
@@ -65,6 +71,25 @@ headings=("Name","Number","Price","Amount","Total price")
 @app.route('/', methods=['GET'])
 def example():
     return render_template('index.html')
+
+# WebSocket event handlers
+@socketio.on('connect')
+def on_connect():
+    print('Client connected')
+
+@socketio.on('disconnect')
+def on_disconnect():
+    print('Client disconnected')
+
+@socketio.on('client_message')
+def handle_custom_event(data):
+    print('Received custom event:', data)
+
+def send_hello_to_clients():
+    while True:
+        socketio.emit('server_message', 'Hello from the server!')
+        sleep(5)  # Sleep for 1 minute
+
 
 #find current threand
 def findCurrentThreandArray():
@@ -356,8 +381,8 @@ def resetDevice():
 @app.route('/getlocalip', methods =["GET"]) # type: ignore
 def getLocalIp():
     return get_local_ip_address()
-
 #Checkout data adding to the que
+  
 @app.route('/getcheckoutdata', methods=['post'])
 def getCheckoutData():
     global currentGender
@@ -369,4 +394,9 @@ def getCheckoutData():
         return jsonify({'message': "Checkout Data received"})
     except:
         return jsonify({'message': "Checkout Data not received!"})
-    
+
+@app.route('/childstop', methods =["GET"]) # disconect socket manual
+def childstop():
+    closeSocket()
+    return jsonify({'message': "wait until reconect with new server"})
+

@@ -327,6 +327,9 @@ def backgroudNetworkProcess():
                 conType = "SHELL"
         time.sleep(10)
 
+def closeSocket():
+    global mySocket
+    mySocket.close(0,TEMPUSERID)
 #----------------------log result funtions --------------------------------
 def modelLogTemplate(id, value, accuracy):
     return {

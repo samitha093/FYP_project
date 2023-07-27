@@ -1,6 +1,11 @@
 import asyncio
 import websockets
 
+<<<<<<< HEAD:child_cart/serverSocketConnection/serverWin.py
+=======
+PORT = 9999
+
+>>>>>>> 9727583d3474e258b45447467fa4768a9cf4045f:child_cart/mobile/serverWin.py
 async def server_handler(websocket, path):
     print("Server: New connection established")
     try:
@@ -19,12 +24,15 @@ async def server_handler(websocket, path):
         await websocket.close()
         print("Server: Connection closed")
 
-
 # Start the server
 async def main():
-    server = await websockets.serve(server_handler, '192.168.8.169', 9999)
-    print("Server: Listening on port 9999")
+    server = await websockets.serve(server_handler, '0.0.0.0', PORT)
+    print("\033[38;5;208mServer: Listening on port :", PORT, "\033[0m")
     await server.wait_closed()
 
-
-asyncio.run(main())
+def mobileFunC():
+    print("Starting mobile servers for local network")
+    ###########
+    ## use for new threads
+    ###########
+    asyncio.run(main())

@@ -1,16 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { useTheme } from "@chakra-ui/react";
+import { Flex, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, useTheme } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
+import QRCode from 'qrcode.react';
 import "./App.css";
 
 import Nav from "./components/navbar/nav";
 import Settings from "./components/dashbord/settings";
 import Home from "./components/checkout/home"
+import axios from "axios";
 
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [settings, setSettings] = useState(false);
+  const [showScanner, setShowScanner] = useState(true);
+  const openScanner = () => setShowScanner(true);
+  const closeScanner = () => setShowScanner(false);
+  const [ip, setIp] = useState("");
+
   const theme = useTheme();
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -20,9 +27,18 @@ function App() {
     setSettings(!settings);
   };
 useEffect(() => {
-  var hostname = window.location.hostname;
+  var hostname = 'http://'+ window.location.hostname+ ':5001';
   // sessionStorage.setItem('host', 'http://'+hostname+':'+ window.location.port+'/api');
-  sessionStorage.setItem('host', 'http://'+hostname+':5001');
+  sessionStorage.setItem('host', hostname);
+  axios.get(`${hostname}/getlocalip`)
+  .then(response => {
+    setIp(response.data)
+    // console.log(response.data);
+  })
+  .catch(error => {
+    console.error(error);
+  });
+
 }, []);
   return (
     <div style={{ backgroundColor: darkMode ? theme.colors.gray[700] : "white", height:"100vh" ,overflow: 'hidden' }} >
@@ -36,6 +52,22 @@ useEffect(() => {
           )}
         </AnimatePresence>
       </div>
+      <>
+      <Flex w="100%" h="100%" align="center" justify="center" overflow="auto">
+        <Modal closeOnOverlayClick={false} isOpen={showScanner} onClose={closeScanner}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Connect your Mobile Device</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <Flex align="center" justify="center" mb={10}>
+                <QRCode value={ip} />
+              </Flex>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      </Flex>
+      </>
     </div>
   );
 }
