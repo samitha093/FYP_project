@@ -17,7 +17,7 @@
     <EditText
         android:id="@+id/editTextName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="27dp"
         android:textSize="20dp" />
 
     <TextView
@@ -29,7 +29,7 @@
     <EditText
         android:id="@+id/editTextGender"
         android:layout_width="match_parent"
-        android:layout_height="62dp"
+        android:layout_height="33dp"
         android:textSize="20dp" />
 
     <TextView
@@ -41,7 +41,7 @@
     <EditText
         android:id="@+id/editTextNIC"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:textSize="20dp" />
 
     <TextView
@@ -53,14 +53,14 @@
     <EditText
         android:id="@+id/editTextCity"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="24dp"
         android:textSize="20dp" />
 
 
     <Button
         android:id="@+id/buttonSave"
-        android:layout_width="411dp"
-        android:layout_height="wrap_content"
+        android:layout_width="339dp"
+        android:layout_height="40dp"
         android:text="Give a Prediction for this user"
         android:textAlignment="center"
         android:textSize="20dp" />
@@ -68,16 +68,23 @@
     <TextView
         android:id="@+id/textItem"
         android:layout_width="304dp"
-        android:layout_height="42dp"
+        android:layout_height="wrap_content"
         android:text="Predicted Item"
         android:textSize="20dp" />
 
     <Button
-        android:id="@+id/btnConnectToCart"
+        android:id="@+id/btnDisconnectCart"
         android:layout_width="265dp"
         android:layout_height="wrap_content"
         android:onClick="onConnectToCartButtonClicked"
-        android:text="Connect to Cart" />
+        android:text="connect the Cart" />
+
+    <Button
+        android:id="@+id/btnDisconnectCart2"
+        android:layout_width="265dp"
+        android:layout_height="wrap_content"
+        android:onClick="onDisconnectCartButtonClicked"
+        android:text="Disconnect the Cart" />
 
     <!-- <Button
          android:id="@+id/fetchDataButton"
