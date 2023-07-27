@@ -1,7 +1,7 @@
 import { Box, Button, Center, Flex, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { BsQrCodeScan } from 'react-icons/bs';
-
+import Swal from 'sweetalert2'
 import Item from "./item"
 import Cart from "./cart"
 import Slider from "./slider"
@@ -18,7 +18,8 @@ interface Product {
     price: number;
     qty: number;
     totalPrice: number;
-    url:string
+    url:string,
+    categoryNo:number
 }
 
 const Checkout: React.FC<AppProps> = ({ darkMode }) => {
@@ -31,6 +32,13 @@ const Checkout: React.FC<AppProps> = ({ darkMode }) => {
     const [item, setItem] = useState<Product>();
     const [totalBill, setTotalBill] = useState(0);
 
+    const handleCheckout = (e: any) => {
+        console.log("Handler checkout run")
+        setqrData("");
+        setproduct(false);
+        setTotalBill(0);
+        setProducts([]);
+      };
 
     const handleQR = (e: any) => {
         if (!(e === null || e === "")) {
@@ -42,6 +50,7 @@ const Checkout: React.FC<AppProps> = ({ darkMode }) => {
         setqrData("");
         setproduct(false);
       };
+
     const handleAddProduct = (quantity:any) => {
         const jsonItemData = JSON.parse(qrData);
         var totalVal=jsonItemData.price*quantity;
@@ -51,7 +60,8 @@ const Checkout: React.FC<AppProps> = ({ darkMode }) => {
             price:jsonItemData.price,
             qty: quantity,
             totalPrice: totalVal,
-            url:jsonItemData.url
+            url:jsonItemData.url,
+            categoryNo:jsonItemData.categoryNo
           };
           setProducts([...products, newProduct]);
           setTotalBill(totalBill+totalVal);
@@ -69,12 +79,9 @@ const Checkout: React.FC<AppProps> = ({ darkMode }) => {
                 qty: 1,
                 totalPrice: jsonItemData.price,
                 url:jsonItemData.url,
+                categoryNo:jsonItemData.categoryNo
               };
               setItem(newProduct);
-
-            //   setProducts([...products, newProduct]);
-
-            // handleAddProduct(jsonItemData);
             setproduct(true);
         }
     }, [qrData]);
@@ -114,7 +121,7 @@ const Checkout: React.FC<AppProps> = ({ darkMode }) => {
                 </Box>
             </Box>
             <Box w="40%" h="100%" border="2px" borderColor={darkMode ? "gray.600" : 'gray.300'} borderRadius="30px">
-                <Cart darkMode={darkMode} totalBill={totalBill} products={products} key={JSON.stringify(products)}/>
+                <Cart darkMode={darkMode} handleCheckout={handleCheckout} totalBill={totalBill} products={products} key={JSON.stringify(products)}/>
             </Box>
             <Modal closeOnOverlayClick={false} isOpen={showScanner} onClose={closeScanner}>
                 <ModalOverlay />
