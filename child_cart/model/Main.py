@@ -100,7 +100,7 @@ def differentialPrivacy(model,x_test_np,y_test_np):
     while True:
        returnVal= loopProcess()
        if returnVal == True:
-           print("After adding differential privacy Model accuray : ",x)
+        #    print("After adding differential privacy Model accuray : ",x)
            break
       
        x=x+1
@@ -117,6 +117,7 @@ def localModelTraing(model,x_test_np,y_test_np,datasetSize):
         x_train,y_train = splitCartData(datasetSize)
         model = continuoustrainModel(model,x_train,y_train)
         #test model using local data
+        
         modelAcc =  getModelAccuracy(model,x_test_np,y_test_np)
         #adding differential privacy
         differentialPrivacy(model,x_test_np,y_test_np)

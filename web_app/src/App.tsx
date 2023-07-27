@@ -19,7 +19,6 @@ function App() {
   const [ip, setIp] = useState("");
 
   const theme = useTheme();
-
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
   };
