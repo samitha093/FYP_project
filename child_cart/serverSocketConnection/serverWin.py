@@ -1,7 +1,6 @@
 import asyncio
 import websockets
 
-
 async def server_handler(websocket, path):
     print("Server: New connection established")
     try:
