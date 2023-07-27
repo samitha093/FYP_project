@@ -33,7 +33,7 @@ import queue
 selectedItem ="Item 0"
 ItemListArray = []
 totalBill = 0
-currentGender = 0
+currentGender = 1
 currentThreandArray=[]
 
 CartType = False
@@ -55,7 +55,7 @@ def findCurrentThreandArray():
     global currentThreandArray
     global currentGender
     #get current threand
-    month = datetime.now().month
+    month = 1
     gender = currentGender
     itemNum = getCurrentThreand(month,gender)
     currentThreandArray = []

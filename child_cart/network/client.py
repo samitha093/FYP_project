@@ -239,7 +239,7 @@ def backgroudNetworkProcess():
     global y_test_np
     print("NETWORKING ......")
     result=loadInitData()
-    # print("status : ",result)
+    #check initialization
     if(result == "False"):
         while True:
             #intial model training 
@@ -266,7 +266,7 @@ def backgroudNetworkProcess():
             print("Cart Data size: ",cartData)
             print("dataset not completed")
             CARTDATASIZE=cartData
-
+        #if cart data is enough 
         if cartData >= datasetSize:
             print("dataset completed")
             #local model training
@@ -282,7 +282,7 @@ def backgroudNetworkProcess():
                 conType = "KERNEL"
                 print("Changed Connection Mode to " + conType)
                 mySocket.close(0,TEMPUSERID)
-            print("Connecting as KERNEL for globla aggregation")
+            print("Connecting as KERNEL for Globle aggregation")
             #kernel loop
             while True:
                 # get data from recived queue
