@@ -276,7 +276,8 @@ def backgroudNetworkProcess():
                 conType = "KERNEL"
                 print("Changed Connection Mode to " + conType)
                 mySocket.close(0,TEMPUSERID)
-            print("Connecting as KERNEL for Globle aggregation")
+                Stop_loop()
+            print("Connecting as KERNEL for globla aggregation")
             #kernel loop
             while True:
                 # get data from recived queue
@@ -318,6 +319,7 @@ def backgroudNetworkProcess():
                     if conType != "KERNEL":
                         conType = "KERNEL"
                         mySocket.close(0,TEMPUSERID)
+                        Stop_loop()
                     time.sleep(30)
         else:
             if(CARTCURRENTDATASIZE != cartData):
@@ -330,6 +332,7 @@ def backgroudNetworkProcess():
 def closeSocket():
     global mySocket
     mySocket.close(0,TEMPUSERID)
+    Stop_loop()
 #----------------------log result funtions --------------------------------
 def modelLogTemplate(id, value, accuracy):
     return {

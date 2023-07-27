@@ -14,14 +14,14 @@ interface HomeProps {
 
 const Home: React.FC<HomeProps> = ({ darkMode }) => {
     const [selectedBox, setSelectedBox] = useState<number | null>(0);
+    // var myHost = 'http://localhost:5001';
 
     useEffect(() => {
-      const myHost = sessionStorage.getItem('host');
-      console.log(myHost);
-      const socket = io('http://localhost:5001');
+      var hostname = 'http://'+ window.location.hostname+ ':5001';
+      const socket = io(hostname);
       // Event handler when connected to the server
       socket.on('connect', () => {
-        console.log('Connected to the WebSocket server');
+        console.log('Store = > connected to the python backend');
       });
        // Event handler for custom events from the server
       socket.on('server_message', (data) => {
