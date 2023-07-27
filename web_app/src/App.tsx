@@ -33,7 +33,8 @@ useEffect(() => {
   sessionStorage.setItem('host', hostname);
   axios.get(`${hostname}/getlocalip`)
   .then(response => {
-    setIp(response.data)
+    var uri = response.data + ":9999";
+    setIp(uri);
     // console.log(response.data);
   })
   .catch(error => {

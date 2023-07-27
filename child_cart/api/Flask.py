@@ -2,6 +2,8 @@
 import json
 import warnings
 warnings.filterwarnings("ignore", message="This is a development server. Do not use it in a production deployment.")
+from engineio.async_drivers import gevent
+
 
 import logging
 log = logging.getLogger('werkzeug')
@@ -44,7 +46,7 @@ CartType = False
 # app = Flask(__name__, template_folder='../../web_app/dist', static_folder='../../web_app/dist/assets')
 app = Flask(__name__, static_folder='./templates/assets')
 app.config['SECRET_KEY'] = 'your_secret_key_here'
-socketio = SocketIO(app, cors_allowed_origins='*', async_mode='gevent')
+socketio = SocketIO(app, cors_allowed_origins='*')
 
 mimetypes.add_type('text/javascript', '.js')
 mimetypes.add_type('text/css', '.css')

@@ -83,6 +83,7 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS, SIP):
         timerCal +=1
         if timerCal >= TimerOut:
             break
+    print("END of the KERNAL process")
 
     mySocket.close(0,USERID)
     return MODELPARAMETERLIST
