@@ -1,7 +1,8 @@
 import { AbsoluteCenter, Box, Center, Flex } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {BsShop, BsHandbag} from 'react-icons/bs'
 import {MdMobileScreenShare} from "react-icons/md"
+import io from 'socket.io-client';
 
 import Store from "./store";
 import Checkout from "./checkout";
@@ -13,6 +14,24 @@ interface HomeProps {
 
 const Home: React.FC<HomeProps> = ({ darkMode }) => {
     const [selectedBox, setSelectedBox] = useState<number | null>(0);
+
+    useEffect(() => {
+      const myHost = sessionStorage.getItem('host');
+      console.log(myHost);
+      const socket = io('http://localhost:5001');
+      // Event handler when connected to the server
+      socket.on('connect', () => {
+        console.log('Connected to the WebSocket server');
+      });
+       // Event handler for custom events from the server
+      socket.on('server_message', (data) => {
+        console.log('Received message from server:', data);
+      });
+      // Clean up the socket connection when the component unmounts
+      return () => {
+        socket.disconnect();
+      };
+    }, []);
 
     const handleBoxClick = (index: number) => {
         setSelectedBox(index);
