@@ -1,5 +1,7 @@
 import asyncio
 import websockets
+PORT = 9999
+async def server_handler(websocket, path):
 import socket
 import json
 PORT = 9999
