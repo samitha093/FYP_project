@@ -47,6 +47,8 @@ kademlaNodes = []
 nodeRestart = False
 nodeSet = False
 
+blue_color_code = '\033[95m'
+
 def responceModel(msgTo, data, msgFrom="SERVER"):
     return {
         'Sender':msgFrom,
@@ -258,7 +260,7 @@ def function_1():
     async def cart_Server():
         global cart_server_task
         server = await asyncio.start_server(handle_client, '', PORT)
-        print(f"Cart Proxy  Server Stared on {''}:{PORT}")
+        print(f"{blue_color_code}Cart Proxy  Server Stared on {''}:{PORT}\033[0m")
         try:
             async with server:
                 asyncio.create_task(server.serve_forever())
@@ -283,7 +285,7 @@ def function_2():
     async def mobile_Server():
         global mobile_server_task
         mobile_server_task = await asyncio.start_server(handle_mobile, '', MOBILE_PORT)
-        print(f"Mobile Proxy  Server Stared on {''}:{MOBILE_PORT}")
+        print(f"{blue_color_code}Mobile Proxy  Server Stared on {''}:{MOBILE_PORT}\033[0m")
         try:
             async with mobile_server_task:
                 asyncio.create_task(mobile_server_task.serve_forever())
@@ -315,7 +317,7 @@ def function_3():
         await runner.setup()
         site = web.TCPSite(runner, '0.0.0.0', HTTPPORT)
         await site.start()
-        print(f"HTTP Proxy started on{''}:{HTTPPORT}")
+        print(f"{blue_color_code}HTTP Proxy started on :{HTTPPORT}\033[0m")
         while running:
             await asyncio.sleep(1)
         print("HTTP Proxy Shutdown : ",HTTPPORT)

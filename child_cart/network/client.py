@@ -49,10 +49,10 @@ CART_TYPE = ""
 LOCALMODELACCURACY =0
 TIME_ARRAY = [0] * 5
 
-CARTDATASIZE = 0
+CARTCURRENTDATASIZE=0
 
 MODEL=create_model()
-x_train_np, y_train_np,x_test_np,y_test_np =splitDataset()
+x_train_init,y_train_init,x_test_init,y_test_init =splitDataset()
 LOGLOCALMODEL =""
 LOGRECEIVEDMODEL =[]
 datasetSize =100
@@ -90,8 +90,7 @@ MOBILEMODELPARAMETERS  =bytes(1024)
 def mainFunn(RECIVER_TIMEOUT, SYNC_CONST, SOCKET_HOST):
     print("New connection starting with ", SOCKET_HOST)
     global TIME_ARRAY,CART_TYPE,mySocket,TEMPUSERID, conType, connectionStatus
-    global x_test_np
-    global y_test_np
+
     MODE = conType
     connectionStatus = False
     try:
@@ -234,12 +233,11 @@ def backgroudNetworkProcess():
     global TIME_ARRAY,TEMPUSERID,mySocket, cartType
     global CART_TYPE,CULSTER_SIZE,conType
     global RECIVED_MODELPARAMETERLIST,MODEL
-    global LOCALMODELACCURACY,LOGLOCALMODEL,LOGRECEIVEDMODEL,datasetSize,CARTDATASIZE,initCatasetSize
-    global x_test_np
-    global y_test_np
+    global LOCALMODELACCURACY,LOGLOCALMODEL,LOGRECEIVEDMODEL,datasetSize,initCatasetSize,CARTCURRENTDATASIZE
+    global x_test_init,y_test_init
     print("NETWORKING ......")
     result=loadInitData()
-    # print("status : ",result)
+    #check initialization
     if(result == "False"):
         while True:
             #intial model training 
@@ -247,13 +245,12 @@ def backgroudNetworkProcess():
             result = getCartDataLenght()
             cartData = int(result)
             if cartData >= initCatasetSize:
-                #local model training
-                LOCALMODELACCURACY = localModelTraing(MODEL,x_test_np,y_test_np,initCatasetSize)
-                print("WHILE LOOP STOP")
+                LOCALMODELACCURACY = localModelTraing(MODEL,x_test_init,y_test_init,initCatasetSize)
+                
                 intData={"initialization": "True"}
                 saveOrUpdateInitialization(intData)
                 result=loadInitData()
-                # print("status : ",result)
+                print("Device Initialization complete")
                 break
 
     t0=threading.Thread(target=connectNetwork)
@@ -262,13 +259,11 @@ def backgroudNetworkProcess():
     
     while True:
         cartData =int(getCartDataLenght())
-        if(CARTDATASIZE != cartData):
-            print("Cart Data size: ",cartData)
-            print("dataset not completed")
-            CARTDATASIZE=cartData
-
+        #if cart data is enough 
         if cartData >= datasetSize:
             print("dataset completed")
+            x_test_np,y_test_np = splitCartData(datasetSize)
+            y_test_np = y_test_np.argmax(axis=-1)
             #local model training
             LOCALMODELACCURACY = localModelTraing(MODEL,x_test_np,y_test_np,datasetSize)
             #local model log data
@@ -277,11 +272,11 @@ def backgroudNetworkProcess():
             LOGLOCALMODEL = modelLogTemplate(currentLocalModelIndex, "True", LOCALMODELACCURACY)
             print("local model details ")
             print(LOGLOCALMODEL)
-            # localModelAnalize(x_test_np,y_test_np)            
             if conType != "KERNEL":
                 conType = "KERNEL"
                 print("Changed Connection Mode to " + conType)
                 mySocket.close(0,TEMPUSERID)
+                Stop_loop()
             print("Connecting as KERNEL for globla aggregation")
             #kernel loop
             while True:
@@ -316,6 +311,7 @@ def backgroudNetworkProcess():
                     TIME_ARRAY[3] = time.time() ## time stap 4
                     globleAggregationProcess(MODEL,x_test_np,y_test_np,CULSTER_SIZE,LOGLOCALMODEL,LOGRECEIVEDMODEL)
                     LOGRECEIVEDMODEL =[]
+                    CARTCURRENTDATASIZE=0
                     TIME_ARRAY[4] = time.time() ## time stap 5LOGRECEIVEDMODEL
                     break
                 else:
@@ -323,12 +319,20 @@ def backgroudNetworkProcess():
                     if conType != "KERNEL":
                         conType = "KERNEL"
                         mySocket.close(0,TEMPUSERID)
+                        Stop_loop()
                     time.sleep(30)
         else:
+            if(CARTCURRENTDATASIZE != cartData):
+                CARTCURRENTDATASIZE = cartData
+                print("Cart dataset not completed. Now have : ",cartData)
             if conType != "SHELL":
                 conType = "SHELL"
         time.sleep(10)
 
+def closeSocket():
+    global mySocket
+    mySocket.close(0,TEMPUSERID)
+    Stop_loop()
 #----------------------log result funtions --------------------------------
 def modelLogTemplate(id, value, accuracy):
     return {

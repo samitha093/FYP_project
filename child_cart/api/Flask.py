@@ -2,7 +2,8 @@
 import json
 import warnings
 warnings.filterwarnings("ignore", message="This is a development server. Do not use it in a production deployment.")
-
+from engineio.async_drivers import gevent
+import queue
 import logging
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
@@ -12,6 +13,9 @@ import mimetypes
 import os
 import sys
 from datetime import datetime
+
+from flask_socketio import SocketIO
+from gevent import spawn, sleep
 
 import socket
 
@@ -28,18 +32,37 @@ from child_cart.network.client import *
 from child_cart.db.apiConnection import *
 import queue
 
-	
-
 selectedItem ="Item 0"
 ItemListArray = []
 totalBill = 0
-currentGender = 0
+currentGender = 1
 currentThreandArray=[]
 
 CartType = False
+#create queue instance
+checkoutDataQue = queue.Queue()
+
+#checkout data adding to queue
+def checkoutDataQueue(gender,month,items):
+    global checkoutDataQue
+    #clear queue
+    checkoutDataQue.queue.clear()
+    array_values = []
+    for item in items:
+        array_values.append([item, gender, month])
+    for value in array_values:
+        checkoutDataQue.put(value)
+    print("Data added to the Queue")
+    # while not checkoutDataQue.empty():
+    #     element = checkoutDataQue.get()
+    #     print(element)
+
 
 # app = Flask(__name__, template_folder='../../web_app/dist', static_folder='../../web_app/dist/assets')
 app = Flask(__name__, static_folder='./templates/assets')
+app.config['SECRET_KEY'] = 'your_secret_key_here'
+socketio = SocketIO(app, cors_allowed_origins='*')
+
 mimetypes.add_type('text/javascript', '.js')
 mimetypes.add_type('text/css', '.css')
 CORS(app)  # Enable CORS for all routes
@@ -50,12 +73,31 @@ headings=("Name","Number","Price","Amount","Total price")
 def example():
     return render_template('index.html')
 
+# WebSocket event handlers
+@socketio.on('connect')
+def on_connect():
+    print('Client connected')
+
+@socketio.on('disconnect')
+def on_disconnect():
+    print('Client disconnected')
+
+@socketio.on('client_message')
+def handle_custom_event(data):
+    print('Received custom event:', data)
+
+def send_hello_to_clients():
+    while True:
+        socketio.emit('server_message', 'Hello from the server!')
+        sleep(5)  # Sleep for 1 minute
+
+
 #find current threand
 def findCurrentThreandArray():
     global currentThreandArray
     global currentGender
     #get current threand
-    month = datetime.now().month
+    month = 1
     gender = currentGender
     itemNum = getCurrentThreand(month,gender)
     currentThreandArray = []
@@ -340,4 +382,22 @@ def resetDevice():
 @app.route('/getlocalip', methods =["GET"]) # type: ignore
 def getLocalIp():
     return get_local_ip_address()
+#Checkout data adding to the que
+  
+@app.route('/getcheckoutdata', methods=['post'])
+def getCheckoutData():
+    global currentGender
+    try:
+        product_list_str = request.json['productList']
+        product_list = json.loads(product_list_str)
+        month = datetime.now().month
+        checkoutDataQueue(currentGender,month,product_list)
+        return jsonify({'message': "Checkout Data received"})
+    except:
+        return jsonify({'message': "Checkout Data not received!"})
+
+@app.route('/childstop', methods =["GET"]) # disconect socket manual
+def childstop():
+    closeSocket()
+    return jsonify({'message': "wait until reconect with new server"})
 

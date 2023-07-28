@@ -12,4 +12,9 @@ keras==2.12.*
 tensorflow==2.12.*
 pandas==1.5.2
 requests==2.31.0
+gevent
+gevent-websocket
+websocket-client
+python-socketio
+flask-socketio
 pyinstaller

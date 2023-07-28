@@ -1,7 +1,5 @@
 package com.example.predictionapp;
 
-import static android.service.controls.ControlsProviderService.TAG;
-
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -39,8 +37,6 @@ import androidx.core.content.ContextCompat;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ServerHandshake;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.tensorflow.lite.Interpreter;
 
 import java.io.BufferedReader;
@@ -51,7 +47,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OptionalDataException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
@@ -69,7 +64,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.net.Socket;
+
 import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
@@ -78,9 +73,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
-
-import okhttp3.WebSocket;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -104,9 +96,8 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothDevice selectedDevice;
     private static final int REQUEST_CODE_QR_SCAN = 101;
-    //private WebSocketAndroidClient webSocketClient;
-    private BiDirCom socketClient;
-    private BiDirClient client;
+    private WebSocketAndroidClient webSocketClient;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,28 +115,25 @@ public class MainActivity extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveFormJson();
+                saveForm();
             }
         });
-
         // Initialize the WebSocket client
-        //Context context = getApplicationContext();
+        Context context = getApplicationContext();
         //webSocketClient = new FileTransferWebSocketClient(context);
-        //webSocketClient = new WebSocketAndroidClient();
-       // webSocketClient.connect();
+        webSocketClient = new WebSocketAndroidClient();
+        webSocketClient.connect();
 
-        //Intent intent = getIntent();
-        //String scannedUrl = intent.getStringExtra("scanned_url");
+        Intent intent = getIntent();
+        String scannedUrl = intent.getStringExtra("scanned_url");
         // Create the BiDirCom object and pass the Context and scanned URL
-       // webSocketClient = new BiDirCom(this, scannedUrl);
+        //biDirWebSocket = new BiDirCom(this, "ws://" + scannedUrl + ":9999");
 
         // Connect to the WebSocket server
         //webSocketClient.connectWebSocket();
         //biDirWebSocket.connectWebSocket();
         // Get the scanned URL from the Intent
-        // Initialize BiDirCom
-        // Connect to WebSocket server
-        //webSocketClient.connectWebSocket();
+
 
         // Check if the ACCESS_FINE_LOCATION permission is granted
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -227,79 +215,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        String scannedData ="";
-        String ipAddress = "";
-        int port = 0 ;
-        //String url = "ws://" + scannedData + ":9999";
-        if (result != null && result.getContents() != null) {
-            scannedData = result.getContents();
-            String dataType = result.getFormatName(); // Get the data type
-            Log.d("QR RESULT", "Scanned Data: " + scannedData + ", Data Type: " + dataType);
-            //url = "ws://" + scannedData + ":9999";
-            String[] parts = scannedData.split(":");
-            if(parts.length == 2){
-                ipAddress = parts[0];
-                port = Integer.parseInt(parts[1]);
-                Log.i("split data: ","IP: "+ipAddress+ ", PORT: "+ port);
-            }
-            // Create an Intent to send the scanned URL back to MainActivity
-            Intent intent = new Intent();
-            intent.putExtra("scanned_url", scannedData);
-            setResult(RESULT_OK, intent);
-            finish();
 
-        } else {
-            // If the scanning process was canceled
-            // You can handle it here, for example, show a message to the user.
-            Log.d(TAG, "Scanning canceled");
-            setResult(RESULT_CANCELED);
-            finish();
-        }
-        if ( resultCode == RESULT_OK && data != null) {
+        /*if (requestCode == REQUEST_CODE_QR_SCAN && resultCode == RESULT_OK && data != null) {
+            // Get the scanned URL from the Intent
+            String scannedUrl = data.getStringExtra("scanned_url");
 
-             // Check if the scannedUrl is not null
-                Log.d("CONNECT TO SOCKET: ", scannedData);
-
-                // Now, you can pass the URL to BiDirCom without modifying it
-                //BiDirCom webSocketClient = new BiDirCom(this, ipAddress , port);
-                //webSocketClient.connectSocket();
-                client = new BiDirClient(this, ipAddress,port);
-                client.sendJSONFileToServer();
-                //client.connectAndReceiveFile();
-                //client.sendFileToServer();
-                // After receiving the data, call the method to send it back to the server
-               /* byte[] receivedData = client.getReceivedData();
-                if (receivedData != null) {
-                    client.sendFileToServer();
-                }*/
-                Toast.makeText(this, scannedData, Toast.LENGTH_SHORT).show();
-
-        }else {
-            Log.i("DATA INTENT: ","DATA IS NOT FETCHED");
-        }
-
+            // Now, you can pass the URL to FileTransferWebSocketClient
+           BiDirCom webSocketClient = new BiDirCom(this, "ws://" + scannedUrl + ":9999");
+           webSocketClient.connectWebSocket();
+            Toast.makeText(this, scannedUrl, Toast.LENGTH_SHORT).show();
+        }*/
     }
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Check if the BiDirCom object is not null before calling the disconnectWebSocket() method
-        if (client != null) {
-            client.closeSocket();
-        }
+        webSocketClient.disconnect();
 
 
     }
-
     public void onConnectToCartButtonClicked(View view) {
-        //webSocketClient.disconnect();
         startQRCodeScan();
 
-    }
-    public void onDisconnectCartButtonClicked(View view){
-        if (socketClient != null) {
-            socketClient.closeSocket();
-        }
     }
     /*private void startScanQRCodeActivity() {
         Intent intent = new Intent(this, ScanQRCodeActivity.class);
@@ -569,56 +505,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    private void saveFormJson() {
-        String name = etName.getText().toString();
-        String gender = etGender.getText().toString();
-        String NIC = etNIC.getText().toString();
-        String city = etCity.getText().toString();
-
-        // Create a JSON object to hold the user data
-        JSONObject userDataJson = new JSONObject();
-        try {
-            userDataJson.put("name", name);
-            userDataJson.put("gender", gender);
-            userDataJson.put("NIC", NIC);
-            userDataJson.put("city", city);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        // Create the file name
-        String userDataJsonFile = "user_data.json";
-
-        String existingFormData = readFormData();
-
-        if (existingFormData != null && existingFormData.contains(userDataJson.toString())) {
-            // Check whether a user exists or not
-            Toast.makeText(getApplicationContext(), "This user has been already added", Toast.LENGTH_SHORT).show();
-        } else {
-            try {
-                FileOutputStream fileOutputStream = openFileOutput(userDataJsonFile, Context.MODE_APPEND);
-                // Convert the JSON object to a JSON string
-                String userDataJsonString = userDataJson.toString() + "\n";
-                fileOutputStream.write(userDataJsonString.getBytes());
-                fileOutputStream.close();
-                Calendar calendar = Calendar.getInstance();
-                loadModel("model");
-                int currentMonth = calendar.get(Calendar.MONTH) + 1;
-                predict(currentMonth, Integer.parseInt(gender));
-                // Clear the text boxes
-                etName.setText("");
-                etGender.setText("");
-                etNIC.setText("");
-                etCity.setText("");
-
-                Toast.makeText(getApplicationContext(), "A new user is added ", Toast.LENGTH_SHORT).show();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
 
     private String readFormData() {
         try {
@@ -950,7 +836,6 @@ private float modelAccuracy(String accuracyMode){
         integrator.setPrompt("Scan a QR Code");
         integrator.setCameraId(0); // Use the rear camera (0) or front camera (1)
         integrator.initiateScan();
-
 
     }
 }
