@@ -53,9 +53,9 @@ def main():
     print(f"\033[38;5;208mServer: {host} listening on port: {PORT}")
 
     # Output file path
-    output_file = "qrcode.png"
+    """ output_file = "qrcode.png"
     data = f"{host}:{PORT}"
-    qr.generate_qr_code(data, output_file)
+    qr.generate_qr_code(data, output_file) """
 
     print("Waiting for a client to connect...")
     client_socket, client_address = server_socket.accept()
@@ -69,7 +69,7 @@ def main():
             json.dump(received_json, file)
 
         print("JSON data received and saved to file: received_data.json")
-        
+
     # Send the file to the client
     #send_file(client_socket)
     # Receive the file from the client
