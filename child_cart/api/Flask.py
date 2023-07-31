@@ -339,8 +339,8 @@ def hostSelect():
 @app.route('/limitupdate', methods=['POST'])
 def limitUpdate():
     data = request.get_json()  # Retrieve the JSON object from the request
-    forward=data['forward']
-    backward =data['backward']
+    forward= int(data['forward'])
+    backward = int(data['backward'])
     filteringLimitUpdate(forward,backward)
 
     return jsonify({'message': "Limit updated"})
