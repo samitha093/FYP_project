@@ -35,7 +35,7 @@ CULSTER_SIZE = 3
 connectionStatus = False
 
 FORWARD=50
-BACKWORD=20 #update globle values from cache
+BACKWORD=50 #update globle values from cache
 
 HOSTHISTORT = ""
 HOSTLIST = []
@@ -118,6 +118,7 @@ def mainFunn(RECIVER_TIMEOUT, SYNC_CONST, SOCKET_HOST):
         #Connection Mode select
         if MODE == conctionType.KERNEL.value:
             MODELPARAMETER = communicationProx(mySocket,TEMPUSERID,MODE,RECIVER_TIMEOUT,MODELPARAMETERS, HOSTHISTORT)
+            print("recived model cont ======> ",len(MODELPARAMETER))
             if len(MODELPARAMETER) == 0:
                 return
             lock.acquire()
@@ -283,10 +284,13 @@ def backgroudNetworkProcess():
                 # get data from recived queue
                 lock.acquire()
                 print("Thread lock acquired")
+                print("RECIVED_MODELPARAMETERLIST SIZE : ", len(RECIVED_MODELPARAMETERLIST))
                 TEMPRECIVED_MODELPARAMETERLIST = RECIVED_MODELPARAMETERLIST.copy()
                 RECIVED_MODELPARAMETERLIST=[]
                 lock.release()
                 print("Thread lock released")
+                print("TEMP_MODELPARAMETERLIST SIZE : ", len(TEMPRECIVED_MODELPARAMETERLIST))
+
                 #check received parameters accuracy and save or drop
                 for item in TEMPRECIVED_MODELPARAMETERLIST:
                     if "MODELPARAMETERS" in item['Data']:
@@ -302,7 +306,8 @@ def backgroudNetworkProcess():
                     print("Model parameters satisfied!")
                     if conType != "SHELL":
                         conType = "SHELL"
-                        
+                        mySocket.close(0,TEMPUSERID)
+                        Stop_loop()
                         #mock api sending for tesing
                         td=threading.Thread(target=testfileReadAndSendRequest)
                         td.start()
