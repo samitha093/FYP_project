@@ -29,35 +29,29 @@ import threading
 #     #  "10.50.70.160"
 #   ]
 links= [
-
-     
      "10.50.70.17",
      "10.50.70.18",
      "10.50.70.16",
      "10.50.70.15",
-
      "10.50.70.123",
      "10.50.70.124",
      "10.50.70.125",
      "10.50.70.126",
      "10.50.70.127",
-     "10.50.70.128",
-    
+     "10.50.70.150", # 128 machine not here
      "10.50.70.129",
      "10.50.70.130",
-    "10.50.70.131",
+     "10.50.70.131",
      "10.50.70.132",
-    "10.50.70.133",
+     "10.50.70.133",
      "10.50.70.134",
      "10.50.70.137",
      "10.50.70.138",
-
-    "10.50.70.138",
+     "10.50.70.138",
      "10.50.70.43",
      "10.50.70.44",
      "10.50.70.45",
      "10.50.70.46",
-
      "10.50.70.29",
      "10.50.70.30",
      "10.50.70.31",
@@ -103,8 +97,16 @@ def ipWriteStart(links):
         t1.start()
         t1.join()
 
+links= [
+
+     "10.50.70.123",
+     "10.50.70.124",
+     "10.50.70.150",
+       "10.50.70.140"
+     
+     ]
 ##ip write function
-ipWriteStart(links)
+# ipWriteStart(links)
 
 
 #write in new file
@@ -133,6 +135,10 @@ def resultWrite(links):
         t1.join()
 
 #write in new file
+links= [
+     "10.50.70.123",
+     "10.50.70.124"
+     ]
 # resultWrite(links)
 
 #---------------------limit update--------------------
@@ -155,7 +161,7 @@ def limitUpdate(links):
     mod_links = ["http://" + link + "/testitems" if ":" in link else "http://" + link + ":5001/limitupdate" for link in links]
     print("Length  : ",len(mod_links))    
     data = {"forward": "10",
-            "backward":"20"
+            "backward":"50"
             }
     for i in range(len(mod_links)):
         url = mod_links[i]  
@@ -163,8 +169,13 @@ def limitUpdate(links):
         t1=threading.Thread(target=updatelimit,args=(url,data,))
         t1.start()
         t1.join()
-
-# limitUpdate(links)
+links= [
+    #  "10.50.70.123",
+    #  "10.50.70.124",
+    #  "10.50.70.150",
+     "10.50.70.140"
+     ]
+limitUpdate(links)
 
 #--------------------------file delete ---------------------
 
