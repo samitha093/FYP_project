@@ -133,11 +133,12 @@ public class MainActivity extends AppCompatActivity{
         @Override
         protected Void doInBackground(Void... voids) {
             socketConnect();
-            try {
+            /*try {
                 socketDisconnect();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+            */
             return null;
         }
 
@@ -157,14 +158,26 @@ public class MainActivity extends AppCompatActivity{
                     // Receive a custom message from the server
                     InputStream inputStream = socket.getInputStream();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                    String message = reader.readLine();
+                    String message = "";
+                    boolean isAlreadyPrint = false;
+                    while(true){
+                         message = reader.readLine();
 
-                   if (message.equals("FAILED")) {
-                        Log.d("SOCKET REFUSE", "Server reached the connection limit. Stop connecting.");
-                        return; // Exit the thread to stop trying to connect
-                    }else{
-                       Log.d("SOCKET ESTABLISH","Connection is successfully done");
-                   }
+                            if (message.equals("FAILED")) {
+                                Log.d("SOCKET REFUSE", "Server reached the connection limit. Stop connecting.");
+                                return; // Exit the thread to stop trying to connect
+                            }
+                            if(!isAlreadyPrint){
+                                Log.d("SOCKET ESTABLISH", "Connected succesfully.");
+                                isAlreadyPrint = true;
+                            }
+                        // Print the received message to the console using Log
+
+                        Log.d("Received Message", message);
+
+
+                    }
+
                     //disconnectCart(socket);
                     //sendUserData();
                     //receiveData();
