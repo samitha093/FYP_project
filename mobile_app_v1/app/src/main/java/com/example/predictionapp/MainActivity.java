@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity{
     private static final int REQUEST_CODE_QR_SCAN = 101;
     //private WebSocketAndroidClient webSocketClient;
     private BiDirCom socketClient;
-    private BiDirClient client;
+    //private BiDirClient client;
 
 
     private Socket socket;
@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity{
                 socket = null;
                 try {
                     socket = new Socket(host, port);
-                    Log.d("SOCKET OPEN", "Socket connection is established.");
+                    Log.d("SOCKET REQUEST", "Socket connection requesting....");
                     // Print the loop from 1 to 10
                     // Receive a custom message from the server
                     InputStream inputStream = socket.getInputStream();
@@ -145,10 +145,10 @@ public class MainActivity extends AppCompatActivity{
                     String message = reader.readLine();
 
                    if (message.equals("FAILED")) {
-                        Log.d("SERVER RESPONSE", "Server reached the connection limit. Stop connecting.");
+                        Log.d("SOCKET REFUSE", "Server reached the connection limit. Stop connecting.");
                         return; // Exit the thread to stop trying to connect
                     }else{
-                       Log.d("SOCKET CONNECT","Connection is successfully done");
+                       Log.d("SOCKET ESTABLISH","Connection is successfully done");
                    }
                     //disconnectCart(socket);
                     //sendUserData();
