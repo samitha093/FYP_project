@@ -181,30 +181,30 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
 </div>
 
 
-          <Button
-            pos="fixed"
-            bottom="7"
-            right="7"
-            borderRadius="50%"
-            p="4"
-            fontSize="3xl"
-            width="80px"
-            height="80px"
-            bg="teal.500"
-            color="white"
-            boxShadow="lg"
-            _hover={{ bg: "teal.700" }}
-            onClick={
-              
-              refreshNabourList}
-          >
-
-
-
-            <RepeatIcon />
-          </Button>
+      
           {!isTrueButton1?
-          <> 
+          <>     <Button
+          pos="fixed"
+          bottom="7"
+          right="7"
+          borderRadius="50%"
+          p="4"
+          fontSize="3xl"
+          width="80px"
+          height="80px"
+          bg="teal.500"
+          color="white"
+          boxShadow="lg"
+          _hover={{ bg: "teal.700" }}
+          onClick={
+            
+            refreshNabourList}
+        >
+
+
+
+          <RepeatIcon />
+        </Button>
                 <Box border="1px solid" borderColor={darkMode ? "gray.600" : 'gray.300'} padding={'20px'}
                 mr={{ base: '0', lg: '30px' }} w={{ base: '100%', lg: '60%' }} h={'100%'} minW={'300px'}
                 overflow="auto">

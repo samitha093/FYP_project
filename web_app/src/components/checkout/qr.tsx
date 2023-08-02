@@ -14,7 +14,6 @@ const Scanner: React.FC<AppProps> = ({ datasender }) => {
   }
 
   useEffect(() => {
-    console.log("Result changed:", result);
     datasender(result);
   }, [result]);
 

@@ -63,6 +63,7 @@ def seedProx(mySocket,USERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,SHELL_TI
         if mySocket.checkBreak():
             print("Critical break executed.....")
             break
+    print("END of the KERNAL process")
     return
 
 def Stop_loop():

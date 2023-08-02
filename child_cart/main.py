@@ -22,8 +22,10 @@ def mainFunc(NetworkModule = True):
         mobileServer_thread.start()
 
         #starting Flask Api module
-        print("\033[38;5;208mFlask API Server Started on :", 5001, "\033[0m")
-        app.run(port=5001, debug=False, host="0.0.0.0")
+        print("\033[38;5;208mFlask Rest API Server Started on :", 5001, "\033[0m")
+        print('\033[32mFlask Socker started. Listening on : 5001\033[0m')
+        spawn(send_hello_to_clients)
+        socketio.run(app, host='0.0.0.0', port=5001,debug=False)
 
     except Exception as e:
         print("An error occurred:", e)
