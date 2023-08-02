@@ -64,6 +64,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -112,7 +113,7 @@ public class MainActivity extends AppCompatActivity{
     //private BiDirClient client;
 
 
-    private Socket socket;
+    public Socket socket;
 
     @SuppressLint("MissingInflatedId")
 
@@ -124,7 +125,21 @@ public class MainActivity extends AppCompatActivity{
 
         Log.i("INT", "Loading");
         MyLogger.i("COLORED TAG", "This is an info message with color.");
-        socketConnect();
+        new SocketTask().execute();
+
+    }
+    private class SocketTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            socketConnect();
+            try {
+                socketDisconnect();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            return null;
+        }
 
     }
     //socket connection
@@ -161,6 +176,21 @@ public class MainActivity extends AppCompatActivity{
             }
         }).start();
 
+    }
+    // socket disconnect
+    public void socketDisconnect() throws InterruptedException {
+        Log.d("SOCKET DIpppppp", "Socket connection manually closed.");
+        Thread.sleep(8000);
+        try {
+            if (socket != null && socket.isConnected()) {
+
+                socket.close();
+                Log.d("SOCKET DISCONNECT", "Socket connection manually closed.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.d("SOCKET DISCONNECT", "Error while closing socket: " + e.getMessage());
+        }
     }
    /* public void disconnectCart(Socket socket) {
 
