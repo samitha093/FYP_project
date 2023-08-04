@@ -1,5 +1,7 @@
 package com.example.predictionapp;
 
+import static android.service.controls.ControlsProviderService.TAG;
+
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -37,16 +39,22 @@ import androidx.core.content.ContextCompat;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ServerHandshake;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.tensorflow.lite.Interpreter;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OptionalDataException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
@@ -57,6 +65,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -64,7 +73,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
+import java.net.Socket;
 import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
@@ -73,9 +82,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
+import okhttp3.WebSocket;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
     private static final int REQUEST_ENABLE_BT = 1;
     Interpreter localTfliteModel;
     Interpreter receivedTfliteModel;
@@ -85,7 +97,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String SERVER_ADDRESS = "141.145.200.6";
     private static final int SERVER_PORT = 8000;
     Button buttonBT;
-
+    private String host ;
+    private int port;
 
     private EditText etName, etGender, etNIC, etCity;
     private Button sendMsgButton;
@@ -96,101 +109,240 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothDevice selectedDevice;
     private static final int REQUEST_CODE_QR_SCAN = 101;
-    private WebSocketAndroidClient webSocketClient;
+    //private WebSocketAndroidClient webSocketClient;
+    private BiDirCom socketClient;
+    //private BiDirClient client;
+
+
+    public Socket socket;
+    private boolean fileOutputStream;
 
     @SuppressLint("MissingInflatedId")
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Get references to UI elements
-        etName = findViewById(R.id.editTextName);
-        etGender = findViewById(R.id.editTextGender);
-        etNIC = findViewById(R.id.editTextNIC);
-        etCity = findViewById(R.id.editTextCity);
-
-        Button btnSave = findViewById(R.id.buttonSave);
-        File csvFile = new File(getFilesDir(), "user_data.csv");
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveForm();
-            }
-        });
-        // Initialize the WebSocket client
-        Context context = getApplicationContext();
-        //webSocketClient = new FileTransferWebSocketClient(context);
-        webSocketClient = new WebSocketAndroidClient();
-        webSocketClient.connect();
-
-        Intent intent = getIntent();
-        String scannedUrl = intent.getStringExtra("scanned_url");
-        // Create the BiDirCom object and pass the Context and scanned URL
-        //biDirWebSocket = new BiDirCom(this, "ws://" + scannedUrl + ":9999");
-
-        // Connect to the WebSocket server
-        //webSocketClient.connectWebSocket();
-        //biDirWebSocket.connectWebSocket();
-        // Get the scanned URL from the Intent
-
-
-        // Check if the ACCESS_FINE_LOCATION permission is granted
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted, request it
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    REQUEST_ENABLE_BT);
-        }
-
-        // Register for broadcasts when a device is discovered.
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-
-        bluetoothReceiver = new BluetoothReceiver();
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        //registerReceiver(receiver, filter);
-        try {
-            copyModelToInternalStorage(this, "model.tflite");
-            // Success: Model copied to internal storage
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Error: Failed to copy model
-        }
-        //db connect
-       /* dbConnect("v");
-
-
-//        //load local model
-//        loadModel("localModel");
-//        //load csv file
-//        readCsv("V");
-//        //get predictions
-//        predict(1, 0);
-//
-//        //imge slider
-//        imageSlider("v");
-
-        //-------------------background process---------------
-
-        //---socket handling---
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-//                backroundProcess("V");
-            }
-        }).start();*/
+        Log.i("INT", "Loading");
+        MyLogger.i("COLORED TAG", "This is an info message with color.");
+        new SocketTask().execute();
+        //processReceivedFile();
 
 
     }
+    private class SocketTask extends AsyncTask<Void, Void, Void> {
 
+        @Override
+        protected Void doInBackground(Void... voids) {
+            asynchrounousProcess();
+            /*try {
+                Thread.sleep(8000);
+                socketDisconnect();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }*/
+            return null;
+        }
+
+    }
+    //UI and Background proceess
+    public void asynchrounousProcess(){
+
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                socket = null;
+                host = "192.168.8.136";
+                port = 9999;
+
+                // Start separate threads for reading and sending messages
+                //Thread for socket
+
+                Thread socketThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            socket = new Socket(host, port);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        Log.d("SOCKET REQUEST", "Socket connection requesting....");
+                        readMessages(getApplicationContext());
+
+                    }
+                });
+                //Thread for UI Process
+                Thread UIThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                    }
+                });
+
+                socketThread.start();
+                UIThread.start();
+
+                // Wait for the threads to finish
+                try {
+                    socketThread.join();
+                    UIThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }).start();
+
+    }
+
+// common template for send all data
+ private void sendMessages(String messageToSend) {
+      try {
+          OutputStream outputStream = socket.getOutputStream();
+          PrintWriter writer = new PrintWriter(outputStream, true);
+          writer.println(messageToSend);
+
+      } catch (IOException e) {
+          e.printStackTrace();
+          Log.d("Socket Error", "Error while sending messages: " + e.getMessage());
+      }
+  }
+
+ //read data from cart not work
+    public void readMessages(Context context) {
+        try {
+            InputStream inputStream = socket.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            String message;
+            boolean isAlreadyPrint = false;
+
+            FileOutputStream fileOutputStream = context.openFileOutput("received_checkout_data.txt", Context.MODE_APPEND | Context.MODE_PRIVATE);
+
+            while (true) {
+                message = reader.readLine();
+                if (message == null) {
+                    // Socket connection is closed, break the loop
+                    Log.d("SOCKET NULL RECEIVING", "Server reached the connection limit. Stop connecting.");
+                    break;
+                }
+
+                else if (message.equals("FAILED")) {
+                    Log.d("SOCKET REFUSE", "Server reached the connection limit. Stop connecting.");
+                    fileOutputStream.close(); // Close the file output stream
+                    return; // Exit the thread to stop trying to connect
+                }
+                else if (message.equals("SOCKET CONNECTED")) {
+                    Log.d("SOCKET ESTABLISH", "Connected successfully.");
+                    sendUserData(); //sending user data
+                    Thread.sleep(1000);
+                    sendDataSet(); //sending data set
+
+                }
+
+                if (!isAlreadyPrint) {
+                    Log.d("SOCKET ESTABLISH", "Connected successfully.");
+
+                    isAlreadyPrint = true;
+                }
+                if (message.equals("FILE")) {
+                    Log.d("SOCKET FILE RECEIVING", "RECEIVING START.");
+                    Log.d("Received File", message);
+                    while(true){
+                        message = reader.readLine();
+                        Log.d("Received Message", message);
+                        // Write the received message to the file
+                         // Add a newline after each message
+                        if (message.equals("ENDING")){
+                            // Print the received message to the console using Log
+                            break;
+                        }
+                        fileOutputStream.write(message.getBytes());
+                        fileOutputStream.write("\n".getBytes());
+                    }
+
+                    // Get the file path of the saved file
+                    String filePath = context.getFilesDir() + "/" + "received_checkout_data.txt";
+                    // Print a success message indicating that the file has been saved
+                    Log.d("FILE SAVED", "Received messages have been successfully saved to the file: " + filePath);
+                    //fileOutputStream.close(); // Close the file output stream
+                    //return; // Exit the thread to stop trying to connect
+                }else{
+                    //print normal message
+                    Log.d("Received Message new", message);
+                }
+            }
+            fileOutputStream.close();
+        } catch (IOException e) {
+            // Handle the exception (e.g., log or rethrow it)
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    //send checkout data set
+    private void sendDataSet() {
+        Context context = this; // Get the context if not available in the method already
+        File receivedFile = new File(context.getFilesDir(), "received_checkout_data.txt");
+        if(receivedFile.exists()){
+            try (BufferedReader reader = new BufferedReader(new FileReader(receivedFile))) {
+                String line;
+                line = "FILE";
+                sendMessages(line);
+               while ((line = reader.readLine()) != null) {
+                    // Display each line in the console log
+                    Log.d("READ LINE", line);
+                    sendMessages(line);
+                }
+               Thread.sleep(1000);
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }else{
+            Log.i("CHECKOUT DATA", "Still you do not receive data");
+        }
+
+   }
+    //send user data
+    private void sendUserData(){
+
+        String line;
+        line = "USER DATA";
+        sendMessages(line);// Get the context if not available in the method already
+        String name = "Kavini";
+        String age = "3";
+        String gender = "10";
+        line = "[" + name + "," + age + "," + gender + "]";
+        sendMessages(line);
+    }
+
+    // socket disconnect Manually
+    public void socketDisconnect() throws InterruptedException {
+
+
+        try {
+            if (socket != null && socket.isConnected()) {
+                socket.close();
+                Log.d("SOCKET DISCONNECT", "Socket connection manually closed.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.d("SOCKET DISCONNECT", "Error while closing socket: " + e.getMessage());
+        }
+    }
+
+    //--------------------------- SOCKET CODES END HERE----------------------
     @Override
     protected void onResume() {
         super.onResume();
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-        registerReceiver(bluetoothReceiver, filter);
-        //handleBluetoothActions();
     }
 
     @Override
@@ -215,255 +367,136 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        String scannedData ="";
+        String ipAddress = "";
+        int port = 0 ;
+        if (result != null && result.getContents() != null) {
+            scannedData = result.getContents();
+            String dataType = result.getFormatName(); // Get the data type
+            Log.d("QR RESULT", "Scanned Data: " + scannedData + ", Data Type: " + dataType);
+            //url = "ws://" + scannedData + ":9999";
+            String[] parts = scannedData.split(":");
+            if(parts.length == 2){
+                ipAddress = parts[0];
+                port = Integer.parseInt(parts[1]);
+                Log.i("split data: ","IP: "+ ipAddress+ ", PORT: "+ port);
+            }
+            // Create an Intent to send the scanned URL back to MainActivity
+            Intent intent = new Intent();
+            intent.putExtra("scanned_url", scannedData);
+            setResult(RESULT_OK, intent);
 
-        /*if (requestCode == REQUEST_CODE_QR_SCAN && resultCode == RESULT_OK && data != null) {
-            // Get the scanned URL from the Intent
-            String scannedUrl = data.getStringExtra("scanned_url");
+        } else {
+            // If the scanning process was canceled
+            // You can handle it here, for example, show a message to the user.
+            Log.d(TAG, "Scanning canceled");
+            setResult(RESULT_CANCELED);
 
-            // Now, you can pass the URL to FileTransferWebSocketClient
-           BiDirCom webSocketClient = new BiDirCom(this, "ws://" + scannedUrl + ":9999");
-           webSocketClient.connectWebSocket();
-            Toast.makeText(this, scannedUrl, Toast.LENGTH_SHORT).show();
-        }*/
+        }
+        if ( resultCode == RESULT_OK && data != null) {
+
+            // Check if the scannedUrl is not null
+            Log.d("SOCKET: ", scannedData);
+            //client = new BiDirClient(this,"192.168.8.136",9999);
+            //client.socketConnection();
+            Toast.makeText(this, scannedData, Toast.LENGTH_SHORT).show();
+
+        }else {
+            Log.i("DATA INTENT: ","DATA IS NOT FETCHED");
+        }
+
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        webSocketClient.disconnect();
-
 
     }
+
+
     public void onConnectToCartButtonClicked(View view) {
-        startQRCodeScan();
+        //startQRCodeScan();
 
     }
-    /*private void startScanQRCodeActivity() {
-        Intent intent = new Intent(this, ScanQRCodeActivity.class);
-        startActivity(intent);
-    }*/
-
-    // Example: Start the QR code scanning on the "Connect to Cart" button click
-
-   //database access
-   private void dbConnect(String v){
-       // Set up the connection string to MongoDB Atlas
-       // Set up the connection string to MongoDB Atlas
-//        ConnectionString connectionString = new ConnectionString("mongodb+srv://StDB:lrJKqTsc8nNSgoIP@cluster0.izid3.mongodb.net/?retryWrites=true&w=majority");
-//
-//        // Configure the MongoClient settings
-//        MongoClientSettings settings = MongoClientSettings.builder()
-//                .applyConnectionString(connectionString)
-//                .retryWrites(true)
-//                .build();
-
-       // Connect to MongoDB Atlas
-//        try (com.mongodb.client.MongoClient mongoClient = MongoClients.create(settings)) {
-//            // Get the database instance
-//            MongoDatabase database = mongoClient.getDatabase("supermarket");
-//
-//            // Get the collection instance
-//            MongoCollection<Document> collection = database.getCollection("itemList");
-//
-//            // Find all documents in the collection
-//            for (Document doc : collection.find()) {
-//                System.out.println(doc.toJson());
-//            }
-//            Log.i("MyApp", "Successfully connected to MongoDB Atlas");
-//        } catch (Exception e) {
-//            Log.i("MyApp", "Failed to connect to MongoDB Atlas: " + e.getMessage());
-//        }
-   }
-
-
-    //image slider
-    /*private void imageSlider(String v)
-    {
-        ImageSlider imageSlider = findViewById(R.id.slider);
-
-        List<SlideModel> slideModels = new ArrayList<>();
-
-        slideModels.add(new SlideModel("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6tqp6VEz0p0GALLB37EFxuxaYNXgJT-eSsjLpaILl1e5IoQzjJlIKr-5vylrEbH2N5Xk&usqp=CAU", ScaleTypes.FIT));
-        slideModels.add(new SlideModel("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmMyPi2erglKGZ9i5eCHOOfE-qPwnrWvtDtQ&usqp=CAU", ScaleTypes.FIT));
-        slideModels.add(new SlideModel("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRB-mJAKFYz-PoUisex2xHP6vIhRwe63K5fuQ&usqp=CAU", ScaleTypes.FIT));
-        slideModels.add(new SlideModel("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4Jt23QBgd9UaEaSoj-7nlKpDoa4qKW_0PGA&usqp=CAU", ScaleTypes.FIT));
-        slideModels.add(new SlideModel("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpDek-8i069qz53FcPMd5Bu9alfDyIDJuzYg&usqp=CAU", ScaleTypes.FIT));
-        slideModels.add(new SlideModel("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0XU44yqqFXmIAK5WcjctcEwBJ-04gCFoqnw&usqp=CAU", ScaleTypes.FIT));
-        slideModels.add(new SlideModel("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQiKQ069lqpt28Miyn7al5OvDdulDPB9Wj7Pw&usqp=CAU", ScaleTypes.FIT));
-
-        imageSlider.setImageList(slideModels,ScaleTypes.FIT);
-
-    }*/
-    //close image slider
-
-
-    //background process
-
-    private void backroundProcess(String v)
-    {
-        //two modes of model accuray 1.localModel 2.receivedModel
-
-        //load local model
-        loadModel("localModel");
-        //load csv file
-        readCsv("V");
-        //get model accuray
-        localModelAccuracy =  modelAccuracy("localModel");
-        String fileName="receivedModel";
-        //loop process untill received model accuracy greater than local model accuracy
-        while (true){
-            //connect to socket and get url
-            Log.i("MyApp", "Socket conneting...");
-
-            String fileUrl =  socketConnect("V");
-
-            if(fileUrl !="ERROR"){
-                Log.i("MyApp", "Socket connected.");
-                //download the model and save in internal memory
-                saveReceivedModel(fileUrl,fileName);
-                //load received model
-                loadModel(fileName);
-                //get model accuray
-                receivedModelAccuracy =  modelAccuracy(fileName);
-                if(localModelAccuracy  < receivedModelAccuracy){
-                    //now we have higher received model accuracy
-                    Log.i("MyApp", "Received model accuracy higher than local model accuracy. Loop stop");
-                    break;
-                }
-                else{
-                    Log.i("MyApp", "Received model accuracy not higher than local model accuracy. Loop continue");
-                }
-
-                //delete received model
-                deleteFiles(fileName);
-            }
-            else{
-                Log.i("MyApp", "Socket ERROR");
-                Log.i("MyApp", "Reconnect");
-            }
-
-        }
-
-        //delete current local model
-        deleteFiles("localModel");
-        //rename recieved model as local model
-        renameModel(fileName,"localModel");
-        Log.i("MyApp", "Successfully updated model saved to internal storage");
+    public void onDisconnectCartButtonClicked(View view){
 
     }
+    private class FileReceiveTask extends AsyncTask<Void, Void, Boolean> {
 
-    private void saveReceivedModel(String MyUrl,String fileName){
-        try {
-            Log.i("MyApp", "Try ");
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            try {
+                String SERVER_IP = "192.168.8.169";
+                int PORT = 9999;
+                Socket socket = new Socket(SERVER_IP, PORT);
+                Log.d(TAG, "Socket connection is established.");
 
-            // MyUrl = "http://localhost:5000/download?ID=123";
-            URL url = new URL(MyUrl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            Log.i("MyApp", "Call Request ");
+                // Create a file to save the received data
+                File outputFile = new File(getExternalFilesDir(null), "checkout_data_file.txt");
 
-            if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                Log.i("MyApp", "Accept the Request ");
-                Log.i("MyApp", "Input Stream");
+                InputStream inputStream = socket.getInputStream();
+                FileOutputStream outputStream = new FileOutputStream(outputFile);
+                BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
 
-                InputStream inputStream = conn.getInputStream();
-
-                // Get the path to the internal storage directory
-                File directory = new File(getFilesDir(), "models");
-                directory.mkdirs();
-//                Log.i("Socket", "models dir");
-
-                // Create a new file in the internal storage directory and copy the model data to it
-                File modelFile = new File(directory, fileName+".tflite");
-//                File modelFile = new File(directory, "model.tflite");
-
-                OutputStream outputStream = new FileOutputStream(modelFile);
-
-//                    FileOutputStream outputStream = new FileOutputStream(fileName);
                 byte[] buffer = new byte[1024];
-                int bytesRead = -1;
-                Log.i("MyApp", "read....");
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                int bytesRead;
+                while ((bytesRead = bufferedInputStream.read(buffer)) != -1) {
                     outputStream.write(buffer, 0, bytesRead);
-                    Log.i("MyApp", "Writing....");
                 }
 
                 outputStream.close();
                 inputStream.close();
-                Log.i("MyApp", "Successfully save to internal storage "+fileName);
+                socket.close();
+
+                Log.d(TAG, "File received and saved to: " + outputFile.getAbsolutePath());
+                return true;
+            } catch (IOException e) {
+                Log.e(TAG, "Error while receiving file: " + e.getMessage());
+                return false;
             }
-            else {
-                Log.i("MyApp", "Failed to download file. Response code: "+fileName +" : " + conn.getResponseCode());
-                System.out.println("Failed to download file. Response code: " + conn.getResponseCode());
-            }
-        } catch (Exception e)
-        {
-            e.printStackTrace();
         }
-    }
 
-    //close socket connect
-
-    //model rename and delete files
-    private void renameModel(String originalName,String rename){
-
-        File modelFile = new File(getFilesDir() + "/models/"+originalName+".tflite");
-        File newModelFile = new File(getFilesDir() + "/models/"+rename+".tflite");
-        if(modelFile.exists()) {
-            if(modelFile.renameTo(newModelFile)) {
-                Log.i("MyApp", "File "+originalName +" renamed as "+rename+" successfully.");
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result) {
+                Log.d(TAG, "File received successfully");
+                // Handle the received file here
+                // You can access the file using the File object outputFile
             } else {
-                Log.i("MyApp", originalName+" rename failed.");
+                Log.d(TAG, "File receive failed");
             }
-        } else {
-            Log.i("MyApp", originalName+" not found.");
         }
     }
 
-    private void deleteFiles(String deleteFileName) {
-        File receivedModelFile = new File(getFilesDir() + "/models/"+deleteFileName+".tflite");
-        if (receivedModelFile.exists()) {
-            if (receivedModelFile.delete()) {
-                Log.i("MyApp", deleteFileName+" deleted successfully.");
-            } else {
-                Log.i("MyApp", deleteFileName+" delete failed.");
+    private void initiate(){
+
+        // Get references to UI elements
+        etName = findViewById(R.id.editTextName);
+        etGender = findViewById(R.id.editTextGender);
+        etNIC = findViewById(R.id.editTextNIC);
+        etCity = findViewById(R.id.editTextCity);
+        Button btnSave = findViewById(R.id.buttonSave);
+        File csvFile = new File(getFilesDir(), "user_data.csv");
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveFormJson();
             }
-        } else {
-            Log.i("MyApp", deleteFileName+" not found.");
-        }
-
-    }
-
-    //close background process
+        });
 
 
-    //socket connect
-    private String socketConnect(String v) {
+        //registerReceiver(receiver, filter);
         try {
-            //create socket and connect to server
-            Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
-            System.out.println("Connected to server.");
-            Log.i("Socket", "Connected to server.");
-            //data recive untill recive  new line caractor
-            BufferedReader BReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            //print data recived for reader variable
-            String MyUrl = BReader.readLine();
-            System.out.println("Recived data : " + MyUrl);
-            Log.i("Socket", "recived address : " + MyUrl);
-            //socket close
-            socket.close();
-            //save incomming model
-            Log.i("Socket", "Socket closed : " + MyUrl);
-            return MyUrl;
-        }
-        catch (UnknownHostException e) {
-            Log.i("Socket", "ERROR: Server not found.");
-            System.err.println("ERROR: Server not found.");
-        }
-        catch (IOException e) {
+            copyModelToInternalStorage(this, "model.tflite");
+            // Success: Model copied to internal storage
+        } catch (IOException e) {
             e.printStackTrace();
+            // Error: Failed to copy model
         }
-        return "ERROR";
+
     }
+
 
     private void saveForm() {
 
@@ -505,6 +538,56 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+    private void saveFormJson() {
+        String name = etName.getText().toString();
+        String gender = etGender.getText().toString();
+        String NIC = etNIC.getText().toString();
+        String city = etCity.getText().toString();
+
+        // Create a JSON object to hold the user data
+        JSONObject userDataJson = new JSONObject();
+        try {
+            userDataJson.put("name", name);
+            userDataJson.put("gender", gender);
+            userDataJson.put("NIC", NIC);
+            userDataJson.put("city", city);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        // Create the file name
+        String userDataJsonFile = "user_data.json";
+
+        String existingFormData = readFormData();
+
+        if (existingFormData != null && existingFormData.contains(userDataJson.toString())) {
+            // Check whether a user exists or not
+            Toast.makeText(getApplicationContext(), "This user has been already added", Toast.LENGTH_SHORT).show();
+        } else {
+            try {
+                FileOutputStream fileOutputStream = openFileOutput(userDataJsonFile, Context.MODE_APPEND);
+                // Convert the JSON object to a JSON string
+                String userDataJsonString = userDataJson.toString() + "\n";
+                fileOutputStream.write(userDataJsonString.getBytes());
+                fileOutputStream.close();
+                Calendar calendar = Calendar.getInstance();
+                loadModel("model");
+                int currentMonth = calendar.get(Calendar.MONTH) + 1;
+                predict(currentMonth, Integer.parseInt(gender));
+                // Clear the text boxes
+                etName.setText("");
+                etGender.setText("");
+                etNIC.setText("");
+                etCity.setText("");
+
+                Toast.makeText(getApplicationContext(), "A new user is added ", Toast.LENGTH_SHORT).show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     private String readFormData() {
         try {
@@ -574,8 +657,6 @@ public class MainActivity extends AppCompatActivity {
         // Convert the CSV data to an array of Strings
         return stringBuilder.toString().split("\n");
     }
-
-
 
 //close read csv
 private float modelAccuracy(String accuracyMode){
@@ -749,32 +830,10 @@ private float modelAccuracy(String accuracyMode){
         }
         return result;
     }
-      /*
-    The internal storage of an Android app is considered to be relatively secure because it is private to the app and
-     inaccessible to other apps by default. Other apps cannot read or modify the files stored in the internal storage
-      of your app, and the files stored in the internal storage are deleted when the user uninstalls the app.
-     */
-    /*
-    By default, files stored in the internal storage of an Android app are not visible to the user or accessible through
-     file managers or other apps on the device. This is because the internal storage is private to the app and other apps
-      do not have permission to access it.
-     */
-
-    /*
-    If the size of the model is small and the model does not change frequently, you can save it in the app's asset folder
-     or in the internal storage of the app. The internal storage is a private storage that is only accessible to the app,
-      and it is a good option for storing sensitive data like models.
-
-    If the size of the model is large and you want to reduce the load time of the model, you can consider using the cache memory
-     of the app. Cache memory is a fast memory that is used to store frequently accessed data. However, it is important to note
-      that the cache memory is not a persistent storage, which means that data in the cache memory can be deleted by the system
-      at any time to free up space.
-     */
 
 
-    //http network
 
-    private void downloadImage(String imageUrl) {
+  /* private void downloadImage(String imageUrl) {
         new AsyncTask<String, Void, Bitmap>() {
             @Override
             protected Bitmap doInBackground(String... params) {
@@ -805,8 +864,8 @@ private float modelAccuracy(String accuracyMode){
             }
         }.execute(imageUrl);
     }
-
-    private void saveImageToInternalStorage(Bitmap bitmap) {
+*//*
+    *//*private void saveImageToInternalStorage(Bitmap bitmap) {
 
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
 
@@ -826,7 +885,7 @@ private float modelAccuracy(String accuracyMode){
         }
 
 
-    }
+    }*//*
 
     //http test network
 
@@ -837,5 +896,8 @@ private float modelAccuracy(String accuracyMode){
         integrator.setCameraId(0); // Use the rear camera (0) or front camera (1)
         integrator.initiateScan();
 
+
     }
-}
+    // Method to parse the JSON data into a list of lists of integers
+*/
+    }
