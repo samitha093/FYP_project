@@ -50,6 +50,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -114,6 +115,7 @@ public class MainActivity extends AppCompatActivity{
 
 
     public Socket socket;
+    private boolean fileOutputStream;
 
     @SuppressLint("MissingInflatedId")
 
@@ -126,77 +128,207 @@ public class MainActivity extends AppCompatActivity{
         Log.i("INT", "Loading");
         MyLogger.i("COLORED TAG", "This is an info message with color.");
         new SocketTask().execute();
+        //processReceivedFile();
+
 
     }
     private class SocketTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            socketConnect();
+            asynchrounousProcess();
             /*try {
+                Thread.sleep(8000);
                 socketDisconnect();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
-            }
-            */
+            }*/
             return null;
         }
 
     }
-    //socket connection
-    public void socketConnect(){
-        host = "192.168.8.136";
-        port = 9999;
+    //UI and Background proceess
+    public void asynchrounousProcess(){
+
         new Thread(new Runnable(){
             @Override
             public void run() {
                 socket = null;
-                try {
-                    socket = new Socket(host, port);
-                    Log.d("SOCKET REQUEST", "Socket connection requesting....");
-                    // Print the loop from 1 to 10
-                    // Receive a custom message from the server
-                    InputStream inputStream = socket.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                    String message = "";
-                    boolean isAlreadyPrint = false;
-                    while(true){
-                         message = reader.readLine();
+                host = "192.168.8.136";
+                port = 9999;
 
-                            if (message.equals("FAILED")) {
-                                Log.d("SOCKET REFUSE", "Server reached the connection limit. Stop connecting.");
-                                return; // Exit the thread to stop trying to connect
-                            }
-                            if(!isAlreadyPrint){
-                                Log.d("SOCKET ESTABLISH", "Connected succesfully.");
-                                isAlreadyPrint = true;
-                            }
-                        // Print the received message to the console using Log
+                // Start separate threads for reading and sending messages
+                //Thread for socket
 
-                        Log.d("Received Message", message);
-
+                Thread socketThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            socket = new Socket(host, port);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        Log.d("SOCKET REQUEST", "Socket connection requesting....");
+                        readMessages(getApplicationContext());
 
                     }
+                });
+                //Thread for UI Process
+                Thread UIThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
 
-                    //disconnectCart(socket);
-                    //sendUserData();
-                    //receiveData();
+                    }
+                });
 
-                } catch (IOException e) {
+                socketThread.start();
+                UIThread.start();
+
+                // Wait for the threads to finish
+                try {
+                    socketThread.join();
+                    UIThread.join();
+                } catch (InterruptedException e) {
                     e.printStackTrace();
-                    Log.d("SOCKET FAIL", "Socket connection failed: " + e.getMessage());
                 }
+
+
             }
         }).start();
 
     }
-    // socket disconnect
+
+// common template for send all data
+ private void sendMessages(String messageToSend) {
+      try {
+          OutputStream outputStream = socket.getOutputStream();
+          PrintWriter writer = new PrintWriter(outputStream, true);
+          writer.println(messageToSend);
+
+      } catch (IOException e) {
+          e.printStackTrace();
+          Log.d("Socket Error", "Error while sending messages: " + e.getMessage());
+      }
+  }
+
+ //read data from cart not work
+    public void readMessages(Context context) {
+        try {
+            InputStream inputStream = socket.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            String message;
+            boolean isAlreadyPrint = false;
+
+            FileOutputStream fileOutputStream = context.openFileOutput("received_checkout_data.txt", Context.MODE_APPEND | Context.MODE_PRIVATE);
+
+            while (true) {
+                message = reader.readLine();
+                if (message == null) {
+                    // Socket connection is closed, break the loop
+                    Log.d("SOCKET NULL RECEIVING", "Server reached the connection limit. Stop connecting.");
+                    break;
+                }
+
+                else if (message.equals("FAILED")) {
+                    Log.d("SOCKET REFUSE", "Server reached the connection limit. Stop connecting.");
+                    fileOutputStream.close(); // Close the file output stream
+                    return; // Exit the thread to stop trying to connect
+                }
+                else if (message.equals("SOCKET CONNECTED")) {
+                    Log.d("SOCKET ESTABLISH", "Connected successfully.");
+                    sendUserData(); //sending user data
+                    Thread.sleep(1000);
+                    sendDataSet(); //sending data set
+
+                }
+
+                if (!isAlreadyPrint) {
+                    Log.d("SOCKET ESTABLISH", "Connected successfully.");
+
+                    isAlreadyPrint = true;
+                }
+                if (message.equals("FILE")) {
+                    Log.d("SOCKET FILE RECEIVING", "RECEIVING START.");
+                    Log.d("Received File", message);
+                    while(true){
+                        message = reader.readLine();
+                        Log.d("Received Message", message);
+                        // Write the received message to the file
+                         // Add a newline after each message
+                        if (message.equals("ENDING")){
+                            // Print the received message to the console using Log
+                            break;
+                        }
+                        fileOutputStream.write(message.getBytes());
+                        fileOutputStream.write("\n".getBytes());
+                    }
+
+                    // Get the file path of the saved file
+                    String filePath = context.getFilesDir() + "/" + "received_checkout_data.txt";
+                    // Print a success message indicating that the file has been saved
+                    Log.d("FILE SAVED", "Received messages have been successfully saved to the file: " + filePath);
+                    //fileOutputStream.close(); // Close the file output stream
+                    //return; // Exit the thread to stop trying to connect
+                }else{
+                    //print normal message
+                    Log.d("Received Message new", message);
+                }
+            }
+            fileOutputStream.close();
+        } catch (IOException e) {
+            // Handle the exception (e.g., log or rethrow it)
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    //send checkout data set
+    private void sendDataSet() {
+        Context context = this; // Get the context if not available in the method already
+        File receivedFile = new File(context.getFilesDir(), "received_checkout_data.txt");
+        if(receivedFile.exists()){
+            try (BufferedReader reader = new BufferedReader(new FileReader(receivedFile))) {
+                String line;
+                line = "FILE";
+                sendMessages(line);
+               while ((line = reader.readLine()) != null) {
+                    // Display each line in the console log
+                    Log.d("READ LINE", line);
+                    sendMessages(line);
+                }
+               Thread.sleep(1000);
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }else{
+            Log.i("CHECKOUT DATA", "Still you do not receive data");
+        }
+
+   }
+    //send user data
+    private void sendUserData(){
+
+        String line;
+        line = "USER DATA";
+        sendMessages(line);// Get the context if not available in the method already
+        String name = "Kavini";
+        String age = "3";
+        String gender = "10";
+        line = "[" + name + "," + age + "," + gender + "]";
+        sendMessages(line);
+    }
+
+    // socket disconnect Manually
     public void socketDisconnect() throws InterruptedException {
-        Log.d("SOCKET DIpppppp", "Socket connection manually closed.");
-        Thread.sleep(8000);
+
+
         try {
             if (socket != null && socket.isConnected()) {
-
                 socket.close();
                 Log.d("SOCKET DISCONNECT", "Socket connection manually closed.");
             }
@@ -205,25 +337,12 @@ public class MainActivity extends AppCompatActivity{
             Log.d("SOCKET DISCONNECT", "Error while closing socket: " + e.getMessage());
         }
     }
-   /* public void disconnectCart(Socket socket) {
 
-        // Disconnect the socket
-        try {
-            socket.close();
-            Log.d("SOCKET CLOSE", "Socket connection is closed.manually");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-
-    }
-
+    //--------------------------- SOCKET CODES END HERE----------------------
     @Override
     protected void onResume() {
         super.onResume();
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-        registerReceiver(bluetoothReceiver, filter);
-        //handleBluetoothActions();
     }
 
     @Override
@@ -279,8 +398,8 @@ public class MainActivity extends AppCompatActivity{
 
             // Check if the scannedUrl is not null
             Log.d("SOCKET: ", scannedData);
-            client = new BiDirClient(this,"192.168.8.136",9999);
-            client.socketConnection();
+            //client = new BiDirClient(this,"192.168.8.136",9999);
+            //client.socketConnection();
             Toast.makeText(this, scannedData, Toast.LENGTH_SHORT).show();
 
         }else {
@@ -292,23 +411,15 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Check if the BiDirCom object is not null before calling the disconnectWebSocket() method
-        if (socketClient != null)
-            client.closeSocket();
-
-
 
     }
 
 
     public void onConnectToCartButtonClicked(View view) {
-        //webSocketClient.disconnect();
-        startQRCodeScan();
+        //startQRCodeScan();
 
     }
     public void onDisconnectCartButtonClicked(View view){
-        if (socketClient != null)
-            client.closeSocket();
 
     }
     private class FileReceiveTask extends AsyncTask<Void, Void, Boolean> {
@@ -719,32 +830,10 @@ private float modelAccuracy(String accuracyMode){
         }
         return result;
     }
-      *//*
-    The internal storage of an Android app is considered to be relatively secure because it is private to the app and
-     inaccessible to other apps by default. Other apps cannot read or modify the files stored in the internal storage
-      of your app, and the files stored in the internal storage are deleted when the user uninstalls the app.
-     *//*
-    *//*
-    By default, files stored in the internal storage of an Android app are not visible to the user or accessible through
-     file managers or other apps on the device. This is because the internal storage is private to the app and other apps
-      do not have permission to access it.
-     *//*
-
-    *//*
-    If the size of the model is small and the model does not change frequently, you can save it in the app's asset folder
-     or in the internal storage of the app. The internal storage is a private storage that is only accessible to the app,
-      and it is a good option for storing sensitive data like models.
-
-    If the size of the model is large and you want to reduce the load time of the model, you can consider using the cache memory
-     of the app. Cache memory is a fast memory that is used to store frequently accessed data. However, it is important to note
-      that the cache memory is not a persistent storage, which means that data in the cache memory can be deleted by the system
-      at any time to free up space.
-     *//*
 
 
-    //http network
 
-   *//* private void downloadImage(String imageUrl) {
+  /* private void downloadImage(String imageUrl) {
         new AsyncTask<String, Void, Bitmap>() {
             @Override
             protected Bitmap doInBackground(String... params) {
