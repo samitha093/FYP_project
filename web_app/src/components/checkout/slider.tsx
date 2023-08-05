@@ -1,4 +1,4 @@
-import { Flex, Image, IconButton, Hide } from '@chakra-ui/react';
+import { Flex, Image, IconButton } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import axios from 'axios';
@@ -7,12 +7,22 @@ interface AppProps {
   darkMode: boolean;
 }
 
-
 const Slider: React.FC<AppProps> = ({ darkMode }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-
   const [images, setImages] = useState([]);
 
+  useEffect(() => {
+    const myHost = sessionStorage.getItem('host');
+    axios
+      .get(`${myHost}/threandsImages`)
+      .then(response => {
+        const imageUrls = response.data.map((item: { ImageUrl: any; }) => item.ImageUrl);
+        setImages(imageUrls);
+      })
+      .catch(error => {
+        console.log("Error when loading recommend items")
+      });
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -28,19 +38,11 @@ const Slider: React.FC<AppProps> = ({ darkMode }) => {
   const handleNext = () => {
     setCurrentIndex((currentIndex + 1) % images.length);
   };
-
-  useEffect(() => {
-    const myHost = sessionStorage.getItem('host');
-    axios.get(`${myHost}/threandsImages`)
-    // axios.get('http://127.0.0.1:5001/threandsImages')
-      .then(response => {
-        setImages(response.data);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  }, []);
-  
+  const visibleImages = [
+    images[(currentIndex + images.length - 1) % images.length],
+    images[currentIndex],
+    images[(currentIndex + 1) % images.length],
+  ];
   return (
     <Flex alignItems="center" justifyContent="center" flexDirection="column" w={'100%'} h={'100%'} >
       <Flex alignItems="center" justifyContent="center">
@@ -50,20 +52,17 @@ const Slider: React.FC<AppProps> = ({ darkMode }) => {
           onClick={handlePrev}
           mr={2}
         />
+        {visibleImages.map((image, index) => (
+          <Image
+            key={index}
+            src={image}
+            alt={`Image ${index + 1}`}
+            boxSize="150px"
+            objectFit="cover"
+            mr={2}
+          />
+        ))}
 
-        {[2, 1, 0].map((offset) => {
-          const index = (currentIndex + offset) % images.length;
-          return (
-            <Image
-              key={index}
-              src={images[index]}
-              alt={`Image ${index + 1}`}
-              boxSize="150px"
-              objectFit="cover"
-              mr={2}
-            />
-          );
-        })}
         <IconButton
           aria-label="Next"
           icon={<ChevronRightIcon />}
