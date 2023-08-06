@@ -9,7 +9,6 @@ Flask==2.2.2
 Flask-Cors==3.0.10
 h5py==3.8.0
 keras==2.12.*
-tensorflow==2.12.*
 pandas==1.5.2
 requests==2.31.0
 gevent
