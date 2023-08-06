@@ -21,31 +21,30 @@ jobs:
         with:
           node-version: 16
 
-      # - name: Install Node dependencies
-      #   run: cd web_app && yarn install
+      - name: Install Node dependencies
+        run: cd web_app && yarn install
 
-      # - name: Build project with Yarn
-      #   run: cd web_app && yarn build
+      - name: Build project with Yarn
+        run: cd web_app && yarn build
 
-      # - name: Create templates directory if not exists
-      #   run: mkdir -p child_cart/api/templates
+      - name: Create templates directory if not exists
+        run: mkdir -p child_cart/api/templates
 
-      # - name: Copy files to child_cart/api/templates
-      #   run: cp -r web_app/dist/* child_cart/api/templates
+      - name: Copy files to child_cart/api/templates
+        run: cp -r web_app/dist/* child_cart/api/templates
 
-      # - name: Install TensorFlow
-      #   run: pip install tensorflow==2.12
+      - name: Install TensorFlow
+        run: pip install tensorflow==2.12
 
-      # - name: Install Python dependencies
-      #   run: pip install -r requirements.txt
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
 
-      # - name: Create Child cart package
-      #   run: pyinstaller --onefile --add-data "child_cart/api/templates:child_cart/api/templates"  --name C_main.bin C_main.py
+      - name: Create Child cart package
+        run: pyinstaller --onefile --add-data "child_cart/api/templates:child_cart/api/templates"  --name C_main.bin C_main.py
 
-      # - name: Create Parent cart package
-      #   run: pyinstaller --onefile --add-data  "child_cart/api/templates:child_cart/api/templates"  --name P_main.bin P_main.py
+      - name: Create Parent cart package
+        run: pyinstaller --onefile --add-data  "child_cart/api/templates:child_cart/api/templates"  --name P_main.bin P_main.py
 
-      # Step to read version number from version.txt file
       - name: Read Version Number
         id: version
         run: echo ::set-output name=VERSION::$(cat version.txt)
@@ -59,28 +58,28 @@ jobs:
           tag_name: v${{ steps.version.outputs.VERSION }}
           release_name: v${{ steps.version.outputs.VERSION }}
           
-      # - name: check list of files
-      #   run: |
-      #     ls
-      #     cd dist
-      #     ls
+      - name: check list of files
+        run: |
+          ls
+          cd dist
+          ls
           
-      # - name: Upload C_main Release Asset
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./dist/C_main.bin
-      #     asset_name: C_main.bin
-      #     asset_content_type: application/octet-stream
+      - name: Upload C_main Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/C_main.bin
+          asset_name: C_main.bin
+          asset_content_type: application/octet-stream
 
-      # - name: Upload P_main Release Asset
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./dist/C_main.bin
-      #     asset_name: C_main.bin
-      #     asset_content_type: application/octet-stream
+      - name: Upload P_main Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/C_main.bin
+          asset_name: C_main.bin
+          asset_content_type: application/octet-stream
