@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 *.whl
 *.txt
+!version.txt
 !requirements.txt
 /child_cart/api/templates/
 #remove testing three clients
