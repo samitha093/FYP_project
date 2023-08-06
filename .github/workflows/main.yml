@@ -26,7 +26,13 @@ jobs:
 
       - name: Build project with Yarn
         run: cd web_app && yarn build
-        
+
+      - name: Create templates directory if not exists
+        run: mkdir -p child_cart/api/templates
+
+      - name: Copy files to child_cart/api/templates
+        run: cp -r web_app/dist/* child_cart/api/templates
+
       - name: Install TensorFlow
         run: pip install tensorflow==2.12
 
