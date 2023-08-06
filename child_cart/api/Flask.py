@@ -30,32 +30,44 @@ from flask_cors import CORS
 from child_cart.network.client import *
 # from child_cart.db.dbConnect import *
 from child_cart.db.apiConnection import *
+from child_cart.mobile.serverWin import *
 import queue
 
 selectedItem ="Item 0"
 ItemListArray = []
 totalBill = 0
+#user data
+currentUser =""
 currentGender = 1
+currentMonth = 1
+
 currentThreandArray=[]
-
 CartType = False
-#create queue instance
-checkoutDataQue = queue.Queue()
+FILENAME = 'checkoutData.txt'
 
-#checkout data adding to queue
-def checkoutDataQueue(gender,month,items):
-    global checkoutDataQue
-    #clear queue
-    checkoutDataQue.queue.clear()
+def updateUserDataFromMobile(name,gender,month):
+    global currentUser,currentGender,currentMonth
+    currentUser =name
+    currentGender =gender
+    currentMonth = month
+
+def checkoutDataSave(gender,month,items):
+    global FILENAME
     array_values = []
     for item in items:
         array_values.append([item, gender, month])
+
+    # Create a string to store the output
+    output_str = ""
     for value in array_values:
-        checkoutDataQue.put(value)
-    print("Data added to the Queue")
-    # while not checkoutDataQue.empty():
-    #     element = checkoutDataQue.get()
-    #     print(element)
+        output_str += str(value) + "\n"
+
+    # Write the output to a text file
+    with open(FILENAME, "w") as file:
+        file.write(output_str)
+    checkoutDataFileSend()
+
+
 
 
 # app = Flask(__name__, template_folder='../../web_app/dist', static_folder='../../web_app/dist/assets')
@@ -391,7 +403,7 @@ def getCheckoutData():
         product_list_str = request.json['productList']
         product_list = json.loads(product_list_str)
         month = datetime.now().month
-        checkoutDataQueue(currentGender,month,product_list)
+        checkoutDataSave(currentGender,month,product_list)
         return jsonify({'message': "Checkout Data received"})
     except:
         return jsonify({'message': "Checkout Data not received!"})

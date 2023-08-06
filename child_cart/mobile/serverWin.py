@@ -1,11 +1,12 @@
 import socket
 import threading
 import time
-
-filename = 'textfile.txt'
-
-with open(filename, 'r') as file:
-    file_content = file.read()
+import os
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+sys.path.insert(0, root_path)
+# Import the modules
+from child_cart.api.Flask import *
+FILENAME = 'checkoutData.txt'
 
 isNewMessage = False
 MSGTYPE = "TEXT"
@@ -16,18 +17,11 @@ isUserDataReceiving = False
 GOLBALSOCKET =None
 
 # test message test
-def testMessagesSend():
-        global isNewMessage, MSGTYPE ,MESSAGE
-        time.sleep(10)
-        print("Wait for user checkout finishing....")
-        time.sleep(20)
+def checkoutDataFileSend():
+        global isNewMessage, MSGTYPE 
+        print("Start to sending checkout data file to mobile....")
         isNewMessage = True
         MSGTYPE = "FILE"
-        # time.sleep(5)
-        # isNewMessage = True
-        # MSGTYPE = "TEXT"
-        # MESSAGE="Hello 2"
-
 
 #mannuly disconnection
 def closedSocketMannuly():
@@ -67,8 +61,8 @@ class SocketConnection:
         # send_thread.start()
 
         # testing ---send  message--------------------------
-        send_thread = threading.Thread(target=testMessagesSend)
-        send_thread.start()
+        # send_thread = threading.Thread(target=checkoutDataFileSend)
+        # send_thread.start()
 
     def close_connection(self):
         # Reset the connected status when the client disconnects
@@ -77,7 +71,7 @@ class SocketConnection:
         print(f"Server: Connection closed with {self.client_address}")
 
     def send_message(self):
-        global isNewMessage, MESSAGE ,file_content ,MSGTYPE
+        global isNewMessage, MESSAGE ,file_content ,MSGTYPE ,FILENAME
         try:
             while self.client_socket.fileno() != -1:  # Check if the socket is still valid
                 if isNewMessage:
@@ -88,9 +82,8 @@ class SocketConnection:
                         isNewMessage = False
                     if(MSGTYPE == "FILE"):
                         print("Current message : File sending..")                     
-                        self.client_socket.sendall(("FILE\n").encode())
-                        filename = 'textfile.txt'
-                        with open(filename, 'rb') as file:
+                        self.client_socket.sendall(("FILE\n").encode())                       
+                        with open(FILENAME, 'rb') as file:
                                     # Read and send the file in chunks
                                     while True:
                                         data = file.read(1024)
@@ -99,6 +92,9 @@ class SocketConnection:
                                         self.client_socket.sendall(data)
                         self.client_socket.sendall(("ENDING\n").encode())
                         isNewMessage = False
+                        #remove file
+                        if os.path.exists(FILENAME):
+                            os.remove(FILENAME)
 
         except ConnectionResetError:
             # This exception will be raised when the client closes the connection
@@ -108,7 +104,7 @@ class SocketConnection:
         #     self.close_connection("Send")
 
     def receive_messages(self):
-        global isFileReceiving ,isUserDataReceiving
+        global isFileReceiving ,isUserDataReceiving ,FILENAME
         received_rows = []
 
         try:
@@ -123,7 +119,7 @@ class SocketConnection:
                     received_rows = []  # Reset received_rows when a new file transfer starts                                
                 elif isFileReceiving:
                     print("Data Set Received : \n",data)
-                    with open("received_file.txt", "w") as file:
+                    with open(FILENAME, "w") as file:
                         for row in data:
                             file.write(row)  # Write the row to the file as a new line
                     received_rows = []  # Reset received_rows afte
@@ -139,12 +135,11 @@ class SocketConnection:
                     data = data.strip("[]")  # Removing brackets from the string
                     data_list = data.split(',')
                     name = data_list[0]
-                    age = int(data_list[1])  # Converting age to an integer
+                    month = int(data_list[1])  # Converting age to an integer
                     gender = int(data_list[2])  # Converting gender to an integer
-                    print("Name:", name)
-                    print("Age:", age)
-                    print("Gender:", gender)
-                    
+                    print("User details:: Name : ",Name, " month : ",month, " Gender : ",gender)
+                    #update cart user datails
+                    updateUserDataFromMobile(name,gender,month)
                     isUserDataReceiving = False
                
         except ConnectionResetError:
@@ -165,7 +160,7 @@ def main():
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server_socket.bind((host, port))
         server_socket.listen(1)
-        print("Server: Listening for incoming connections...")
+        print('\033[32mServer: Listening for incoming connections...\033[0m')
 
         while True:
             client_socket, client_address = server_socket.accept()
