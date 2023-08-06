@@ -26,7 +26,29 @@ run web app
 yarn tauri dev
 ```
 
-# Create test objects
+setup tauri environment 
+windows : `https://tauri.app/v1/guides/building/windows/`
+MacOS : `https://tauri.app/v1/guides/building/macos/`
+Linux : `https://tauri.app/v1/guides/building/linux/`
+
+## for production 
+Requried :(tensorflow 12 or latest == keras , Requried library for python , and tauri with Requried yarn packages)
+### Linux (binary file)
+deploy vite application : `yarn build`
+coppy build file : `cp -r web_app/dist/* child_cart/api/templates`
+Parent Cart : `pyinstaller --onefile --add-data "child_cart/api/templates:child_cart/api/templates"  --name P_main.bin C_main.py`
+Child Cart : `pyinstaller --onefile --add-data "child_cart/api/templates:child_cart/api/templates"  --name C_main.bin C_main.py`
+or 
+`make upl`
+### Windos (executable file)
+deploy vite application : `yarn build`
+coppy build file : `cp -r web_app/dist/* child_cart/api/templates`
+Parent Cart : `pyinstaller --onefile --add-data "child_cart/api/templates;child_cart/api/templates"  --name P_main.bin C_main.py`
+Child Cart : `pyinstaller --onefile --add-data "child_cart/api/templates;child_cart/api/templates"  --name C_main.bin C_main.py`
+or
+`make upw`
+
+# Create dev test objects
 
 When creating multiple objects in the same PC environment, it is important to be mindful of the available I/O resources and processing speed.
 
