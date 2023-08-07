@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Grid, GridItem } from '@chakra-ui/react';
+import { Box, Center, Grid, GridItem } from '@chakra-ui/react';
 import LogRow from './logRow';
+import { Image } from '@chakra-ui/react';
 
-const Log = () => {
+import emptyimage from '../../\assets/empty2.png';
+
+interface AppProps {
+  darkMode: boolean;
+}
+
+const Log: React.FC<AppProps> = ({ darkMode }) => {
   const [logData, setLogData] = useState([]);
 
   useEffect(() => {
@@ -17,155 +24,63 @@ const Log = () => {
         console.error(error);
       });
   }, []);
-const dataset=[
-  {
-    "iteration": 1,
-    "localModel": {
-      "id": "0",
-      "value": "True",
-      "accuracy": 32.89
-    },
-    "receivedModel": [
-      {
-        "id": "cARCIDktu5Fo36Yq",
-        "value": true,
-        "accuracy": 19.6
-      },
-      {
-        "id": "UtauKEmm5KTF6hH6",
-        "value": true,
-        "accuracy": 23.4
-      },
-      {
-        "id": "cARCIDktu5Fo36Yq",
-        "value": true,
-        "accuracy": 19.6
-      },
-      {
-        "id": "QcZ7TpgokwqLPMDO",
-        "value": false,
-        "accuracy": 11.7
-      },
-      {
-        "id": "bvIAXjVi0ONvTzbb",
-        "value": true,
-        "accuracy": 29.29
-      }
-    ],
-    "aggregatedModel": {
-      "id": "1",
-      "value": "True",
-      "accuracy": 19.19
-    }
-  },
-  {
-    "iteration": 2,
-    "localModel": {
-      "id": "1",
-      "value": "True",
-      "accuracy": 26.2
-    },
-    "receivedModel": [
-      {
-        "id": "DEU8m9Me3RVzD07h",
-        "value": true,
-        "accuracy": 22.8
-      },
-      {
-        "id": "2a4e0yBIBRAYlc1u",
-        "value": true,
-        "accuracy": 23.0
-      },
-      {
-        "id": "DEU8m9Me3RVzD07h",
-        "value": true,
-        "accuracy": 22.8
-      },
-      {
-        "id": "A7Gi5H4JyuLGwPSO",
-        "value": true,
-        "accuracy": 20.89
-      }
-    ],
-    "aggregatedModel": {
-      "id": "2",
-      "value": "True",
-      "accuracy": 27.2
-    }
-  },
-  {
-    "iteration": 3,
-    "localModel": {
-      "id": "2",
-      "value": "True",
-      "accuracy": 27.3
-    },
-    "receivedModel": [
-      {
-        "id": "H4OVk5JCAlPeCGYm",
-        "value": true,
-        "accuracy": 30.3
-      },
-      {
-        "id": "XaJAbJO7No3wN6Lb",
-        "value": true,
-        "accuracy": 26.9
-      },
-      {
-        "id": "iVtMotQpNfcQo5Om",
-        "value": true,
-        "accuracy": 22.9
-      },
-      {
-        "id": "2a4e0yBIBRAYlc1u",
-        "value": true,
-        "accuracy": 23.0
-      }
-    ],
-    "aggregatedModel": {
-      "id": "3",
-      "value": "True",
-      "accuracy": 27.4
-    }
-  }
-]
 
   return (
-    <div>
+    <Box border="1px solid" borderColor={darkMode ? "gray.600" : 'gray.300'} 
+      mr={{ base: '0', lg: '30px' }} w={'100%'} h={'100%'} minW={'300px'}
+      overflow="auto">
       <Grid templateColumns='repeat(8, 1fr)' gap={1}>
-        <GridItem w='100%' h='auto' bg='blue.100' textAlign='center'>
+        <GridItem w='100%' h='auto' bg='blue.100' textAlign='center' pt='20px' pb='20px'>
           Iteration
         </GridItem>
-        <GridItem w='100%' h='auto' bg='blue.100' textAlign='center'>
+        <GridItem w='100%' h='auto' bg='blue.100' textAlign='center' pt='20px' pb='20px'>
           Local Model Id
         </GridItem>
-        <GridItem w='100%' h='auto' bg='blue.100' textAlign='center'>
+        <GridItem w='100%' h='auto' bg='blue.100' textAlign='center' pt='20px' pb='20px'>
           Local Model Accuracy
         </GridItem>
-        <GridItem w='100%' h='auto' bg='blue.100' textAlign='center'>
+        <GridItem w='100%' h='auto' bg='blue.100' textAlign='center' pt='20px' pb='20px'>
           Receive Model Id
         </GridItem>
-        <GridItem w='100%' h='auto' bg='blue.100' textAlign='center'>
+        <GridItem w='100%' h='auto' bg='blue.100' textAlign='center' pt='20px' pb='20px'>
           Receive Model Accuracy
         </GridItem>
-        <GridItem w='100%' h='auto' bg='blue.100' textAlign='center'>
+        <GridItem w='100%' h='auto' bg='blue.100' textAlign='center' pt='20px' pb='20px'>
           Receive Model Value
         </GridItem>
-        <GridItem w='100%' h='auto' bg='blue.100' textAlign='center'>
+        <GridItem w='100%' h='auto' bg='blue.100' textAlign='center' pt='20px' pb='20px'>
           Aggregated Model Id
         </GridItem>
-        <GridItem w='100%' h='auto' bg='blue.100' textAlign='center'>
+        <GridItem w='100%' h='auto' bg='blue.100' textAlign='center' pt='20px' pb='20px'>
           Aggregated Model Accuracy
         </GridItem>
       </Grid>
    
-      <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
-        {logData.map((data, index) => (
-          <LogRow key={index} rowData={data} />
-        ))}
-      </div>
+      <Box
+        h='calc(100% - 70px)'
+        overflowY='auto'
+        display='flex'
+        justifyContent='center'
+        alignItems='center'
+        >
+        {logData.length === 0 ? (
+          <Center>
+            <Image
+              src={emptyimage}
+              alt="Description of the image"
+              boxSize="200px"
+              objectFit="cover"
+              opacity={0.4}
+            />
+          </Center>
+        ) : (
+          logData.map((data, index) => (
+            <LogRow key={index} rowData={data} />
+          ))
+        )}
+      </Box>
 
-    </div>
+    </Box>
   );
 };
 
