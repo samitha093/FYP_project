@@ -138,7 +138,7 @@ class SocketConnection:
                     name = data_list[0]
                     month = int(data_list[1])  # Converting age to an integer
                     gender = int(data_list[2])  # Converting gender to an integer
-                    print("User details:: Name : ",Name, " month : ",month, " Gender : ",gender)
+                    print("User details:: Name : ",name, " month : ",month, " Gender : ",gender)
                     #update cart user datails
                     updateUserDataFromMobile(name,gender,month)
                     isUserDataReceiving = False
