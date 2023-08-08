@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Box, Flex, Image, Text, useTheme } from '@chakra-ui/react';
 import ProductCard from './product';
 import axios from 'axios';
+import Loading from '../module/loading';
 
 interface AppProps {
   darkMode: boolean;
@@ -24,6 +25,17 @@ const Store: React.FC<AppProps> = ({ darkMode }) => {
     const [containerWidth, setContainerWidth] = useState("");
     const [key, setKey] = useState(0);
     const flexRef = useRef<HTMLDivElement>(null);
+    const [loadingVisible, setLoadingVisible] = useState(false);
+
+    // Function to show the loading component
+    const showLoading = () => {
+      setLoadingVisible(true);
+    };
+
+    // Function to hide the loading component
+    const hideLoading = () => {
+      setLoadingVisible(false);
+    };
 
     useEffect(() => {
         const containerWidth = flexRef.current?.offsetWidth;
@@ -61,14 +73,17 @@ const Store: React.FC<AppProps> = ({ darkMode }) => {
      const [productList, setProductList] = useState<Product[]>([]);
 
      useEffect(() => {
+      showLoading()
       const myHost = sessionStorage.getItem('host');
        axios.get<Product[]>(`${myHost}/threands`)
          .then(response => {
           //  console.log(response.data);
            setProductList(response.data);
+           hideLoading()
          })
          .catch(error => {
            console.log(error);
+           hideLoading()
          });
      }, []);
     return (
@@ -103,7 +118,9 @@ const Store: React.FC<AppProps> = ({ darkMode }) => {
             </Box>
           </Flex>
         </Box>
+        <Loading visible={loadingVisible} /> 
       </Flex>
+      
     );
   };
 

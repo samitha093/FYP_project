@@ -105,7 +105,7 @@ const Item: React.FC<AppProps> = ({ darkMode, handleProduct, handleAddProduct,it
                     <Box fontSize="20px" mr="5px">
                         Quantity:
                     </Box>
-                    <Button onClick={handleDecrement} size="md">-</Button>
+                    <Button onClick={handleDecrement} size="md" colorScheme="green">-</Button>
                     <Input
                         type="number"
                         value={quantity}
@@ -116,7 +116,7 @@ const Item: React.FC<AppProps> = ({ darkMode, handleProduct, handleAddProduct,it
                         color={darkMode? "white" : "black"}
                         fontSize="20px"
                     />
-                    <Button onClick={handleIncrement} size="md">+</Button>
+                    <Button onClick={handleIncrement} size="md" colorScheme="green">+</Button>
                     </Flex>
                     <Box fontSize="35px" textAlign="center" color="orange" mb="20px">Total: {totalPrice}</Box>
                     <Flex justifyContent="center">

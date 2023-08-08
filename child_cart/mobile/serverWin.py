@@ -20,7 +20,7 @@ GOLBALSOCKET =None
 # test message test
 def checkoutDataFileSend():
         global isNewMessage, MSGTYPE 
-        print("Start to sending checkout data file to mobile....")
+        print("\033[33mStart to sending checkout data file to mobile....\033[0m")
         isNewMessage = True
         MSGTYPE = "FILE"
 
