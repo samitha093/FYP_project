@@ -4,6 +4,7 @@ import { GiEmptyWoodBucketHandle } from 'react-icons/gi';
 import Swal from 'sweetalert2'
 import CartProduct from './cartProduct';
 import axios from 'axios';
+import Loading from '../module/loading';
 
 interface AppCart {
     darkMode: boolean;
@@ -24,6 +25,17 @@ interface Product {
 
 const Cart: React.FC<AppCart> = ({ darkMode, products, totalBill,handleCheckout }) => {
     const [productList, setproductList] = useState<Product[]>([]);
+    const [loadingVisible, setLoadingVisible] = useState(false);
+
+    // Function to show the loading component
+    const showLoading = () => {
+      setLoadingVisible(true);
+    };
+
+    // Function to hide the loading component
+    const hideLoading = () => {
+      setLoadingVisible(false);
+    };
     useEffect(() => {
         setproductList(products);
     }, []);
@@ -47,11 +59,12 @@ const Cart: React.FC<AppCart> = ({ darkMode, products, totalBill,handleCheckout 
               })
         }
        else 
-        {
+        {   showLoading()
             const categoryNumbers = productList.map((product) => product.categoryNo);
             const myHost = sessionStorage.getItem('host');
             axios.post(`${myHost}/getcheckoutdata`, {
                 productList: JSON.stringify(categoryNumbers),
+                
             })
               .then(response => {
                 Toast.fire({
@@ -61,6 +74,7 @@ const Cart: React.FC<AppCart> = ({ darkMode, products, totalBill,handleCheckout 
                 console.log(response.data);
                 setproductList([]);
                 handleCheckout();
+                hideLoading()
               })
               .catch(error => {
                 console.log(error);
@@ -68,6 +82,7 @@ const Cart: React.FC<AppCart> = ({ darkMode, products, totalBill,handleCheckout 
                     icon: 'error',
                     title: 'Checkout Not Successfull'
                   })
+                  hideLoading()
               });
         }
        
@@ -120,6 +135,7 @@ const Cart: React.FC<AppCart> = ({ darkMode, products, totalBill,handleCheckout 
                     </Box>
                 </Flex>
             </Button>
+            <Loading visible={loadingVisible} /> 
         </Flex>
     );
 };

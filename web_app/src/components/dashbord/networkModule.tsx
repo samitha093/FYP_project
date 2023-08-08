@@ -2,6 +2,7 @@ import { Box, Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, M
 import axios from 'axios';
 import Swal from 'sweetalert2'
 import React, { useEffect, useState } from 'react';
+import Loading from '../module/loading';
 
 interface AppProps {
   darkMode: boolean;
@@ -16,8 +17,19 @@ const NetworkModule: React.FC<AppProps> = ({ darkMode }) => {
   const [ClusterSize, setClusterSize] = useState('2');
   const [SyncConstant, setSyncConstant] = useState(1);
   const [DeviceIp, setDeviceIp] = useState('10.50.70.127');
+  const [loadingVisible, setLoadingVisible] = useState(false);
 
+    // Function to show the loading component
+    const showLoading = () => {
+      setLoadingVisible(true);
+    };
+
+    // Function to hide the loading component
+    const hideLoading = () => {
+      setLoadingVisible(false);
+    };
   useEffect(() => {
+    showLoading()
     const myHost = sessionStorage.getItem('host');
     axios.get(`${myHost}/network/config`)
       .then(response => {
@@ -28,9 +40,11 @@ const NetworkModule: React.FC<AppProps> = ({ darkMode }) => {
         setClusterSize(response.data.message.CLUSTER_SIZE)
         setDeviceIp(response.data.message.NET_IP)
         console.log(response.data.message)
+        hideLoading()
       })
       .catch(error => {
         console.error(error);
+        hideLoading()
       });
   }, []);
 
@@ -47,6 +61,7 @@ const NetworkModule: React.FC<AppProps> = ({ darkMode }) => {
   })
 
   const handleSave = () => {
+    showLoading()
     const myHost = sessionStorage.getItem('host');
     const requestData = {
       CLUSTER_SIZE: ClusterSize,
@@ -64,12 +79,14 @@ const NetworkModule: React.FC<AppProps> = ({ darkMode }) => {
           icon: 'success',
           title: 'Network Configuration update Success'
         })
+        hideLoading()
       })
       .catch(error => {
         Toast.fire({
           icon: 'error',
           title: 'Network Configuration Not updated'
         })
+        hideLoading()
       });
     onClose();
   };
@@ -115,6 +132,7 @@ const NetworkModule: React.FC<AppProps> = ({ darkMode }) => {
         onClick={onOpen}
       >
         <Flex margin={'0px'} h={'inherit'} w={'100%'} color={darkMode ? "white" : "black"} align="center" pl={'20px'}>
+        <Loading visible={loadingVisible} /> 
           <Box>
             Remote Host: {remoteHost}
             <Box>
@@ -186,6 +204,7 @@ const NetworkModule: React.FC<AppProps> = ({ darkMode }) => {
             <Button w="100%" colorScheme="orange" _hover={{ bg: "orange.700" }} color="white" onClick={handleSave}>Update</Button>
           </ModalBody>
         </ModalContent>
+      
       </Modal>
     </>
   );
