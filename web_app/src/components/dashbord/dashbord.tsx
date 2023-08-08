@@ -139,78 +139,72 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
         });
   }
     return (
-        <Flex
-          justify="space-between"
-          align="center"
+        <Box
           w={'100%'}
           h={'100%'}
-          flexDir={{ base: 'column', lg: 'row' }}
-          overflow={'scroll'}
-        >
+          display="flex"
+          >
 
-<div style={{ display: 'flex', flexDirection: 'column', marginRight: '10px' }}>
-  <div
-    style={{
-      display: 'flex',
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      justifyContent: 'center',
-    }}
-  >
-    <Button
-      colorScheme="green"
-      onClick={handleClickButton2}
-      height="60px"
-      display="flex"
-      alignItems="center"
-      style={{ marginRight: '6px', marginBottom: '6px' }}
-    >
-      <SettingsIcon style={{ marginRight: '5px' }} />
-    </Button>
-    <Button
-      colorScheme="green"
-      onClick={handleClickButton1}
-      height="60px"
-      display="flex"
-      alignItems="center"
-      style={{ marginRight: '6px', marginBottom: '6px' }}
-    >
-      <CalendarIcon style={{ marginRight: '5px' }} />
-    </Button>
-  </div>
-</div>
+          {/*  Side bar */}
+          <Box
+          width={'50px'}
+            height={'100%'}
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            m={'10px'}>
+            <Button
+              colorScheme="green"
+              onClick={handleClickButton2}
+              height="60px"
+              display="flex"
+              alignItems="center"
+              style={{ marginRight: '6px', marginBottom: '6px' }}
+            >
+              <SettingsIcon style={{ marginRight: '5px' }} />
+            </Button>
+            <Button
+              colorScheme="green"
+              onClick={handleClickButton1}
+              height="60px"
+              display="flex"
+              alignItems="center"
+              style={{ marginRight: '6px', marginBottom: '6px' }}
+            >
+              <CalendarIcon style={{ marginRight: '5px' }} />
+            </Button>
+          </Box>
 
-
-      
-          {!isTrueButton1?
-          <>     <Button
-          pos="fixed"
-          bottom="7"
-          right="7"
-          borderRadius="50%"
-          p="4"
-          fontSize="3xl"
-          width="80px"
-          height="80px"
-          bg="teal.500"
-          color="white"
-          boxShadow="lg"
-          _hover={{ bg: "teal.700" }}
-          onClick={
-            
-            refreshNabourList}
-        >
-
-
-
-          <RepeatIcon />
-        </Button>
+          {/* component container start */}
+          <Flex  w={`calc(100% - 10px)`} 
+            h={'100%'}
+            justify="space-between"
+            align="center"
+            flexDir={{ base: 'column', lg: 'row' }}
+            overflow={'scroll'}>
+            {!isTrueButton1?
+              <>
+              {/* <Button
+              pos="fixed"
+              bottom="7"
+              right="7"
+              borderRadius="50%"
+              p="4"
+              fontSize="3xl"
+              width="80px"
+              height="80px"
+              bg="teal.500"
+              color="white"
+              boxShadow="lg"
+              _hover={{ bg: "teal.700" }}
+              onClick={refreshNabourList}>
+                <RepeatIcon />
+              </Button> */}
                 <Box border="1px solid" borderColor={darkMode ? "gray.600" : 'gray.300'} padding={'20px'}
-                mr={{ base: '0', lg: '30px' }} w={{ base: '100%', lg: '60%' }} h={'100%'} minW={'300px'}
-                overflow="auto">
-                  <Flex
-                      flexWrap="wrap"
-                  >
+                  mr={{ base: '0', lg: '30px' }} w={{ base: '100%', lg: '60%' }} h={'100%'} minW={'300px'}
+                  overflow="auto">
+                  <Flex flexWrap="wrap">
                       <NetworkModule darkMode={darkMode}/>
                       {isBridge?<BridgeModule darkMode={darkMode}/>:null}
                       {isBridge?<NodeItem darkMode={darkMode} nodeArray={BoostrapArray}/>:null}
@@ -220,30 +214,65 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
                       {isBridge?<New darkMode={darkMode} handledataSave={handledataSave}/>:null}
                   </Flex>
                 </Box>
-                <Box border="1px solid" borderColor={darkMode ? "gray.600" : 'gray.300'} padding={'20px'}
-                  w={{ base: '100%', lg: '40%' }} h={'100%'} minW={'300px'} mt={{ base: '30px', lg: '0px' }}
+                <Box 
+                  w={{ base: '100%', lg: '40%' }} 
+                  h={'100%'} 
+                  minW={'300px'} 
+                  mt={{ base: '30px', lg: '0px' }}
                   overflow="auto">
-                  {NabourArray.length == 0 ?
-                    <Center p='4' w={'100%'} h={'100%'}>
-                      <Image
-                        src={emptyimage}
-                        alt="Description of the image"
-                        boxSize="200px"
-                        objectFit="cover"
-                        opacity={0.4}
-                      />
-                    </Center>
-                  :
-                  <Flex flexWrap="wrap">
-                    {NabourArray.map((element:any, index:any)=>(
-                        <Sitem darkMode={darkMode} key={index} data={element}/>
-                        ))}
-                  </Flex>
-                  }
+                    <Box border="1px solid" padding={'20px'} borderColor={darkMode ? "gray.600" : 'gray.300'} h={'calc(50% - 15px)'}  mb={'10px'} overflow={'auto'}> 
+                      Global neibhour list
+                      {NabourArray.length == 0 ?
+                      <Box width={'100%'} height={'calc(100% - 30px)'}>
+                        <Center p='4' w={'100%'} h={'100%'}>
+                          <Image
+                            src={emptyimage}
+                            alt="Description of the image"
+                            boxSize="200px"
+                            objectFit="cover"
+                            opacity={0.4}
+                          />
+                        </Center>
+                      </Box>
+                      :
+                        <Flex flexWrap="wrap" width={'100%'} height={'calc(100% - 30px)'}>
+                          {NabourArray.map((element:any, index:any)=>(
+                              <Sitem darkMode={darkMode} key={index} data={element}/>
+                              ))}
+                        </Flex>
+                      }
+                    </Box>
+                    <Box border="1px solid" padding={'20px'} borderColor={darkMode ? "gray.600" : 'gray.300'} h={'50%'} overflow={'auto'}> 
+                      Local peer list
+                      {NabourArray.length == 0 ?
+                        <Box width={'100%'} height={'calc(100% - 30px)'}>
+                          <Center p='4' w={'100%'} h={'100%'}>
+                            <Image
+                              src={emptyimage}
+                              alt="Description of the image"
+                              boxSize="200px"
+                              objectFit="cover"
+                              opacity={0.4}
+                            />
+                          </Center>
+                        </Box>
+                      :
+                        <Flex flexWrap="wrap" width={'100%'} height={'calc(100% - 30px)'}>
+                          {NabourArray.map((element:any, index:any)=>(
+                              <Sitem darkMode={darkMode} key={index} data={element}/>
+                              ))}
+                        </Flex>
+                      }
+                    </Box>
+
+                  
                 </Box>
-          </>
-          :<Log/>}
-        </Flex>
+              </>
+            :<Log darkMode={darkMode}/>}     
+          </Flex>
+          {/* component container end */}  
+
+        </Box>
   );
 };
 
