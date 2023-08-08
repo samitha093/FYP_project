@@ -51,6 +51,7 @@ const Slider: React.FC<AppProps> = ({ darkMode }) => {
           icon={<ChevronLeftIcon />}
           onClick={handlePrev}
           mr={2}
+          colorScheme="green" 
         />
         {visibleImages.map((image, index) => (
           <Image
@@ -60,6 +61,7 @@ const Slider: React.FC<AppProps> = ({ darkMode }) => {
             boxSize="150px"
             objectFit="cover"
             mr={2}
+            
           />
         ))}
 
@@ -68,6 +70,7 @@ const Slider: React.FC<AppProps> = ({ darkMode }) => {
           icon={<ChevronRightIcon />}
           onClick={handleNext}
           ml={2}
+          colorScheme="green" 
         />
       </Flex>
     </Flex>

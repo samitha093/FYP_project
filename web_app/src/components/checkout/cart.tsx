@@ -116,7 +116,7 @@ const Cart: React.FC<AppCart> = ({ darkMode, products, totalBill,handleCheckout 
                             textAlign: 'center',
                         }}
                     >
-                        LKR : {totalBill}
+                        LKR : {totalBill.toFixed(2)}
                     </Box>
                 </Flex>
             </Button>
