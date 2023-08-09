@@ -113,6 +113,8 @@ def findCurrentThreandArray():
     gender = currentGender
     itemNum = getCurrentThreand(month,gender)
     currentThreandArray = []
+    #testing
+    itemNum=3
     print("Category no: ",itemNum)
 
     receivedList = getAllItemsByCategory(int(itemNum))
@@ -126,6 +128,8 @@ def findCurrentThreandArray_imageList():
     gender = currentGender
     itemNum = getCurrentThreand(month,gender)
     currentThreandArray = []
+    #testing
+    itemNum=3
     print("Category no: ",itemNum)
 
     receivedList = getAllItemsImageByCategory(int(itemNum))
