@@ -8,6 +8,7 @@ import Nav from "./components/navbar/nav";
 import Settings from "./components/dashbord/settings";
 import Home from "./components/checkout/home"
 import axios from "axios";
+import Loading from "./components/module/loading";
 
 
 function App() {
@@ -43,6 +44,9 @@ useEffect(() => {
 }, []);
   return (
     <div style={{ backgroundColor: darkMode ? theme.colors.gray[700] : "white", height:"100vh" ,overflow: 'hidden' }} >
+      <Loading visible={false} /> {/* To show the spinner */}
+
+     
       <Nav darkMode={darkMode} toggleDarkMode={toggleDarkMode} settings={settings} toggleSettings={toggleSettings} />
       <div className="main-content" style={{ overflow: 'hidden' }}>
         <AnimatePresence>

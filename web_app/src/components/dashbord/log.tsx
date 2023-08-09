@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Box, Center, Grid, GridItem } from '@chakra-ui/react';
 import LogRow from './logRow';
+import Loading from '../module/loading';
 import { Image } from '@chakra-ui/react';
-
 import emptyimage from '../../\assets/empty2.png';
 
 interface AppProps {
@@ -12,16 +12,29 @@ interface AppProps {
 
 const Log: React.FC<AppProps> = ({ darkMode }) => {
   const [logData, setLogData] = useState([]);
+  const [loadingVisible, setLoadingVisible] = useState(false);
 
+    // Function to show the loading component
+    const showLoading = () => {
+      setLoadingVisible(true);
+    };
+
+    // Function to hide the loading component
+    const hideLoading = () => {
+      setLoadingVisible(false);
+    };
   useEffect(() => {
+    showLoading()
     const myHost = sessionStorage.getItem('host');
     axios.get(`${myHost}/logData`)
       .then(response => {
         const data = response.data;
         setLogData(data);
+        hideLoading()
       })
       .catch(error => {
         console.error(error);
+        hideLoading()
       });
   }, []);
 
@@ -55,7 +68,12 @@ const Log: React.FC<AppProps> = ({ darkMode }) => {
           Aggregated Model Accuracy
         </GridItem>
       </Grid>
-   
+      <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
+        {logData.map((data, index) => (
+          <LogRow key={index} rowData={data} />
+        ))}
+      </div>
+      <Loading visible={loadingVisible} /> 
       <Box
         h='calc(100% - 70px)'
         overflowY='auto'
@@ -78,7 +96,6 @@ const Log: React.FC<AppProps> = ({ darkMode }) => {
           ))
         )}
       </Box>
-
     </Box>
   );
 };

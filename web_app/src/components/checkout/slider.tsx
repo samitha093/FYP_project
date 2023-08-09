@@ -2,6 +2,7 @@ import { Flex, Image, IconButton } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import axios from 'axios';
+import Loading from '../module/loading';
 
 interface AppProps {
   darkMode: boolean;
@@ -10,17 +11,31 @@ interface AppProps {
 const Slider: React.FC<AppProps> = ({ darkMode }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [images, setImages] = useState([]);
+  const [loadingVisible, setLoadingVisible] = useState(false);
+
+    // Function to show the loading component
+    const showLoading = () => {
+      setLoadingVisible(true);
+    };
+
+    // Function to hide the loading component
+    const hideLoading = () => {
+      setLoadingVisible(false);
+    };
 
   useEffect(() => {
+    showLoading()
     const myHost = sessionStorage.getItem('host');
     axios
       .get(`${myHost}/threandsImages`)
       .then(response => {
         const imageUrls = response.data.map((item: { ImageUrl: any; }) => item.ImageUrl);
         setImages(imageUrls);
+        hideLoading()
       })
       .catch(error => {
         console.log("Error when loading recommend items")
+        hideLoading()
       });
   }, []);
 
@@ -51,6 +66,7 @@ const Slider: React.FC<AppProps> = ({ darkMode }) => {
           icon={<ChevronLeftIcon />}
           onClick={handlePrev}
           mr={2}
+          colorScheme="green" 
         />
         {visibleImages.map((image, index) => (
           <Image
@@ -60,6 +76,7 @@ const Slider: React.FC<AppProps> = ({ darkMode }) => {
             boxSize="150px"
             objectFit="cover"
             mr={2}
+            
           />
         ))}
 
@@ -68,8 +85,11 @@ const Slider: React.FC<AppProps> = ({ darkMode }) => {
           icon={<ChevronRightIcon />}
           onClick={handleNext}
           ml={2}
+          colorScheme="green" 
         />
       </Flex>
+      <Loading visible={loadingVisible} /> 
+
     </Flex>
   );
 };
