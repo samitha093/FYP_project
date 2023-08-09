@@ -62,6 +62,6 @@ class kademlia_network:
         return self.isAvailabale
 
     def stop_server(self):
-        self.server.stop()
-        self.event_loop.stop()
         self.isAvailabale = False
+        self.event_loop.stop()
+        self.server.stop()
