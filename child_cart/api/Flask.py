@@ -32,7 +32,7 @@ from child_cart.network.client import *
 from child_cart.db.apiConnection import *
 from child_cart.mobile.serverWin import *
 import queue
-
+import child_cart.mobile.serverWin as serverWin
 selectedItem ="Item 0"
 ItemListArray = []
 totalBill = 0
@@ -65,7 +65,7 @@ def checkoutDataSave(gender,month,items):
     # Write the output to a text file
     with open(FILENAME, "w") as file:
         file.write(output_str)
-    checkoutDataFileSend()
+    serverWin.checkoutDataFileSend()
 
 
 
