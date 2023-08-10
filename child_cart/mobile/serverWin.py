@@ -32,9 +32,9 @@ def closedSocketMannuly():
     global GOLBALSOCKET
     client_socket = GOLBALSOCKET
     # Simulate manual disconnection
-    time.sleep(8)
     print("Manually disconnecting client socket...")
     client_socket.close()
+    flask.updateUserDataFromMobile([])
 
 class SocketConnection:
     is_client_connected = False
@@ -73,6 +73,7 @@ class SocketConnection:
         SocketConnection.is_client_connected = False
         self.client_socket.close()
         print(f"Server: Connection closed with {self.client_address}")
+        flask.updateUserDataFromMobile([])
 
     def send_message(self):
         global isNewMessage, MESSAGE ,file_content ,MSGTYPE ,FILENAME
@@ -151,7 +152,7 @@ class SocketConnection:
                       # Converting gender to an integer
                     print("User details:: Name : ",name," Gender : ",gender, " Email: ",email, " Age: ", age, " City: ",city)
                     #update cart user datails
-                    flask.updateUserDataFromMobile(name,genderInt,8)
+                    flask.updateUserDataFromMobile(data_list)
                     isUserDataReceiving = False
                
         except ConnectionResetError:
