@@ -85,9 +85,13 @@ headings=("Name","Number","Price","Amount","Total price")
 def example():
     return render_template('index.html')
 
+dataArray = []
+
 # WebSocket event handlers
 @socketio.on('connect')
 def on_connect():
+    for item in dataArray:
+        socketio.emit(item[0], item[1])
     print('Client connected')
 
 @socketio.on('disconnect')
@@ -100,8 +104,18 @@ def handle_custom_event(data):
 
 def send_hello_to_clients():
     while True:
-        socketio.emit('server_message', 'Hello from the server!')
-        sleep(5)  # Sleep for 1 minute
+        sleep(5)
+        shared_queue = SharedQueueSingleton()
+        if shared_queue.empty():
+            continue  
+        item = shared_queue.get()
+        if item[0] == 'NBRLIST':
+            dataArray.append(item)
+        if item[0] == 'PEERLIST':
+            dataArray.append(item)
+        if item[0] == 'USERID':
+            dataArray.append(item)
+        socketio.emit(item[0], item[1])
 
 
 #find current threand

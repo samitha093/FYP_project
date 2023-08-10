@@ -4,14 +4,15 @@ import React, { useEffect, useState } from 'react';
 interface AppProps {
     darkMode: boolean;
     data:any;
+    myid:any;
+    backgroundColour:any;
 }
 
-const Sitem: React.FC<AppProps> = ({ darkMode,data }) => {
+const Sitem: React.FC<AppProps> = ({ darkMode,data,myid,backgroundColour }) => {
     const [ip, setIp] = useState('192.168.34.56');
-    const [port, setPort] = useState('55687');
     useEffect(() => {
-        setIp(data[0]);
-        setPort(data[1]);
+        setIp(data);
+        console.log(myid)
       }, []);
     return (
         <Flex justify="space-between"
@@ -25,10 +26,11 @@ const Sitem: React.FC<AppProps> = ({ darkMode,data }) => {
         justifyContent="center"
         _hover={{ cursor: 'pointer' }}
         mr={'10px'}
-        mb={'10px'}>
+        mb={'10px'}
+        backgroundColor={myid!=ip?backgroundColour:'#8E24AA'}>
         <Center margin={'30px'} h={'inherit'} w={'inherit'}
         color={darkMode? "white" : "black"}>
-            {ip}:{port}
+            {ip}
         </Center>
         </Flex>
     );

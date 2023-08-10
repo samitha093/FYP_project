@@ -14,6 +14,7 @@ sys.path.insert(0, root_path)
 from child_cart.network.util import *
 from child_cart.network.errorList import *
 from child_cart.cache.cacheFile import *
+from child_cart.api.shared_queue import *
 
 ModelParamLoop = True
 
@@ -21,6 +22,8 @@ def seedProx(mySocket,USERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,SHELL_TI
     global ModelParamLoop
     print(errMsg.MSG004.value)
     ModelParamLoop = True
+    ## share network peers data with ui
+    shared_queue = SharedQueueSingleton()
     # register peer type
     peerTypeReq = ["PEERTYPE",MODE]
     mySocket.request(requestModel(USERID,peerTypeReq))
@@ -29,9 +32,20 @@ def seedProx(mySocket,USERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,SHELL_TI
     # mySocket.request(requestModel(USERID,peernbrReq))
     url = 'http://'+SIP+':5001/bridge/nabours'
     response = requests.get(url)
-    nbrlist = response.content.decode('utf-8')
-    print("naber list from bridge : ", nbrlist)
-    saveOrUpdateNBRList(nbrlist)
+    if response.status_code == 200:
+        nbrlistdata = response.json()
+    else:
+        print('Request failed with status code:', response.status_code)
+    ip_addresses = [item[0] for item in nbrlistdata]
+    NBRtempData  = ["NBRLIST",ip_addresses]
+    shared_queue.put(NBRtempData)
+    print("naber list from bridge : ", ip_addresses)
+    saveOrUpdateNBRList(ip_addresses)
+        # request peer list
+    peerListReq = ["PEERLIST"]
+    mySocket.request(requestModel(USERID,peerListReq))
+    ## share network peers data with ui
+    shared_queue = SharedQueueSingleton()
     ########################################################################
     counter = 0
     while ModelParamLoop:
@@ -53,6 +67,10 @@ def seedProx(mySocket,USERID,MODE,MOBILEMODELPARAMETERS,MODELPARAMETERS,SHELL_TI
                 elif tempData[0] == "NBRLIST":
                     print("NBR LIST : ",tempData[1])
                     saveOrUpdateNBRList(tempData[1])
+                    shared_queue.put(tempData)
+                elif tempData[0] == "PEERLIST":
+                    print("PEER LIST : ",tempData[1])
+                    shared_queue.put(tempData)
                 elif tempData[0] == "AVAILABEL":
                     print("Atendens Marked by bridge!")
                     mySocket.request(requestModel(USERID,["AVAILABEL"]))
