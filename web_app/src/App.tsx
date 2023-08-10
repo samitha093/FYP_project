@@ -42,22 +42,6 @@ function App() {
           )}
         </AnimatePresence>
       </div>
-      {/* <>
-      <Flex w="100%" h="100%" align="center" justify="center" overflow="auto">
-        <Modal closeOnOverlayClick={false} isOpen={showScanner} onClose={closeScanner}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Connect your Mobile Device</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <Flex align="center" justify="center" mb={10}>
-                <QRCode value={ip} />
-              </Flex>
-            </ModalBody>
-          </ModalContent>
-        </Modal>
-      </Flex>
-      </> */}
     </div>
   );
 }

@@ -1,9 +1,12 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, FormControl, FormHelperText, FormLabel, Input, Spinner } from '@chakra-ui/react';
 import axios from 'axios';
 import QRCode from 'qrcode.react';
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { io } from 'socket.io-client';
+import bgimage1 from '../../\assets/bg.png';
+import {HiOutlineUser} from "react-icons/hi";
+import Swal from 'sweetalert2';
 
 interface AppProps {
     darkMode: boolean;
@@ -13,7 +16,8 @@ const Mobile: React.FC<AppProps> = ({ darkMode }) => {
     const [ip, setIp] = useState("");
     const [profile, setProfile] = useState<boolean>(false);
     const [widthPercentage, setWidthPercentage] = useState<number>(0);
-    const [content, setContent] = useState<boolean>(true);
+    const [content, setContent] = useState<boolean>(false);
+    const [userdata, setUserdat] = useState([]);
 
     useEffect(() => {
         var hostname = 'http://'+ window.location.hostname+ ':5001';
@@ -77,10 +81,13 @@ const Mobile: React.FC<AppProps> = ({ darkMode }) => {
     socket.on('USER_PROFILE', (data) => {
       setTimeout(() => {
       // Update the nabourArray with new data after the delay
-      console.log(data);
+      setUserdat(data)
       if(data.length > 0){
+        if(profile == false){
+        }
         setProfile(true);
       }else{
+        setContent(false);
         setProfile(false);
       }
       }, 3000);
@@ -92,9 +99,34 @@ const Mobile: React.FC<AppProps> = ({ darkMode }) => {
   }, []);
 
     function setProfileTrue() {
-        setContent(false);
-        setProfile(!profile);
+        var hostname = 'http://'+ window.location.hostname+ ':5001';
+        axios.get(`${hostname}/mobileDisconect`)
+        .then(response => {
+            Toast.fire({
+                icon: 'success',
+                title: 'Mobile device disconnected!'
+            })
+        })
+        .catch(error => {
+            Toast.fire({
+                icon: 'error',
+                title: 'Something went wrong!'
+            })
+            console.error(error);
+        });
     }
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+      })
 
     return (
         <Flex
@@ -104,6 +136,11 @@ const Mobile: React.FC<AppProps> = ({ darkMode }) => {
             h="100vh"
             w={'100%'}
             color={darkMode ? 'white' : 'gray.800'}
+            backgroundImage={bgimage1}
+            backgroundSize="auto 100%"
+            backgroundRepeat="no-repeat"
+            backgroundPosition="center"
+            zIndex={1}
         >
             <Flex
                 p={'5px'}
@@ -136,8 +173,21 @@ const Mobile: React.FC<AppProps> = ({ darkMode }) => {
                         alignItems="center"
                         flexGrow={1}
                         mt={'20px'}
-                        justifyContent="center">
-                            User Conected ..
+                        justifyContent="center"
+                        padding={'30px'}>
+                            <FormControl
+                            color={'gray.600'}>
+                                <FormLabel>User name : </FormLabel>
+                                <Input color={'black'} type='text' mb={'10px'} defaultValue={userdata[0]}/>
+                                <FormLabel>Email : </FormLabel>
+                                <Input color={'black'} type='email' mb={'10px'} defaultValue={userdata[2]}/>
+                                <FormLabel>Address : </FormLabel>
+                                <Input color={'black'} type='text' mb={'10px'} defaultValue={userdata[4]}/>
+                                <FormLabel>Gender : </FormLabel>
+                                <Input color={'black'} type='text' mb={'10px'} defaultValue={userdata[1]}/>
+                                <FormLabel>Age : </FormLabel>
+                                <Input color={'black'} type='text' mb={'10px'} defaultValue={userdata[3]}/>
+                            </FormControl>
                         </Flex>
                     ) : null}
                 </Box>
@@ -153,8 +203,17 @@ const Mobile: React.FC<AppProps> = ({ darkMode }) => {
                     <Box p="20px"
                         onClick={() => setProfileTrue()}
                         backgroundColor={'white'}
+                        cursor={'pointer'}
                     >
-                        <QRCode value={ip} />
+                        {ip == ""?<>
+                            <Spinner
+                            thickness='4px'
+                            speed='0.65s'
+                            emptyColor='gray.200'
+                            color='blue.500'
+                            size='xl'
+                            />
+                        </>:profile?<HiOutlineUser size={130}/>:<QRCode value={ip} />}
                     </Box>
                     <Box
                         color={'gray.300'}
@@ -165,7 +224,7 @@ const Mobile: React.FC<AppProps> = ({ darkMode }) => {
                         textAlign={'center'}
                         mt={'20px'}
                     >
-                        Scan QR code to connect mobile app with your smart cart
+                        {profile?<>Click profile icon to manual disconect from smart cart</>:<>Scan QR code to connect mobile app with your smart cart</>}
                     </Box>
                 </Flex>
             </Flex>

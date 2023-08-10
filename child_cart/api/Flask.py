@@ -49,7 +49,6 @@ FILENAME = 'checkoutData.txt'
 def updateUserDataFromMobile(data):
     global currentUser,currentGender,currentMonth, UserDataArray
     UserDataArray = data
-    print(data)
     # currentUser =data[0]
     # currentGender = 1
     # currentMonth = 1
@@ -434,5 +433,10 @@ def getCheckoutData():
 @app.route('/childstop', methods =["GET"]) # disconect socket manual
 def childstop():
     closeSocket()
+    return jsonify({'message': "wait until reconect with new server"})
+
+@app.route('/mobileDisconect', methods =["GET"]) # disconect socket manual
+def mobiledisconect():
+    closedSocketMannuly()
     return jsonify({'message': "wait until reconect with new server"})
 
