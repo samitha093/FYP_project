@@ -15,6 +15,7 @@ sys.path.insert(0, root_path)
 from child_cart.network.util import *
 from child_cart.network.errorList import *
 from child_cart.cache.cacheFile import *
+from child_cart.api.shared_queue import *
 
 def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS, SIP):
     CLUSTERID = ""
@@ -27,6 +28,8 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS, SIP):
     ################################################################################
     #-----------------------BEGIN----COMMUNICATION SCRIPT--------------------------#
     ################################################################################
+    ## share network peers data with ui
+    shared_queue = SharedQueueSingleton()
     # register peer type
     peerTypeReq = ["PEERTYPE",MODE]
     mySocket.request(requestModel(USERID,peerTypeReq))
@@ -35,12 +38,18 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS, SIP):
     # mySocket.request(requestModel(USERID,peernbrReq))
     url = 'http://'+SIP+':5001/bridge/nabours'
     response = requests.get(url)
-    nbrlist = response.content.decode('utf-8')
-    print("naber list from bridge : ", nbrlist)
+    if response.status_code == 200:
+        nbrlistdata = response.json()
+    else:
+        print('Request failed with status code:', response.status_code)
+    ip_addresses = [item[0] for item in nbrlistdata]
+    NBRtempData  = ["NBRLIST",ip_addresses]
+    shared_queue.put(NBRtempData)
+    print("naber list from bridge : ", ip_addresses)
+    saveOrUpdateNBRList(ip_addresses)
     # request peer list
     peerListReq = ["PEERLIST"]
     mySocket.request(requestModel(USERID,peerListReq))
-
     while True: #----------------------GET Cluster-------------------------
         tempDataSet = mySocket.RECIVEQUE.copy()
         if len(tempDataSet) > 0:
@@ -49,22 +58,24 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS, SIP):
                 tempData = x.get("Data")
                 mySocket.queueClean(x)
                 if tempData[0] == "PEERLIST":
+                    shared_queue.put(tempData)
                     print("PEER LIST : ",tempData[1])
                     if len(tempData[1])>0:
+                        modelReq = ["MODELREQUEST"]
                         current_time = time.time()
                         seed = int(current_time)
                         random.seed(seed)
-                        random_index = random.randint(0, len(tempData[1])-1)
-                        print(random_index)
-                        modelReq = ["MODELREQUEST"]
-                        x_data = tempData[1]
-                        x = x_data[random_index]
-                        mySocket.request(requestModel(USERID,modelReq,x))
-                        print("SEND MODEL REQUEST TO : ",x)
+                        for i in range(1, 4):
+                            random_index = random.randint(0, len(tempData[1])-1)
+                            x_data = tempData[1]
+                            x = x_data[random_index]
+                            mySocket.request(requestModel(USERID,modelReq,x))
+                            print("MODEL REQUEST ",i," SEND TO : ",x)
                         timerCal = 0
                     else:
                         break
                 elif tempData[0] == "NBRLIST":
+                    shared_queue.put(tempData)
                     print("NBR LIST : ",tempData[1])
                     saveOrUpdateNBRList(tempData[1])
                 elif tempData[0] == "MODELPARAMETERS":

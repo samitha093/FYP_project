@@ -14,6 +14,7 @@ import BridgeModule from './bridgeModule';
 import emptyimage from '../../\assets/empty.png';
 import { FaNetworkWired } from 'react-icons/fa';
 import Log from './log';
+import { io } from 'socket.io-client';
 
 interface AppProps {
     darkMode: boolean;
@@ -29,9 +30,11 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
   const [isBridge, setIsBridge] = useState(false);
   const [BoostrapArray, setBoostrapArray] = useState<any>([]);
   const [NabourArray, setNabourArray] = useState<any>([]);
+  const [PeerArray, setPeerArray] = useState<any>([]);
   var ischange = true;
   const [isTrueButton1, setIsTrueButton1] = useState(false);
   const [isTrueButton2, setIsTrueButton2] = useState(false);
+  const [myUserID, setMyUserID] = useState<any>("");
   useEffect(() => {
     const myHost = sessionStorage.getItem('host');
     axios.get(`${myHost}/bridge/hello`)
@@ -49,6 +52,41 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
       .catch(error => {
         console.error(error);
       });
+  }, []);
+
+  //subscribe to the socket.io events
+  useEffect(() => {
+    var hostname = 'http://'+ window.location.hostname+ ':5001';
+    const socket = io(hostname);
+    // Event handler when connected to the server
+    socket.on('connect', () => {
+      console.log('Dashboard = > connected to the python backend');
+    });
+     // Event handler for custom events from the server
+    socket.on('server_message', (data) => {
+      console.log('Received from server:', data);
+    });
+    socket.on('NBRLIST', (data) => {
+      setNabourArray([])
+      setTimeout(() => {
+      // Update the nabourArray with new data after the delay
+      setNabourArray(data);
+      }, 3000);
+    });
+    socket.on('PEERLIST', (data) => {
+      setPeerArray([])
+      setTimeout(() => {
+        // Update the nabourArray with new data after the delay
+        setPeerArray(data);
+      }, 3000);
+    });
+    socket.on('USERID', (data) => {
+      setMyUserID(data)
+    });
+    // Clean up the socket connection when the component unmounts
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   const handleClickButton1 = () =>{
@@ -111,33 +149,6 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
         console.log(error);
       });
   };
-
-  const refreshNabourList =()=>{
-    setNabourArray([])
-    const myHost = sessionStorage.getItem('host');
-      // get nabour list
-      axios.get(`${myHost}/bridge/nabours`)
-        .then(response => {
-          setNabourArray(response.data)
-          // console.log(response.data)
-        })
-        .catch(error => {
-          console.error(error);
-        });
-  }
-  const refreshLogDataList =()=>{
-    setNabourArray([])
-    const myHost = sessionStorage.getItem('host');
-      // get nabour list
-      axios.get(`${myHost}/bridge/nabours`)
-        .then(response => {
-          setNabourArray(response.data)
-          // console.log(response.data)
-        })
-        .catch(error => {
-          console.error(error);
-        });
-  }
     return (
         <Box
           w={'100%'}
@@ -185,22 +196,6 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
             overflow={'scroll'}>
             {!isTrueButton1?
               <>
-              {/* <Button
-              pos="fixed"
-              bottom="7"
-              right="7"
-              borderRadius="50%"
-              p="4"
-              fontSize="3xl"
-              width="80px"
-              height="80px"
-              bg="teal.500"
-              color="white"
-              boxShadow="lg"
-              _hover={{ bg: "teal.700" }}
-              onClick={refreshNabourList}>
-                <RepeatIcon />
-              </Button> */}
                 <Box border="1px solid" borderColor={darkMode ? "gray.600" : 'gray.300'} padding={'20px'}
                   mr={{ base: '0', lg: '30px' }} w={{ base: '100%', lg: '60%' }} h={'100%'} minW={'300px'}
                   overflow="auto">
@@ -237,8 +232,8 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
                       :
                         <Flex flexWrap="wrap" width={'100%'} height={'calc(100% - 30px)'}>
                           {NabourArray.map((element:any, index:any)=>(
-                              <Sitem darkMode={darkMode} key={index} data={element}/>
-                              ))}
+                              <Sitem darkMode={darkMode} key={index} data={element} myid={myUserID} backgroundColour={'#42A5F5'}/>
+                            ))}
                         </Flex>
                       }
                     </Box>
@@ -258,8 +253,8 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
                         </Box>
                       :
                         <Flex flexWrap="wrap" width={'100%'} height={'calc(100% - 30px)'}>
-                          {NabourArray.map((element:any, index:any)=>(
-                              <Sitem darkMode={darkMode} key={index} data={element}/>
+                          {PeerArray.map((element:any, index:any)=>(
+                              <Sitem darkMode={darkMode} key={index} data={element} myid={myUserID} backgroundColour={'#26A69A'}/>
                               ))}
                         </Flex>
                       }

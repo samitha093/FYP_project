@@ -14,24 +14,6 @@ interface HomeProps {
 
 const Home: React.FC<HomeProps> = ({ darkMode }) => {
     const [selectedBox, setSelectedBox] = useState<number | null>(0);
-    // var myHost = 'http://localhost:5001';
-
-    useEffect(() => {
-      var hostname = 'http://'+ window.location.hostname+ ':5001';
-      const socket = io(hostname);
-      // Event handler when connected to the server
-      socket.on('connect', () => {
-        console.log('Store = > connected to the python backend');
-      });
-       // Event handler for custom events from the server
-      socket.on('server_message', (data) => {
-        console.log('Received message from server:', data);
-      });
-      // Clean up the socket connection when the component unmounts
-      return () => {
-        socket.disconnect();
-      };
-    }, []);
 
     const handleBoxClick = (index: number) => {
         setSelectedBox(index);

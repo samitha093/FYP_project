@@ -18,6 +18,7 @@ from child_cart.network.seed import *
 from child_cart.network.file import *
 from child_cart.cache.cacheFile import *
 from child_cart.api.mockApi import *
+from child_cart.api.shared_queue import *
 import queue
 import threading
 
@@ -114,7 +115,10 @@ def mainFunn(RECIVER_TIMEOUT, SYNC_CONST, SOCKET_HOST):
         mySocket.start_sender()
         print("USER TYPE  : ",MODE)
         print("USER ID    : ",TEMPUSERID)
-
+        ## share network peers data with ui
+        shared_queue = SharedQueueSingleton()
+        sendingData = ["USERID",TEMPUSERID]
+        shared_queue.put(sendingData)
         #Connection Mode select
         if MODE == conctionType.KERNEL.value:
             MODELPARAMETER = communicationProx(mySocket,TEMPUSERID,MODE,RECIVER_TIMEOUT,MODELPARAMETERS, HOSTHISTORT)
@@ -180,11 +184,11 @@ def connectNetwork():
 def hostSelector():
     global HOSTHISTORT, HOSTLIST, LOCALHOST, HOST
     nbrList = loadNBRList()
+    print("Saved nabour list : ",nbrList)
     try:
-        json_data = json.loads(nbrList)
-        for i in json_data:
-            HOSTLIST.append(i[0])
-        print("Select a host from known nabour list : ",nbrList)
+        for i in nbrList:
+            HOSTLIST.append(i)
+        print("Select a host from known nabour list : ",HOSTLIST)
     except :
         pass
     if len(HOSTLIST) == 0:

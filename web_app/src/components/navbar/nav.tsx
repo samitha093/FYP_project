@@ -39,6 +39,7 @@ const Nav: React.FC<NavProps> = ({ darkMode, toggleDarkMode ,settings ,toggleSet
           mr={4}
           variant="ghost"
           _hover={{ bg: darkMode ? 'gray.700' : 'white' }}
+          color={darkMode? "white" : "black"}
         />
       :null}
         <IconButton
@@ -48,6 +49,7 @@ const Nav: React.FC<NavProps> = ({ darkMode, toggleDarkMode ,settings ,toggleSet
           onClick={toggleDarkMode}
           variant="ghost"
           _hover={{ bg: darkMode ? 'gray.700' : 'white' }}
+          color={darkMode? "white" : "black"}
         />
         <IconButton
           aria-label="Open settings menu"
@@ -55,6 +57,7 @@ const Nav: React.FC<NavProps> = ({ darkMode, toggleDarkMode ,settings ,toggleSet
           onClick={toggleSettings}
           variant="ghost"
           _hover={{ bg: darkMode ? 'gray.700' : 'white' }}
+          color={darkMode? "white" : "black"}
         />
       </Box>
     </Flex>

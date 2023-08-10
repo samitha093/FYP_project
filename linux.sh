@@ -4,10 +4,10 @@ find child_cart/api/templates -mindepth 1 -delete
 rm *.spec
 rm dist/*.bin
 rm -rf build
-echo "😎 => creating web app ..."
-cd web_app
-yarn build
-cd ..
+# echo "😎 => creating web app ..."
+# cd web_app
+# yarn build
+# cd ..
 echo "😎 => copying web app to child cart ..."
 cp -r web_app/dist/* child_cart/api/templates
 echo "😎 => creating python binary file for parent..."

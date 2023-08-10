@@ -39,8 +39,10 @@ const NetworkModule: React.FC<AppProps> = ({ darkMode }) => {
         setSyncConstant(response.data.message.SYNC_CONST)
         setClusterSize(response.data.message.CLUSTER_SIZE)
         setDeviceIp(response.data.message.NET_IP)
-        console.log(response.data.message)
+
+        // console.log(response.data.message)
         hideLoading()
+
       })
       .catch(error => {
         console.error(error);
