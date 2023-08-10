@@ -34,6 +34,8 @@ SHELL_TIMEOUT = 60
 SYNC_CONST = 1
 CULSTER_SIZE = 3
 connectionStatus = False
+#define kernal start time
+KERNAL_START_TIME=0
 
 FORWARD=50
 BACKWORD=50 #update globle values from cache
@@ -239,7 +241,7 @@ def backgroudNetworkProcess():
     global CART_TYPE,CULSTER_SIZE,conType
     global RECIVED_MODELPARAMETERLIST,MODEL
     global LOCALMODELACCURACY,LOGLOCALMODEL,LOGRECEIVEDMODEL,datasetSize,initCatasetSize,CARTCURRENTDATASIZE
-    global x_test_init,y_test_init
+    global x_test_init,y_test_init ,KERNAL_START_TIME
     print("NETWORKING ......")
     result=loadInitData()
     #check initialization
@@ -267,12 +269,16 @@ def backgroudNetworkProcess():
         #if cart data is enough 
         if cartData >= datasetSize:
             print("dataset completed")
+            #set time stamp for kernal start
+            KERNAL_START_TIME = datetime.datetime.now()
+            KERNAL_START_TIME = KERNAL_START_TIME.strftime("%Y-%m-%d %H:%M:%S")
+            print("Kernal start time:", KERNAL_START_TIME)
             x_test_np,y_test_np = splitCartData(datasetSize)
             y_test_np = y_test_np.argmax(axis=-1)
             #local model training
             LOCALMODELACCURACY = localModelTraing(MODEL,x_test_np,y_test_np,datasetSize)
             #local model log data
-            localModelIndex= getLengthOfLogData()
+            localModelIndex,kernalLastTotalTime= getLengthOfLogData()
             currentLocalModelIndex =str(localModelIndex)
             LOGLOCALMODEL = modelLogTemplate(currentLocalModelIndex, "True", LOCALMODELACCURACY)
             print("local model details ")
@@ -318,7 +324,8 @@ def backgroudNetworkProcess():
                         td.join()
 
                     TIME_ARRAY[3] = time.time() ## time stap 4
-                    globleAggregationProcess(MODEL,x_test_np,y_test_np,CULSTER_SIZE,LOGLOCALMODEL,LOGRECEIVEDMODEL)
+                    #global aggregation
+                    globleAggregationProcess(MODEL,x_test_np,y_test_np,CULSTER_SIZE,LOGLOCALMODEL,LOGRECEIVEDMODEL,KERNAL_START_TIME,kernalLastTotalTime)
                     LOGRECEIVEDMODEL =[]
                     CARTCURRENTDATASIZE=0
                     TIME_ARRAY[4] = time.time() ## time stap 5LOGRECEIVEDMODEL
