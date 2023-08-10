@@ -3,43 +3,23 @@ package com.example.predictionapp;
 import static android.service.controls.ControlsProviderService.TAG;
 
 import android.annotation.SuppressLint;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.ContextWrapper;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.Manifest;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import org.java_websocket.drafts.Draft;
-import org.java_websocket.drafts.Draft_6455;
-import org.java_websocket.handshake.ServerHandshake;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.tensorflow.lite.Interpreter;
@@ -54,37 +34,19 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OptionalDataException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.net.HttpURLConnection;
 import java.net.Socket;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.UnknownHostException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.net.Socket;
-import android.util.Log;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import java.util.Calendar;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import okhttp3.WebSocket;
+
 
 
 public class MainActivity extends AppCompatActivity{
@@ -97,26 +59,21 @@ public class MainActivity extends AppCompatActivity{
     private static final String SERVER_ADDRESS = "141.145.200.6";
     private static final int SERVER_PORT = 8000;
     Button buttonBT;
-    private String host ;
-    private int port;
-
+    public String host ;
+    public int port;
+    boolean isQRRead = false;
     private EditText etName, etGender, etNIC, etCity;
     private Button sendMsgButton;
     private TextView dataTextView;
     private TextView receivedDataTextView;
     private Handler handler;
-    private BluetoothReceiver bluetoothReceiver;
-    private BluetoothAdapter bluetoothAdapter;
-    private BluetoothDevice selectedDevice;
     private static final int REQUEST_CODE_QR_SCAN = 101;
-    //private WebSocketAndroidClient webSocketClient;
-    private BiDirCom socketClient;
-    //private BiDirClient client;
+
 
 
     public Socket socket;
     private boolean fileOutputStream;
-
+    private BottomNavigationView bottomNavigationView;
     @SuppressLint("MissingInflatedId")
 
 
@@ -126,9 +83,29 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
 
         Log.i("INT", "Loading");
-        MyLogger.i("COLORED TAG", "This is an info message with color.");
         new SocketTask().execute();
         //processReceivedFile();
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
+
+        // Set a listener to handle tab selection
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.menu_scan:
+                                startActivity(new Intent(MainActivity.this, ScanQRCodeActivity.class));
+                                return true;
+                            case R.id.menu_me:
+                                startActivity(new Intent(MainActivity.this, UserProfileActivity.class));
+                                return true;
+                            case R.id.menu_just_for_you:
+                                startActivity(new Intent(MainActivity.this, ProductPreviewActivity.class));
+                                return true;
+                        }
+                        return false;
+                    }
+                });
 
 
     }
@@ -138,7 +115,7 @@ public class MainActivity extends AppCompatActivity{
         protected Void doInBackground(Void... voids) {
             asynchrounousProcess();
             /*try {
-                Thread.sleep(8000);
+                Thread.sleep(25000);
                 socketDisconnect();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -149,52 +126,54 @@ public class MainActivity extends AppCompatActivity{
     }
     //UI and Background proceess
     public void asynchrounousProcess(){
+            new Thread(new Runnable(){
+                @Override
+                public void run() {
+                    //socket = null;
+                    host = "192.168.8.169";
+                    port = 9999;
 
-        new Thread(new Runnable(){
-            @Override
-            public void run() {
-                socket = null;
-                host = "192.168.8.136";
-                port = 9999;
+                    // Start separate threads for reading and sending messages
+                    //Thread for socket
 
-                // Start separate threads for reading and sending messages
-                //Thread for socket
+                    Thread socketThread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
 
-                Thread socketThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            socket = new Socket(host, port);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
+                            try {
+                                socket = new Socket(host, port);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+
+                            Log.d("SOCKET REQUEST", "Socket connection requesting....");
+                            readMessages(getApplicationContext());
+
                         }
-                        Log.d("SOCKET REQUEST", "Socket connection requesting....");
-                        readMessages(getApplicationContext());
+                    });
+                    //Thread for UI Process
+                    Thread UIThread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
 
+                        }
+                    });
+
+                    socketThread.start();
+                    UIThread.start();
+
+                    // Wait for the threads to finish
+                    try {
+                        socketThread.join();
+                        UIThread.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                });
-                //Thread for UI Process
-                Thread UIThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
 
-                    }
-                });
 
-                socketThread.start();
-                UIThread.start();
-
-                // Wait for the threads to finish
-                try {
-                    socketThread.join();
-                    UIThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
+            }).start();
 
-
-            }
-        }).start();
 
     }
 
@@ -311,7 +290,7 @@ public class MainActivity extends AppCompatActivity{
 
    }
     //send user data
-    private void sendUserData(){
+    /*private void sendUserData(){
 
         String line;
         line = "USER DATA";
@@ -321,12 +300,37 @@ public class MainActivity extends AppCompatActivity{
         String gender = "10";
         line = "[" + name + "," + age + "," + gender + "]";
         sendMessages(line);
+    }*/
+    private void sendUserData() {
+        try {
+            FileInputStream fis = openFileInput("user_data.json");
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+            br.close();
+            isr.close();
+            fis.close();
+
+            // Parse JSON data
+            JSONObject userData = new JSONObject(sb.toString());
+            String name = userData.getString("name");
+            String age = userData.getString("age");
+            String gender = userData.getString("gender");
+
+            //  Send the data
+            sendMessages("USER DATA");
+            sendMessages("[" + name + "," + age + "," + gender + "]");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    // socket disconnect Manually
+    //socket disconnect Manually
     public void socketDisconnect() throws InterruptedException {
-
-
         try {
             if (socket != null && socket.isConnected()) {
                 socket.close();
@@ -342,35 +346,20 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
-        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(bluetoothReceiver);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // File csvFile = new File(getFilesDir(), "user_data.csv");
-        if (requestCode == REQUEST_ENABLE_BT) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //handleBluetoothActions();
-            } else {
-                // Bluetooth permission denied, handle accordingly (e.g., show a message, disable Bluetooth feature, etc.)
-                //Toast.makeText(MainActivity.this, "Bluetooth permission denied", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         String scannedData ="";
         String ipAddress = "";
-        int port = 0 ;
+        //int port = 0 ;
         if (result != null && result.getContents() != null) {
             scannedData = result.getContents();
             String dataType = result.getFormatName(); // Get the data type
@@ -378,10 +367,14 @@ public class MainActivity extends AppCompatActivity{
             //url = "ws://" + scannedData + ":9999";
             String[] parts = scannedData.split(":");
             if(parts.length == 2){
-                ipAddress = parts[0];
+                host = parts[0];
                 port = Integer.parseInt(parts[1]);
-                Log.i("split data: ","IP: "+ ipAddress+ ", PORT: "+ port);
+                Log.i("split data: ","IP: "+ host+ ", PORT: "+ port);
+                isQRRead = true;
             }
+
+            Log.d("QR READ STATE", String.valueOf(isQRRead));
+            //asynchrounousProcess(host,port);
             // Create an Intent to send the scanned URL back to MainActivity
             Intent intent = new Intent();
             intent.putExtra("scanned_url", scannedData);
@@ -416,7 +409,7 @@ public class MainActivity extends AppCompatActivity{
 
 
     public void onConnectToCartButtonClicked(View view) {
-        //startQRCodeScan();
+        startQRCodeScan();
 
     }
     public void onDisconnectCartButtonClicked(View view){
@@ -469,7 +462,7 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    private void initiate(){
+ /*   private void initiate(){
 
         // Get references to UI elements
         etName = findViewById(R.id.editTextName);
@@ -495,10 +488,10 @@ public class MainActivity extends AppCompatActivity{
             // Error: Failed to copy model
         }
 
-    }
+    }*/
 
 
-    private void saveForm() {
+  /*  private void saveForm() {
 
         String name = etName.getText().toString();
         String gender = etGender.getText().toString();
@@ -537,11 +530,11 @@ public class MainActivity extends AppCompatActivity{
                 e.printStackTrace();
             }
         }
-    }
-    private void saveFormJson() {
+    }*/
+   /* private void saveFormJson() {
         String name = etName.getText().toString();
         String gender = etGender.getText().toString();
-        String NIC = etNIC.getText().toString();
+        String age = etNIC.getText().toString();
         String city = etCity.getText().toString();
 
         // Create a JSON object to hold the user data
@@ -549,7 +542,7 @@ public class MainActivity extends AppCompatActivity{
         try {
             userDataJson.put("name", name);
             userDataJson.put("gender", gender);
-            userDataJson.put("NIC", NIC);
+            userDataJson.put("age", age);
             userDataJson.put("city", city);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -586,7 +579,7 @@ public class MainActivity extends AppCompatActivity{
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 
 
     private String readFormData() {
@@ -790,11 +783,11 @@ private float modelAccuracy(String accuracyMode){
         localTfliteModel.run(x_np, output);
         int[] y_pred_model_1 = argmax(output, 1);
 
-        TextView txtPredictItem = findViewById(R.id.textItem);
+        //TextView txtPredictItem = findViewById(R.id.textItem);
 
         for (int i = 0; i < y_pred_model_1.length; i++) {
             Log.i(" Prediction App ", "Prediction results: " + String.valueOf(y_pred_model_1[i]));
-            txtPredictItem.setText("Predicted Item: " + String.valueOf(y_pred_model_1[i]));
+            //txtPredictItem.setText("Predicted Item: " + String.valueOf(y_pred_model_1[i]));
         }
     }
 
@@ -885,7 +878,7 @@ private float modelAccuracy(String accuracyMode){
         }
 
 
-    }*//*
+    }*/
 
     //http test network
 
@@ -895,9 +888,6 @@ private float modelAccuracy(String accuracyMode){
         integrator.setPrompt("Scan a QR Code");
         integrator.setCameraId(0); // Use the rear camera (0) or front camera (1)
         integrator.initiateScan();
-
-
     }
-    // Method to parse the JSON data into a list of lists of integers
-*/
+
     }
