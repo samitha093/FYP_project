@@ -27,21 +27,6 @@ function App() {
   const toggleSettings = () => {
     setSettings(!settings);
   };
-useEffect(() => {
-  var hostname = 'http://'+ window.location.hostname+ ':5001';
-  // sessionStorage.setItem('host', 'http://'+hostname+':'+ window.location.port+'/api');
-  sessionStorage.setItem('host', hostname);
-  axios.get(`${hostname}/getlocalip`)
-  .then(response => {
-    var uri = response.data + ":9999";
-    setIp(uri);
-    // console.log(response.data);
-  })
-  .catch(error => {
-    console.error(error);
-  });
-
-}, []);
   return (
     <div style={{ backgroundColor: darkMode ? theme.colors.gray[700] : "white", height:"100vh" ,overflow: 'hidden' }} >
       <Loading visible={false} /> {/* To show the spinner */}
@@ -57,7 +42,7 @@ useEffect(() => {
           )}
         </AnimatePresence>
       </div>
-      <>
+      {/* <>
       <Flex w="100%" h="100%" align="center" justify="center" overflow="auto">
         <Modal closeOnOverlayClick={false} isOpen={showScanner} onClose={closeScanner}>
           <ModalOverlay />
@@ -72,7 +57,7 @@ useEffect(() => {
           </ModalContent>
         </Modal>
       </Flex>
-      </>
+      </> */}
     </div>
   );
 }

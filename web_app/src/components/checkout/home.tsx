@@ -13,7 +13,7 @@ interface HomeProps {
 }
 
 const Home: React.FC<HomeProps> = ({ darkMode }) => {
-    const [selectedBox, setSelectedBox] = useState<number | null>(0);
+    const [selectedBox, setSelectedBox] = useState<number | null>(2);
 
     const handleBoxClick = (index: number) => {
         setSelectedBox(index);

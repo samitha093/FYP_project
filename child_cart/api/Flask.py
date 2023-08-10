@@ -40,16 +40,19 @@ totalBill = 0
 currentUser =""
 currentGender = 1
 currentMonth = 1
+UserDataArray = []
 
 currentThreandArray=[]
 CartType = False
 FILENAME = 'checkoutData.txt'
 
-def updateUserDataFromMobile(name,gender,month):
-    global currentUser,currentGender,currentMonth
-    currentUser =name
-    currentGender =gender
-    currentMonth = month
+def updateUserDataFromMobile(data):
+    global currentUser,currentGender,currentMonth, UserDataArray
+    UserDataArray = data
+    print(data)
+    # currentUser =data[0]
+    # currentGender = 1
+    # currentMonth = 1
 
 def checkoutDataSave(gender,month,items):
     global FILENAME
@@ -92,6 +95,7 @@ dataArray = []
 def on_connect():
     for item in dataArray:
         socketio.emit(item[0], item[1])
+    socketio.emit('USER_PROFILE', UserDataArray)
     print('Client connected')
 
 @socketio.on('disconnect')
@@ -105,6 +109,7 @@ def handle_custom_event(data):
 def send_hello_to_clients():
     while True:
         sleep(5)
+        socketio.emit('USER_PROFILE', UserDataArray)
         shared_queue = SharedQueueSingleton()
         if shared_queue.empty():
             continue  
