@@ -22,6 +22,8 @@ interface LogRowProps {
             value: string;
             accuracy: number;
         };
+        kernalTime: number;
+        totalKernalTime: number
     };
 }
 
@@ -31,7 +33,7 @@ const LogRow: React.FC<LogRowProps> = ({ rowData }) => {
             border: '1px solid lightgray',
             padding: '2px',
         }}>
-            <Grid templateColumns='repeat(8, 1fr)' gap={1}>
+            <Grid templateColumns='repeat(10, 1fr)' gap={1}>
                 <GridItem
                     w='100%'
                     h='auto'
@@ -135,6 +137,32 @@ const LogRow: React.FC<LogRowProps> = ({ rowData }) => {
                     }}
                 >
                     {rowData.aggregatedModel.accuracy}
+                </GridItem>
+                <GridItem
+                    w='100%'
+                    h='auto'
+                    textAlign='center'
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '100%', // This ensures the GridItem takes the full height
+                    }}
+                >
+                    {rowData.kernalTime}
+                </GridItem>
+                <GridItem
+                    w='100%'
+                    h='auto'
+                    textAlign='center'
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '100%', // This ensures the GridItem takes the full height
+                    }}
+                >
+                    {rowData.totalKernalTime}
                 </GridItem>
             </Grid>
         </div>

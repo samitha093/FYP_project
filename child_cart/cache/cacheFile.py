@@ -745,10 +745,12 @@ data = {
         {"id": "0003", "value": False, "accuracy": 0.88},
         {"id": "0004", "value": True, "accuracy": 0.88}
     ],
-    "aggregatedModel": {"id": "0005", "value": True, "accuracy": 0.92}
+    "aggregatedModel": {"id": "0005", "value": True, "accuracy": 0.92},
+    "kernalTime":10,
+    "totalKernalTime":25
 }
 
-# for i in range(1):
+# for i in range(10):
 #     saveOrUpdateLogData(data)
 
 
