@@ -1,0 +1,66 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/ivLogout"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:layout_marginLeft="350dp"
+        android:contentDescription="Logout"
+        android:onClick="logout"
+        android:src="@drawable/ic_logout" />
+    <TextView
+        android:id="@+id/tvGreeting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:padding="30dp"
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="16dp" />
+
+    <ImageView
+        android:id="@+id/ivCenteredImage"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_below="@id/tvGreeting"
+        android:layout_marginTop="0dp"
+        android:src="@drawable/smart_cart_image" />
+
+    <Button
+        android:id="@+id/btnConnectToCart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/rounded_button_background"
+        android:text="Connect to Cart"
+        android:padding="10dp"
+        android:visibility="visible" />
+
+    <Button
+        android:id="@+id/btnDisconnectCart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Disconnect Cart"
+        android:padding="10dp"
+        android:background="@drawable/rounded_button_background"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/frameLayoutScanner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/btnConnectToCart"
+        android:visibility="gone" />
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="?android:attr/windowBackground"
+        app:menu="@menu/bottom_navigation_menu" />
+
+</RelativeLayout>

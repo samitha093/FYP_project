@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_scan"
+        android:icon="@drawable/ic_scan"
+        android:title="Scan" />
+    <item
+        android:id="@+id/menu_me"
+        android:icon="@drawable/ic_me"
+        android:title="Me" />
+    <item
+        android:id="@+id/menu_just_for_you"
+        android:icon="@drawable/ic_just_for_you"
+        android:title="Just for You" />
+</menu>

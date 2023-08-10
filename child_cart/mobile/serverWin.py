@@ -3,10 +3,13 @@ import threading
 import time
 import os
 import sys
+import datetime
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.insert(0, root_path)
+
 # Import the modules
-from child_cart.api.Flask import *
+import child_cart.api.Flask as flask
+from child_cart.api.Flask import * 
 FILENAME = 'checkoutData.txt'
 
 isNewMessage = False
@@ -136,11 +139,19 @@ class SocketConnection:
                     data = data.strip("[]")  # Removing brackets from the string
                     data_list = data.split(',')
                     name = data_list[0]
-                    month = int(data_list[1])  # Converting age to an integer
-                    gender = int(data_list[2])  # Converting gender to an integer
-                    print("User details:: Name : ",name, " month : ",month, " Gender : ",gender)
+                    gender = data_list[1]
+                    email = data_list[2]
+                    age = int(data_list[3])# Converting age to an integer
+                    city = data_list[4]
+                    # date = datetime.datetime.now()
+                    # month = date.month
+                    genderInt = 0
+                    if gender == "Female":
+                        genderInt = 1
+                      # Converting gender to an integer
+                    print("User details:: Name : ",name," Gender : ",gender, " Email: ",email, " Age: ", age, " City: ",city)
                     #update cart user datails
-                    updateUserDataFromMobile(name,gender,month)
+                    flask.updateUserDataFromMobile(name,genderInt,8)
                     isUserDataReceiving = False
                
         except ConnectionResetError:
