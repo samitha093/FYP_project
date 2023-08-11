@@ -15,7 +15,7 @@ import emptyimage from '../../\assets/empty.png';
 import { FaNetworkWired } from 'react-icons/fa';
 import Log from './log';
 import { io } from 'socket.io-client';
-import Statistics from './statistics';
+import Statistics from './statistics/statistics';
 
 interface AppProps {
     darkMode: boolean;
