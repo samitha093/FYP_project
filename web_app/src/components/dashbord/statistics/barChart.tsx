@@ -25,7 +25,7 @@ ChartJS.register(
   Legend
 );
 
-function Statistics() {
+function BarChart() {
   const options = {
     responsive: true,
     plugins: {
@@ -39,18 +39,7 @@ function Statistics() {
     },
   };
 
-  const options2 = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top' as const,
-      },
-      title: {
-        display: true,
-        text: 'Chart.js Line Chart',
-      },
-    },
-  };
+
 const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
 
  const data = {
@@ -68,19 +57,6 @@ const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
       },
     ],
   };
-  
-  const data1 = {
-    labels: ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5', 'Item 6', 'Item 7', 'Item 8', 'Item 9', 'Item 10', 'Item 11', 'Item 12'],
-    datasets: [
-      {
-        data: [10, 19, 29, 40, 48, 55, 60, 71, 74, 78, 85, 88], // These are the data points for the chart
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-        borderColor: 'rgba(75, 192, 192, 1)',
-        borderWidth: 1,
-      },
-    ],
-  };
-  const percentage = 66;
 
   return (
     <div>
@@ -91,31 +67,9 @@ const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
             <Bar options={options} data={data} />
           </div>
         </div>
-        <div style={{ flex: 1, maxWidth: '50%', paddingLeft: '10px' }}>
-          <h2>Line Chart Example</h2>
-          <div>
-            <Line options={options2} data={data1} />
-          </div>
-        </div>
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
-        {/* Repeat the same structure for the second row of charts */}
-        <div style={{ flex: 1, maxWidth: '100%', paddingRight: '10px' }}>
-          <h2>Progress bar</h2>
-          <div style={{ width: '200px', height: '200px' }}>
-            <CircularProgressbar value={percentage} text={`${percentage}%`} />
-          </div>
-
-        </div>
-        <div style={{ flex: 1, maxWidth: '50%', paddingLeft: '10px' }}>
-          <h2>Test</h2>
-          <div>
-           
-          </div>
-        </div>
       </div>
     </div>
   );
 }
 
-export default Statistics;
+export default BarChart;
