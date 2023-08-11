@@ -745,10 +745,12 @@ data = {
         {"id": "0003", "value": False, "accuracy": 0.88},
         {"id": "0004", "value": True, "accuracy": 0.88}
     ],
-    "aggregatedModel": {"id": "0005", "value": True, "accuracy": 0.92}
+    "aggregatedModel": {"id": "0005", "value": True, "accuracy": 0.92},
+    "kernalTime":10,
+    "totalKernalTime":25
 }
 
-# for i in range(1):
+# for i in range(10):
 #     saveOrUpdateLogData(data)
 
 
@@ -789,23 +791,24 @@ def getLengthOfLogData():
             print("The file", filename, "exists in the current path.")
             with open(filename, 'rb') as f:
                 returnList = pickle.load(f)
-                # print(returnList[0])
             logData_lock.release()
             lengthOfDataLog = len(returnList)
-            # print(lengthOfDataLog)
-            return lengthOfDataLog
+            lastVal = returnList[lengthOfDataLog - 1]
+            last_total_time = lastVal['totalKernalTime']
+            print("Length of Data Log:", lengthOfDataLog)
+            return lengthOfDataLog, last_total_time
         else:
             print("The file", filename, "does not exist in the current path.")
             logData_lock.release()
-            # print("0")
-            return 0
-    
+            return 0, 0
     except Exception as e:
         print("An error occurred:", e)
 
-# results=loadLogData()
-# print(results)
-# getLengthOfLogData()
+# length, val = getLengthOfLogData()
+# print("Length:", length)
+# print("Val:", val)
+
+# print(val['iteration'])
 
 #--------------------------------project initial data ---------------------------------
 import json

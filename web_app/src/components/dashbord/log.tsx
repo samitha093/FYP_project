@@ -30,6 +30,7 @@ const Log: React.FC<AppProps> = ({ darkMode }) => {
       .then(response => {
         const data = response.data;
         setLogData(data);
+        console.log(data)
         hideLoading()
       })
       .catch(error => {
@@ -42,7 +43,7 @@ const Log: React.FC<AppProps> = ({ darkMode }) => {
     <Box border="1px solid" borderColor={darkMode ? "gray.600" : 'gray.300'} 
       mr={{ base: '0', lg: '30px' }} w={'100%'} h={'100%'} minW={'300px'}
       overflow="auto">
-      <Grid templateColumns='repeat(8, 1fr)' gap={1}>
+      <Grid templateColumns='repeat(10, 1fr)' gap={1}>
         <GridItem w='100%' h='auto' bg={darkMode ? "blue.600" : 'blue.100'} textAlign='center' pt='20px' pb='20px'>
           Iteration
         </GridItem>
@@ -67,12 +68,13 @@ const Log: React.FC<AppProps> = ({ darkMode }) => {
         <GridItem w='100%' h='auto' bg={darkMode ? "blue.600" : 'blue.100'} textAlign='center' pt='20px' pb='20px'>
           Aggregated Model Accuracy
         </GridItem>
+        <GridItem w='100%' h='auto' bg={darkMode ? "blue.600" : 'blue.100'} textAlign='center' pt='20px' pb='20px'>
+          Current Iteration time
+        </GridItem>
+        <GridItem w='100%' h='auto' bg={darkMode ? "blue.600" : 'blue.100'} textAlign='center' pt='20px' pb='20px'>
+          Total Kernal Time
+        </GridItem>
       </Grid>
-      <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
-        {logData.map((data, index) => (
-          <LogRow key={index} rowData={data} />
-        ))}
-      </div>
       <Loading visible={loadingVisible} /> 
       <Box
         h='calc(100% - 70px)'
@@ -92,6 +94,7 @@ const Log: React.FC<AppProps> = ({ darkMode }) => {
           </Center>
         ) : (
           logData.map((data, index) => (
+          
             <LogRow key={index} rowData={data} />
           ))
         )}
