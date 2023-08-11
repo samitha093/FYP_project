@@ -56,6 +56,10 @@ def responceModel(msgTo, data, msgFrom="SERVER"):
         'Data':data
     }
 
+def peerListCheck():
+    global DeviceTable
+    return DeviceTable
+
 async def reqirementHandler(data):
     global MOBILEDATARECORDER,DATARECORDER,DeviceTable, TempDeviceTable
     User = data.get("Sender")

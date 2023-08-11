@@ -17,7 +17,7 @@ from child_cart.network.errorList import *
 from child_cart.cache.cacheFile import *
 from child_cart.api.shared_queue import *
 
-def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS, SIP):
+def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS, SIP, numSet=4):
     CLUSTERID = ""
     PEERLIST = []
     MODELPARAMETERLIST = []
@@ -65,7 +65,7 @@ def communicationProx(mySocket,USERID,MODE,TimerOut,MODELPARAMETERS, SIP):
                         current_time = time.time()
                         seed = int(current_time)
                         random.seed(seed)
-                        for i in range(1, 4):
+                        for i in range(1, numSet):
                             random_index = random.randint(0, len(tempData[1])-1)
                             x_data = tempData[1]
                             x = x_data[random_index]

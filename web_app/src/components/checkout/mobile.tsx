@@ -8,6 +8,7 @@ import bgimage1 from '../../\assets/bg.png';
 import {HiOutlineUser} from "react-icons/hi";
 import Swal from 'sweetalert2';
 
+//1366x768
 interface AppProps {
     darkMode: boolean;
 }
@@ -133,6 +134,8 @@ const Mobile: React.FC<AppProps> = ({ darkMode }) => {
             direction="column"
             align="center"
             justify="center"
+            justifyContent="center"
+            alignItems="center"
             h="100vh"
             w={'100%'}
             color={darkMode ? 'white' : 'gray.800'}
@@ -145,59 +148,59 @@ const Mobile: React.FC<AppProps> = ({ darkMode }) => {
             <Flex
                 p={'5px'}
                 justifyContent="center"
-                maxWidth={'50%'}
-                minWidth={'1050px'}
-                minHeight={'600px'}
+                w={'80%'}
+                height={'70%'}
+                mt="auto"
+                mb="auto"
             >
-                <Box
-                    as={motion.div}
-                    initial={{ flexBasis: '0%' }}
-                    animate={{ flexBasis: `${widthPercentage}%` }}
-                    flexDirection="column"
-                    alignItems="center"
-                    justifyContent="center"
-                    backgroundColor={'#B2DFDB'}
-                    minHeight={'500px'}
-                    mt="auto"
-                    mb="auto"
-                    overflow={'hidden'}
-                    style={{
-                        borderTopLeftRadius: '30px',
-                        borderBottomLeftRadius: '30px',
-                    }}
-                >
-                    {content ? (
-                        <Flex
-                        h="100%"
+            <Box
+                as={motion.div}
+                initial={{ flexBasis: '0%' }}
+                animate={{ flexBasis: `${widthPercentage}%` }}
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                backgroundColor={'#B2DFDB'}
+                overflowY={'auto'}
+                mt="auto"
+                mb="auto"
+                height={'80%'}
+                style={{
+                    borderTopLeftRadius: '30px',
+                    borderBottomLeftRadius: '30px',
+                }}
+            >
+                {content ? (
+                    <Flex
                         flexDirection="column"
                         alignItems="center"
                         flexGrow={1}
                         mt={'20px'}
                         justifyContent="center"
-                        padding={'30px'}>
-                            <FormControl
-                            color={'gray.600'}>
-                                <FormLabel>User name : </FormLabel>
-                                <Input color={'black'} type='text' mb={'10px'} defaultValue={userdata[0]}/>
-                                <FormLabel>Email : </FormLabel>
-                                <Input color={'black'} type='email' mb={'10px'} defaultValue={userdata[2]}/>
-                                <FormLabel>Address : </FormLabel>
-                                <Input color={'black'} type='text' mb={'10px'} defaultValue={userdata[4]}/>
-                                <FormLabel>Gender : </FormLabel>
-                                <Input color={'black'} type='text' mb={'10px'} defaultValue={userdata[1]}/>
-                                <FormLabel>Age : </FormLabel>
-                                <Input color={'black'} type='text' mb={'10px'} defaultValue={userdata[3]}/>
-                            </FormControl>
-                        </Flex>
-                    ) : null}
-                </Box>
+                        padding={'30px'}
+                    >
+                        <FormControl color={'gray.600'}>
+                            <FormLabel>User name : </FormLabel>
+                            <Input color={'black'} type='text' mb={'10px'} defaultValue={userdata[0]}/>
+                            <FormLabel>Email : </FormLabel>
+                            <Input color={'black'} type='email' mb={'10px'} defaultValue={userdata[2]}/>
+                            <FormLabel>Address : </FormLabel>
+                            <Input color={'black'} type='text' mb={'10px'} defaultValue={userdata[4]}/>
+                            <FormLabel>Gender : </FormLabel>
+                            <Input color={'black'} type='text' mb={'10px'} defaultValue={userdata[1]}/>
+                            <FormLabel>Age : </FormLabel>
+                            <Input color={'black'} type='text' mb={'10px'} defaultValue={userdata[3]}/>
+                        </FormControl>
+                    </Flex>
+                ) : null}
+            </Box>
+
                 <Flex
                     flexDirection="column"
                     flexBasis="50%"
                     alignItems="center"
                     justifyContent="center"
                     backgroundColor={'#00695C'}
-                    minHeight={'200px'}
                     borderRadius={'25px'}
                 >
                     <Box p="20px"
