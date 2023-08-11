@@ -31,8 +31,8 @@ from child_cart.network.client import *
 # from child_cart.db.dbConnect import *
 from child_cart.db.apiConnection import *
 from child_cart.mobile.serverWin import *
-from child_cart.api.shared_queue import *
-
+import queue
+import child_cart.mobile.serverWin as serverWin
 selectedItem ="Item 0"
 ItemListArray = []
 totalBill = 0
@@ -40,16 +40,25 @@ totalBill = 0
 currentUser =""
 currentGender = 1
 currentMonth = 1
+UserDataArray = []
 
 currentThreandArray=[]
 CartType = False
 FILENAME = 'checkoutData.txt'
 
-def updateUserDataFromMobile(name,gender,month):
-    global currentUser,currentGender,currentMonth
-    currentUser =name
-    currentGender =gender
-    currentMonth = month
+
+try:
+    from parent_cart.bridge.Main import *
+    create_api_endpoint = True
+except ImportError:
+    create_api_endpoint = False
+
+def updateUserDataFromMobile(data):
+    global currentUser,currentGender,currentMonth, UserDataArray
+    UserDataArray = data
+    # currentUser =data[0]
+    # currentGender = 1
+    # currentMonth = 1
 
 def checkoutDataSave(gender,month,items):
     global FILENAME
@@ -65,7 +74,7 @@ def checkoutDataSave(gender,month,items):
     # Write the output to a text file
     with open(FILENAME, "w") as file:
         file.write(output_str)
-    checkoutDataFileSend()
+    serverWin.checkoutDataFileSend()
 
 
 
@@ -92,6 +101,7 @@ dataArray = []
 def on_connect():
     for item in dataArray:
         socketio.emit(item[0], item[1])
+    socketio.emit('USER_PROFILE', UserDataArray)
     print('Client connected')
 
 @socketio.on('disconnect')
@@ -105,6 +115,10 @@ def handle_custom_event(data):
 def send_hello_to_clients():
     while True:
         sleep(5)
+        if create_api_endpoint :
+            BridgeShellpeerList = peerListCheck()
+            socketio.emit('PEERLIST', BridgeShellpeerList)
+        socketio.emit('USER_PROFILE', UserDataArray)
         shared_queue = SharedQueueSingleton()
         if shared_queue.empty():
             continue  
@@ -116,7 +130,6 @@ def send_hello_to_clients():
         if item[0] == 'USERID':
             dataArray.append(item)
         socketio.emit(item[0], item[1])
-
 
 #find current threand
 def findCurrentThreandArray():
@@ -199,8 +212,9 @@ def nconfigPost():
     PORT=data['PORT']
     SYNC_CONST=data['SYNC_CONST']
     CLUSTER_SIZE=data['CLUSTER_SIZE']
+    PALREQ = data['PALREQ']
 
-    header=[HOST,LOCALHOST,PORT,KERNAL_TIMEOUT,SHELL_TIMEOUT,SYNC_CONST,CLUSTER_SIZE]
+    header=[HOST,LOCALHOST,PORT,KERNAL_TIMEOUT,SHELL_TIMEOUT,SYNC_CONST,CLUSTER_SIZE,PALREQ]
     print("Received header ",header)
     q = queue.Queue()
     t1=threading.Thread(target=updateCartConfigurations,args=(header,q,))
@@ -210,20 +224,14 @@ def nconfigPost():
     clientconfigurations()
     return jsonify({'message': result})
 
-try:
-    from parent_cart.bridge.Main import *
-    create_api_endpoint = True
-except ImportError:
-    create_api_endpoint = False
-
 @app.route('/bridge/nabours', methods=['GET'])
 def nabours():
     print("start => getting nabour list")
     if CartType:
         print("getting data from kademlia network")
-        peerList = get_nabourList()
+        nbrList = get_nabourList()
         print("End => getting nabour list")
-        return jsonify(peerList)
+        return jsonify(nbrList)
     else:
         #NBR List Send from cash
         print("getting data from cash memory")
@@ -429,5 +437,10 @@ def getCheckoutData():
 @app.route('/childstop', methods =["GET"]) # disconect socket manual
 def childstop():
     closeSocket()
+    return jsonify({'message': "wait until reconect with new server"})
+
+@app.route('/mobileDisconect', methods =["GET"]) # disconect socket manual
+def mobiledisconect():
+    closedSocketMannuly()
     return jsonify({'message': "wait until reconect with new server"})
 

@@ -94,11 +94,6 @@ const Store: React.FC<AppProps> = ({ darkMode }) => {
         h="100vh"
         color={darkMode ? 'white' : 'gray.800'}
       >
-
-    <div>
-
-    </div>
-
         <Box w="100%" px={4} pb={8} overflow="auto">
           <Flex justify="space-between" align="center" mb={20}>
             <Box>

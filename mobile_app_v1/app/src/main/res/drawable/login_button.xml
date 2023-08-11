@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+    <!-- rounded_specific_button.xml -->
+    <shape xmlns:android="http://schemas.android.com/apk/res/android"
+        android:shape="rectangle">
+
+        <!-- Set the specific background color for the button -->
+        <solid android:color="#FF0000" /> <!-- Replace with your desired specific color -->
+
+        <!-- Set the rounded corners -->
+        <corners android:radius="8dp" /> <!-- Adjust the radius for the desired amount of rounding -->
+
+    </shape>
+

@@ -2,7 +2,6 @@ import { AbsoluteCenter, Box, Center, Flex } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import {BsShop, BsHandbag} from 'react-icons/bs'
 import {MdMobileScreenShare} from "react-icons/md"
-import io from 'socket.io-client';
 
 import Store from "./store";
 import Checkout from "./checkout";
@@ -13,7 +12,7 @@ interface HomeProps {
 }
 
 const Home: React.FC<HomeProps> = ({ darkMode }) => {
-    const [selectedBox, setSelectedBox] = useState<number | null>(0);
+    const [selectedBox, setSelectedBox] = useState<number | null>(2);
 
     const handleBoxClick = (index: number) => {
         setSelectedBox(index);
@@ -27,6 +26,25 @@ const Home: React.FC<HomeProps> = ({ darkMode }) => {
       >
         <Flex  w="200px" h="100%" >
             <Center color='white' ><Box>
+            <Box
+                    border="2px"
+                    borderColor={darkMode ? "gray.600" : "gray.300"}
+                    borderRadius="5px"
+                    margin="5px"
+                    padding="20px"
+                    backgroundColor={selectedBox === 2 ? "green.600" : "transparent"}
+                    color={selectedBox === 2 ? "white" : (darkMode ? 'white' : 'gray.600')}
+                    _hover={{ backgroundColor: "green.600", cursor: "pointer", color: "white" }}
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="center"
+                    fontSize="3rem"
+                    onClick={() => handleBoxClick(2)}
+                >
+                        <MdMobileScreenShare />
+                        <Box mt={2} fontSize="1rem" color="inherit">Connect Mobile</Box>
+                </Box>
                 <Box
                     border="2px"
                     borderColor={darkMode ? "gray.600" : "gray.300"}
@@ -64,25 +82,6 @@ const Home: React.FC<HomeProps> = ({ darkMode }) => {
                 >
                         <BsHandbag/>
                         <Box mt={2} fontSize="1rem" color="inherit">Checkout</Box>
-                </Box>
-                <Box
-                    border="2px"
-                    borderColor={darkMode ? "gray.600" : "gray.300"}
-                    borderRadius="5px"
-                    margin="5px"
-                    padding="20px"
-                    backgroundColor={selectedBox === 2 ? "green.600" : "transparent"}
-                    color={selectedBox === 2 ? "white" : (darkMode ? 'white' : 'gray.600')}
-                    _hover={{ backgroundColor: "green.600", cursor: "pointer", color: "white" }}
-                    display="flex"
-                    flexDirection="column"
-                    justifyContent="center"
-                    alignItems="center"
-                    fontSize="3rem"
-                    onClick={() => handleBoxClick(2)}
-                >
-                        <MdMobileScreenShare/>
-                        <Box mt={2} fontSize="1rem" color="inherit">Connect Mobile</Box>
                 </Box>
             </Box></Center>
         </Flex >
