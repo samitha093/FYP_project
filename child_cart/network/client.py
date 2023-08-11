@@ -36,6 +36,7 @@ CULSTER_SIZE = 3
 connectionStatus = False
 #define kernal start time
 KERNAL_START_TIME=0
+PALREQ = 1
 
 FORWARD=50
 BACKWORD=50 #update globle values from cache
@@ -61,13 +62,7 @@ LOGRECEIVEDMODEL =[]
 datasetSize =100
 initCatasetSize=250
 def clientconfigurations():
-    global HOST
-    global LOCALHOST
-    global PORT
-    global SHELL_TIMEOUT
-    global KERNAL_TIMEOUT
-    global SYNC_CONST
-    global CULSTER_SIZE
+    global HOST,PALREQ,LOCALHOST,PORT,SHELL_TIMEOUT,KERNAL_TIMEOUT,SYNC_CONST,CULSTER_SIZE
 
     q = queue.Queue()
     t1=threading.Thread(target=loadCartConfigurations,args=(q,))
@@ -82,6 +77,7 @@ def clientconfigurations():
     SHELL_TIMEOUT = int(row[4])
     SYNC_CONST = int(row[5])
     CULSTER_SIZE = int(row[6])
+    PALREQ = int(row[7])
     print("Load network configuration : ",row)
 
 
@@ -123,7 +119,7 @@ def mainFunn(RECIVER_TIMEOUT, SYNC_CONST, SOCKET_HOST):
         shared_queue.put(sendingData)
         #Connection Mode select
         if MODE == conctionType.KERNEL.value:
-            MODELPARAMETER = communicationProx(mySocket,TEMPUSERID,MODE,RECIVER_TIMEOUT,MODELPARAMETERS, HOSTHISTORT)
+            MODELPARAMETER = communicationProx(mySocket,TEMPUSERID,MODE,RECIVER_TIMEOUT,MODELPARAMETERS, HOSTHISTORT, PALREQ+1)
             print("recived model cont ======> ",len(MODELPARAMETER))
             if len(MODELPARAMETER) == 0:
                 return
@@ -206,14 +202,7 @@ def hostSelector():
         return HOSTHISTORT
 
 def get_config():
-    global HOST
-    global LOCALHOST
-    global PORT
-    global SHELL_TIMEOUT
-    global KERNAL_TIMEOUT
-    global SYNC_CONST
-    global CULSTER_SIZE
-    
+    global HOST,PALREQ,LOCALHOST,PORT,SHELL_TIMEOUT,KERNAL_TIMEOUT,SYNC_CONST,CULSTER_SIZE
     my_dict ={}
     my_dict['HOST'] = HOST
     my_dict['LOCALHOST'] = LOCALHOST
@@ -222,6 +211,7 @@ def get_config():
     my_dict['SHELL_TIMEOUT'] = SHELL_TIMEOUT
     my_dict['SYNC_CONST'] = SYNC_CONST
     my_dict['CLUSTER_SIZE']=CULSTER_SIZE
+    my_dict['PALREQ']=PALREQ
     return my_dict
 
 def time_cal():

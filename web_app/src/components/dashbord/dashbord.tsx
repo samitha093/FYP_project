@@ -42,6 +42,7 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
     axios.get(`${myHost}/bridge/hello`)
       .then(response => {
         setIsBridge(true)
+        sessionStorage.setItem('PARENT', 'true');
         // get history boostrap nodes
         axios.get(`${myHost}/bridge/boostrap`)
           .then(response => {
@@ -53,7 +54,24 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
       })
       .catch(error => {
         console.error(error);
+        sessionStorage.setItem('PARENT', 'false');
       });
+  }, []);
+
+  useEffect(() => {
+    const myHost = sessionStorage.getItem('host');
+    sessionStorage.getItem('PARENT') === 'true'?
+    axios.get(`${myHost}/bridge/nabours`)
+      .then(response => {
+        setNabourArray([])
+        setTimeout(() => {
+        // Update the nabourArray with new data after the delay
+        setNabourArray(response.data);
+        }, 3000);
+      }).catch(error => {
+            console.error(error);
+    })
+    :null
   }, []);
 
   //subscribe to the socket.io events
@@ -76,7 +94,7 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
       }, 3000);
     });
     socket.on('PEERLIST', (data) => {
-      setPeerArray([])
+      // setPeerArray([])
       setTimeout(() => {
         // Update the nabourArray with new data after the delay
         setPeerArray(data);
@@ -261,7 +279,7 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
                     </Box>
                     <Box border="1px solid" padding={'20px'} borderColor={darkMode ? "gray.600" : 'gray.300'} h={'50%'} overflow={'auto'}> 
                       Local peer list
-                      {NabourArray.length == 0 ?
+                      {PeerArray.length == 0 ?
                         <Box width={'100%'} height={'calc(100% - 30px)'}>
                           <Center p='4' w={'100%'} h={'100%'}>
                             <Image
