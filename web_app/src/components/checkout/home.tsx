@@ -2,7 +2,6 @@ import { AbsoluteCenter, Box, Center, Flex } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import {BsShop, BsHandbag} from 'react-icons/bs'
 import {MdMobileScreenShare} from "react-icons/md"
-import io from 'socket.io-client';
 
 import Store from "./store";
 import Checkout from "./checkout";

@@ -10,14 +10,15 @@ interface AppProps {
 
 const NetworkModule: React.FC<AppProps> = ({ darkMode }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [remoteHost, setRemoteHost] = useState('192.168.34.56');
-  const [localHost, setLocalHost] = useState('192.168.34.56');
-  const [port, setPort] = useState('9000');
+  const [remoteHost, setRemoteHost] = useState('0.0.0.0');
+  const [localHost, setLocalHost] = useState('0.0.0.0');
+  const [port, setPort] = useState('0');
   const [APIport, setApiPort] = useState('5001');
-  const [ClusterSize, setClusterSize] = useState('2');
-  const [SyncConstant, setSyncConstant] = useState(1);
-  const [DeviceIp, setDeviceIp] = useState('10.50.70.127');
+  const [ClusterSize, setClusterSize] = useState('0');
+  const [SyncConstant, setSyncConstant] = useState(0);
+  const [DeviceIp, setDeviceIp] = useState('0.0.0.0');
   const [loadingVisible, setLoadingVisible] = useState(false);
+  const [PALREQ, setPALREQ] = useState(0);
 
     // Function to show the loading component
     const showLoading = () => {
@@ -39,6 +40,7 @@ const NetworkModule: React.FC<AppProps> = ({ darkMode }) => {
         setSyncConstant(response.data.message.SYNC_CONST)
         setClusterSize(response.data.message.CLUSTER_SIZE)
         setDeviceIp(response.data.message.NET_IP)
+        setPALREQ(response.data.message.PALREQ)
 
         // console.log(response.data.message)
         hideLoading()
@@ -73,7 +75,8 @@ const NetworkModule: React.FC<AppProps> = ({ darkMode }) => {
       PORT: port,
       SHELL_TIMEOUT: 300,
       SYNC_CONST: SyncConstant,
-    
+      PALREQ: PALREQ
+
     };
     axios.post(`${myHost}/network/config`, requestData)
       .then(response => {
@@ -114,6 +117,11 @@ const NetworkModule: React.FC<AppProps> = ({ darkMode }) => {
   const handleClusterSize = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setClusterSize(value);
+  };
+
+  const handlepalReq = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPALREQ(parseInt(value));
   };
 
   return (
@@ -178,30 +186,30 @@ const NetworkModule: React.FC<AppProps> = ({ darkMode }) => {
               <input type="text" id="localHost" value={SyncConstant} onChange={handleSyncConstant} />
             </Box>
             <Box mb="4" display="flex" flexDirection="column">
-              <label htmlFor="clusterSize">Model count</label>
-              <input type="text" id="clusterSize" value={ClusterSize} onChange={handleClusterSize} />
+              <Flex justifyContent='center'>
+              <Box w={'45%'}>
+                <label htmlFor="clusterSize">Model count</label>
+                <input type="text" id="clusterSize" value={ClusterSize} style={{ width: '100%' }} onChange={handleClusterSize} />
+              </Box>
+                <Spacer />
+                <Box  w={'45%'}>
+                  <label htmlFor="localHost">Parallel Req. :</label>
+                  <input type="text" id="deviceIp" value={PALREQ} style={{ width: '100%' }}  onRateChange={handlepalReq}/>
+                </Box>
+              </Flex>
             </Box>
             <Box mb="4" display="flex" flexDirection="column">
-              <label htmlFor="localHost">API Port:</label>
-
               <Flex justifyContent='center'>
-              <Box w={'30%'}>
-                <input type="text" id="localHost" value={APIport} style={{ width: '100%' }} />
-              </Box>
-              <Spacer />
-              <Box  w={'60%'}>
-                <input type="text" id="deviceIp" value={DeviceIp} style={{ width: '100%' }} />
-              </Box>
-            </Flex>
-
-   
-                        {/* <div>
-              <input type="text" id="localHost" value={APIport} />
-              </div>
-              <div>
-              <input type="text" id="localHost" value={APIport} />
-              </div>
-               */}
+                <Box w={'30%'}>
+                  <label htmlFor="localHost">COM Port:</label>
+                  <input type="text" id="localHost" defaultValue={APIport} style={{ width: '100%' }} />
+                </Box>
+                <Spacer />
+                <Box  w={'60%'}>
+                  <label htmlFor="localHost">Network Interface IP:</label>
+                  <input type="text" id="deviceIp" defaultValue={DeviceIp} style={{ width: '100%' }} />
+                </Box>
+              </Flex>
             </Box>
             <Button w="100%" colorScheme="orange" _hover={{ bg: "orange.700" }} color="white" onClick={handleSave}>Update</Button>
           </ModalBody>

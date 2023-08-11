@@ -49,7 +49,7 @@ def loadCartConfigurations(que):
         else:
             print("The file", filename, "does not exist in the current path.")
             # Define the header array
-            header1 = ['10.101.45.25', '10.250.265.45', '9000', '60', '300','1','5']
+            header1 = ['10.50.70.25', '10.50.70.25', '9000', '60', '300','1','2','3']
             cartConfigurations_lock.acquire()
             # Save the header array to a cache file
             with open(filename, 'wb') as f:
