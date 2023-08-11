@@ -99,14 +99,14 @@ def ipWriteStart(links):
 
 links= [
 
-     "10.50.70.123",
-     "10.50.70.124",
-     "10.50.70.150",
+     "10.50.70.129",
+     "10.50.70.130",
+    #  "10.50.70.150",
        "10.50.70.140"
      
      ]
 ##ip write function
-# ipWriteStart(links)
+ipWriteStart(links)
 
 
 #write in new file
@@ -160,8 +160,8 @@ def updatelimit(url,data):
 def limitUpdate(links):
     mod_links = ["http://" + link + "/testitems" if ":" in link else "http://" + link + ":5001/limitupdate" for link in links]
     print("Length  : ",len(mod_links))    
-    data = {"forward": "10",
-            "backward":"50"
+    data = {"forward": "20",
+            "backward":"30"
             }
     for i in range(len(mod_links)):
         url = mod_links[i]  
@@ -175,7 +175,7 @@ links= [
     #  "10.50.70.150",
      "10.50.70.140"
      ]
-limitUpdate(links)
+# limitUpdate(links)
 
 #--------------------------file delete ---------------------
 

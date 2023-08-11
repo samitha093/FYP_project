@@ -20,16 +20,24 @@ from child_cart.cache.cacheFile import *
 def resetProject():
     resetModelData()
 
+#time different for kernal
+def getKernalTimeDifferent(KERNAL_START_TIME):
+    #kernal stop time
+    kernal_stop_time = datetime.now()
+    kernal_stop_time = kernal_stop_time.strftime("%Y-%m-%d %H:%M:%S")
+    print("Kernal Stop time", kernal_stop_time)
+    KERNAL_START_TIME = datetime.strptime(KERNAL_START_TIME, "%Y-%m-%d %H:%M:%S")
+    # Convert kernal_stop_time to a datetime object
+    kernal_stop_time = datetime.strptime(kernal_stop_time, "%Y-%m-%d %H:%M:%S")
+    time_difference = kernal_stop_time - KERNAL_START_TIME
+    time_difference_seconds = time_difference.total_seconds()
+    rounded_time_difference_seconds = round(time_difference_seconds)
+    print("Time difference in seconds (rounded):", rounded_time_difference_seconds)
+    return rounded_time_difference_seconds
 
 #remove stored data in carData file
 def recodeDataRemove(datasetSize):
     try:
-        #3 mean number of records
-        # deleteCartDataItems(3)
-        # q = queue.Queue()
-        # t1=threading.Thread(target=deleteCartDataItems,args=(datasetSize,q,))
-        # t1.start()
-        # t1.join()
         result =deleteCartDataItems(datasetSize)
         print("Removed training data")
 
@@ -37,7 +45,7 @@ def recodeDataRemove(datasetSize):
         print("Error occurred while writing data to the CSV file:", e)  
 
 #Globle aggregation process
-def globleAggregationProcess(model,x_test_np,y_test_np,CULSTER_SIZE,LOGLOCALMODEL,LOGRECEIVEDMODEL):
+def globleAggregationProcess(model,x_test_np,y_test_np,CULSTER_SIZE,LOGLOCALMODEL,LOGRECEIVEDMODEL,KERNAL_START_TIME,kernalLastTotalTime):
           #aggregate the models
           aggregatedModelAcc = modelAggregation(model,x_test_np,y_test_np,CULSTER_SIZE)
           # aggregated model details gathered
@@ -45,11 +53,14 @@ def globleAggregationProcess(model,x_test_np,y_test_np,CULSTER_SIZE,LOGLOCALMODE
           aggregatedModel = modelLogTemplate(str(nextId), "True", aggregatedModelAcc)
           #remove received files
           removeFiles()
+          #get kernal time range
+          kernal_time = getKernalTimeDifferent(KERNAL_START_TIME)
           #create one iteration whole data
-          data = createFinalLog(nextId,LOGLOCALMODEL,LOGRECEIVEDMODEL,aggregatedModel)
+          kernalCurrentTotalTime=kernalLastTotalTime+kernal_time
+          data = createFinalLog(nextId,LOGLOCALMODEL,LOGRECEIVEDMODEL,aggregatedModel,kernal_time,kernalCurrentTotalTime)
           #save in cache log data
           saveOrUpdateLogData(data)
-        #   print("LOG DATA : ",data)
+
           #write log data to txt file
           writeLogData(nextId, aggregatedModelAcc)
           return "Aggregated"
@@ -139,12 +150,14 @@ def modelLogTemplate(id, value, accuracy):
         "accuracy": accuracy
     }
 #create one iteration all data
-def createFinalLog(iteration,localModel,receivedModel,aggregatedModel):
+def createFinalLog(iteration,localModel,receivedModel,aggregatedModel,kernal_time,kernalCurrentTotalTime):
     data = {
         "iteration": iteration,
         "localModel":localModel,
         "receivedModel": receivedModel,
-        "aggregatedModel": aggregatedModel
+        "aggregatedModel": aggregatedModel,
+        "kernalTime":kernal_time,
+        "totalKernalTime":kernalCurrentTotalTime
     }
     return data
 
