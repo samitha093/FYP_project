@@ -23,10 +23,12 @@ def resetProject():
 #time different for kernal
 def getKernalTimeDifferent(KERNAL_START_TIME):
     #kernal stop time
-    kernal_stop_time = datetime.datetime.now()
+    kernal_stop_time = datetime.now()
     kernal_stop_time = kernal_stop_time.strftime("%Y-%m-%d %H:%M:%S")
     print("Kernal Stop time", kernal_stop_time)
-
+    KERNAL_START_TIME = datetime.strptime(KERNAL_START_TIME, "%Y-%m-%d %H:%M:%S")
+    # Convert kernal_stop_time to a datetime object
+    kernal_stop_time = datetime.strptime(kernal_stop_time, "%Y-%m-%d %H:%M:%S")
     time_difference = kernal_stop_time - KERNAL_START_TIME
     time_difference_seconds = time_difference.total_seconds()
     rounded_time_difference_seconds = round(time_difference_seconds)

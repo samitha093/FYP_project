@@ -1,5 +1,5 @@
 import { AbsoluteCenter, Box, Center, Flex , Button, VStack} from '@chakra-ui/react';
-import { CalendarIcon, RepeatIcon, SettingsIcon } from "@chakra-ui/icons";
+import { CalendarIcon, HamburgerIcon, RepeatIcon, SettingsIcon } from "@chakra-ui/icons";
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Image } from '@chakra-ui/react';
@@ -15,6 +15,7 @@ import emptyimage from '../../\assets/empty.png';
 import { FaNetworkWired } from 'react-icons/fa';
 import Log from './log';
 import { io } from 'socket.io-client';
+import Statistics from './statistics';
 
 interface AppProps {
     darkMode: boolean;
@@ -32,8 +33,9 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
   const [NabourArray, setNabourArray] = useState<any>([]);
   const [PeerArray, setPeerArray] = useState<any>([]);
   var ischange = true;
-  const [isTrueButton1, setIsTrueButton1] = useState(false);
+  const [isTrueButton1, setIsTrueButton1] = useState(true);
   const [isTrueButton2, setIsTrueButton2] = useState(false);
+  const [isTrueButton3, setIsTrueButton3] = useState(false);
   const [myUserID, setMyUserID] = useState<any>("");
   useEffect(() => {
     const myHost = sessionStorage.getItem('host');
@@ -93,13 +95,22 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
     // console.log("Button1");
     setIsTrueButton1(true)
     setIsTrueButton2(false)
+    setIsTrueButton3(false)
   }
   const handleClickButton2 = () =>{
     // console.log("Button2");
     setIsTrueButton1(false)
     setIsTrueButton2(true)
+    setIsTrueButton3(false)
+
   }
 
+  const handleClickButton3 = () =>{
+    // console.log("Button2");
+    setIsTrueButton1(false)
+    setIsTrueButton2(false)
+    setIsTrueButton3(true)
+  }
   const handledataSave = (e: any) => {
     setBoostrapArray([])
     // setBoostrapArray([...BoostrapArray, e])
@@ -167,7 +178,7 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
             m={'10px'}>
             <Button
               colorScheme="green"
-              onClick={handleClickButton2}
+              onClick={handleClickButton1}
               height="60px"
               display="flex"
               alignItems="center"
@@ -177,13 +188,24 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
             </Button>
             <Button
               colorScheme="green"
-              onClick={handleClickButton1}
+              onClick={handleClickButton2}
               height="60px"
               display="flex"
               alignItems="center"
               style={{ marginRight: '6px', marginBottom: '6px' }}
             >
               <CalendarIcon style={{ marginRight: '5px' }} />
+            </Button>
+            <Button
+              colorScheme="green"
+              onClick={handleClickButton3}
+              height="60px"
+              display="flex"
+              alignItems="center"
+              style={{ marginRight: '6px', marginBottom: '6px' }}
+            >
+              <HamburgerIcon style={{ marginRight: '5px' }} />
+              
             </Button>
           </Box>
 
@@ -194,9 +216,9 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
             align="center"
             flexDir={{ base: 'column', lg: 'row' }}
             overflow={'scroll'}>
-            {!isTrueButton1?
-              <>
-                <Box border="1px solid" borderColor={darkMode ? "gray.600" : 'gray.300'} padding={'20px'}
+        {isTrueButton1 ? (
+            <>
+               <Box border="1px solid" borderColor={darkMode ? "gray.600" : 'gray.300'} padding={'20px'}
                   mr={{ base: '0', lg: '30px' }} w={{ base: '100%', lg: '60%' }} h={'100%'} minW={'300px'}
                   overflow="auto">
                   <Flex flexWrap="wrap">
@@ -262,10 +284,17 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
 
                   
                 </Box>
-              </>
-            :<Log darkMode={darkMode}/>}     
+            </>
+          ) : isTrueButton2 ? (
+            <Log darkMode={darkMode} />
+           
+          ) : (
+            <Statistics/>
+          )}
+
+
           </Flex>
-          {/* component container end */}  
+
 
         </Box>
   );

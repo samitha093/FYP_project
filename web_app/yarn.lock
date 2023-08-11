@@ -1294,6 +1294,11 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
+"@kurkle/color@^0.3.0":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@kurkle/color/-/color-0.3.2.tgz#5acd38242e8bde4f9986e7913c8fdf49d3aa199f"
+  integrity sha512-fuscdXJ9G1qb7W8VdHi+IwRqij3lBkosAm4ydQtEmbY58OzHXqQhvlxqEkoz0yssNVn38bcpRWgA9PP+OGoisw==
+
 "@popperjs/core@^2.9.3":
   version "2.11.8"
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.8.tgz#6b79032e760a0899cd4204710beede972a3a185f"
@@ -1375,6 +1380,11 @@
     "@tauri-apps/cli-win32-ia32-msvc" "1.4.0"
     "@tauri-apps/cli-win32-x64-msvc" "1.4.0"
 
+"@types/faker@5.5.9":
+  version "5.5.9"
+  resolved "https://registry.yarnpkg.com/@types/faker/-/faker-5.5.9.tgz#588ede92186dc557bff8341d294335d50d255f0c"
+  integrity sha512-uCx6mP3UY5SIO14XlspxsGjgaemrxpssJI0Ol+GfhxtcKpv9pgRZYsS4eeKeHVLje6Qtc8lGszuBI461+gVZBA==
+
 "@types/lodash.mergewith@4.6.7":
   version "4.6.7"
   resolved "https://registry.yarnpkg.com/@types/lodash.mergewith/-/lodash.mergewith-4.6.7.tgz#eaa65aa5872abdd282f271eae447b115b2757212"
@@ -1383,14 +1393,14 @@
     "@types/lodash" "*"
 
 "@types/lodash@*":
-  version "4.14.196"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.196.tgz#a7c3d6fc52d8d71328b764e28e080b4169ec7a95"
-  integrity sha512-22y3o88f4a94mKljsZcanlNWPzO0uBsBdzLAngf2tp533LzZcQzb6+eZPJ+vCTt+bqF2XnvT9gejTLsAcJAJyQ==
+  version "4.14.197"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.197.tgz#e95c5ddcc814ec3e84c891910a01e0c8a378c54b"
+  integrity sha512-BMVOiWs0uNxHVlHBgzTIqJYmj+PgCo4euloGF+5m4okL3rEYzM2EEv78mw8zWSMM57dM7kVIgJ2QDvwHSoCI5g==
 
 "@types/node@^18.7.10":
-  version "18.17.3"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.17.3.tgz#409febdc84478b452306a8112c692e800ad9f6fe"
-  integrity sha512-2x8HWtFk0S99zqVQABU9wTpr8wPoaDHZUcAkoTKH+nL7kPv3WUI9cRi/Kk5Mz4xdqXSqTkKP7IWNoQQYCnDsTA==
+  version "18.17.4"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.17.4.tgz#bf8ae9875528929cc9930dc3f066cd0481fe1231"
+  integrity sha512-ATL4WLgr7/W40+Sp1WnNTSKbgVn6Pvhc/2RHAdt8fl6NsQyp4oPCi2eKcGOvA494bwf1K/W6nGgZ9TwDqvpjdw==
 
 "@types/parse-json@^4.0.0":
   version "4.0.0"
@@ -1401,6 +1411,13 @@
   version "15.7.5"
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.5.tgz#5f19d2b85a98e9558036f6a3cacc8819420f05cf"
   integrity sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==
+
+"@types/react-chartjs-2@^2.5.7":
+  version "2.5.7"
+  resolved "https://registry.yarnpkg.com/@types/react-chartjs-2/-/react-chartjs-2-2.5.7.tgz#b77406f6eb6a9f38438966fb27d8cfb1bb7425d3"
+  integrity sha512-waqYqiNULIVUqaKO7MGUpFmWrVtH7gVPOzqwV4y4zgUyu/JiDwC005PpveO442HKnby9kLgp3t1SB2sld+ACLw==
+  dependencies:
+    react-chartjs-2 "*"
 
 "@types/react-dom@^18.0.6":
   version "18.2.7"
@@ -1417,9 +1434,9 @@
     "@types/react" "*"
 
 "@types/react@*", "@types/react@^18.0.15":
-  version "18.2.18"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.2.18.tgz#c8b233919eef1bdc294f6f34b37f9727ad677516"
-  integrity sha512-da4NTSeBv/P34xoZPhtcLkmZuJ+oYaCxHmyHzwaDQo9RQPBeXV+06gEk2FpqEcsX9XrnNLvRpVh6bdavDSjtiQ==
+  version "18.2.20"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.2.20.tgz#1605557a83df5c8a2cc4eeb743b3dfc0eb6aaeb2"
+  integrity sha512-WKNtmsLWJM/3D5mG4U84cysVY31ivmyw85dE84fOCk5Hx78wezB/XEjVPWl2JTZ5FkEeaTJf+VgUAUn3PE7Isw==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -1536,6 +1553,13 @@ chalk@^2.4.2:
     escape-string-regexp "^1.0.5"
     supports-color "^5.3.0"
 
+chart.js@^4.3.3:
+  version "4.3.3"
+  resolved "https://registry.yarnpkg.com/chart.js/-/chart.js-4.3.3.tgz#dcd98afadf9fcfa5219e72ace5912092ea48fd36"
+  integrity sha512-aTk7pBw+x6sQYhon/NR3ikfUJuym/LdgpTlgZRe2PaEhjUMKBKyNaFCMVRAyTEWYFNO7qRu7iQVqOw/OqzxZxQ==
+  dependencies:
+    "@kurkle/color" "^0.3.0"
+
 color-convert@^1.9.0:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/color-convert/-/color-convert-1.9.3.tgz#bb71850690e1f136567de629d2d5471deda4c1e8"
@@ -1623,9 +1647,9 @@ dotenv@^16.0.3:
   integrity sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==
 
 electron-to-chromium@^1.4.477:
-  version "1.4.487"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.487.tgz#e2ef8b15f2791bf68fa6f38f2656f1a551d360ae"
-  integrity sha512-XbCRs/34l31np/p33m+5tdBrdXu9jJkZxSbNxj5I0H1KtV2ZMSB+i/HYqDiRzHaFx2T5EdytjoBRe8QRJE2vQg==
+  version "1.4.490"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.490.tgz#d99286f6e915667fa18ea4554def1aa60eb4d5f1"
+  integrity sha512-6s7NVJz+sATdYnIwhdshx/N/9O6rvMxmhVoDSDFdj6iA45gHR8EQje70+RYsF4GeB+k0IeNSBnP7yG9ZXJFr7A==
 
 engine.io-client@~6.5.2:
   version "6.5.2"
@@ -1692,6 +1716,11 @@ escape-string-regexp@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-4.0.0.tgz#14ba83a5d373e3d311e5afca29cf5bfad965bf34"
   integrity sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==
+
+faker@5.5.3:
+  version "5.5.3"
+  resolved "https://registry.yarnpkg.com/faker/-/faker-5.5.3.tgz#c57974ee484431b25205c2c8dc09fda861e51e0e"
+  integrity sha512-wLTv2a28wjUyWkbnX7u/ABZBkUkIF2fCd73V6P2oFqEGEktDfzWx4UxrSqtPRw0xPRAcjeAOIiJWqZm3pP4u3g==
 
 find-root@^1.1.0:
   version "1.1.0"
@@ -1974,6 +2003,16 @@ qrcode.react@^3.1.0:
   resolved "https://registry.yarnpkg.com/qrcode.react/-/qrcode.react-3.1.0.tgz#5c91ddc0340f768316fbdb8fff2765134c2aecd8"
   integrity sha512-oyF+Urr3oAMUG/OiOuONL3HXM+53wvuH3mtIWQrYmsXoAq0DkvZp2RYUWFSMFtbdOpuS++9v+WAkzNVkMlNW6Q==
 
+react-chartjs-2@*, react-chartjs-2@^5.0.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/react-chartjs-2/-/react-chartjs-2-5.2.0.tgz#43c1e3549071c00a1a083ecbd26c1ad34d385f5d"
+  integrity sha512-98iN5aguJyVSxp5U3CblRLH67J8gkfyGNbiK3c+l1QI/G4irHMPQw44aEPmjVag+YKTyQ260NcF82GTQ3bdscA==
+
+react-circular-progressbar@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/react-circular-progressbar/-/react-circular-progressbar-2.1.0.tgz#99e5ae499c21de82223b498289e96f66adb8fa3a"
+  integrity sha512-xp4THTrod4aLpGy68FX/k1Q3nzrfHUjUe5v6FsdwXBl3YVMwgeXYQKDrku7n/D6qsJA9CuunarAboC2xCiKs1g==
+
 react-clientside-effect@^1.2.6:
   version "1.2.6"
   resolved "https://registry.yarnpkg.com/react-clientside-effect/-/react-clientside-effect-1.2.6.tgz#29f9b14e944a376b03fb650eed2a754dd128ea3a"
@@ -2085,9 +2124,9 @@ resolve@^1.19.0:
     supports-preserve-symlinks-flag "^1.0.0"
 
 rollup@^3.27.1:
-  version "3.27.2"
-  resolved "https://registry.yarnpkg.com/rollup/-/rollup-3.27.2.tgz#59adc973504408289be89e5978e938ce852c9520"
-  integrity sha512-YGwmHf7h2oUHkVBT248x0yt6vZkYQ3/rvE5iQuVBh3WO8GcJ6BNeOkpoX1yMHIiBm18EMLjBPIoUDkhgnyxGOQ==
+  version "3.28.0"
+  resolved "https://registry.yarnpkg.com/rollup/-/rollup-3.28.0.tgz#a3c70004b01934760c0cb8df717c7a1d932389a2"
+  integrity sha512-d7zhvo1OUY2SXSM6pfNjgD5+d0Nz87CUp4mt8l/GgVP3oBsPwzNvSzyu1me6BSG9JIgWNTVcafIXBIyM8yQ3yw==
   optionalDependencies:
     fsevents "~2.3.2"
 
@@ -2161,9 +2200,9 @@ supports-preserve-symlinks-flag@^1.0.0:
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
 sweetalert2@^11.7.8:
-  version "11.7.20"
-  resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-11.7.20.tgz#1306f41a44e347093fc6f25ccf5ca4812951faff"
-  integrity sha512-GdU1TkiLpGGC0mcPV8bKmS7G0MR7caxambPkEU8zyepRSNR9EaEvIjNhX5QNkL0VFVzHbI3l12NtuEklkJ0D4Q==
+  version "11.7.22"
+  resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-11.7.22.tgz#b4a893cc0cb6963e607948cc05189f5a3ffa4ee3"
+  integrity sha512-Xu5now8VnxBKtdnoQw562zXldCOJ/pNsFHTcmSGgJHH+702Bulh4Ps00/js9HqFv00mZ6Hf1wm4BXxqssWyREg==
 
 tiny-invariant@^1.0.6:
   version "1.3.1"

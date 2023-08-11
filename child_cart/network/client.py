@@ -270,7 +270,7 @@ def backgroudNetworkProcess():
         if cartData >= datasetSize:
             print("dataset completed")
             #set time stamp for kernal start
-            KERNAL_START_TIME = datetime.datetime.now()
+            KERNAL_START_TIME = datetime.now()
             KERNAL_START_TIME = KERNAL_START_TIME.strftime("%Y-%m-%d %H:%M:%S")
             print("Kernal start time:", KERNAL_START_TIME)
             x_test_np,y_test_np = splitCartData(datasetSize)

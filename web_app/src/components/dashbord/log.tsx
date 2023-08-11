@@ -30,6 +30,7 @@ const Log: React.FC<AppProps> = ({ darkMode }) => {
       .then(response => {
         const data = response.data;
         setLogData(data);
+        console.log(data)
         hideLoading()
       })
       .catch(error => {
@@ -74,11 +75,6 @@ const Log: React.FC<AppProps> = ({ darkMode }) => {
           Total Kernal Time
         </GridItem>
       </Grid>
-      <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
-        {logData.map((data, index) => (
-          <LogRow key={index} rowData={data} />
-        ))}
-      </div>
       <Loading visible={loadingVisible} /> 
       <Box
         h='calc(100% - 70px)'
@@ -98,6 +94,7 @@ const Log: React.FC<AppProps> = ({ darkMode }) => {
           </Center>
         ) : (
           logData.map((data, index) => (
+          
             <LogRow key={index} rowData={data} />
           ))
         )}
