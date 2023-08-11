@@ -14,6 +14,7 @@ import { Bar, Line } from 'react-chartjs-2';
 import faker from 'faker';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import { Flex } from '@chakra-ui/layout';
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -58,19 +59,12 @@ const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
   };
   
   return (
-    <div>
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
-        <div style={{ flex: 1, maxWidth: '50%', paddingRight: '10px' }}>
-          <h2> Chart Example</h2>
-          <div>
-            <Line options={options} data={data} />
-          </div>
-        </div>
-       
-      </div>
-      
-
-    </div>
+    // <div></div>
+    <Flex>
+    <Flex flex={1}>
+      <Line options={options} data={data} />
+    </Flex>
+  </Flex>
   );
 }
 
