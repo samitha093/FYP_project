@@ -25,8 +25,16 @@ ChartJS.register(
   Tooltip,
   Legend
 );
+interface modelAccuracyLineChartProps {
+  aggregationLableArray: number[];
+  localModelAccuracy: number[];
 
-function LineChart() {
+}
+const LineChart: React.FC<modelAccuracyLineChartProps> = ({
+  aggregationLableArray,
+  localModelAccuracy,
+}) => {
+
   const options = {
     responsive: true,
     plugins: {
@@ -35,26 +43,22 @@ function LineChart() {
       },
       title: {
         display: true,
-        text: 'Chart.js Bar Chart',
+        text: 'Model Accuracy',
       },
     },
   };
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+const labels = aggregationLableArray;
 
  const data = {
     labels,
     datasets: [
       {
         label: 'Dataset 1',
-        data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
+        data:localModelAccuracy,
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
-      },
-      {
-        label: 'Dataset 2',
-        data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
-        backgroundColor: 'rgba(53, 162, 235, 0.5)',
-      },
+      }
+   
     ],
   };
   

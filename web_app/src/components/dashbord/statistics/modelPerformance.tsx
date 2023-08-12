@@ -3,8 +3,16 @@ import React from 'react'
 import { Box, Flex, Grid, GridItem, } from '@chakra-ui/layout';
 import { Text } from '@chakra-ui/react';
 
+interface ModelPerformanceProps {
+  iteration: number;
+  time: number;
+}
 
-function ModelPerformance() {
+const ModelPerformance: React.FC<ModelPerformanceProps> = ({
+  iteration,
+  time  
+}) => {
+  
   return (
     <Box display="flex" justifyContent="center" alignItems="center" height={"100%"}
       boxShadow="rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px"
@@ -17,11 +25,11 @@ function ModelPerformance() {
             <GridItem bg="white.200" mt={'10px'} >Iterations</GridItem>
             <GridItem bg="white.200"  mt={'10px'}>Time(min)</GridItem>
             <GridItem bg="white.200" mt={'-30px'} display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-              <Text fontWeight="bold" fontSize="50px">10</Text>
+              <Text fontWeight="bold" fontSize="50px">{iteration}</Text>
             </GridItem>
 
             <GridItem bg="white.200" mt={'-30px'} display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-              <Text fontWeight="bold" fontSize="50px">12</Text>
+              <Text fontWeight="bold" fontSize="50px">{time}</Text>
             </GridItem>
 
           </Grid>

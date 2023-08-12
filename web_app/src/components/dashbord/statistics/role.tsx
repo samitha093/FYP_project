@@ -1,11 +1,11 @@
 import { Box } from '@chakra-ui/react';
 import React from 'react';
 
-interface AppProps {
-
+interface RoleProps {
+  role: string;
 }
 
-const Role: React.FC<AppProps> = ({ }) => {
+const Role: React.FC<RoleProps> = ({ role}) => {
   //use state boolen
   const [isShell, setIsShell] = React.useState<boolean>(false);
 
@@ -46,7 +46,7 @@ const Role: React.FC<AppProps> = ({ }) => {
           borderRadius="10px"
           boxShadow="0px 4px 8px rgba(0, 0, 0, 0.1)"
         >
-          <h1 style={styles}>KERNAL</h1>
+          <h1 style={styles}>{role}</h1>
         </Box>}
 
 

@@ -25,8 +25,14 @@ ChartJS.register(
   Tooltip,
   Legend
 );
+interface modelFinalAccuracyProgressBarProps {
+  modelFinalAccuracy: number;
+}
 
-function ProgressBar() {
+const ProgressBar: React.FC<modelFinalAccuracyProgressBarProps> = ({
+  modelFinalAccuracy
+}) => {
+
   const options = {
     responsive: true,
     plugins: {
@@ -39,7 +45,7 @@ function ProgressBar() {
       },
     },
   };
-  const percentage = 66;
+
   return (
     <Box display="flex" justifyContent="center" alignItems="center" m="10px" height={"100%"}
     boxShadow="rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px"
@@ -48,7 +54,7 @@ function ProgressBar() {
       <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
         <h2> Model Accuracy </h2>
         <Box maxW="50%" mt={'10px'}>
-          <CircularProgressbar value={percentage} text={`${percentage}%`} />
+          <CircularProgressbar value={modelFinalAccuracy} text={`${modelFinalAccuracy}%`} />
         </Box>
       </Box>
     </Box>
