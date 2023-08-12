@@ -54,7 +54,7 @@ const labels = aggregationLableArray;
     labels,
     datasets: [
       {
-        label: 'Dataset 1',
+        label: 'Local Model Accuracy',
         data:localModelAccuracy,
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
       }

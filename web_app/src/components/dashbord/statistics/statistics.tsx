@@ -9,20 +9,69 @@ import BarChart from './barChart';
 import ModelPerformance from './modelPerformance';
 import Role from './role';
 import { it } from 'node:test';
+import Loading from '../../module/loading';
 
+interface StatisticData {
+  modelFinalAccuracy: number;
+  iteration: number;
+  time: number;
+  role: string;
+  aggregationLableArray: number[];
+  receivedModelArray: number[];
+  rejectedModelArray: number[];
+  localModelAccuracy: number[];
+}
+const initialStatisticData: StatisticData = {
+  modelFinalAccuracy: 0,
+  iteration: 0,
+  time: 0,
+  role: '',
+  aggregationLableArray: [],
+  receivedModelArray: [],
+  rejectedModelArray: [],
+  localModelAccuracy: [],
+};
 
 function Statistics() {
-  const statisticData = {
-    aggregationLableArray: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
-    receivedModelArray: [7, 5, 8, 4, 5, 6, 8, 7, 5, 8, 4, 5, 6, 8],
-    rejectedModelArray: [2, 3, 0, 5, 4, 3, 1, 2, 3, 0, 5, 4, 3, 1],
-    localModelAccuracy: [12, 23, 30, 35, 38, 44, 50, 55, 61, 75, 80, 89, 90, 91],
-    modelFinalAccuracy: 80,
-    role: "SHELL",
-    iteration: 10,
-    time: 20,
-  };
+  const [loadingVisible, setLoadingVisible] = useState(false);
+  const [statisticData, setStatisticData] = useState<StatisticData>(initialStatisticData);
+  // const statisticData = {
+  //   aggregationLableArray: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+  //   receivedModelArray: [7, 5, 8, 4, 5, 6, 8, 7, 5, 8, 4, 5, 6, 8],
+  //   rejectedModelArray: [2, 3, 0, 5, 4, 3, 1, 2, 3, 0, 5, 4, 3, 1],
+  //   localModelAccuracy: [12, 23, 30, 35, 38, 44, 50, 55, 61, 75, 80, 89, 90, 91],
+  //   modelFinalAccuracy: 80,
+  //   role: "SHELL",
+  //   iteration: 10,
+  //   time: 20,
+  // };
+
   
+      // Function to show the loading component
+      const showLoading = () => {
+        setLoadingVisible(true);
+      };
+  
+      // Function to hide the loading component
+      const hideLoading = () => {
+        setLoadingVisible(false);
+      };
+  useEffect(() => {
+    showLoading()
+    const myHost = sessionStorage.getItem('host');
+    axios.get(`${myHost}/getStatisticData`)
+      .then(response => {
+        const data = response.data;
+        console.log("Static data ")
+        console.log(data)
+        setStatisticData(data);
+        hideLoading()
+      })
+      .catch(error => {
+        console.error(error);
+        hideLoading()
+      });
+  }, []);
 
   return (
     <div>
