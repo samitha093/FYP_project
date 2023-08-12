@@ -10,6 +10,7 @@ import ModelPerformance from './modelPerformance';
 import Role from './role';
 import { it } from 'node:test';
 import Loading from '../../module/loading';
+import AggregationModelCount from './aggregationModelCount';
 
 interface StatisticData {
   modelFinalAccuracy: number;
@@ -20,6 +21,7 @@ interface StatisticData {
   receivedModelArray: number[];
   rejectedModelArray: number[];
   localModelAccuracy: number[];
+  modelCount :number
 }
 const initialStatisticData: StatisticData = {
   modelFinalAccuracy: 0,
@@ -30,6 +32,7 @@ const initialStatisticData: StatisticData = {
   receivedModelArray: [],
   rejectedModelArray: [],
   localModelAccuracy: [],
+  modelCount:0
 };
 
 function Statistics() {
@@ -96,7 +99,9 @@ function Statistics() {
         />
       </GridItem>
       <GridItem bg="white.200" height="200px">
-        Column 4
+        <AggregationModelCount
+         modelCount={statisticData.modelCount}
+        />
       </GridItem>
 
       {/* Second Row */}

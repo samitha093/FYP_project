@@ -2,10 +2,10 @@ import { Box } from '@chakra-ui/react';
 import React from 'react';
 
 interface RoleProps {
-  role: string;
+    modelCount: number;
 }
 
-const Role: React.FC<RoleProps> = ({ role}) => {
+const AggregationModelCount: React.FC<RoleProps> = ({ modelCount}) => {
   //use state boolen
   const [isShell, setIsShell] = React.useState<boolean>(false);
 
@@ -19,7 +19,7 @@ const Role: React.FC<RoleProps> = ({ role}) => {
       borderRadius={"20px"}
     >
       <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-        <h2 style={{ fontWeight: 'bold' }}>Current State</h2>
+      <h2 style={{ fontWeight: 'bold' }} >Model Count</h2>
 
         {isShell?
           <Box
@@ -37,17 +37,18 @@ const Role: React.FC<RoleProps> = ({ role}) => {
           </Box>
           : <Box
           mt="10px"
-          w="200px"
+          w="100px"      // Make the width and height the same to create a circle
           h="100px"
-          backgroundColor="lightgreen"
+          backgroundColor="lightblue"
           display="flex"
           justifyContent="center"
           alignItems="center"
-          borderRadius="10px"
+          borderRadius="50%"  // Set border radius to 50% for a circular shape
           boxShadow="0px 4px 8px rgba(0, 0, 0, 0.1)"
         >
-          <h1 style={styles}>{role}</h1>
-        </Box>}
+          <h1 style={styles}>{modelCount}</h1>
+        </Box>
+        }
 
 
 
@@ -56,4 +57,4 @@ const Role: React.FC<RoleProps> = ({ role}) => {
   );
 };
 
-export default Role;
+export default AggregationModelCount;
