@@ -14,6 +14,7 @@ import { Bar, Line } from 'react-chartjs-2';
 import faker from 'faker';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import { Flex } from '@chakra-ui/layout';
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -24,8 +25,16 @@ ChartJS.register(
   Tooltip,
   Legend
 );
+interface modelAccuracyLineChartProps {
+  aggregationLableArray: number[];
+  localModelAccuracy: number[];
 
-function LineChart() {
+}
+const LineChart: React.FC<modelAccuracyLineChartProps> = ({
+  aggregationLableArray,
+  localModelAccuracy,
+}) => {
+
   const options = {
     responsive: true,
     plugins: {
@@ -34,43 +43,32 @@ function LineChart() {
       },
       title: {
         display: true,
-        text: 'Chart.js Bar Chart',
+        text: 'Model Accuracy',
       },
     },
   };
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+const labels = aggregationLableArray;
 
  const data = {
     labels,
     datasets: [
       {
-        label: 'Dataset 1',
-        data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
+        label: 'Local Model Accuracy',
+        data:localModelAccuracy,
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
-      },
-      {
-        label: 'Dataset 2',
-        data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
-        backgroundColor: 'rgba(53, 162, 235, 0.5)',
-      },
+      }
+   
     ],
   };
   
   return (
-    <div>
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
-        <div style={{ flex: 1, maxWidth: '50%', paddingRight: '10px' }}>
-          <h2> Chart Example</h2>
-          <div>
-            <Line options={options} data={data} />
-          </div>
-        </div>
-       
-      </div>
-      
-
-    </div>
+    // <div></div>
+    <Flex>
+    <Flex flex={1}>
+      <Line options={options} data={data} />
+    </Flex>
+  </Flex>
   );
 }
 

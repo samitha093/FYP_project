@@ -443,4 +443,19 @@ def childstop():
 def mobiledisconect():
     closedSocketMannuly()
     return jsonify({'message': "wait until reconect with new server"})
+    
+
+@app.route('/getStatisticData', methods =["GET"]) # disconect socket manual
+def getStaticData():
+    data = {
+            "aggregationLableArray": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+            "receivedModelArray": [7, 5, 8, 4, 5, 6, 8, 7, 5, 8, 4, 5, 6, 8],
+            "rejectedModelArray": [2, 3, 0, 5, 4, 3, 1, 2, 3, 0, 5, 4, 3, 1],
+            "localModelAccuracy": [12, 23, 30, 35, 38, 44, 50, 55, 61, 75, 80, 89, 90, 91],
+            "modelFinalAccuracy": 80,
+            "role": "SHELL",
+            "iteration": 10,
+            "time": 20,
+    }
+    return jsonify(data)
 
