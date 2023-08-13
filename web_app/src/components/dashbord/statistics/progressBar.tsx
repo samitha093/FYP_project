@@ -52,7 +52,7 @@ const ProgressBar: React.FC<modelFinalAccuracyProgressBarProps> = ({
      borderRadius={"20px"}
       >
       <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-        <h2> Model Accuracy </h2>
+        <h2 style={{ fontWeight: 'bold' }}> Model Accuracy </h2>
         <Box maxW="50%" mt={'10px'}>
           <CircularProgressbar value={modelFinalAccuracy} text={`${modelFinalAccuracy}%`} />
         </Box>

@@ -19,7 +19,7 @@ const ModelPerformance: React.FC<ModelPerformanceProps> = ({
       borderRadius={"20px"}
     >
       <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-        <h2>System Performance </h2>
+        <h2 style={{ fontWeight: 'bold' }}>System Performance </h2>
         <Box w={"auto"}>
           <Grid templateRows="repeat(2, 2fr)" templateColumns="repeat(2, 2fr)" gap={4} >
             <GridItem bg="white.200" mt={'10px'} >Iterations</GridItem>
