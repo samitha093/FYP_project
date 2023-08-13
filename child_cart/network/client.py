@@ -365,3 +365,8 @@ def filteringLimitUpdate(forward,backward):
 def getConnectionType():
     global conType
     return conType
+
+#get model count for aggregation
+def getModelCountSize():
+    global CULSTER_SIZE
+    return CULSTER_SIZE

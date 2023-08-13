@@ -27,12 +27,12 @@ ChartJS.register(
 );
 interface modelAccuracyLineChartProps {
   aggregationLableArray: number[];
-  localModelAccuracy: number[];
+  aggregationTimeArray: number[];
 
 }
-const LineChart: React.FC<modelAccuracyLineChartProps> = ({
+const AggregationTimeLineChart: React.FC<modelAccuracyLineChartProps> = ({
   aggregationLableArray,
-  localModelAccuracy,
+  aggregationTimeArray,
 }) => {
 
   const options = {
@@ -43,7 +43,7 @@ const LineChart: React.FC<modelAccuracyLineChartProps> = ({
       },
       title: {
         display: true,
-        text: 'Model Accuracy',
+        text: 'Aggregation Time Analysis',
       },
     },
   };
@@ -55,7 +55,7 @@ const labels = aggregationLableArray;
     datasets: [
       {
         label: 'Local Model Accuracy',
-        data:localModelAccuracy,
+        data:aggregationTimeArray,
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
       }
    
@@ -72,4 +72,4 @@ const labels = aggregationLableArray;
   );
 }
 
-export default LineChart;
+export default AggregationTimeLineChart;

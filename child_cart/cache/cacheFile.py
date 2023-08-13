@@ -737,20 +737,21 @@ def saveOrUpdateLogData(Log):
 #log of local model and received model and aggregated model accuracy
 
 data = {
-    "iteration": 5,
-    "localModel": {"id": "0001", "value": True, "accuracy": 0.58},
+    "iteration": 4,
+    "localModel": {"id": "0001", "value": True, "accuracy":40},
     "receivedModel": [
-        {"id": "0001", "value": False, "accuracy": 0.88},
+        {"id": "0001", "value": True, "accuracy": 0.88},
         {"id": "0002", "value": False, "accuracy": 0.88},
-        {"id": "0003", "value": False, "accuracy": 0.88},
-        {"id": "0004", "value": True, "accuracy": 0.88}
+        {"id": "0003", "value": True, "accuracy": 0.88},
+        {"id": "0004", "value": True, "accuracy": 0.88},
+        {"id": "0005", "value": False, "accuracy": 0.88}
     ],
-    "aggregatedModel": {"id": "0005", "value": True, "accuracy": 0.92},
-    "kernalTime":10,
-    "totalKernalTime":25
+    "aggregatedModel": {"id": "0005", "value": True, "accuracy": 56},
+    "kernalTime":140,
+    "totalKernalTime":460
 }
 
-# for i in range(10):
+# for i in range(1):
 #     saveOrUpdateLogData(data)
 
 

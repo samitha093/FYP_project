@@ -31,6 +31,7 @@ from child_cart.network.client import *
 # from child_cart.db.dbConnect import *
 from child_cart.db.apiConnection import *
 from child_cart.mobile.serverWin import *
+from child_cart.calculations.statistics import *
 import queue
 import child_cart.mobile.serverWin as serverWin
 selectedItem ="Item 0"
@@ -443,4 +444,11 @@ def childstop():
 def mobiledisconect():
     closedSocketMannuly()
     return jsonify({'message': "wait until reconect with new server"})
+    
+
+@app.route('/getStatisticData', methods =["GET"]) # disconect socket manual
+def getStaticData():
+    statisticData=processStatisticData()
+    print(statisticData)
+    return jsonify(statisticData)
 
