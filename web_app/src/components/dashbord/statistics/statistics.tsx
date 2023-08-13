@@ -50,7 +50,7 @@ function Statistics() {
     modelFinalAccuracy: 80,
     role: "SHELL",
     iteration: 10,
-    time: 260,
+    time: 12,
     modelCount: 10
   };
 
