@@ -50,7 +50,7 @@ function Statistics() {
     modelFinalAccuracy: 80,
     role: "SHELL",
     iteration: 10,
-    time: 20,
+    time: 260,
     modelCount: 10
   };
 
@@ -72,6 +72,8 @@ function Statistics() {
         const data = response.data;
         console.log("Static data ")
         console.log(data)
+        //convert time to minutes  & rount to integer
+        data['time'] = Math.round(data['time']/60);
         setStatisticData(data);
         hideLoading()
       })

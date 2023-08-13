@@ -93,12 +93,21 @@ def processStatisticData():
     #get Model Count
     modelCount =getModelCountSize()
 
+    #aggregate time array
+    aggregationTimeArray = []
+    for i in range(lengthOfArray): 
+        aggregationTime = data[i]['kernalTime']
+        #convert to minutes with 2 decimal places
+        aggregationTime = round(aggregationTime/60,2)
+        aggregationTimeArray.append(aggregationTime)
+
     statisticData = {
             "aggregationLableArray": aggregationLabelArray,
             "receivedModelArray": receivedModelArray,
             "rejectedModelArray": rejectedModelArray,
             "localModelAccuracy": localModelAccuracy,
             "modelFinalAccuracy": lastAggregatedModelAccuracy,
+            "aggregationTimeArray": aggregationTimeArray,
             "role": connectionType,
             "iteration": lastIterationNumber,
             "time": totalKernalTime,
