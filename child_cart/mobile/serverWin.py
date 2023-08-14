@@ -33,7 +33,10 @@ def closedSocketMannuly():
     client_socket = GOLBALSOCKET
     # Simulate manual disconnection
     print("Manually disconnecting client socket...")
-    client_socket.close()
+    try:
+        client_socket.close()
+    except:
+        pass
     flask.updateUserDataFromMobile([])
 
 class SocketConnection:

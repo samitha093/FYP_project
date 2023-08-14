@@ -40,8 +40,8 @@ const initialStatisticData: StatisticData = {
 
 function Statistics() {
   const [loadingVisible, setLoadingVisible] = useState(false);
-  const [statisticData1, setStatisticData] = useState<StatisticData>(initialStatisticData);
-  const statisticData = {
+  const [statisticData, setStatisticData] = useState<StatisticData>(initialStatisticData);
+  const statisticData1 = {
     aggregationLableArray: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
     receivedModelArray: [7, 5, 8, 4, 5, 6, 8, 7, 5, 8, 4, 5, 6, 8],
     rejectedModelArray: [2, 3, 0, 5, 4, 3, 1, 2, 3, 0, 5, 4, 3, 1],

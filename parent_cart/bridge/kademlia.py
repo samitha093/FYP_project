@@ -16,13 +16,15 @@ class kademlia_network:
         self.server = Server()
         self.event_loop = asyncio.new_event_loop()
         self.isAvailabale = False
+        self.status = True
 
-    def create_bootstrap_node(self,myport,kademlaNodeList,bootstrap_ip='127.0.0.1',bootstrap_port='63524'):
+    def create_bootstrap_node(self,myport,kademlaNodeList,bootstrap_ip='127.0.0.1',bootstrap_port='63524', status=True):
+        self.status = status
         # self.event_loop.set_debug(True)
         data_string = kademlaNodeList.decode('utf-8')
         dataDic = json.loads(data_string)
 
-        while True:
+        while self.status:
             self.isAvailabale = True
             try:
                 ## create boostrap node
@@ -62,6 +64,7 @@ class kademlia_network:
         return self.isAvailabale
 
     def stop_server(self):
-        self.isAvailabale = False
-        self.event_loop.stop()
+        self.status = False
         self.server.stop()
+        self.event_loop.stop()
+        self.isAvailabale = False
