@@ -29,7 +29,7 @@ const initialStatisticData: StatisticData = {
   modelFinalAccuracy: 0,
   iteration: 0,
   time: 0,
-  role: '',
+  role: 'SHELL',
   aggregationLableArray: [],
   receivedModelArray: [],
   rejectedModelArray: [],
@@ -41,6 +41,7 @@ const initialStatisticData: StatisticData = {
 function Statistics() {
   const [loadingVisible, setLoadingVisible] = useState(false);
   const [statisticData, setStatisticData] = useState<StatisticData>(initialStatisticData);
+  //for testing dummy data
   const statisticData1 = {
     aggregationLableArray: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
     receivedModelArray: [7, 5, 8, 4, 5, 6, 8, 7, 5, 8, 4, 5, 6, 8],
@@ -79,6 +80,7 @@ function Statistics() {
       })
       .catch(error => {
         console.error(error);
+        setStatisticData(initialStatisticData);
         hideLoading()
       });
   }, []);
