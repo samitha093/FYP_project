@@ -779,7 +779,7 @@ def loadLogData():
         print("An error occurred:", e)
 
 # results=loadLogData()
-# print(results)
+# print(len(results))
 
 
 #get length logData
