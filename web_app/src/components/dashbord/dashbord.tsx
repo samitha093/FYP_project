@@ -98,6 +98,7 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
       setTimeout(() => {
         // Update the nabourArray with new data after the delay
         setPeerArray(data);
+        console.log(data)
       }, 3000);
     });
     socket.on('USERID', (data) => {

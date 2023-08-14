@@ -113,10 +113,12 @@ def on_disconnect():
 def handle_custom_event(data):
     print('Received custom event:', data)
 
+
 def send_hello_to_clients():
     while True:
         sleep(5)
-        if create_api_endpoint :
+        if CartType :
+            print("run due to parent")
             BridgeShellpeerList = peerListCheck()
             socketio.emit('PEERLIST', BridgeShellpeerList)
         socketio.emit('USER_PROFILE', UserDataArray)
