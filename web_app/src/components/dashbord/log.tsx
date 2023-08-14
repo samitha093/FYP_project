@@ -69,10 +69,10 @@ const Log: React.FC<AppProps> = ({ darkMode }) => {
           Aggregated Model Accuracy
         </GridItem>
         <GridItem w='100%' h='auto' bg={darkMode ? "blue.600" : 'blue.100'} textAlign='center' pt='20px' pb='20px'>
-          Current Iteration time
+          Current Iteration time (seconds)
         </GridItem>
         <GridItem w='100%' h='auto' bg={darkMode ? "blue.600" : 'blue.100'} textAlign='center' pt='20px' pb='20px'>
-          Total Kernal Time
+          Total  Kernal Time  (seconds)
         </GridItem>
       </Grid>
       <Loading visible={loadingVisible} /> 
