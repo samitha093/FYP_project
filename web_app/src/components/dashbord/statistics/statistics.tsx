@@ -12,6 +12,7 @@ import { it } from 'node:test';
 import Loading from '../../module/loading';
 import AggregationModelCount from './aggregationModelCount';
 import AggregationTimeLineChart from './aggregationTimeLineChart';
+import { io } from 'socket.io-client';
 
 interface StatisticData {
   modelFinalAccuracy: number;
@@ -55,25 +56,25 @@ function Statistics() {
   };
 
   
-      // Function to show the loading component
-      const showLoading = () => {
-        setLoadingVisible(true);
-      };
-  
-      // Function to hide the loading component
-      const hideLoading = () => {
-        setLoadingVisible(false);
-      };
+  // Function to show the loading component
+  const showLoading = () => {
+    setLoadingVisible(true);
+  };
+
+  // Function to hide the loading component
+  const hideLoading = () => {
+    setLoadingVisible(false);
+  };
   useEffect(() => {
     showLoading()
     const myHost = sessionStorage.getItem('host');
     axios.get(`${myHost}/getStatisticData`)
       .then(response => {
         const data = response.data;
-        console.log("Static data ")
-        console.log(data)
+        // console.log("Static data ")
+        // console.log(data)
         //convert time to minutes  & rount to integer
-        data['time'] = Math.round(data['time']/60);
+        // data['time'] = Math.round(data['time']/60);
         setStatisticData(data);
         hideLoading()
       })
@@ -83,12 +84,38 @@ function Statistics() {
       });
   }, []);
 
+   //subscribe to the socket.io events
+   useEffect(() => {
+    var hostname = 'http://'+ window.location.hostname+ ':5001';
+    const socket = io(hostname);
+    // Event handler when connected to the server
+    socket.on('connect', () => {
+      console.log('Dashboard = > connected to the python backend');
+    });
+     // Event handler for custom events from the server
+    socket.on('server_message', (data) => {
+      console.log('Received from server:', data);
+    });
+    socket.on('STATISTIC', (data) => {
+      // setStatisticData(initialStatisticData)
+      setTimeout(() => {
+      // Update the nabourArray with new data after the delay
+      setStatisticData(data);
+      }, 3000);
+    });
+    // Clean up the socket connection when the component unmounts
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
   return (
     <Box border="1px solid" borderColor={"gray.300" } 
     mr={{ base: '0', lg: '30px' }} w={'100%'} h={'100%'} minW={'300px'}
+    pt={'20px'} pl={'5px'}
     overflow="auto">
     <div >
-    <Grid templateColumns="repeat(4, 280px)" gap={4}>
+    <Grid templateColumns="repeat(4, 24%)" gap={4}>
       {/* First Row */}
       <GridItem bg="white.200" height="200px" width="100%" display="flex" justifyContent="center" alignItems="center">
     <ProgressBar
@@ -130,7 +157,7 @@ function Statistics() {
       </GridItem>
 
     {/* Third Row */}
-      <GridItem colSpan={2} bg="white.200" height="300px">
+      <GridItem colSpan={2} bg="white.200" height="300px" mt={'150px'}>
       <AggregationTimeLineChart
         aggregationLableArray={statisticData.aggregationLableArray}
         aggregationTimeArray={statisticData.aggregationTimeArray}
