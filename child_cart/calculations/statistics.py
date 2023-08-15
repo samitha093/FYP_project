@@ -41,6 +41,7 @@ from child_cart.cache.cacheFile import *
 
 def processStatisticData():
     data =loadLogData()
+
     data = json.loads(data)
     lengthOfArray=len(data)
     lastValueOfArray = data[lengthOfArray-1]
@@ -115,5 +116,101 @@ def processStatisticData():
     }
     # print(statisticData)
     return statisticData
+    lengthOfData = len(data)
+    if(lengthOfData > 0):
+            data = json.loads(data)
+            lengthOfArray=len(data)
+            lastValueOfArray = data[lengthOfArray-1]
+
+            lastIterationNumber = lastValueOfArray['iteration']
+            # print("Iteration : ",lastIterationNumber)
+
+            lastKernalTime = lastValueOfArray['kernalTime']
+            totalKernalTime = lastValueOfArray['totalKernalTime']
+            # print("Time : " ,totalKernalTime)
+
+            lastAggregatedModelAccuracy = int(lastValueOfArray['aggregatedModel']['accuracy'])
+            # print("Final Accuracy : ",lastAggregatedModelAccuracy)
+
+            #lable array
+            aggregationLabelArray = []
+            for i in range(lengthOfArray):
+                aggregationLabelArray.append(i+1)
+            # print("Lable Array : " , aggregationLabelArray)
+
+            #aggregated model accuray
+            localModelAccuracy = []
+            for i in range(lengthOfArray):
+                aggregatedModelAccuracy =data[i]['aggregatedModel']['accuracy']
+                localModelAccuracy.append(int(aggregatedModelAccuracy))
+            # print("Aggregated Model Array : " ,localModelAccuracy)
+
+            #received model count
+            receivedModelArray = []
+            for i in range(lengthOfArray):
+                recivedModelLength = len(data[i]['receivedModel'])
+                receivedModelArray.append(recivedModelLength)
+            # print("received Model Count : " ,receivedModelArray)
+
+            rejectedModelArray = []
+            for i in range(lengthOfArray):
+                recivedModelLength = len(data[i]['receivedModel'])
+                count = 0
+                for j in range(recivedModelLength):
+                    modelDrop = data[i]['receivedModel'][j]['value']
+                    if(modelDrop == False ):
+                        count =count + 1 
+                rejectedModelArray.append(count)
+            # print("Drop model count : ",rejectedModelArray)
+
+            #connection type get
+            connectionType =getConnectionType()
+            # connectionType ="SHELL"
+            # print("Connection Type : ",connectionType)
+            #get Model Count
+            modelCount =getModelCountSize()
+
+            #aggregate time array
+            aggregationTimeArray = []
+            for i in range(lengthOfArray): 
+                aggregationTime = data[i]['kernalTime']
+                #convert to minutes with 2 decimal places
+                aggregationTime = round(aggregationTime/60,2)
+                aggregationTimeArray.append(aggregationTime)
+
+            statisticData = {
+                    "aggregationLableArray": aggregationLabelArray,
+                    "receivedModelArray": receivedModelArray,
+                    "rejectedModelArray": rejectedModelArray,
+                    "localModelAccuracy": localModelAccuracy,
+                    "modelFinalAccuracy": lastAggregatedModelAccuracy,
+                    "aggregationTimeArray": aggregationTimeArray,
+                    "role": connectionType,
+                    "iteration": lastIterationNumber,
+                    "time": totalKernalTime,
+                    "modelCount":modelCount
+            }
+            # print(statisticData)
+            return statisticData
+    else:
+            #connection type get
+            connectionType =getConnectionType()
+            #get Model Count
+            modelCount =getModelCountSize()
+            statisticData = {
+                    "aggregationLableArray": [],
+                    "receivedModelArray": [],
+                    "rejectedModelArray": [],
+                    "localModelAccuracy": [],
+                    "modelFinalAccuracy": 0,
+                    "aggregationTimeArray": [],
+                    "role": connectionType,
+                    "iteration": 0,
+                    "time": 0,
+                    "modelCount":modelCount
+            }
+            # print(statisticData)
+            return statisticData
+
 # statisticData=processStatisticData()
 # print(statisticData)
