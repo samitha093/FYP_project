@@ -5,10 +5,12 @@ import static android.service.controls.ControlsProviderService.TAG;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.content.Intent;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -18,8 +20,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -37,6 +41,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 
 
 public class ScanQRCodeActivity extends Activity {
@@ -127,7 +132,7 @@ public class ScanQRCodeActivity extends Activity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            asynchrounousProcess(host,port);
+            //asynchrounousProcess(host,port);
             /*try {
                 Thread.sleep(25000);
                 socketDisconnect();
@@ -268,12 +273,19 @@ public class ScanQRCodeActivity extends Activity {
                 }
             }
             fileOutputStream.close();
+        } catch (SocketException e) {
+            // Handle the socket exception, which occurs when the connection is reset
+            handleDisconnect();
         } catch (IOException e) {
             // Handle the exception (e.g., log or rethrow it)
             e.printStackTrace();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        /*catch (InterruptedException e) {
+
+            throw new RuntimeException(e);
+        }*/
     }
 
     //send checkout data set
@@ -368,6 +380,8 @@ public class ScanQRCodeActivity extends Activity {
             //  Send the data
             sendMessages("USER DATA");
             sendMessages("[" + name + "," + gender + "," + email+ "," + age + "," + city + "]");
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -464,4 +478,34 @@ public class ScanQRCodeActivity extends Activity {
         startActivity(intent);
         finish(); // Optional, depending on your navigation flow
     }
+    private void handleDisconnect() {
+        // Show a message to the user (using a Toast)
+        runOnUiThread(() -> {
+            showSnackbar("Mobile is disconnected by Smart Cart");
+        });
+
+        // Update UI elements as needed
+        // For example, toggle the state of the disconnect/connect button
+        runOnUiThread(() -> {
+            btnDisconnectCart.setVisibility(View.GONE);
+            btnConnectToCart.setVisibility(View.VISIBLE);
+        });
+    }
+    private void showSnackbar(String message) {
+        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
+
+        // Customize the appearance of the Snackbar
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(ContextCompat.getColor(this, com.google.android.material.R.color.cardview_light_background)); // Set light red background color
+        Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbarView;
+        TextView textView = snackbarLayout.findViewById(com.google.android.material.R.id.snackbar_text);
+        textView.setTextColor(Color.DKGRAY);
+
+        // Center the Snackbar
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) snackbarView.getLayoutParams();
+        params.gravity = Gravity.CENTER;
+        snackbarView.setLayoutParams(params);
+
+        snackbar.show();    }
+
 }
