@@ -113,12 +113,16 @@ def on_disconnect():
 def handle_custom_event(data):
     print('Received custom event:', data)
 
+
 def send_hello_to_clients():
     while True:
         sleep(5)
-        if create_api_endpoint :
+        if CartType :
             BridgeShellpeerList = peerListCheck()
             socketio.emit('PEERLIST', BridgeShellpeerList)
+        if not CartType:
+            statisticData=processStatisticData()
+            socketio.emit('STATISTIC', statisticData)
         socketio.emit('USER_PROFILE', UserDataArray)
         shared_queue = SharedQueueSingleton()
         if shared_queue.empty():
@@ -449,6 +453,5 @@ def mobiledisconect():
 @app.route('/getStatisticData', methods =["GET"]) # disconect socket manual
 def getStaticData():
     statisticData=processStatisticData()
-    print(statisticData)
     return jsonify(statisticData)
 
