@@ -118,9 +118,11 @@ def send_hello_to_clients():
     while True:
         sleep(5)
         if CartType :
-            print("run due to parent")
             BridgeShellpeerList = peerListCheck()
             socketio.emit('PEERLIST', BridgeShellpeerList)
+        if not CartType:
+            statisticData=processStatisticData()
+            socketio.emit('STATISTIC', statisticData)
         socketio.emit('USER_PROFILE', UserDataArray)
         shared_queue = SharedQueueSingleton()
         if shared_queue.empty():
@@ -451,6 +453,5 @@ def mobiledisconect():
 @app.route('/getStatisticData', methods =["GET"]) # disconect socket manual
 def getStaticData():
     statisticData=processStatisticData()
-    print(statisticData)
     return jsonify(statisticData)
 
