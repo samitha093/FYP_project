@@ -30,13 +30,11 @@
             android:label="Scan QR Code"
             android:screenOrientation="portrait"></activity>
         <activity
-            android:name=".SignUpActivity"
-            android:label="Sign Up"></activity>
+            android:name=".SignUpActivity"></activity>
 
 
         <activity
-            android:name=".LoginActivity"
-            android:label="Login"></activity>
+            android:name=".LoginActivity"></activity>
 
         <activity
             android:name=".GetStartedActivity"
@@ -50,9 +48,10 @@
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTask"></activity>
-        <activity android:name=".UserProfileActivity"
-            android:label="My Profile"></activity>
-
+        <activity android:name=".UserProfileActivity"></activity>
+        <activity
+            android:name=".ProductPreviewActivity"
+            />
     </application>
 
 </manifest>

@@ -5,6 +5,8 @@ import static android.service.controls.ControlsProviderService.TAG;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,11 +17,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -33,6 +37,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -82,6 +87,43 @@ public class ScanQRCodeActivity extends Activity {
             // Handle the case when userName is null
             tvGreeting.setText("Hi User, Welcome to smart cart app"); // Default message
         }*/
+
+        // Initialize views
+        tvGreeting = findViewById(R.id.tvGreeting);
+        tvGreeting = findViewById(R.id.tvGreeting);
+        try {
+            FileInputStream fis = openFileInput("user_data.json");
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+            StringBuilder sb = new StringBuilder();
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+
+            br.close();
+            isr.close();
+            fis.close();
+
+            // Parse JSON data
+            JSONObject userData = new JSONObject(sb.toString());
+            String name = userData.getString("name");
+
+            if (name != null && !name.isEmpty()) {
+                String greeting = "Hi " + name + ", Welcome to smart cart app";
+                tvGreeting.setText(greeting);
+            } else {
+                tvGreeting.setText("Hi User, Welcome to smart cart app");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         btnConnectToCart = findViewById(R.id.btnConnectToCart);
         btnDisconnectCart = findViewById(R.id.btnDisconnectCart);
         frameLayoutScanner = findViewById(R.id.frameLayoutScanner);
@@ -100,6 +142,13 @@ public class ScanQRCodeActivity extends Activity {
                 socketDisconnect();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
+            }
+        });
+        ImageView ivLogout = findViewById(R.id.ivLogout);
+        ivLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLogoutConfirmationDialog(v);
             }
         });
 
@@ -228,6 +277,7 @@ public class ScanQRCodeActivity extends Activity {
                 }
 
                 else if (message.equals("FAILED")) {
+                    handleMultiUser();
                     Log.d("SOCKET REFUSE", "Server reached the connection limit. Stop connecting.");
                     fileOutputStream.close(); // Close the file output stream
                     return; // Exit the thread to stop trying to connect
@@ -433,10 +483,17 @@ public class ScanQRCodeActivity extends Activity {
                 port = Integer.parseInt(parts[1]);
                 Log.i("split data: ","IP: "+ host+ ", PORT: "+ port);
                 isQRRead = true;
+                Log.d("QR READ STATE", String.valueOf(isQRRead));
+                asynchrounousProcess(host,port);
+            }else {
+                // Handle invalid QR code format
+                Log.e("split data: ", "Invalid QR code format: " + scannedData);
+                showSnackbar("Invalid QR code format. Please scan a valid QR code.");
+                btnDisconnectCart.setVisibility(View.GONE);
+                btnConnectToCart.setVisibility(View.VISIBLE);
             }
 
-            Log.d("QR READ STATE", String.valueOf(isQRRead));
-            asynchrounousProcess(host,port);
+
             // Create an Intent to send the scanned URL back to MainActivity
             Intent intent = new Intent();
             intent.putExtra("scanned_url", scannedData);
@@ -469,7 +526,7 @@ public class ScanQRCodeActivity extends Activity {
         integrator.setCameraId(0); // Use the rear camera (0) or front camera (1)
         integrator.initiateScan();
     }
-    public void logout(View view) {
+    public void logout() {
         // Clear any user session or data here, if needed
 
         // Navigate back to the GetStartedActivity or LoginActivity
@@ -478,6 +535,7 @@ public class ScanQRCodeActivity extends Activity {
         startActivity(intent);
         finish(); // Optional, depending on your navigation flow
     }
+
     private void handleDisconnect() {
         // Show a message to the user (using a Toast)
         runOnUiThread(() -> {
@@ -507,5 +565,31 @@ public class ScanQRCodeActivity extends Activity {
         snackbarView.setLayoutParams(params);
 
         snackbar.show();    }
+    private void showLogoutConfirmationDialog(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Logout");
+        builder.setMessage("Are you sure you want to logout?");
+        builder.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Perform logout action here
+                logout();
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+    private void handleMultiUser() {
+        // Show a message to the user (using a Toast)
+        runOnUiThread(() -> {
+            showSnackbar("Smart Cart is busy with another customer");
+        });
+
+        runOnUiThread(() -> {
+            btnDisconnectCart.setVisibility(View.GONE);
+            btnConnectToCart.setVisibility(View.VISIBLE);
+        });
+    }
 
 }

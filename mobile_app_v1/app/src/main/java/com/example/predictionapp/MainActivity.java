@@ -256,6 +256,7 @@ public class MainActivity extends AppCompatActivity{
             fileOutputStream.close();
         } catch (IOException e) {
             // Handle the exception (e.g., log or rethrow it)
+
             e.printStackTrace();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

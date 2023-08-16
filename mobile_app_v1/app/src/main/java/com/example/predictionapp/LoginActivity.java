@@ -164,7 +164,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void navigateToMainActivity() {
         // Replace MainActivity.class with the desired activity to navigate to
-        Intent intent = new Intent(LoginActivity.this, ScanQRCodeActivity.class);
+        Intent intent = new Intent(this, ProductPreviewActivity.class);
         startActivity(intent);
         finish(); // Optional: finish the LoginActivity to prevent going back
     }
