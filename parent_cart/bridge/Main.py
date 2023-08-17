@@ -32,6 +32,7 @@ cart_server_task = None
 
 
 DeviceTable = []
+DeviceTable2 = []
 TempDeviceTable = []
 ClusterTable = {}
 clusterSize = 10
@@ -61,11 +62,12 @@ def peerListCheck():
     return DeviceTable
 
 async def reqirementHandler(data):
-    global MOBILEDATARECORDER,DATARECORDER,DeviceTable, TempDeviceTable
+    global MOBILEDATARECORDER,DATARECORDER,DeviceTable, DeviceTable2, TempDeviceTable
     User = data.get("Sender")
     req = data.get("Data")
     if req[0] == "PEERTYPE":
         if req[1] == "KERNEL":
+            DeviceTable2.append(User)
             print(User, " : ",req[1])
         if req[1] == "SHELL":
             DeviceTable.append(User)
@@ -135,29 +137,36 @@ async def handle_client(reader, writer):
     async def send_data():
         nonlocal userId, reader, writer, client_disconnected
         print("SENDER - start for :",userId," : ",writer.get_extra_info('peername'))
-        while not client_disconnected:
-            if len(DATARECORDER.get(userId)) > 0:
-                mailBox = DATARECORDER.get(userId)
-                print("****BRIDGE SEND : ",mailBox[0].get("Data")[0]," : FROM : ",mailBox[0].get("Sender")," : TO : ", userId)
-                mailData = pickle.dumps(mailBox[0])
-                data_size = sys.getsizeof(mailData)
-                data_size_kb = data_size / 1024
-                if data_size_kb < 1:
-                    writer.write(mailData)
-                    await writer.drain()
-                else:
-                    print("OVERLOADED DATA FOUND : ",data_size_kb,"KB")
-                    MAX_CHUNK_SIZE = 1024
-                    chunks = [mailData[i:i+MAX_CHUNK_SIZE] for i in range(0, len(mailData), MAX_CHUNK_SIZE)]
-                    print("NO OF CHUNKS : ",len(chunks)," : SENDED")
-                    for x in chunks:
-                        writer.write(x)
+        try:
+            while not client_disconnected:
+                if len(DATARECORDER.get(userId)) > 0:
+                    mailBox = DATARECORDER.get(userId)
+                    print("****BRIDGE SEND : ",mailBox[0].get("Data")[0]," : FROM : ",mailBox[0].get("Sender")," : TO : ", userId)
+                    mailData = pickle.dumps(mailBox[0])
+                    data_size = sys.getsizeof(mailData)
+                    data_size_kb = data_size / 1024
+                    if data_size_kb < 1:
+                        writer.write(mailData)
                         await writer.drain()
-                if mailBox[0].get("Data")[0] == "ERROR":
-                    print("####ERROR ON ",mailBox[0].get("Data")[1]," : ", userId,)
-                    client_disconnected = True
-                mailBox.remove(mailBox[0])
-            await asyncio.sleep(1)
+                    else:
+                        print("OVERLOADED DATA FOUND : ",data_size_kb,"KB")
+                        MAX_CHUNK_SIZE = 1024
+                        chunks = [mailData[i:i+MAX_CHUNK_SIZE] for i in range(0, len(mailData), MAX_CHUNK_SIZE)]
+                        print("NO OF CHUNKS : ",len(chunks)," : SENDED")
+                        for x in chunks:
+                            writer.write(x)
+                            await writer.drain()
+                    if mailBox[0].get("Data")[0] == "ERROR":
+                        print("####ERROR ON ",mailBox[0].get("Data")[1]," : ", userId,)
+                        client_disconnected = True
+                    mailBox.remove(mailBox[0])
+                await asyncio.sleep(1)
+            print("====> data sender close")
+        except Exception as e:
+            print("##===> STATUS INFO Sender: ",e)
+            pass
+        finally:
+            writer.close()
 
     #coroutine to process received data
     async def process_data(data_chunks):
@@ -169,6 +178,7 @@ async def handle_client(reader, writer):
             asyncio.create_task(reqirementHandler(decordedData))
         else:
             asyncio.create_task(requestHandler(decordedData))
+        print("====> data processor close")
 
     # coroutine for receiving data from the client
     async def receive_data():
@@ -190,6 +200,7 @@ async def handle_client(reader, writer):
                 else:
                     continue
             except ConnectionResetError:
+                print("######## STATUS INFO(con close) : ",e)
                 client_disconnected = True
                 break
             except Exception as e:
@@ -197,6 +208,8 @@ async def handle_client(reader, writer):
                 client_disconnected = True
                 break
             await asyncio.sleep(1)
+        writer.close()
+        print("====> data reciver close")
 
     #############################################################
     try:
@@ -406,11 +419,18 @@ def get_nabourList():
         return []
 
 def function_sync_list():
-    global DeviceTable, TempDeviceTable
+    global DeviceTable, TempDeviceTable, DeviceTable2
     while True:
         time.sleep(10) ## set as 60
         print("SHELL list : ", DeviceTable)
+        print("KERNEL list : ", DeviceTable2)
         ## check register peer list
+        for userID in DeviceTable2:
+            tempData = responceModel(userID,["AVAILABEL"])
+            mailBox = DATARECORDER.get(userID)
+            mailBox.append(tempData)
+            TempDeviceTable.append(userID)
+            print("Send verivication message to : ", userID)
         for userID in DeviceTable:
             tempData = responceModel(userID,["AVAILABEL"])
             mailBox = DATARECORDER.get(userID)
@@ -421,14 +441,13 @@ def function_sync_list():
         string_counts = Counter(TempDeviceTable)
         for string, count in string_counts.items():
             if count > 3:
-                print(f"The SHELL peer : '{string}' not responded in {count} times.")
+                print(f"The peer : '{string}' not responded in {count} times.")
                 while string in DeviceTable:
                     DeviceTable.remove(string)
+                while string in DeviceTable2:
+                    DeviceTable2.remove(string)
                 while string in TempDeviceTable:
                     TempDeviceTable.remove(string)
-
-        
-
 
 
 
@@ -443,8 +462,8 @@ def bidge_server():
     thread2.start()
     thread3.start()
 
-    # thread4 = threading.Thread(target=function_sync_list)
-    # thread4.start()
+    thread4 = threading.Thread(target=function_sync_list)
+    thread4.start()
 
     try:
         while True:
