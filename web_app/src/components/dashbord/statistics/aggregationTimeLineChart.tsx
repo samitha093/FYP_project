@@ -28,13 +28,11 @@ ChartJS.register(
 interface modelAccuracyLineChartProps {
   aggregationLableArray: number[];
   aggregationTimeArray: number[];
-
 }
 const AggregationTimeLineChart: React.FC<modelAccuracyLineChartProps> = ({
   aggregationLableArray,
   aggregationTimeArray,
 }) => {
-
   const options = {
     responsive: true,
     plugins: {
@@ -46,30 +44,48 @@ const AggregationTimeLineChart: React.FC<modelAccuracyLineChartProps> = ({
         text: 'Aggregation Time Analysis',
       },
     },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'X Axis Label', // Custom x-axis label
+        },
+        ticks: {
+          // You can customize x-axis ticks here if needed
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Y Axis Label', // Custom y-axis label
+        },
+        ticks: {
+          // You can customize y-axis ticks here if needed
+        },
+      },
+    },
   };
 
-const labels = aggregationLableArray;
+  const labels = aggregationLableArray;
 
- const data = {
+  const data = {
     labels,
     datasets: [
       {
         label: 'Local Model Accuracy',
-        data:aggregationTimeArray,
+        data: aggregationTimeArray,
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
-      }
-   
+      },
     ],
   };
-  
+
   return (
-    // <div></div>
     <Flex>
-    <Flex flex={1}>
-      <Line options={options} data={data} />
+      <Flex flex={1}>
+        <Line options={options} data={data} />
+      </Flex>
     </Flex>
-  </Flex>
   );
-}
+};
 
 export default AggregationTimeLineChart;

@@ -113,7 +113,6 @@ class SocketConnection:
 
     def receive_messages(self):
         global isFileReceiving ,isUserDataReceiving ,FILENAME
-        received_rows = []
 
         try:
            while True:
@@ -123,14 +122,18 @@ class SocketConnection:
         
                 if data == "FILE":
                     print("Data set Receiving enabled : ",data) 
-                    isFileReceiving = True
-                    received_rows = []  # Reset received_rows when a new file transfer starts                                
+                    isFileReceiving = True                               
                 elif isFileReceiving:
                     print("Data Set Received : \n",data)
                     with open(FILENAME, "w") as file:
                         for row in data:
                             file.write(row)  # Write the row to the file as a new line
-                    received_rows = []  # Reset received_rows afte
+                    with open(FILENAME, "r") as file:
+                        for line in file:
+                            row = line.strip().split(',')  # Split the line into a list of elements
+                            row = [int(element) for element in row]  # Convert elements to integers
+                            data.append(row)
+                        updataCartData(data)
                     isFileReceiving = False
 
                 elif data =="USER DATA":
