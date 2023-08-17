@@ -20,20 +20,28 @@ const ModelPerformance: React.FC<ModelPerformanceProps> = ({
     >
       <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
         <h2 style={{ fontWeight: 'bold' }}>System Performance </h2>
-        <Box w={"auto"}>
-          <Grid templateRows="repeat(2, 2fr)" templateColumns="repeat(2, 2fr)" gap={4} >
-            <GridItem bg="white.200" mt={'10px'} >Iterations</GridItem>
-            <GridItem bg="white.200"  mt={'10px'}>Time(min)</GridItem>
-            <GridItem bg="white.200" mt={'-30px'} display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-              <Text fontWeight="bold" fontSize="50px">{iteration}</Text>
-            </GridItem>
+        <Box w={"auto"} mt={'20px'} >
+  <Grid templateRows="repeat(2, 2fr)" templateColumns="repeat(3, 1fr)" gap={4}>
+    <GridItem bg="white.200" mt={'10px'}>Iterations</GridItem>
+    <GridItem colSpan={1} display="flex" alignItems="center" justifyContent="center">
+      <Box bg="black" height="100%" width="1px" />
+    </GridItem>
+    <GridItem bg="white.200" mt={'10px'}>Time(min)</GridItem>
+    
+    <GridItem bg="white.200" mt={'-30px'} display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+      <Text fontWeight="bold" fontSize="50px">{iteration}</Text>
+    </GridItem>
+    <GridItem colSpan={1} display="flex" alignItems="center" justifyContent="center">
+      <Box bg="black" height="100%" width="1px" />
+    </GridItem>
+    <GridItem bg="white.200" mt={'-30px'} display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+      <Text fontWeight="bold" fontSize="50px">{time}</Text>
+    </GridItem>
+  </Grid>
+</Box>
 
-            <GridItem bg="white.200" mt={'-30px'} display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-              <Text fontWeight="bold" fontSize="50px">{time}</Text>
-            </GridItem>
 
-          </Grid>
-        </Box>
+
       </Box>
     </Box>
 
