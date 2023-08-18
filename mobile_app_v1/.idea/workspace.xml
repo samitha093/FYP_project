@@ -13,21 +13,14 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1b5ebdc2-b674-4a4e-80f8-2adc5a4a2d34" name="Changes" comment="product preview window connect to third party API">
+    <list default="true" id="1b5ebdc2-b674-4a4e-80f8-2adc5a4a2d34" name="Changes" comment="socket data sending for training success">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/BluetoothReceiver.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/FileTransferWebSocketClient.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/GetStartedActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/GetStartedActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/LoginActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/LoginActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/ProductPreviewActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/ProductPreviewActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/ScanQRCodeActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/ScanQRCodeActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/SignUpActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/SignUpActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/WebSocketAndroidClient.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/WebSocketClient.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/get_started.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/get_started.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/login_layout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/login_layout.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/qr_scan_layout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/qr_scan_layout.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/tile_item.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/tile_item.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -258,7 +251,14 @@
       <option name="project" value="LOCAL" />
       <updated>1692187106687</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="socket data sending for training success">
+      <created>1692365479339</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1692365479340</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -272,7 +272,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="main" />
+                        <option value="dev_kavini_1" />
                       </list>
                     </value>
                   </entry>
@@ -290,6 +290,7 @@
     <MESSAGE value="scan qr method added" />
     <MESSAGE value="handle disconnection from smart cart side." />
     <MESSAGE value="product preview window connect to third party API" />
-    <option name="LAST_COMMIT_MESSAGE" value="product preview window connect to third party API" />
+    <MESSAGE value="socket data sending for training success" />
+    <option name="LAST_COMMIT_MESSAGE" value="socket data sending for training success" />
   </component>
 </project>

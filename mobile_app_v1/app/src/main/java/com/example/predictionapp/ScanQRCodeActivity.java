@@ -152,14 +152,14 @@ public class ScanQRCodeActivity extends Activity {
                 showLogoutConfirmationDialog(v);
             }
         });
-        /*ImageView ivLogout = findViewById(R.id.ivLogout);
-        ivLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Handle ImageView click here, or you can call your deleteFileIfExists method directly.
-                deleteFileIfExists();
-            }
-        });*/
+//        ImageView ivLogout = findViewById(R.id.ivLogout);
+//        ivLogout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // Handle ImageView click here, or you can call your deleteFileIfExists method directly.
+//                deleteFileIfExists();
+//            }
+//        });
 
         // Set up the initial state of the views
         toggleViews();
@@ -352,18 +352,31 @@ public class ScanQRCodeActivity extends Activity {
     private void sendDataSet() {
         Context context = this; // Get the context if not available in the method already
         File receivedFile = new File(context.getFilesDir(), "received_checkout_data.txt");
+        int dataSetSize = 100;
         if(receivedFile.exists()){
             try (BufferedReader reader = new BufferedReader(new FileReader(receivedFile))) {
-                String line;
-                line = "FILE";
-                sendMessages(line);
-                while ((line = reader.readLine()) != null) {
-                    // Display each line in the console log
-                    Log.d("READ LINE", line);
+                int dataCount = dataSetCount();
+                if(dataCount >= dataSetSize){
+                    String line;
+                    line = "FILE";
                     sendMessages(line);
-                }
-                Thread.sleep(1000);
 
+                    int lineCount = 0;
+                    while ((line = reader.readLine()) != null && lineCount < dataSetSize) {
+                        // Display each line in the console log
+                        Log.d("READ LINE", line);
+                        sendMessages(line);
+                        if( lineCount%50 == 0){
+                            Thread.sleep(5000);
+                            line = "FILE";
+                            sendMessages(line);
+                        }
+                        lineCount++;
+                    }
+                }else
+                    Log.i("MSG","DATA SET IS NOT SUFFICIENT TO SEND");
+
+                Thread.sleep(5000);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -375,18 +388,33 @@ public class ScanQRCodeActivity extends Activity {
         }
 
     }
-    //send user data
-    /*private void sendUserData(){
+    private int dataSetCount() {
+        int dataRowCount = 0;
+        Context context = this; // Get the context if not available in the method already
+        File receivedFile = new File(context.getFilesDir(), "received_checkout_data.txt");
+        if (receivedFile.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(receivedFile))) {
+                 // Counter for data rows
 
-        String line;
-        line = "USER DATA";
-        sendMessages(line);// Get the context if not available in the method already
-        String name = "Kavini";
-        String age = "3";
-        String gender = "10";
-        line = "[" + name + "," + age + "," + gender + "]";
-        sendMessages(line);
-    }*/
+                // Skip the first line if it's a header or not a data row
+                String line = reader.readLine();
+                if (line != null) {
+                    dataRowCount++; // Count the first line
+                }
+
+                while ((line = reader.readLine()) != null) {
+                    // Process each line here, e.g., count data rows
+                    dataRowCount++;
+                }
+
+                // Now dataRowCount contains the total number of data rows in the file
+                Log.i("Total data rows: " , String.valueOf(dataRowCount));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return dataRowCount;
+    }
     private void sendUserData() {
        /* // Get the Intent that started this activity
         Intent intent = getIntent();
