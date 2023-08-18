@@ -166,7 +166,16 @@ async def handle_client(reader, writer):
             print("##===> STATUS INFO Sender: ",e)
             pass
         finally:
-            writer.close()
+            # Properly clean up resources
+            if 'writer' in locals():
+                writer.close()
+                await writer.wait_closed()
+            if 'reader' in locals():
+                reader.feed_eof()
+                reader.close()
+            # Release references
+            writer = None
+            reader = None
 
     #coroutine to process received data
     async def process_data(data_chunks):
@@ -208,7 +217,16 @@ async def handle_client(reader, writer):
                 client_disconnected = True
                 break
             await asyncio.sleep(1)
-        writer.close()
+        # Properly clean up resources
+        if 'writer' in locals():
+            writer.close()
+            await writer.wait_closed()
+        if 'reader' in locals():
+            reader.feed_eof()
+            reader.close()
+        # Release references
+        writer = None
+        reader = None
         # print("====> data reciver close")
 
     #############################################################
@@ -220,7 +238,16 @@ async def handle_client(reader, writer):
     print('Connection Closed : ',addr)
     if userId in DeviceTable:
             DeviceTable.remove(userId)
-    writer.close()
+    # Properly clean up resources
+    if 'writer' in locals():
+        writer.close()
+        await writer.wait_closed()
+    if 'reader' in locals():
+        reader.feed_eof()
+        reader.close()
+    # Release references
+    writer = None
+    reader = None
 
 
 # This is the coroutine that will handle incoming mobile app connections

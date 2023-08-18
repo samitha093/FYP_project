@@ -90,7 +90,8 @@ class peerCom:
                             print(errMsg.MSG006.value)
                             self.continueData = False
                         break
-                    except:
+                    except Exception as e:
+                        print("Error in reciving data : ",e)
                         break
                     data_chunks.append(received_data)
                 if len(data_chunks) == 0:
