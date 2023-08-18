@@ -46,6 +46,27 @@ const LineChart: React.FC<modelAccuracyLineChartProps> = ({
         text: 'Model Accuracy',
       },
     },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Number of Iterations', // Custom x-axis label
+        },
+        ticks: {
+          // You can customize x-axis ticks here if needed
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Model Accuracy', // Custom y-axis label
+        },
+        ticks: {
+          // You can customize y-axis ticks here if needed
+        },
+        
+      },
+    },
   };
 
 const labels = aggregationLableArray;

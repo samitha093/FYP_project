@@ -4,12 +4,12 @@ import time
 import os
 import sys
 import datetime
-root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
-sys.path.insert(0, root_path)
+# root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+# sys.path.insert(0, root_path)
 
-# Import the modules
-import child_cart.api.Flask as flask
-from child_cart.api.Flask import * 
+# # Import the modules
+# import child_cart.api.Flask as flask
+# from child_cart.api.Flask import * 
 FILENAME = 'checkoutData.txt'
 
 isNewMessage = False
@@ -22,6 +22,7 @@ GOLBALSOCKET =None
 
 # test message test
 def checkoutDataFileSend():
+        time.sleep(5)
         global isNewMessage, MSGTYPE 
         print("\033[33mStart to sending checkout data file to mobile....\033[0m")
         isNewMessage = True
@@ -37,7 +38,7 @@ def closedSocketMannuly():
         client_socket.close()
     except:
         pass
-    flask.updateUserDataFromMobile([])
+    # flask.updateUserDataFromMobile([])
 
 class SocketConnection:
     is_client_connected = False
@@ -76,7 +77,7 @@ class SocketConnection:
         SocketConnection.is_client_connected = False
         self.client_socket.close()
         print(f"Server: Connection closed with {self.client_address}")
-        flask.updateUserDataFromMobile([])
+        # flask.updateUserDataFromMobile([])
 
     def send_message(self):
         global isNewMessage, MESSAGE ,file_content ,MSGTYPE ,FILENAME
@@ -98,6 +99,7 @@ class SocketConnection:
                                         if not data:
                                             break  # End of file
                                         self.client_socket.sendall(data)
+                        time.sleep(5)
                         self.client_socket.sendall(("ENDING\n").encode())
                         isNewMessage = False
                         #remove file
@@ -113,7 +115,6 @@ class SocketConnection:
 
     def receive_messages(self):
         global isFileReceiving ,isUserDataReceiving ,FILENAME
-        received_rows = []
 
         try:
            while True:
@@ -123,21 +124,23 @@ class SocketConnection:
         
                 if data == "FILE":
                     print("Data set Receiving enabled : ",data) 
-                    isFileReceiving = True
-                    received_rows = []  # Reset received_rows when a new file transfer starts                                
+                    isFileReceiving = True                               
                 elif isFileReceiving:
+                    print("Data Set Received length : ",len(data))
                     print("Data Set Received : \n",data)
+
                     with open(FILENAME, "w") as file:
                         for row in data:
                             file.write(row)  # Write the row to the file as a new line
-                    received_rows = []  # Reset received_rows afte
+
+                        print(type(data))                       
+                        # updataCartData(data)
                     isFileReceiving = False
 
                 elif data =="USER DATA":
                     isUserDataReceiving = True
                     print("User data received enabled : ",data)
                     
-
                 elif isUserDataReceiving:
                     print("User Data Received : ",data)
                     data = data.strip("[]")  # Removing brackets from the string
@@ -155,7 +158,7 @@ class SocketConnection:
                       # Converting gender to an integer
                     print("User details:: Name : ",name," Gender : ",gender, " Email: ",email, " Age: ", age, " City: ",city)
                     #update cart user datails
-                    flask.updateUserDataFromMobile(data_list)
+                    # flask.updateUserDataFromMobile(data_list)
                     isUserDataReceiving = False
                
         except ConnectionResetError:
@@ -201,5 +204,5 @@ def main():
 def mobileFunC():
     main()
 
-# if __name__ == "__main__":
-#     mobileFunC()
+if __name__ == "__main__":
+    mobileFunC()
