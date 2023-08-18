@@ -24,6 +24,7 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/rounded_button_background"
         android:hint="Email or Username"
+        android:text=""
         android:inputType="text"
         android:required="true" />
 
@@ -35,6 +36,7 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/rounded_button_background"
         android:hint="Password"
+        android:text=""
         android:inputType="textPassword"
         android:required="true" />
 
@@ -49,6 +51,7 @@
 
     <!-- Sign Up Option -->
     <TextView
+        android:id="@+id/lblAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

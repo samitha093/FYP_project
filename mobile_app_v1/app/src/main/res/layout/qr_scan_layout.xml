@@ -9,7 +9,7 @@
         android:layout_height="40dp"
         android:layout_marginLeft="267dp"
         android:contentDescription="Logout"
-        android:onClick="logout"
+        android:onClick="showLogoutConfirmationDialog"
         android:src="@drawable/ic_logout" />
     <TextView
         android:id="@+id/tvGreeting"

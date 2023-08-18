@@ -173,7 +173,7 @@ public class ProductPreviewActivity extends AppCompatActivity {
                     public boolean onNavigationItemSelected (@NonNull MenuItem item){
                         switch (item.getItemId()) {
                             case R.id.menu_scan:
-                                startActivity(new Intent(ProductPreviewActivity.this, ProductPreviewActivity.class));
+                                startActivity(new Intent(ProductPreviewActivity.this, ScanQRCodeActivity.class));
                                 return true;
                             case R.id.menu_me:
                                 startActivity(new Intent(ProductPreviewActivity.this, UserProfileActivity.class));
@@ -225,7 +225,7 @@ public class ProductPreviewActivity extends AppCompatActivity {
                 String itemName = jsonObject.getString("ItemName");
                 String itemPrice = jsonObject.getString("ItemPrice");
 
-                Product product = new Product(imageUrl, itemName, itemPrice);
+                Product product = new Product(imageUrl, itemName, "Rs. "+ itemPrice +".00");
                 productList.add(product);
             }
 

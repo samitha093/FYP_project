@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -25,6 +27,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText etPassword;
     private Button btnLogin;
     private Button btnSignUp;
+    //private TextView lblAccount = findViewById(R.id.lblAccount);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +38,6 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword); // Replace with your password EditText ID
         btnLogin = findViewById(R.id.btnLogin); // Replace with your login button ID
         btnSignUp = findViewById(R.id.btnSignUp);
-
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,6 +67,19 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        if (doesUserDataExist()) {
+            btnSignUp.setVisibility(View.GONE); // Hide the button
+            //lblAccount.setVisibility(View.GONE);
+        } else {
+            btnSignUp.setVisibility(View.VISIBLE);
+            //lblAccount.setVisibility(View.VISIBLE);// Show the button
+        }
+    }
+
+    private boolean doesUserDataExist() {
+        String fileName = "user_data.json";
+        File file = new File(getApplicationContext().getFilesDir(), fileName);
+        return file.exists();
     }
 
     private boolean isValidCredentials(String enteredUsername, String enteredPassword) {

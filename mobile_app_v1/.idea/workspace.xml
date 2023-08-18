@@ -13,31 +13,28 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1b5ebdc2-b674-4a4e-80f8-2adc5a4a2d34" name="Changes" comment="handle disconnection from smart cart side.">
+    <list default="true" id="1b5ebdc2-b674-4a4e-80f8-2adc5a4a2d34" name="Changes" comment="product preview window connect to third party API">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/BluetoothReceiver.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/FileTransferWebSocketClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/GetStartedActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/GetStartedActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/LoginActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/LoginActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/MainActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/ProductPreviewActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/ProductPreviewActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/ScanQRCodeActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/ScanQRCodeActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/SignUpActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/SignUpActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/UserProfileActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/UserProfileActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/rounded_image_border.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/rounded_image_border.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/WebSocketAndroidClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/WebSocketClient.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/get_started.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/get_started.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/login_layout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/login_layout.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/profile_layout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/profile_layout.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/qr_scan_layout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/qr_scan_layout.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/signup_layout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/signup_layout.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/themes.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/themes.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/tile_item.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/tile_item.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[/Users/kavikushi/.android/avd/30_new_for_chat.avd]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[9WV7N18421033296]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -254,7 +251,14 @@
       <option name="project" value="LOCAL" />
       <updated>1692084625942</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="product preview window connect to third party API">
+      <created>1692187106687</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1692187106687</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -285,17 +289,7 @@
     <MESSAGE value="mobile app developed for prediction and establishing client socket connection" />
     <MESSAGE value="scan qr method added" />
     <MESSAGE value="handle disconnection from smart cart side." />
-    <option name="LAST_COMMIT_MESSAGE" value="handle disconnection from smart cart side." />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/ScanQRCodeActivity.java</url>
-          <line>380</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="product preview window connect to third party API" />
+    <option name="LAST_COMMIT_MESSAGE" value="product preview window connect to third party API" />
   </component>
 </project>

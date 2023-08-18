@@ -4,10 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.File;
+
 public class GetStartedActivity extends AppCompatActivity {
+    //private TextView lblAccount = findViewById(R.id.lblAccount);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,5 +35,18 @@ public class GetStartedActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        if (doesUserDataExist()) {
+            signUpButton.setVisibility(View.GONE); // Hide the button
+            //lblAccount.setVisibility(View.GONE);
+        } else {
+            signUpButton.setVisibility(View.VISIBLE); // Show the button
+            //lblAccount.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private boolean doesUserDataExist() {
+        String fileName = "user_data.json";
+        File file = new File(getApplicationContext().getFilesDir(), fileName);
+        return file.exists();
     }
 }

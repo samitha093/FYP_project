@@ -47,7 +47,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
-
+import java.nio.file.SecureDirectoryStream;
+import android.content.Context;
 
 public class ScanQRCodeActivity extends Activity {
     private Button btnConnectToCart;
@@ -151,6 +152,14 @@ public class ScanQRCodeActivity extends Activity {
                 showLogoutConfirmationDialog(v);
             }
         });
+        /*ImageView ivLogout = findViewById(R.id.ivLogout);
+        ivLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Handle ImageView click here, or you can call your deleteFileIfExists method directly.
+                deleteFileIfExists();
+            }
+        });*/
 
         // Set up the initial state of the views
         toggleViews();
@@ -305,6 +314,7 @@ public class ScanQRCodeActivity extends Activity {
                         // Add a newline after each message
                         if (message.equals("ENDING")){
                             // Print the received message to the console using Log
+                            Log.d("BREAK","break");
                             break;
                         }
                         fileOutputStream.write(message.getBytes());
@@ -381,7 +391,7 @@ public class ScanQRCodeActivity extends Activity {
        /* // Get the Intent that started this activity
         Intent intent = getIntent();
 
-// Retrieve the user data from the Intent extras
+    // Retrieve the user data from the Intent extras
         String userDataJsonString = intent.getStringExtra("userData");
 
         if (userDataJsonString != null) {
@@ -590,6 +600,25 @@ public class ScanQRCodeActivity extends Activity {
             btnDisconnectCart.setVisibility(View.GONE);
             btnConnectToCart.setVisibility(View.VISIBLE);
         });
+    }
+    //----------------testing----------------------//
+    public void deleteFileIfExists() {
+        String filename = "received_checkout_data.txt";
+        Context context = getApplicationContext();
+
+        try {
+            boolean deleted = context.deleteFile(filename);
+            if (deleted) {
+                // File was deleted successfully
+                Log.i("File deleted: " , filename);
+            } else {
+                // File did not exist or couldn't be deleted
+                Log.i("File not found or couldn't be deleted: " , filename);
+            }
+        } catch (Exception e) {
+            // Handle any exceptions that might occur during file deletion
+            e.printStackTrace();
+        }
     }
 
 }

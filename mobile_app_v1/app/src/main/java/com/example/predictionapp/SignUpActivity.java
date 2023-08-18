@@ -160,8 +160,8 @@ public class SignUpActivity extends AppCompatActivity {
                     String userDataJsonString = userDataJson.toString() + "\n";
                     fileOutputStream.write(userDataJsonString.getBytes());
                     fileOutputStream.close();
-                    Calendar calendar = Calendar.getInstance();
-                    /*loadModel("model");
+                    /*Calendar calendar = Calendar.getInstance();
+                    loadModel("model");
                     int currentMonth = calendar.get(Calendar.MONTH) + 1;
                     int genderInt=0;
                     if(selectedGender == "Female"){genderInt = 1;}
