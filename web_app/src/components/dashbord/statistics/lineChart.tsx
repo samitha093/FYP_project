@@ -50,7 +50,7 @@ const LineChart: React.FC<modelAccuracyLineChartProps> = ({
       x: {
         title: {
           display: true,
-          text: 'X Axis Label', // Custom x-axis label
+          text: 'Number of Iterations', // Custom x-axis label
         },
         ticks: {
           // You can customize x-axis ticks here if needed
@@ -59,11 +59,12 @@ const LineChart: React.FC<modelAccuracyLineChartProps> = ({
       y: {
         title: {
           display: true,
-          text: 'Y Axis Label', // Custom y-axis label
+          text: 'Model Accuracy', // Custom y-axis label
         },
         ticks: {
           // You can customize y-axis ticks here if needed
         },
+        
       },
     },
   };

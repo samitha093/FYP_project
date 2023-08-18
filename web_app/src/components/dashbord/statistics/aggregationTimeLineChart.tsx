@@ -1,38 +1,19 @@
 import React from 'react';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-import { Bar, Line } from 'react-chartjs-2';
-import faker from 'faker';
-import { CircularProgressbar } from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
+import { Line } from 'react-chartjs-2';
 import { Flex } from '@chakra-ui/layout';
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
+
 interface modelAccuracyLineChartProps {
   aggregationLableArray: number[];
   aggregationTimeArray: number[];
 }
+
 const AggregationTimeLineChart: React.FC<modelAccuracyLineChartProps> = ({
   aggregationLableArray,
   aggregationTimeArray,
 }) => {
+  const maxDataValue = Math.max(...aggregationTimeArray);
+  const yMaxValue = Math.ceil(maxDataValue) + 0.5; // Set y-axis max value
+
   const options = {
     responsive: true,
     plugins: {
@@ -48,20 +29,17 @@ const AggregationTimeLineChart: React.FC<modelAccuracyLineChartProps> = ({
       x: {
         title: {
           display: true,
-          text: 'X Axis Label', // Custom x-axis label
+          text: 'Number of Iterations',
         },
-        ticks: {
-          // You can customize x-axis ticks here if needed
-        },
+        ticks: {},
       },
       y: {
         title: {
           display: true,
-          text: 'Y Axis Label', // Custom y-axis label
+          text: 'Time In Minutes',
         },
-        ticks: {
-          // You can customize y-axis ticks here if needed
-        },
+        ticks: {},
+        max: yMaxValue,
       },
     },
   };

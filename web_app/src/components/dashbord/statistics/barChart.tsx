@@ -52,15 +52,14 @@ const BarChart: React.FC<BarChartProps> = ({
       x: {
         title: {
           display: true,
-          text: 'X Axis Label', // Custom x-axis label
+          text: 'Number of Iterations', // Custom x-axis label
         },
         ticks: {},
-        max: maxDataValue + (maxDataValue * 0.1), // Extend the x-axis beyond the highest bar
       },
       y: {
         title: {
           display: true,
-          text: 'Y Axis Label', // Custom y-axis label
+          text: 'Model Count', // Custom y-axis label
         },
         ticks: {},
         max: maxDataValue + 1, // Set the y-axis limit
