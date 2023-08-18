@@ -52,6 +52,7 @@ def processStatisticData():
 
             lastKernalTime = lastValueOfArray['kernalTime']
             totalKernalTime = lastValueOfArray['totalKernalTime']
+            totalKernalTime =int(totalKernalTime/60)
             # print("Time : " ,totalKernalTime)
 
             lastAggregatedModelAccuracy = int(lastValueOfArray['aggregatedModel']['accuracy'])

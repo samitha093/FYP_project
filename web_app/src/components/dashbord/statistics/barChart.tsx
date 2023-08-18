@@ -35,6 +35,8 @@ const BarChart: React.FC<BarChartProps> = ({
   receivedModelArray,
   rejectedModelArray,
 }) => {
+  const maxDataValue = Math.max(...receivedModelArray, ...rejectedModelArray);
+
   const options = {
     responsive: true,
     plugins: {
@@ -44,6 +46,23 @@ const BarChart: React.FC<BarChartProps> = ({
       title: {
         display: true,
         text: 'Received Model vs Rejected Model',
+      },
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Number of Iterations', // Custom x-axis label
+        },
+        ticks: {},
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Model Count', // Custom y-axis label
+        },
+        ticks: {},
+        max: maxDataValue + 1, // Set the y-axis limit
       },
     },
   };

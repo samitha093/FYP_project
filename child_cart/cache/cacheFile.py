@@ -762,7 +762,7 @@ def loadLogData():
         logData_lock.acquire()
         filename = "cache/logData.pkl"
         if os.path.isfile(filename):
-            print("The file", filename, "exists in the current path.")
+            # print("The file", filename, "exists in the current path.")
             with open(filename, 'rb') as f:
                 returnList = pickle.load(f)
                 # print(returnList[0])
@@ -771,7 +771,7 @@ def loadLogData():
             # print(json_data)
             return json_data
         else:
-            print("The file", filename, "does not exist in the current path.")
+            # print("The file", filename, "does not exist in the current path.")
             logData_lock.release()
             return []
     
