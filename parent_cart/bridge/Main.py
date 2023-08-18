@@ -178,7 +178,7 @@ async def handle_client(reader, writer):
             asyncio.create_task(reqirementHandler(decordedData))
         else:
             asyncio.create_task(requestHandler(decordedData))
-        print("====> data processor close")
+        # print("====> data processor close")
 
     # coroutine for receiving data from the client
     async def receive_data():
@@ -209,7 +209,7 @@ async def handle_client(reader, writer):
                 break
             await asyncio.sleep(1)
         writer.close()
-        print("====> data reciver close")
+        # print("====> data reciver close")
 
     #############################################################
     try:
@@ -430,13 +430,13 @@ def function_sync_list():
             mailBox = DATARECORDER.get(userID)
             mailBox.append(tempData)
             TempDeviceTable.append(userID)
-            print("Send verivication message to : ", userID)
+            # print("Send verivication message to : ", userID)
         for userID in DeviceTable:
             tempData = responceModel(userID,["AVAILABEL"])
             mailBox = DATARECORDER.get(userID)
             mailBox.append(tempData)
             TempDeviceTable.append(userID)
-            print("Send verivication message to : ", userID)
+            # print("Send verivication message to : ", userID)
         # checking not responded devices
         string_counts = Counter(TempDeviceTable)
         for string, count in string_counts.items():

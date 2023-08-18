@@ -105,7 +105,11 @@ class peerCom:
                     self.close(0,self.USERID)
                 elif decordedData.get("Data")[0] == "EXITDONE":
                     self.closeWait = False
-                self.RECIVEQUE.append(decordedData)
+                elif decordedData.get("Data")[0] == "AVAILABEL":
+                    print("Atendens Marked by bridge! ==> soc99k")
+                    self.request(requestModel(self.USERID,["AVAILABEL"]))
+                else:
+                    self.RECIVEQUE.append(decordedData)
             except:
                 continue
 
