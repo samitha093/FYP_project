@@ -13,14 +13,17 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1b5ebdc2-b674-4a4e-80f8-2adc5a4a2d34" name="Changes" comment="socket data sending for training success">
+    <list default="true" id="1b5ebdc2-b674-4a4e-80f8-2adc5a4a2d34" name="Changes" comment="send checkout daata iteratively to smart cart">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/BluetoothReceiver.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/FileTransferWebSocketClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/GetStartedActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/GetStartedActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/LoginActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/LoginActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/ProductPreviewActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/ProductPreviewActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/ScanQRCodeActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/ScanQRCodeActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/UserProfileActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/UserProfileActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/WebSocketAndroidClient.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/predictionapp/WebSocketClient.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/login_layout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/login_layout.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,6 +92,12 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="GithubPullRequestsUISettings">
+    <option name="recentNewPullRequestHead">
+      <RepoCoordinatesHolder>
+        <option name="owner" value="samitha093" />
+        <option name="repository" value="FYP_project" />
+      </RepoCoordinatesHolder>
+    </option>
     <option name="selectedUrlAndAccountId">
       <UrlAndAccount>
         <option name="accountId" value="cf6704fc-a83c-4d2a-b37d-3d4326eb6a78" />
@@ -258,7 +267,14 @@
       <option name="project" value="LOCAL" />
       <updated>1692365479340</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="send checkout daata iteratively to smart cart">
+      <created>1692374240952</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1692374240952</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -291,6 +307,7 @@
     <MESSAGE value="handle disconnection from smart cart side." />
     <MESSAGE value="product preview window connect to third party API" />
     <MESSAGE value="socket data sending for training success" />
-    <option name="LAST_COMMIT_MESSAGE" value="socket data sending for training success" />
+    <MESSAGE value="send checkout daata iteratively to smart cart" />
+    <option name="LAST_COMMIT_MESSAGE" value="send checkout daata iteratively to smart cart" />
   </component>
 </project>

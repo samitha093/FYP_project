@@ -1,6 +1,7 @@
 package com.example.predictionapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +20,16 @@ public class GetStartedActivity extends AppCompatActivity {
 
         Button loginButton = findViewById(R.id.btnLogin);
         Button signUpButton = findViewById(R.id.btnSignUp);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
+
+        if (isLoggedIn) {
+            // User is logged in, navigate to the home activity
+            Intent intent = new Intent(this, ProductPreviewActivity.class);
+            startActivity(intent);
+            //finish(); // Optional, to prevent going back to the MainActivity
+        }
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override

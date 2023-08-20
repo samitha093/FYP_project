@@ -567,6 +567,14 @@ public class ScanQRCodeActivity extends Activity {
     public void logout() {
         // Clear any user session or data here, if needed
 
+        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // Clear user data and set login state to false
+        editor.clear();
+        editor.putBoolean("isLoggedIn", false);
+
+        editor.apply();
         // Navigate back to the GetStartedActivity or LoginActivity
         Intent intent = new Intent(this, GetStartedActivity.class); // Change to your desired destination activity
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
