@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -55,11 +54,8 @@ public class GetStartedActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-
-              copyAssetToInternalStorage(getApplicationContext(), "received_checkout_data.txt", "received_checkout_data.txt");
-              convertTxtToCsv(getApplicationContext());
-              readCsv("v");
-              checkAndInitializeLocalModel();
+               initialization();
+              //checkAndInitializeLocalModel();
                //backroundProcess("V");
             }
         }).start();
@@ -444,8 +440,48 @@ public class GetStartedActivity extends AppCompatActivity {
     }
 
     //for model initializing ------ test-------
-    //COPY MODEL FROM ASSESTS TO INTERNAL STORAGE
-    private void copyToInternalStorage(String v){
+
+    /*
+    // write last 250 data int txt to csv
+    public static void convertTxtToCsv(Context context) {
+        try {
+            String fileName = "dummy_data.txt";
+            File inputFile = new File(context.getFilesDir(), fileName);
+            File outputFile = new File(context.getFilesDir(), "converted_checkout_data.csv");
+
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+
+            List<String> last250Lines = new ArrayList<>();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                last250Lines.add(line);
+                if (last250Lines.size() > 250) {
+                    last250Lines.remove(0); // Remove the oldest line
+                }
+            }
+
+            for (String processedLine : last250Lines) {
+                // Remove brackets and extra spaces
+                processedLine = processedLine.replaceAll("\\[|\\]|\\s", "");
+                writer.write(processedLine);
+                writer.newLine();
+            }
+
+            reader.close();
+            writer.close();
+
+            System.out.println("Conversion completed: " + outputFile.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }*/
+
+
+    // INITIALIZATION
+
+    // 1.COPY LOCAL MODEL FROM ASSETS TO INTERNAL STORAGE
+    public void copyModelToInternalStorage(String v){
         Log.i("MyApp", "copyToInternalStorage function start");
         try {
             // Open the model file from the assets folder
@@ -491,42 +527,9 @@ public class GetStartedActivity extends AppCompatActivity {
         }
 
     }
-    public static void convertTxtToCsv(Context context) {
-        try {
-            String fileName = "received_checkout_data.txt";
-            File inputFile = new File(context.getFilesDir(), fileName);
-            File outputFile = new File(context.getFilesDir(), "converted_checkout_data.csv");
 
-            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-            BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
-
-            List<String> last250Lines = new ArrayList<>();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                last250Lines.add(line);
-                if (last250Lines.size() > 250) {
-                    last250Lines.remove(0); // Remove the oldest line
-                }
-            }
-
-            for (String processedLine : last250Lines) {
-                // Remove brackets and extra spaces
-                processedLine = processedLine.replaceAll("\\[|\\]|\\s", "");
-                writer.write(processedLine);
-                writer.newLine();
-            }
-
-            reader.close();
-            writer.close();
-
-            System.out.println("Conversion completed: " + outputFile.getAbsolutePath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    //-------------this is for testing-----------
-    public static void copyAssetToInternalStorage(Context context, String assetFileName, String internalFileName) {
+    // 2. DUMMY DATASET SEND TO INTERNAL STORAGE
+    public static void copyDataToInternalStorage(Context context, String assetFileName, String internalFileName) {
         try {
             InputStream inputStream = context.getAssets().open(assetFileName);
             File internalFile = new File(context.getFilesDir(), internalFileName);
@@ -542,10 +545,95 @@ public class GetStartedActivity extends AppCompatActivity {
             outputStream.close();
             inputStream.close();
 
-            System.out.println("File copied to internal storage: " + internalFile.getAbsolutePath());
+            System.out.println("Dummy dataset copied to internal storage: " + internalFile.getAbsolutePath());
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // 3. COPY FIRST 250 DATA IN INTERNAL STORAGE TXT FILE TO CSV
+    public static void convertTxtToCsv(Context context) {
+        try {
+            String fileName = "checkout_data.txt";
+            File inputFile = new File(context.getFilesDir(), fileName);
+            File outputFile = new File(context.getFilesDir(), "converted_checkout_data.csv");
+
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+
+            String line;
+            int rowCount = 0;
+            while ((line = reader.readLine()) != null && rowCount < 250) {
+                // Remove brackets and extra spaces
+                String processedLine = line.replaceAll("\\[|\\]|\\s", "");
+                writer.write(processedLine);
+                writer.newLine();
+                rowCount++;
+            }
+
+            reader.close();
+            writer.close();
+
+            System.out.println("Conversion completed: " + outputFile.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // 4. CLEAR RECEIVED_CHECKOUT_DATA.TXT IN INTERNAL STORAGE WHICH TAKES AT THE INITIALIZATION
+    /*public static void clearCheckoutData(Context context) {
+        try {
+            String fileName = "checkout_data.txt";
+            File file = new File(context.getFilesDir(), fileName);
+
+            FileWriter fileWriter = new FileWriter(file, false); // Passing false will overwrite the existing data
+            fileWriter.write(""); // Write an empty string to clear the file
+            fileWriter.close();
+
+            System.out.println("Cleared checkout data from file: " + file.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }*/
+
+    public static void clearCheckoutData(Context context) {
+        try {
+            String fileName = "checkout_data.txt";
+            File file = new File(context.getFilesDir(), fileName);
+
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            List<String> remainingLines = new ArrayList<>();
+
+            String line;
+            int lineCount = 0;
+            while ((line = reader.readLine()) != null) {
+                if (lineCount >= 250) {
+                    remainingLines.add(line);
+                }
+                lineCount++;
+            }
+            reader.close();
+
+            FileWriter fileWriter = new FileWriter(file, false); // Passing false will overwrite the existing data
+            for (String remainingLine : remainingLines) {
+                fileWriter.write(remainingLine);
+                fileWriter.write(System.lineSeparator()); // Add line separator after each line
+            }
+            fileWriter.close();
+
+            System.out.println("Removed first 250 checkout data from file: " + file.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    public void initialization(){
+        copyModelToInternalStorage("model.tflite");
+        copyDataToInternalStorage(getApplicationContext(),"dummy_data.txt", "checkout_data.txt");
+        convertTxtToCsv(getApplicationContext());
+        clearCheckoutData(getApplicationContext());
     }
 
     // checking for availabilty of local model in internal stroage
@@ -557,7 +645,7 @@ public class GetStartedActivity extends AppCompatActivity {
     //initialize the local model
     private void initializeLocalModelIfNeeded() {
         if (!isLocalModelFileAvailable()) {
-            copyToInternalStorage("model.tflite");
+            //copyModelToInternalStorage("model.tflite");
         }
     }
 
