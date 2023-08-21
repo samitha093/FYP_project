@@ -58,7 +58,8 @@ public class GetStartedActivity extends AppCompatActivity {
 
               copyAssetToInternalStorage(getApplicationContext(), "received_checkout_data.txt", "received_checkout_data.txt");
               convertTxtToCsv(getApplicationContext());
-                //copyToInternalStorage("V");
+              readCsv("v");
+              checkAndInitializeLocalModel();
                //backroundProcess("V");
             }
         }).start();
@@ -210,8 +211,10 @@ public class GetStartedActivity extends AppCompatActivity {
     //read csv file for asset
     private void readCsv(String v){
         // Load the CSV file from the assets folder
-        String fileName = "dataset.csv";
-        String[] data = loadDataFromAsset(this, fileName);
+        //String fileName = "dataset.csv";
+        //String[] data = loadDataFromAsset(this, fileName);
+        String fileName = "converted_checkout_data.csv";
+        String[] data = loadCheckoutCsv(this, fileName);
         Log.i("MyApp", "data set Loaded");
         // Preview the data in the console
 
@@ -229,7 +232,7 @@ public class GetStartedActivity extends AppCompatActivity {
                 intData[i-1][j] = Integer.parseInt(rowData[j]);
             }
         }
-        Log.i("MyApp", "Save to Globle array");
+        Log.i("MyApp", "Save to Global array");
         dataArray =intData;
     }
 
@@ -248,6 +251,29 @@ public class GetStartedActivity extends AppCompatActivity {
             }
 
             bufferedReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Convert the CSV data to an array of Strings
+        return stringBuilder.toString().split("\n");
+    }
+    private String[] loadCheckoutCsv(Context context, String fileName) {
+        File file = new File(context.getFilesDir(), fileName);
+        StringBuilder stringBuilder = new StringBuilder();
+
+        try {
+            // Open the CSV file as a FileInputStream and read its contents
+            FileInputStream fileInputStream = new FileInputStream(file);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
+
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuilder.append(line).append("\n");
+            }
+
+            bufferedReader.close();
+            fileInputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -443,7 +469,7 @@ public class GetStartedActivity extends AppCompatActivity {
             Log.i("MyApp", "Save to internal storage");
 
             // Now the model file is copied to the internal storage directory and can be accessed from there
-            //check existancy
+            //check existency
             File directory1 = new File(getFilesDir(), "models");
             File modelFile1 = new File(directory1, "localModel.tflite");
 
@@ -499,6 +525,7 @@ public class GetStartedActivity extends AppCompatActivity {
         }
     }
 
+    //-------------this is for testing-----------
     public static void copyAssetToInternalStorage(Context context, String assetFileName, String internalFileName) {
         try {
             InputStream inputStream = context.getAssets().open(assetFileName);
@@ -521,5 +548,29 @@ public class GetStartedActivity extends AppCompatActivity {
         }
     }
 
+    // checking for availabilty of local model in internal stroage
+    private boolean isLocalModelFileAvailable() {
+        File directory = new File(getFilesDir(), "models");
+        File modelFile = new File(directory, "localModel.tflite");
+        return modelFile.exists();
+    }
+    //initialize the local model
+    private void initializeLocalModelIfNeeded() {
+        if (!isLocalModelFileAvailable()) {
+            copyToInternalStorage("model.tflite");
+        }
+    }
 
+    // check and initialize local model
+    private void checkAndInitializeLocalModel() {
+        if (!isLocalModelFileAvailable()) {
+            Log.i("LOCAL MODEL","NEW LOCAL MODEL INITIALIZING STARTING...");
+            initializeLocalModelIfNeeded();
+            Log.i("LOCAL MODEL","NEW LOCAL MODEL IS INITIALIZED SUCCESSFULLY");
+
+        }
+        else{
+            Log.i("LOCAL MODEL","ALREADY A LOCAL MODEL IS THERE");
+        }
+    }
 }
