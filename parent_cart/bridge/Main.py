@@ -269,7 +269,7 @@ async def getipHost():
     print("public ip",Pip)
     localip = get_local_ip_address()
     print("private ip",localip)
-    return localip
+    return Pip
 
 
 # This is the coroutine that will handle incoming mobile app connections
