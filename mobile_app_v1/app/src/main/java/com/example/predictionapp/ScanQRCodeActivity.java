@@ -7,12 +7,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +26,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 
@@ -169,8 +173,20 @@ public class ScanQRCodeActivity extends Activity {
                 new BottomNavigationView.OnNavigationItemSelectedListener()
 
                 {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
                     @Override
                     public boolean onNavigationItemSelected (@NonNull MenuItem item){
+                        BottomNavigationView navigationView = findViewById(R.id.bottom_navigation);
+                        Menu menu = navigationView.getMenu();
+
+                        // Reset icon tint of all items to the default color
+                        for (int i = 0; i < menu.size(); i++) {
+                            MenuItem menuItem = menu.getItem(i);
+                            menuItem.setIconTintList(null); // Reset to default color
+                        }
+
+                        // Set the icon tint of the selected item to the desired color
+                        item.setIconTintList(ColorStateList.valueOf(Color.parseColor("#87978F")));
                         switch (item.getItemId()) {
                             case R.id.menu_scan:
                                 // Already in ScanQRActivity
