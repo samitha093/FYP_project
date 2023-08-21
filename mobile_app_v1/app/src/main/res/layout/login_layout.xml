@@ -25,6 +25,7 @@
         android:background="@drawable/rounded_button_background"
         android:hint="Email or Username"
         android:text=""
+        android:textColor="#000000"
         android:inputType="text"
         android:required="true" />
 
@@ -37,6 +38,7 @@
         android:background="@drawable/rounded_button_background"
         android:hint="Password"
         android:text=""
+        android:textColor="#000000"
         android:inputType="textPassword"
         android:required="true" />
 
