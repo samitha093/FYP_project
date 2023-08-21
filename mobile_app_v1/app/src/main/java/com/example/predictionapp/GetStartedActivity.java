@@ -17,9 +17,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.tensorflow.lite.Interpreter;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -30,6 +33,8 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GetStartedActivity extends AppCompatActivity {
     Interpreter localTfliteModel;
@@ -50,8 +55,11 @@ public class GetStartedActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                copyToInternalStorage("V");
-               backroundProcess("V");
+
+              copyAssetToInternalStorage(getApplicationContext(), "received_checkout_data.txt", "received_checkout_data.txt");
+              convertTxtToCsv(getApplicationContext());
+                //copyToInternalStorage("V");
+               //backroundProcess("V");
             }
         }).start();
 
@@ -456,6 +464,61 @@ public class GetStartedActivity extends AppCompatActivity {
             Log.i("MyApp", e.toString());
         }
 
+    }
+    public static void convertTxtToCsv(Context context) {
+        try {
+            String fileName = "received_checkout_data.txt";
+            File inputFile = new File(context.getFilesDir(), fileName);
+            File outputFile = new File(context.getFilesDir(), "converted_checkout_data.csv");
+
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+
+            List<String> last250Lines = new ArrayList<>();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                last250Lines.add(line);
+                if (last250Lines.size() > 250) {
+                    last250Lines.remove(0); // Remove the oldest line
+                }
+            }
+
+            for (String processedLine : last250Lines) {
+                // Remove brackets and extra spaces
+                processedLine = processedLine.replaceAll("\\[|\\]|\\s", "");
+                writer.write(processedLine);
+                writer.newLine();
+            }
+
+            reader.close();
+            writer.close();
+
+            System.out.println("Conversion completed: " + outputFile.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void copyAssetToInternalStorage(Context context, String assetFileName, String internalFileName) {
+        try {
+            InputStream inputStream = context.getAssets().open(assetFileName);
+            File internalFile = new File(context.getFilesDir(), internalFileName);
+            OutputStream outputStream = new FileOutputStream(internalFile);
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+
+            outputStream.flush();
+            outputStream.close();
+            inputStream.close();
+
+            System.out.println("File copied to internal storage: " + internalFile.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
