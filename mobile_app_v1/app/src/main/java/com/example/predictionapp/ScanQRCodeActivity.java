@@ -51,8 +51,6 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
-import java.nio.file.SecureDirectoryStream;
-import android.content.Context;
 
 public class ScanQRCodeActivity extends Activity {
     private Button btnConnectToCart;
@@ -291,7 +289,7 @@ public class ScanQRCodeActivity extends Activity {
             String message;
             boolean isAlreadyPrint = false;
 
-            FileOutputStream fileOutputStream = context.openFileOutput("received_checkout_data.txt", Context.MODE_APPEND | Context.MODE_PRIVATE);
+            FileOutputStream fileOutputStream = context.openFileOutput("dummy_data.txt", Context.MODE_APPEND | Context.MODE_PRIVATE);
 
             while (true) {
                 message = reader.readLine();
@@ -312,6 +310,10 @@ public class ScanQRCodeActivity extends Activity {
                     sendUserData(); //sending user data
                     Thread.sleep(1000);
                     sendDataSet(); //sending data set
+                    //converting 250 data from txt file to csv
+                    GetStartedActivity.convertTxtToCsv(getApplicationContext());
+                    //clear 250 data set from data
+                    GetStartedActivity.clearCheckoutData(getApplicationContext());
 
                 }
 
@@ -338,7 +340,7 @@ public class ScanQRCodeActivity extends Activity {
                     }
 
                     // Get the file path of the saved file
-                    String filePath = context.getFilesDir() + "/" + "received_checkout_data.txt";
+                    String filePath = context.getFilesDir() + "/" + "dummy_data.txt";
                     // Print a success message indicating that the file has been saved
                     Log.d("FILE SAVED", "Received messages have been successfully saved to the file: " + filePath);
                     //fileOutputStream.close(); // Close the file output stream
@@ -367,7 +369,7 @@ public class ScanQRCodeActivity extends Activity {
     //send checkout data set
     private void sendDataSet() {
         Context context = this; // Get the context if not available in the method already
-        File receivedFile = new File(context.getFilesDir(), "received_checkout_data.txt");
+        File receivedFile = new File(context.getFilesDir(), "dummy_data.txt");
         int dataSetSize = 100;
         if(receivedFile.exists()){
             try (BufferedReader reader = new BufferedReader(new FileReader(receivedFile))) {
@@ -407,7 +409,7 @@ public class ScanQRCodeActivity extends Activity {
     private int dataSetCount() {
         int dataRowCount = 0;
         Context context = this; // Get the context if not available in the method already
-        File receivedFile = new File(context.getFilesDir(), "received_checkout_data.txt");
+        File receivedFile = new File(context.getFilesDir(), "dummy_data.txt");
         if (receivedFile.exists()) {
             try (BufferedReader reader = new BufferedReader(new FileReader(receivedFile))) {
                  // Counter for data rows
@@ -655,7 +657,7 @@ public class ScanQRCodeActivity extends Activity {
     }
     //----------------testing----------------------//
     public void deleteFileIfExists() {
-        String filename = "received_checkout_data.txt";
+        String filename = "dummy_data.txt";
         Context context = getApplicationContext();
 
         try {
