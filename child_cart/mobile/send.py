@@ -4,13 +4,13 @@ import time
 import os
 import sys
 import datetime
-import ast
 
-root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
-sys.path.insert(0, root_path)
-import child_cart.api.Flask as flask 
-# Import the modules
-from child_cart.cache.cacheFile import * 
+
+# root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+# sys.path.insert(0, root_path)
+
+# # Import the modules
+# from child_cart.cache.cacheFile import * 
 FILENAME = 'checkoutData.txt'
 
 isNewMessage = False
@@ -39,7 +39,7 @@ def closedSocketMannuly():
         client_socket.close()
     except:
         pass
-    flask.updateUserDataFromMobile([])
+    # flask.updateUserDataFromMobile([])
 
 class SocketConnection:
     is_client_connected = False
@@ -78,7 +78,7 @@ class SocketConnection:
         SocketConnection.is_client_connected = False
         self.client_socket.close()
         print(f"Server: Connection closed with {self.client_address}")
-        flask.updateUserDataFromMobile([])
+        # flask.updateUserDataFromMobile([])
 
     def send_message(self):
         global isNewMessage, MESSAGE ,file_content ,MSGTYPE ,FILENAME
@@ -100,12 +100,11 @@ class SocketConnection:
                                         if not data:
                                             break  # End of file
                                         self.client_socket.sendall(data)
-
                         self.client_socket.sendall(("\nENDING\n").encode())
                         isNewMessage = False
                         #remove file
-                        if os.path.exists(FILENAME):
-                            os.remove(FILENAME)
+                        # if os.path.exists(FILENAME):
+                        #     os.remove(FILENAME)
 
         except ConnectionResetError:
             # This exception will be raised when the client closes the connection
@@ -128,21 +127,17 @@ class SocketConnection:
                     print("Data set Receiving enabled : ",data) 
                     isFileReceiving = True                               
                 elif isFileReceiving:
-                    cleaned_string_array = data.strip()
-                    list_strings = cleaned_string_array.split('\n')
-                    receivedData = [ast.literal_eval(lst_str) for lst_str in list_strings]
+                    
                     print("Received Data Array")
-                    print(receivedData)
-                    #length
-                    print("array length ",len(receivedData))
+                    print(data)
                     #update the card data
-                    updataCartData(receivedData)
+                    # updataCartData(receivedData)
 
-                    # with open(FILENAME, "w") as file:
-                    #     for row in data:
-                    #         file.write(row)  # Write the row to the file as a new line
+                    with open("receivedFile.txt", "w") as file:
+                        for row in data:
+                            file.write(row)  # Write the row to the file as a new line
 
-                    #     print(type(data))                       
+                        # print(type(data))                       
                         # updataCartData(data)
                     isFileReceiving = False
 
@@ -167,7 +162,7 @@ class SocketConnection:
                       # Converting gender to an integer
                     print("User details:: Name : ",name," Gender : ",gender, " Email: ",email, " Age: ", age, " City: ",city)
                     #update cart user datails
-                    flask.updateUserDataFromMobile(data_list)
+                    # flask.updateUserDataFromMobile(data_list)
                     isUserDataReceiving = False
                
         except ConnectionResetError:
@@ -213,5 +208,6 @@ def main():
 def mobileFunC():
     main()
 
-# if __name__ == "__main__":
-#     mobileFunC()
+if __name__ == "__main__":
+    mobileFunC()
+
