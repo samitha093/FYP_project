@@ -17,6 +17,8 @@ from child_cart.network.util import *
 from child_cart.network.errorList import *
 from child_cart.network.filesender import *
 from child_cart.network.enumList import *
+from child_cart.network.seed import *
+from child_cart.network.com import *
 
 class peerCom:
     def __init__(self, host, port, Mtype, SYNC_CONST):
@@ -76,10 +78,11 @@ class peerCom:
         return self.readForClose
 
     def receiver(self):
+        reciveron = True
         while self.is_running:
             try:
                 data_chunks = []
-                while True:
+                while reciveron:
                     try:
                         self.socket.settimeout(self.sync_const)
                         received_data = self.socket.recv(1024*1024)
@@ -91,7 +94,11 @@ class peerCom:
                             self.continueData = False
                         break
                     except Exception as e:
-                        print("Error in reciving data : ",e)
+                        reciveron = False
+                        print("###===> Error in reciving data : ",e)
+                        self.criticalBreak = True
+                        self.closeWait = False
+                        self.close(0,self.USERID)
                         break
                     data_chunks.append(received_data)
                 if len(data_chunks) == 0:
@@ -111,7 +118,8 @@ class peerCom:
                     self.request(requestModel(self.USERID,["AVAILABEL"]))
                 else:
                     self.RECIVEQUE.append(decordedData)
-            except:
+            except  Exception as e:
+                print("### ===> Error in reciving data final : ",e)
                 continue
 
     def start_sender(self):
@@ -176,6 +184,7 @@ class peerCom:
         return self.criticalBreak
 
     def closeNow(self):
+        Stop_loop()
         intervel = 0
         while True:
             if self.closeWait:

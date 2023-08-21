@@ -241,13 +241,35 @@ async def handle_client(reader, writer):
     # Properly clean up resources
     if 'writer' in locals():
         writer.close()
-        await writer.wait_closed()
+        # await writer.wait_closed()
     if 'reader' in locals():
         reader.feed_eof()
-        reader.close()
     # Release references
     writer = None
     reader = None
+
+def get_local_ip_address():
+    try:
+        # Create a socket object
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        # Connect the socket to a remote server
+        sock.connect(('8.8.8.8', 80))
+        # Get the local IP address
+        ip_address = sock.getsockname()[0]
+        # Close the socket
+        sock.close()
+        return ip_address
+    except socket.error:
+        return None
+
+async def getipHost():
+    global HOST
+    public_ip = requests.get('http://20.193.137.241:3000/api/publicip')
+    Pip = public_ip.content.decode('utf-8').split(':')[-1]
+    print("public ip",Pip)
+    localip = get_local_ip_address()
+    print("private ip",localip)
+    return localip
 
 
 # This is the coroutine that will handle incoming mobile app connections
@@ -264,10 +286,18 @@ async def handle_mobile(reader, writer):
     MOBILEDATARECORDER[userId] = []
     print('Mobile User id : ', userId)
     ######################RUNNER_ENGINE##########################
+    HOST = await getipHost()
+    print("mobile host", HOST)
+    #############################################################
+    print("length of the device table", len(DeviceTable))
     if len(DeviceTable) > 0:
-        tempReq = requestModel(DeviceTable[0],["MOBILEMODELPARAMETERS",userId])
-        mailBox = DATARECORDER.get(DeviceTable[0])
+        deviceSelect = random.choice(DeviceTable)
+        print("Mobile model request start sending to", deviceSelect)
+        tempReq = requestModel(deviceSelect,["MOBILEMODELPARAMETERS",userId])
+        mailBox = DATARECORDER.get(deviceSelect)
+        print("found shell on list")
         mailBox.append(tempReq)
+        print("Mobile model request send to", deviceSelect)
         while True:
             time.sleep(5)
             if len(MOBILEDATARECORDER.get(userId)) > 0:
@@ -277,9 +307,13 @@ async def handle_mobile(reader, writer):
                 myTempdatadataPARAMETERS = myTempdata1.get("Data")[2]
                 print(type(myTempdatadataPARAMETERS)," : ", len(myTempdatadataPARAMETERS)/1024 , " KB")
                 add_path(myTempdatadataID,myTempdatadataPARAMETERS)
-                httpLink = HOST+":5000/download?ID="+myTempdatadataID
+                print(HOST)
+                print(HTTPPORT)
+                httpLink = "http://"+str(HOST) + ":"+ str(HTTPPORT) + "/download?ID="+ str(myTempdatadataID)
+                print("http link : ",httpLink)
                 writer.write(httpLink.encode() + b'\n')
                 await writer.drain()
+                print("Data sended to mobile : ",userId)
                 myTempdata.remove(myTempdata1)
                 break
     else:
@@ -349,6 +383,7 @@ def function_2():
 
 def add_path(userId,data):
     DATALIST[userId] = data
+    print("path added : ",userId," : ",len(data)/1024,"KB")
 
 def function_3():
     global running
