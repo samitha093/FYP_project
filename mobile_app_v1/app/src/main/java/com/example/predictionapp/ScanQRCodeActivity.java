@@ -5,21 +5,33 @@ import static android.service.controls.ControlsProviderService.TAG;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.content.Intent;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -29,6 +41,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -37,7 +50,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-
+import java.net.SocketException;
+import java.nio.file.SecureDirectoryStream;
+import android.content.Context;
 
 public class ScanQRCodeActivity extends Activity {
     private Button btnConnectToCart;
@@ -77,6 +92,43 @@ public class ScanQRCodeActivity extends Activity {
             // Handle the case when userName is null
             tvGreeting.setText("Hi User, Welcome to smart cart app"); // Default message
         }*/
+
+        // Initialize views
+        tvGreeting = findViewById(R.id.tvGreeting);
+        tvGreeting = findViewById(R.id.tvGreeting);
+        try {
+            FileInputStream fis = openFileInput("user_data.json");
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+            StringBuilder sb = new StringBuilder();
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+
+            br.close();
+            isr.close();
+            fis.close();
+
+            // Parse JSON data
+            JSONObject userData = new JSONObject(sb.toString());
+            String name = userData.getString("name");
+
+            if (name != null && !name.isEmpty()) {
+                String greeting = "Hi " + name + ", Welcome to smart cart app";
+                tvGreeting.setText(greeting);
+            } else {
+                tvGreeting.setText("Hi User, Welcome to smart cart app");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         btnConnectToCart = findViewById(R.id.btnConnectToCart);
         btnDisconnectCart = findViewById(R.id.btnDisconnectCart);
         frameLayoutScanner = findViewById(R.id.frameLayoutScanner);
@@ -97,6 +149,21 @@ public class ScanQRCodeActivity extends Activity {
                 throw new RuntimeException(e);
             }
         });
+        ImageView ivLogout = findViewById(R.id.ivLogout);
+        ivLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLogoutConfirmationDialog(v);
+            }
+        });
+//        ImageView ivLogout = findViewById(R.id.ivLogout);
+//        ivLogout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // Handle ImageView click here, or you can call your deleteFileIfExists method directly.
+//                deleteFileIfExists();
+//            }
+//        });
 
         // Set up the initial state of the views
         toggleViews();
@@ -106,8 +173,20 @@ public class ScanQRCodeActivity extends Activity {
                 new BottomNavigationView.OnNavigationItemSelectedListener()
 
                 {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
                     @Override
                     public boolean onNavigationItemSelected (@NonNull MenuItem item){
+                        BottomNavigationView navigationView = findViewById(R.id.bottom_navigation);
+                        Menu menu = navigationView.getMenu();
+
+                        // Reset icon tint of all items to the default color
+                        for (int i = 0; i < menu.size(); i++) {
+                            MenuItem menuItem = menu.getItem(i);
+                            menuItem.setIconTintList(null); // Reset to default color
+                        }
+
+                        // Set the icon tint of the selected item to the desired color
+                        item.setIconTintList(ColorStateList.valueOf(Color.parseColor("#87978F")));
                         switch (item.getItemId()) {
                             case R.id.menu_scan:
                                 // Already in ScanQRActivity
@@ -127,7 +206,7 @@ public class ScanQRCodeActivity extends Activity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            asynchrounousProcess(host,port);
+            //asynchrounousProcess(host,port);
             /*try {
                 Thread.sleep(25000);
                 socketDisconnect();
@@ -223,6 +302,7 @@ public class ScanQRCodeActivity extends Activity {
                 }
 
                 else if (message.equals("FAILED")) {
+                    handleMultiUser();
                     Log.d("SOCKET REFUSE", "Server reached the connection limit. Stop connecting.");
                     fileOutputStream.close(); // Close the file output stream
                     return; // Exit the thread to stop trying to connect
@@ -250,6 +330,7 @@ public class ScanQRCodeActivity extends Activity {
                         // Add a newline after each message
                         if (message.equals("ENDING")){
                             // Print the received message to the console using Log
+                            Log.d("BREAK","break");
                             break;
                         }
                         fileOutputStream.write(message.getBytes());
@@ -268,30 +349,50 @@ public class ScanQRCodeActivity extends Activity {
                 }
             }
             fileOutputStream.close();
+        } catch (SocketException e) {
+            // Handle the socket exception, which occurs when the connection is reset
+            handleDisconnect();
         } catch (IOException e) {
             // Handle the exception (e.g., log or rethrow it)
             e.printStackTrace();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        /*catch (InterruptedException e) {
+
+            throw new RuntimeException(e);
+        }*/
     }
 
     //send checkout data set
     private void sendDataSet() {
         Context context = this; // Get the context if not available in the method already
         File receivedFile = new File(context.getFilesDir(), "received_checkout_data.txt");
+        int dataSetSize = 100;
         if(receivedFile.exists()){
             try (BufferedReader reader = new BufferedReader(new FileReader(receivedFile))) {
-                String line;
-                line = "FILE";
-                sendMessages(line);
-                while ((line = reader.readLine()) != null) {
-                    // Display each line in the console log
-                    Log.d("READ LINE", line);
+                int dataCount = dataSetCount();
+                if(dataCount >= dataSetSize){
+                    String line;
+                    line = "FILE";
                     sendMessages(line);
-                }
-                Thread.sleep(1000);
 
+                    int lineCount = 0;
+                    while ((line = reader.readLine()) != null && lineCount < dataSetSize) {
+                        // Display each line in the console log
+                        Log.d("READ LINE", line);
+                        sendMessages(line);
+                        if( lineCount%50 == 0){
+                            Thread.sleep(5000);
+                            line = "FILE";
+                            sendMessages(line);
+                        }
+                        lineCount++;
+                    }
+                }else
+                    Log.i("MSG","DATA SET IS NOT SUFFICIENT TO SEND");
+
+                Thread.sleep(5000);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -303,23 +404,38 @@ public class ScanQRCodeActivity extends Activity {
         }
 
     }
-    //send user data
-    /*private void sendUserData(){
+    private int dataSetCount() {
+        int dataRowCount = 0;
+        Context context = this; // Get the context if not available in the method already
+        File receivedFile = new File(context.getFilesDir(), "received_checkout_data.txt");
+        if (receivedFile.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(receivedFile))) {
+                 // Counter for data rows
 
-        String line;
-        line = "USER DATA";
-        sendMessages(line);// Get the context if not available in the method already
-        String name = "Kavini";
-        String age = "3";
-        String gender = "10";
-        line = "[" + name + "," + age + "," + gender + "]";
-        sendMessages(line);
-    }*/
+                // Skip the first line if it's a header or not a data row
+                String line = reader.readLine();
+                if (line != null) {
+                    dataRowCount++; // Count the first line
+                }
+
+                while ((line = reader.readLine()) != null) {
+                    // Process each line here, e.g., count data rows
+                    dataRowCount++;
+                }
+
+                // Now dataRowCount contains the total number of data rows in the file
+                Log.i("Total data rows: " , String.valueOf(dataRowCount));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return dataRowCount;
+    }
     private void sendUserData() {
        /* // Get the Intent that started this activity
         Intent intent = getIntent();
 
-// Retrieve the user data from the Intent extras
+    // Retrieve the user data from the Intent extras
         String userDataJsonString = intent.getStringExtra("userData");
 
         if (userDataJsonString != null) {
@@ -368,6 +484,8 @@ public class ScanQRCodeActivity extends Activity {
             //  Send the data
             sendMessages("USER DATA");
             sendMessages("[" + name + "," + gender + "," + email+ "," + age + "," + city + "]");
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -419,10 +537,17 @@ public class ScanQRCodeActivity extends Activity {
                 port = Integer.parseInt(parts[1]);
                 Log.i("split data: ","IP: "+ host+ ", PORT: "+ port);
                 isQRRead = true;
+                Log.d("QR READ STATE", String.valueOf(isQRRead));
+                asynchrounousProcess(host,port);
+            }else {
+                // Handle invalid QR code format
+                Log.e("split data: ", "Invalid QR code format: " + scannedData);
+                showSnackbar("Invalid QR code format. Please scan a valid QR code.");
+                btnDisconnectCart.setVisibility(View.GONE);
+                btnConnectToCart.setVisibility(View.VISIBLE);
             }
 
-            Log.d("QR READ STATE", String.valueOf(isQRRead));
-            asynchrounousProcess(host,port);
+
             // Create an Intent to send the scanned URL back to MainActivity
             Intent intent = new Intent();
             intent.putExtra("scanned_url", scannedData);
@@ -455,13 +580,97 @@ public class ScanQRCodeActivity extends Activity {
         integrator.setCameraId(0); // Use the rear camera (0) or front camera (1)
         integrator.initiateScan();
     }
-    public void logout(View view) {
+    public void logout() {
         // Clear any user session or data here, if needed
 
+        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // Clear user data and set login state to false
+        editor.clear();
+        editor.putBoolean("isLoggedIn", false);
+
+        editor.apply();
         // Navigate back to the GetStartedActivity or LoginActivity
         Intent intent = new Intent(this, GetStartedActivity.class); // Change to your desired destination activity
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish(); // Optional, depending on your navigation flow
     }
+
+    private void handleDisconnect() {
+        // Show a message to the user (using a Toast)
+        runOnUiThread(() -> {
+            showSnackbar("Mobile is disconnected by Smart Cart");
+        });
+
+        // Update UI elements as needed
+        // For example, toggle the state of the disconnect/connect button
+        runOnUiThread(() -> {
+            btnDisconnectCart.setVisibility(View.GONE);
+            btnConnectToCart.setVisibility(View.VISIBLE);
+        });
+    }
+    private void showSnackbar(String message) {
+        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
+
+        // Customize the appearance of the Snackbar
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(ContextCompat.getColor(this, com.google.android.material.R.color.cardview_light_background)); // Set light red background color
+        Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbarView;
+        TextView textView = snackbarLayout.findViewById(com.google.android.material.R.id.snackbar_text);
+        textView.setTextColor(Color.DKGRAY);
+
+        // Center the Snackbar
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) snackbarView.getLayoutParams();
+        params.gravity = Gravity.CENTER;
+        snackbarView.setLayoutParams(params);
+
+        snackbar.show();    }
+    private void showLogoutConfirmationDialog(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Logout");
+        builder.setMessage("Are you sure you want to logout?");
+        builder.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Perform logout action here
+                logout();
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+    private void handleMultiUser() {
+        // Show a message to the user (using a Toast)
+        runOnUiThread(() -> {
+            showSnackbar("Smart Cart is busy with another customer");
+        });
+
+        runOnUiThread(() -> {
+            btnDisconnectCart.setVisibility(View.GONE);
+            btnConnectToCart.setVisibility(View.VISIBLE);
+        });
+    }
+    //----------------testing----------------------//
+    public void deleteFileIfExists() {
+        String filename = "received_checkout_data.txt";
+        Context context = getApplicationContext();
+
+        try {
+            boolean deleted = context.deleteFile(filename);
+            if (deleted) {
+                // File was deleted successfully
+                Log.i("File deleted: " , filename);
+            } else {
+                // File did not exist or couldn't be deleted
+                Log.i("File not found or couldn't be deleted: " , filename);
+            }
+        } catch (Exception e) {
+            // Handle any exceptions that might occur during file deletion
+            e.printStackTrace();
+        }
+    }
+
 }

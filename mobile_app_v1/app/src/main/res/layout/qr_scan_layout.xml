@@ -6,16 +6,16 @@
     <ImageView
         android:id="@+id/ivLogout"
         android:layout_width="match_parent"
-        android:layout_height="46dp"
-        android:layout_marginLeft="350dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="267dp"
         android:contentDescription="Logout"
-        android:onClick="logout"
+        android:onClick="showLogoutConfirmationDialog"
         android:src="@drawable/ic_logout" />
     <TextView
         android:id="@+id/tvGreeting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
+        android:textSize="15sp"
         android:textStyle="bold"
         android:padding="30dp"
         android:layout_gravity="center_horizontal"
@@ -24,7 +24,7 @@
     <ImageView
         android:id="@+id/ivCenteredImage"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="183dp"
         android:layout_below="@id/tvGreeting"
         android:layout_marginTop="0dp"
         android:src="@drawable/smart_cart_image" />
@@ -34,9 +34,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:layout_marginVertical="200dp"
+        android:layout_marginStart="200dp"
+        android:layout_marginTop="200dp"
+        android:layout_marginEnd="200dp"
+        android:layout_marginBottom="200dp"
         android:background="@drawable/rounded_button_background"
-        android:text="Connect to Cart"
         android:padding="10dp"
+        android:text="Connect to Cart"
         android:visibility="visible" />
 
     <Button
