@@ -28,27 +28,26 @@
         android:textColor="@color/black"
         android:inputType="text"
         android:required="true" />
-    <!-- Password -->
+    <!-- Password
     <EditText
         android:id="@+id/etPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Password"
         android:inputType="textPassword"
-        android:required="true"/>
+        android:required="true"/> -->
 
-    <!-- Password
+    <!-- Password-->
     <EditText
         android:id="@+id/etPassword"
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/rounded_button_background"
         android:hint="Password"
         android:text=""
         android:textColor="?android:attr/textColorPrimary"
         android:inputType="textPassword"
-        android:required="true" /> -->
+        android:required="true" />
 
     <!-- Login Button -->
     <Button

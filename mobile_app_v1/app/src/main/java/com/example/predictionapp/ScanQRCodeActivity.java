@@ -2,17 +2,19 @@ package com.example.predictionapp;
 
 import static android.service.controls.ControlsProviderService.TAG;
 
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.content.Intent;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -51,6 +53,9 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
+import com.journeyapps.barcodescanner.CaptureManager;
+import com.journeyapps.barcodescanner.DecoratedBarcodeView;
+
 
 public class ScanQRCodeActivity extends Activity {
     private Button btnConnectToCart;
@@ -63,6 +68,9 @@ public class ScanQRCodeActivity extends Activity {
     private String host;
     private int port;
     private Socket socket;
+    private DecoratedBarcodeView barcodeView;
+    private CaptureManager captureManager;
+    private boolean isScannerVisible = false;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,25 +79,7 @@ public class ScanQRCodeActivity extends Activity {
         // Initialize views
         tvGreeting = findViewById(R.id.tvGreeting);
         tvGreeting.setText("Hi User, Welcome to smart cart app");
-       /* Intent intent = getIntent();
 
-        String userDataJsonString = intent.getStringExtra("userData");
-        // Retrieve user's name from the intent
-        JSONObject userData = null;
-        try {
-            userData = new JSONObject(userDataJsonString);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-
-        // Set the greeting message
-        if (userData != null) {
-            String greeting = "Hi " + userData + ", Welcome to smart cart app";
-            tvGreeting.setText("Name: " + userData.optString("name"));
-        } else {
-            // Handle the case when userName is null
-            tvGreeting.setText("Hi User, Welcome to smart cart app"); // Default message
-        }*/
 
         // Initialize views
         tvGreeting = findViewById(R.id.tvGreeting);
@@ -136,6 +126,11 @@ public class ScanQRCodeActivity extends Activity {
             toggleViews();
             startScanQR();
         });
+        // Initialize the barcode scanner view
+//        barcodeView = findViewById(R.id.barcodeScannerView);
+//        captureManager = new CaptureManager(this, barcodeView);
+//        captureManager.initializeFromIntent(getIntent(), savedInstanceState);
+//        captureManager.decode();
 
         btnDisconnectCart.setOnClickListener(view -> {
             isConnected = false;
@@ -200,6 +195,7 @@ public class ScanQRCodeActivity extends Activity {
                     }
                 });
     }
+
     private class SocketTask extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -574,7 +570,7 @@ public class ScanQRCodeActivity extends Activity {
             Log.i("DATA INTENT: ","DATA IS NOT FETCHED");
         }
     }
-    public void startScanQR(){
+    public void startScanQR() {
         // Start the QR code scanner
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
@@ -673,6 +669,12 @@ public class ScanQRCodeActivity extends Activity {
             // Handle any exceptions that might occur during file deletion
             e.printStackTrace();
         }
+    }
+    public void onConnectToCartClick(View view) {
+
+        barcodeView.setVisibility(View.VISIBLE);
+        captureManager.onResume();
+        captureManager.decode();
     }
 
 }
