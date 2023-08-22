@@ -39,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
 
     Interpreter localTfLiteModel;
     Interpreter receivedTfLiteModel;
-    //private TextView lblAccount = findViewById(R.id.lblAccount);
+    TextView lblAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword); // Replace with your password EditText ID
         btnLogin = findViewById(R.id.btnLogin); // Replace with your login button ID
         btnSignUp = findViewById(R.id.btnSignUp);
+        lblAccount = findViewById(R.id.lblAccount);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,10 +95,10 @@ public class LoginActivity extends AppCompatActivity {
         });
         if (doesUserDataExist()) {
             btnSignUp.setVisibility(View.GONE); // Hide the button
-            //lblAccount.setVisibility(View.GONE);
+            lblAccount.setVisibility(View.GONE);
         } else {
             btnSignUp.setVisibility(View.VISIBLE);
-            //lblAccount.setVisibility(View.VISIBLE);// Show the button
+            lblAccount.setVisibility(View.VISIBLE);// Show the button
         }
 
     }

@@ -158,8 +158,8 @@ public class SignUpActivity extends AppCompatActivity {
         } else if (selectedGenderId == R.id.radioButtonFemale) {
             selectedGender = "Female";
         }
-        if (password != reenteredPassword) {
-            etReenterPassword.setError("password is not match..");
+        if (!password.equals(reenteredPassword)) {
+            etReenterPassword.setError("Passwords do not match.");
         }
         // Create a JSON object to hold the user data
         JSONObject userDataJson = new JSONObject();
