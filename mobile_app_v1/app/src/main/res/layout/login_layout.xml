@@ -1,10 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
     android:background="?android:attr/windowBackground">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary">
+        <!-- App name in left corner -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/app_name"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+        <!-- Spacer to push the logout icon to the right -->
+        <View
+            android:layout_width="130dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Logout icon on the right corner -->
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="43dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="Logout"
+
+            android:onClick="back"
+            android:src="@drawable/back"
+            tools:ignore="InvalidId" />
+    </androidx.appcompat.widget.Toolbar>
 
     <TextView
         android:id="@+id/tvGetStarted"
@@ -20,6 +52,7 @@
     <!-- Email/Username -->
     <EditText
         android:id="@+id/etEmailUsername"
+        android:layout_margin="16dp"
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:layout_marginTop="20dp"
@@ -40,6 +73,7 @@
     <!-- Password-->
     <EditText
         android:id="@+id/etPassword"
+        android:layout_margin="16dp"
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:layout_marginTop="20dp"
@@ -54,6 +88,7 @@
         android:id="@+id/btnLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="16dp"
         android:text="LOGIN"
         android:layout_marginTop="16dp"
         android:background="@drawable/rounded_button_background"
@@ -62,6 +97,7 @@
     <!-- Sign Up Option -->
     <TextView
         android:id="@+id/lblAccount"
+        android:layout_margin="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -73,6 +109,7 @@
         />
     <Button
         android:id="@+id/btnSignUp"
+        android:layout_margin="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="SIGN UP"

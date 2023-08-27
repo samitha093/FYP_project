@@ -524,7 +524,7 @@ public class ScanQRCodeActivity extends Activity {
         String scannedData ="";
         String ipAddress = "";
         //int port = 0 ;
-        if (result != null && result.getContents() != null) {
+        /*if (result != null && result.getContents() != null) {
             scannedData = result.getContents();
             String dataType = result.getFormatName(); // Get the data type
             Log.d("QR RESULT", "Scanned Data: " + scannedData + ", Data Type: " + dataType);
@@ -543,14 +543,41 @@ public class ScanQRCodeActivity extends Activity {
                 showSnackbar("Invalid QR code format. Please scan a valid QR code.");
                 btnDisconnectCart.setVisibility(View.GONE);
                 btnConnectToCart.setVisibility(View.VISIBLE);
+            }*/
+
+
+        if (result != null && result.getContents() != null) {
+            scannedData = result.getContents();
+            String dataType = result.getFormatName(); // Get the data type
+            Log.d("QR RESULT", "Scanned Data: " + scannedData + ", Data Type: " + dataType);
+
+            // Check if scanned data follows the desired pattern (IP:Port)
+            if (scannedData.matches("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}:\\d+")) {
+                String[] parts = scannedData.split(":");
+                if (parts.length == 2) {
+                    host = parts[0];
+                    port = Integer.parseInt(parts[1]);
+                    Log.i("split data: ", "IP: " + host + ", PORT: " + port);
+                    isQRRead = true;
+                    Log.d("QR READ STATE", String.valueOf(isQRRead));
+                    asynchrounousProcess(host, port);
+                } else {
+                    // Handle invalid QR code format
+                    Log.e("split data: ", "Invalid QR code format: " + scannedData);
+                    showSnackbar("Invalid QR code format. Please scan a valid QR code.");
+                    btnDisconnectCart.setVisibility(View.GONE);
+                    btnConnectToCart.setVisibility(View.VISIBLE);
+                }// Create an Intent to send the scanned URL back to MainActivity
+                Intent intent = new Intent();
+                intent.putExtra("scanned_url", scannedData);
+                setResult(RESULT_OK, intent);
+            } else {
+                // Handle non-matching format (e.g., URLs)
+                Log.e("QR Format", "Invalid QR code format: " + scannedData);
+                showSnackbar("Invalid QR code format. Please scan a valid QR code.");
+                btnDisconnectCart.setVisibility(View.GONE);
+                btnConnectToCart.setVisibility(View.VISIBLE);
             }
-
-
-            // Create an Intent to send the scanned URL back to MainActivity
-            Intent intent = new Intent();
-            intent.putExtra("scanned_url", scannedData);
-            setResult(RESULT_OK, intent);
-
         } else {
             // If the scanning process was canceled
             // You can handle it here, for example, show a message to the user.

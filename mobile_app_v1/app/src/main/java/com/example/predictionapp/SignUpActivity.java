@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +39,7 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText etName, etAge, etEmail, etCity, etPassword, etReenterPassword;
     private RadioGroup etGender;
     private Button signUpButton; // Declare the button
+    ImageView ivBack;
 
     public static void copyModelToInternalStorage(Context context, String modelName) throws IOException {
         InputStream inputStream = context.getAssets().open(modelName);
@@ -89,7 +91,7 @@ public class SignUpActivity extends AppCompatActivity {
         etCity = findViewById(R.id.etCity);
         etPassword = findViewById(R.id.etPassword);
         etReenterPassword = findViewById(R.id.etReenterPassword);
-
+        ivBack = findViewById(R.id.ivBack);
 
         // Set a click listener for the button
         signUpButton.setOnClickListener(new View.OnClickListener() {
@@ -98,6 +100,12 @@ public class SignUpActivity extends AppCompatActivity {
                 // This code will be executed when the button is clicked
                 // Call the method to save user data to JSON and navigate to login
                 saveFormJson();
+            }
+        });
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                back();
             }
         });
     }
@@ -307,7 +315,11 @@ public class SignUpActivity extends AppCompatActivity {
             Log.i(" Prediction App ", "Prediction results: " + String.valueOf(y_pred_model_1[i]));
         }
     }
-
+    public void back(){
+        Intent intent = new Intent(this, GetStartedActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
 }
 

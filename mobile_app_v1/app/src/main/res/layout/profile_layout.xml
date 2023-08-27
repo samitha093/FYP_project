@@ -50,7 +50,7 @@
     <!-- CardView with profile content -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="600dp"
+        android:layout_height="500dp"
         android:layout_margin="16dp"
         android:layout_weight="1"
         app:cardBackgroundColor="#D8E2DC"
@@ -60,25 +60,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp">
+            android:layout_margin="16dp"
+            android:layout_marginBottom="20dp">
 
             <ImageView
                 android:id="@+id/imProf"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
+                android:layout_width="85dp"
+                android:layout_height="85dp"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_me"
-                android:background="@drawable/viewpager_bkg"/>
+                android:background="@drawable/viewpager_bkg"
+                android:src="@drawable/ic_me" />
 
         </FrameLayout>
         <!-- Profile content -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="570dp"
-
+            android:layout_height="600dp"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="25dp">
 
             <!-- Name -->
             <com.google.android.material.textfield.TextInputLayout
@@ -90,12 +90,12 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etName"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="58dp"
                     android:layout_gravity="center"
-                    android:inputType="none"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
-                    android:hint="Name" />
+                    android:hint="Name"
+                    android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -169,7 +169,8 @@
                 android:textColor="#FF0000"
                 android:background="@drawable/rounded_button_background"
                 android:layout_margin="10dp"
-                android:text="Delete Account" />
+                android:text="Delete Account"
+                android:layout_gravity="center"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
     <!-- Other profile preview UI elements -->

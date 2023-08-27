@@ -127,7 +127,7 @@ public class GetStartedActivity extends AppCompatActivity {
         while (true){
             //connect to socket and get url
             Log.i("MyApp", "Socket conneting...");
-            showSnackbar("Socket conneting...");
+//            showSnackbar("Socket conneting...");
 
             String fileUrl =  socketConnect("V");
 
