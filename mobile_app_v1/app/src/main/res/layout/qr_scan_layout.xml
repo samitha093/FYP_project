@@ -3,18 +3,52 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
-        android:id="@+id/ivLogout"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginLeft="267dp"
-        android:contentDescription="Logout"
-        android:onClick="showLogoutConfirmationDialog"
-        android:src="@drawable/ic_logout" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="start|center_vertical">
+
+            <!-- App name in left corner -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:layout_marginStart="16dp"/>
+
+            <!-- Spacer to push the logout icon to the right -->
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+            <!-- Logout icon on the right corner -->
+            <ImageView
+                android:id="@+id/ivLogout"
+                android:layout_width="43dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="Logout"
+
+                android:onClick="showLogoutConfirmationDialog"
+                android:src="@drawable/ic_logout" />
+
+        </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
+
     <TextView
         android:id="@+id/tvGreeting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar"
         android:textSize="15sp"
         android:textStyle="bold"
         android:padding="30dp"
@@ -24,32 +58,32 @@
     <ImageView
         android:id="@+id/ivCenteredImage"
         android:layout_width="match_parent"
-        android:layout_height="183dp"
+        android:layout_height="200dp"
         android:layout_below="@id/tvGreeting"
-        android:layout_marginTop="0dp"
-        android:src="@drawable/smart_cart_image" />
+        android:layout_marginTop="16dp"
+    android:src="@drawable/smart_cart_image" />
 
     <Button
         android:id="@+id/btnConnectToCart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/ivCenteredImage"
         android:layout_centerInParent="true"
-        android:layout_marginVertical="200dp"
-        android:layout_marginStart="200dp"
-        android:layout_marginTop="200dp"
-        android:layout_marginEnd="200dp"
-        android:layout_marginBottom="200dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/rounded_button_background"
         android:padding="10dp"
         android:text="Connect to Cart"
         android:visibility="visible" />
+
 
     <Button
         android:id="@+id/btnDisconnectCart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:layout_below="@id/ivCenteredImage"
         android:text="Disconnect Cart"
+        android:layout_marginTop="16dp"
         android:padding="10dp"
         android:background="@drawable/rounded_button_background"
         android:visibility="gone" />
@@ -59,7 +93,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/btnConnectToCart"
-        android:visibility="gone" />
+        android:visibility="gone">
+
+    </FrameLayout>
+
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
@@ -69,3 +107,9 @@
         app:menu="@menu/bottom_navigation_menu" />
 
 </RelativeLayout>
+<!--
+
+<com.journeyapps.barcodescanner.DecoratedBarcodeView
+android:id="@+id/barcodeScannerView"
+android:layout_width="match_parent"
+android:layout_height="match_parent" />-->

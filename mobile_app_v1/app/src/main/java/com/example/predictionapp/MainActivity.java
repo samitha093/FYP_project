@@ -20,7 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import org.json.JSONException;
+
 import org.json.JSONObject;
 import org.tensorflow.lite.Interpreter;
 
@@ -39,8 +39,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-
-import java.util.Calendar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -198,7 +196,7 @@ public class MainActivity extends AppCompatActivity{
             String message;
             boolean isAlreadyPrint = false;
 
-            FileOutputStream fileOutputStream = context.openFileOutput("received_checkout_data.txt", Context.MODE_APPEND | Context.MODE_PRIVATE);
+            FileOutputStream fileOutputStream = context.openFileOutput("dummy_data.txt", Context.MODE_APPEND | Context.MODE_PRIVATE);
 
             while (true) {
                 message = reader.readLine();
@@ -243,7 +241,7 @@ public class MainActivity extends AppCompatActivity{
                     }
 
                     // Get the file path of the saved file
-                    String filePath = context.getFilesDir() + "/" + "received_checkout_data.txt";
+                    String filePath = context.getFilesDir() + "/" + "dummy_data.txt";
                     // Print a success message indicating that the file has been saved
                     Log.d("FILE SAVED", "Received messages have been successfully saved to the file: " + filePath);
                     //fileOutputStream.close(); // Close the file output stream
@@ -266,7 +264,7 @@ public class MainActivity extends AppCompatActivity{
     //send checkout data set
     private void sendDataSet() {
         Context context = this; // Get the context if not available in the method already
-        File receivedFile = new File(context.getFilesDir(), "received_checkout_data.txt");
+        File receivedFile = new File(context.getFilesDir(), "dummy_data.txt");
         if(receivedFile.exists()){
             try (BufferedReader reader = new BufferedReader(new FileReader(receivedFile))) {
                 String line;

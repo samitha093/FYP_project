@@ -2,17 +2,19 @@ package com.example.predictionapp;
 
 import static android.service.controls.ControlsProviderService.TAG;
 
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.content.Intent;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -51,8 +53,9 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
-import java.nio.file.SecureDirectoryStream;
-import android.content.Context;
+import com.journeyapps.barcodescanner.CaptureManager;
+import com.journeyapps.barcodescanner.DecoratedBarcodeView;
+
 
 public class ScanQRCodeActivity extends Activity {
     private Button btnConnectToCart;
@@ -65,6 +68,9 @@ public class ScanQRCodeActivity extends Activity {
     private String host;
     private int port;
     private Socket socket;
+    private DecoratedBarcodeView barcodeView;
+    private CaptureManager captureManager;
+    private boolean isScannerVisible = false;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,25 +79,7 @@ public class ScanQRCodeActivity extends Activity {
         // Initialize views
         tvGreeting = findViewById(R.id.tvGreeting);
         tvGreeting.setText("Hi User, Welcome to smart cart app");
-       /* Intent intent = getIntent();
 
-        String userDataJsonString = intent.getStringExtra("userData");
-        // Retrieve user's name from the intent
-        JSONObject userData = null;
-        try {
-            userData = new JSONObject(userDataJsonString);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-
-        // Set the greeting message
-        if (userData != null) {
-            String greeting = "Hi " + userData + ", Welcome to smart cart app";
-            tvGreeting.setText("Name: " + userData.optString("name"));
-        } else {
-            // Handle the case when userName is null
-            tvGreeting.setText("Hi User, Welcome to smart cart app"); // Default message
-        }*/
 
         // Initialize views
         tvGreeting = findViewById(R.id.tvGreeting);
@@ -138,6 +126,11 @@ public class ScanQRCodeActivity extends Activity {
             toggleViews();
             startScanQR();
         });
+        // Initialize the barcode scanner view
+//        barcodeView = findViewById(R.id.barcodeScannerView);
+//        captureManager = new CaptureManager(this, barcodeView);
+//        captureManager.initializeFromIntent(getIntent(), savedInstanceState);
+//        captureManager.decode();
 
         btnDisconnectCart.setOnClickListener(view -> {
             isConnected = false;
@@ -202,6 +195,7 @@ public class ScanQRCodeActivity extends Activity {
                     }
                 });
     }
+
     private class SocketTask extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -291,7 +285,7 @@ public class ScanQRCodeActivity extends Activity {
             String message;
             boolean isAlreadyPrint = false;
 
-            FileOutputStream fileOutputStream = context.openFileOutput("received_checkout_data.txt", Context.MODE_APPEND | Context.MODE_PRIVATE);
+            FileOutputStream fileOutputStream = context.openFileOutput("dummy_data.txt", Context.MODE_APPEND | Context.MODE_PRIVATE);
 
             while (true) {
                 message = reader.readLine();
@@ -312,6 +306,10 @@ public class ScanQRCodeActivity extends Activity {
                     sendUserData(); //sending user data
                     Thread.sleep(1000);
                     sendDataSet(); //sending data set
+                    //converting 250 data from txt file to csv
+                    GetStartedActivity.convertTxtToCsv(getApplicationContext());
+                    //clear 250 data set from data
+                    GetStartedActivity.clearCheckoutData(getApplicationContext());
 
                 }
 
@@ -338,7 +336,7 @@ public class ScanQRCodeActivity extends Activity {
                     }
 
                     // Get the file path of the saved file
-                    String filePath = context.getFilesDir() + "/" + "received_checkout_data.txt";
+                    String filePath = context.getFilesDir() + "/" + "dummy_data.txt";
                     // Print a success message indicating that the file has been saved
                     Log.d("FILE SAVED", "Received messages have been successfully saved to the file: " + filePath);
                     //fileOutputStream.close(); // Close the file output stream
@@ -367,7 +365,7 @@ public class ScanQRCodeActivity extends Activity {
     //send checkout data set
     private void sendDataSet() {
         Context context = this; // Get the context if not available in the method already
-        File receivedFile = new File(context.getFilesDir(), "received_checkout_data.txt");
+        File receivedFile = new File(context.getFilesDir(), "dummy_data.txt");
         int dataSetSize = 100;
         if(receivedFile.exists()){
             try (BufferedReader reader = new BufferedReader(new FileReader(receivedFile))) {
@@ -407,7 +405,7 @@ public class ScanQRCodeActivity extends Activity {
     private int dataSetCount() {
         int dataRowCount = 0;
         Context context = this; // Get the context if not available in the method already
-        File receivedFile = new File(context.getFilesDir(), "received_checkout_data.txt");
+        File receivedFile = new File(context.getFilesDir(), "dummy_data.txt");
         if (receivedFile.exists()) {
             try (BufferedReader reader = new BufferedReader(new FileReader(receivedFile))) {
                  // Counter for data rows
@@ -526,7 +524,7 @@ public class ScanQRCodeActivity extends Activity {
         String scannedData ="";
         String ipAddress = "";
         //int port = 0 ;
-        if (result != null && result.getContents() != null) {
+        /*if (result != null && result.getContents() != null) {
             scannedData = result.getContents();
             String dataType = result.getFormatName(); // Get the data type
             Log.d("QR RESULT", "Scanned Data: " + scannedData + ", Data Type: " + dataType);
@@ -545,14 +543,41 @@ public class ScanQRCodeActivity extends Activity {
                 showSnackbar("Invalid QR code format. Please scan a valid QR code.");
                 btnDisconnectCart.setVisibility(View.GONE);
                 btnConnectToCart.setVisibility(View.VISIBLE);
+            }*/
+
+
+        if (result != null && result.getContents() != null) {
+            scannedData = result.getContents();
+            String dataType = result.getFormatName(); // Get the data type
+            Log.d("QR RESULT", "Scanned Data: " + scannedData + ", Data Type: " + dataType);
+
+            // Check if scanned data follows the desired pattern (IP:Port)
+            if (scannedData.matches("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}:\\d+")) {
+                String[] parts = scannedData.split(":");
+                if (parts.length == 2) {
+                    host = parts[0];
+                    port = Integer.parseInt(parts[1]);
+                    Log.i("split data: ", "IP: " + host + ", PORT: " + port);
+                    isQRRead = true;
+                    Log.d("QR READ STATE", String.valueOf(isQRRead));
+                    asynchrounousProcess(host, port);
+                } else {
+                    // Handle invalid QR code format
+                    Log.e("split data: ", "Invalid QR code format: " + scannedData);
+                    showSnackbar("Invalid QR code format. Please scan a valid QR code.");
+                    btnDisconnectCart.setVisibility(View.GONE);
+                    btnConnectToCart.setVisibility(View.VISIBLE);
+                }// Create an Intent to send the scanned URL back to MainActivity
+                Intent intent = new Intent();
+                intent.putExtra("scanned_url", scannedData);
+                setResult(RESULT_OK, intent);
+            } else {
+                // Handle non-matching format (e.g., URLs)
+                Log.e("QR Format", "Invalid QR code format: " + scannedData);
+                showSnackbar("Invalid QR code format. Please scan a valid QR code.");
+                btnDisconnectCart.setVisibility(View.GONE);
+                btnConnectToCart.setVisibility(View.VISIBLE);
             }
-
-
-            // Create an Intent to send the scanned URL back to MainActivity
-            Intent intent = new Intent();
-            intent.putExtra("scanned_url", scannedData);
-            setResult(RESULT_OK, intent);
-
         } else {
             // If the scanning process was canceled
             // You can handle it here, for example, show a message to the user.
@@ -572,7 +597,7 @@ public class ScanQRCodeActivity extends Activity {
             Log.i("DATA INTENT: ","DATA IS NOT FETCHED");
         }
     }
-    public void startScanQR(){
+    public void startScanQR() {
         // Start the QR code scanner
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
@@ -655,7 +680,7 @@ public class ScanQRCodeActivity extends Activity {
     }
     //----------------testing----------------------//
     public void deleteFileIfExists() {
-        String filename = "received_checkout_data.txt";
+        String filename = "dummy_data.txt";
         Context context = getApplicationContext();
 
         try {
@@ -671,6 +696,12 @@ public class ScanQRCodeActivity extends Activity {
             // Handle any exceptions that might occur during file deletion
             e.printStackTrace();
         }
+    }
+    public void onConnectToCartClick(View view) {
+
+        barcodeView.setVisibility(View.VISIBLE);
+        captureManager.onResume();
+        captureManager.decode();
     }
 
 }

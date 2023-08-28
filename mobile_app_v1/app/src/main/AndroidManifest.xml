@@ -19,12 +19,14 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.PredictionApp"
+        android:theme="@style/Theme.PredictionApp.NoActionBar"
+        android:label = "@string/app_name"
         android:usesCleartextTraffic="true"
+        android:supportsRtl="true"
         tools:targetApi="31">
-
+        <meta-data
+            android:name="android.preloaded_splash_screen"
+            android:resource="@style/SplashTheme" />
         <activity
             android:name=".ScanQRCodeActivity"
             android:label="Scan QR Code"
@@ -35,9 +37,10 @@
 
         <activity
             android:name=".LoginActivity"></activity>
-
         <activity
-            android:name=".GetStartedActivity"
+            android:name=".GetStartedActivity"></activity>
+        <activity
+            android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

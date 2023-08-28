@@ -1,81 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="16dp"
     android:background="#FFFFFF">
 
     <!-- Get Started Label -->
 
-    <!-- Rounded Image of Smart Cart (Assuming the image is a circular shape) -->
-
-    <!-- Vertical LinearLayout for Buttons -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary">
+        <!-- App name in left corner -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/app_name"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+    </androidx.appcompat.widget.Toolbar>
 
     <TextView
         android:id="@+id/tvGetStarted"
         android:layout_width="300dp"
         android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="90dp"
         android:text="GET STARTED.."
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textStyle="bold" />
 
+    <!-- Rounded Image of Smart Cart (Assuming the image is a circular shape) -->
     <ImageView
         android:id="@+id/ivSmartCart"
         android:layout_width="224dp"
         android:layout_height="185dp"
-        android:src="@drawable/smart_cart_image"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvGetStarted" />
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/tvGetStarted"
+        android:src="@drawable/smart_cart_image" />
 
+    <!-- Vertical LinearLayout for Buttons -->
     <LinearLayout
         android:id="@+id/buttonsContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@+id/ivSmartCart"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/ivSmartCart"
+        android:layout_marginTop="16dp">
 
-    <!-- Login Button -->
-
-        <!-- "Don't have an account yet?" Text -->
+        <!-- Login Button -->
         <Button
             android:id="@+id/btnLogin"
             android:layout_width="223dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:background="@drawable/rounded_button_background"
-            android:text="Login"
-            />
+            android:text="Login" />
 
         <TextView
-        android:id="@+id/lblAccount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Don't have an account yet?"
-        android:textSize="12sp"
-        android:textColor="#000000"
-        android:layout_marginBottom="8dp"
-    />
+            android:id="@+id/lblAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Don't have an account yet?"
+            android:textSize="12sp"
+            android:textColor="#000000"
+            android:layout_marginBottom="8dp" />
 
-    <!-- Sign Up Button -->
+        <!-- Sign Up Button -->
         <Button
             android:id="@+id/btnSignUp"
             android:layout_width="223dp"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_button_background"
             android:text="Sign Up" />
-</LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</RelativeLayout>

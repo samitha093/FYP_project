@@ -17,7 +17,7 @@
 </resources>-->
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.PredictionApp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.PredictionApp.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">#B0C2BB</item> <!-- Slightly darker shade -->
         <item name="colorPrimaryVariant">#87978F</item> <!-- Slightly darker shade -->
@@ -30,5 +30,11 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+    <style name="SplashTheme" parent="Theme.SplashScreen">
+        <item name="android:windowBackground">@raw/splash</item>
+        <!-- Set the background color -->
+        <item name="postSplashScreenTheme">@color/teal_700</item> <!-- Set your app's main theme here -->
+    </style>
+
 </resources>
 

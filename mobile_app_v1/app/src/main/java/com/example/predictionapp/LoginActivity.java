@@ -1,5 +1,6 @@
 package com.example.predictionapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,8 +41,9 @@ public class LoginActivity extends AppCompatActivity {
 
     Interpreter localTfLiteModel;
     Interpreter receivedTfLiteModel;
-    //private TextView lblAccount = findViewById(R.id.lblAccount);
-
+    TextView lblAccount;
+    ImageView ivBack;
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +53,8 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword); // Replace with your password EditText ID
         btnLogin = findViewById(R.id.btnLogin); // Replace with your login button ID
         btnSignUp = findViewById(R.id.btnSignUp);
+        lblAccount = findViewById(R.id.lblAccount);
+        ivBack = findViewById(R.id.ivBack);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,12 +97,18 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                back();
+            }
+        });
         if (doesUserDataExist()) {
             btnSignUp.setVisibility(View.GONE); // Hide the button
-            //lblAccount.setVisibility(View.GONE);
+            lblAccount.setVisibility(View.GONE);
         } else {
             btnSignUp.setVisibility(View.VISIBLE);
-            //lblAccount.setVisibility(View.VISIBLE);// Show the button
+            lblAccount.setVisibility(View.VISIBLE);// Show the button
         }
 
     }
@@ -361,6 +372,12 @@ public class LoginActivity extends AppCompatActivity {
             result[i] = index;
         }
         return result;
+    }
+
+    public void back(){
+        Intent intent = new Intent(this, GetStartedActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
 
