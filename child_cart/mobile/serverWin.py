@@ -5,6 +5,7 @@ import os
 import sys
 import datetime
 import ast
+import ssl
 
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.insert(0, root_path)
@@ -186,6 +187,12 @@ def main():
 
     try:
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        ssl_context.load_cert_chain('server.crt.pem', 'server.key.pem')
+        server_socket = ssl_context.wrap_socket(server_socket, server_side=True)
+
+
         server_socket.bind((host, port))
         server_socket.listen(1)
         print('\033[32mServer: Listening for incoming connections...\033[0m')
