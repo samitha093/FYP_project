@@ -188,9 +188,8 @@ def main():
     try:
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-
         try:
+            ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
             ssl_context.load_cert_chain('server.crt.pem', 'server.key.pem')
             server_socket = ssl_context.wrap_socket(server_socket, server_side=True)
         except ssl.SSLError as ssl_error:
