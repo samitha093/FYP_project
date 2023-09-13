@@ -1,0 +1,26 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Pressed state -->
+    <item android:state_pressed="true">
+        <objectAnimator
+            android:propertyName="cardElevation"
+            android:valueTo="8dp"
+            android:valueType="floatType"
+            android:duration="100" />
+    </item>
+    <!-- Focused state -->
+    <item android:state_focused="true">
+        <objectAnimator
+            android:propertyName="cardElevation"
+            android:valueTo="4dp"
+            android:valueType="floatType"
+            android:duration="100" />
+    </item>
+    <!-- Normal state -->
+    <item>
+        <objectAnimator
+            android:propertyName="cardElevation"
+            android:valueTo="4dp"
+            android:valueType="floatType"
+            android:duration="100" />
+    </item>
+</selector>

@@ -663,10 +663,17 @@ public class GetStartedActivity extends AppCompatActivity {
 
 
     public void initialization(){
+        // Specify the file paths you want to copy from the assets folder
+        String[] assetFilePaths = {"ca.crt.pem", "ca.key.pem"};
+
+        // Specify the target directory in internal storage
+        String targetDirectory = "certificate";
+
         copyModelToInternalStorage("model.tflite");
         copyDataToInternalStorage(getApplicationContext(),"dummy_data.txt", "checkout_data.txt");
         convertTxtToCsv(getApplicationContext());
         clearCheckoutData(getApplicationContext());
+        copyCertificate(getApplicationContext(),assetFilePaths,targetDirectory);
     }
 
     // checking for availabilty of local model in internal stroage
@@ -678,7 +685,7 @@ public class GetStartedActivity extends AppCompatActivity {
     //initialize the local model
     private void initializeLocalModelIfNeeded() {
         if (!isLocalModelFileAvailable()) {
-            //copyModelToInternalStorage("model.tflite");
+            copyModelToInternalStorage("model.tflite");
         }
     }
 
@@ -713,5 +720,40 @@ public class GetStartedActivity extends AppCompatActivity {
         snackbarView.setLayoutParams(params);
 
         snackbar.show();
+    }
+    public static void copyCertificate(Context context, String[] assetFilePaths, String targetDirectory) {
+        AssetManager assetManager = context.getAssets();
+
+        for (String assetFilePath : assetFilePaths) {
+            try {
+                // Open the asset file
+                InputStream inputStream = assetManager.open(assetFilePath);
+
+                // Create the target directory if it doesn't exist
+                File targetDir = new File(context.getFilesDir(), targetDirectory);
+                if (!targetDir.exists()) {
+                    targetDir.mkdirs();
+                }
+
+                // Create the target file
+                File targetFile = new File(targetDir, new File(assetFilePath).getName());
+
+                // Copy the asset file to the internal storage
+                OutputStream outputStream = new FileOutputStream(targetFile);
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = inputStream.read(buffer)) > 0) {
+                    outputStream.write(buffer, 0, length);
+                }
+                outputStream.flush();
+                outputStream.close();
+                inputStream.close();
+
+                Log.d("CERTIFICATE", "Copied " + assetFilePath + " to " + targetFile.getAbsolutePath());
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("CERTIFICATE", "Error copying " + assetFilePath + ": " + e.getMessage());
+            }
+        }
     }
 }

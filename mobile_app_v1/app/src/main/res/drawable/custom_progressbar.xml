@@ -1,0 +1,21 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/background">
+        <shape>
+            <solid android:color="#E0E0E0" /> <!-- Background color -->
+        </shape>
+    </item>
+    <item android:id="@android:id/secondaryProgress"> <!-- Unique ID for the progress background -->
+        <shape
+            android:innerRadiusRatio="3.0"
+            android:shape="ring"
+            android:thicknessRatio="10"
+            android:useLevel="false">
+            <solid android:color="#009688" /> <!-- Background color for the progress ring -->
+        </shape>
+    </item>
+    <item android:id="@android:id/progress">
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/smart_cart_image" />
+    </item>
+</layer-list>

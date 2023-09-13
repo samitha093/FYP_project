@@ -41,6 +41,7 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.6.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
+    implementation 'com.google.firebase:firebase-crashlytics-buildtools:2.9.9'
     //implementation 'androidx.room:room-compiler:2.4.2'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
@@ -63,6 +64,8 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
 //    implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
 //    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
+
 
 
 }

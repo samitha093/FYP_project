@@ -73,7 +73,7 @@ public class ProductPreviewActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2)); // 2 columns per row
 
-        List<Product> productList = new ArrayList<>();
+        /*List<Product> productList = new ArrayList<>();
         JSONArray jsonArray;
 
         try {
@@ -169,20 +169,20 @@ public class ProductPreviewActivity extends AppCompatActivity {
 
         adapter = new ProductAdapter(productList);
         recyclerView.setAdapter(adapter);
-
-      /*  // Get the predicted category number (replace this with your actual prediction logic)
+*/
+       /* // Get the predicted category number (replace this with your actual prediction logic)
         int predictedCategoryNumber = 2; // Example category number
 
         // Fetch data from API based on predicted category number
         new FetchDataTask().execute(predictedCategoryNumber);*/
 
         //-------new update ------------
-        /*SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         int predictedCategoryNumber = sharedPreferences.getInt("predictedCategory", -1);
 
         if (predictedCategoryNumber != -1) {
             new FetchDataTask().execute(predictedCategoryNumber);
-        }*/
+        }
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 

@@ -84,9 +84,9 @@ public class LoginActivity extends AppCompatActivity {
                 editor.apply();
 
                 Calendar calendar = Calendar.getInstance();
-                loadModel("model");
+                loadModel("localModel");//changed here
                 int currentMonth = calendar.get(Calendar.MONTH) + 1;
-                //predict(currentMonth, getGender());
+                predictString(currentMonth, getGender());
                 savePredictedCategory(predict(currentMonth,getGender()));
             }
         });
@@ -249,7 +249,7 @@ public class LoginActivity extends AppCompatActivity {
     }
     private void loadModel(String fileName) {
         try {
-            if (fileName == "model") {
+            if (fileName == "localModel") { //changed here
                 localTfLiteModel = new Interpreter(loadFile(fileName));
                 Log.i(" Prediction App", fileName + " is loaded success fully");
             } else if (fileName == "receivedModel") {
@@ -269,7 +269,7 @@ public class LoginActivity extends AppCompatActivity {
     }
     private MappedByteBuffer loadFile(String fileName) throws IOException {
         // Get the path to the model file in the internal storage directory
-        File directory = new File("/data/data/com.example.predictionapp/files");
+        File directory = new File("/data/data/com.example.predictionapp/files/models");//changed here
         File modelFile = new File(directory, fileName + ".tflite");
 
         // Open the model file as a FileInputStream
@@ -301,7 +301,7 @@ public class LoginActivity extends AppCompatActivity {
         x_np[0][0] /= 12;
         x_np[0][1] /= 12;
 
-        float[][] output = new float[1][7];
+        float[][] output = new float[1][9];
         localTfLiteModel.run(x_np, output);
         int[] y_pred_model_1 = argmax(output, 1);
 
@@ -319,7 +319,7 @@ public class LoginActivity extends AppCompatActivity {
         x_np[0][0] /= 12;
         x_np[0][1] /= 12;
 
-        float[][] output = new float[1][7];
+        float[][] output = new float[1][9];
         localTfLiteModel.run(x_np, output);
         int[] y_pred_model_1 = argmax(output, 1);
 
