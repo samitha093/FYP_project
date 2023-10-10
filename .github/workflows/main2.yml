@@ -50,14 +50,6 @@ jobs:
       - name: Build P_main for ARM
         if: matrix.arch == 'arm'
         run: pyinstaller --onefile --add-data "child_cart/api/templates:child_cart/api/templates" --name P_main_arm.bin P_main.py
-        # Add any necessary setup for ARM compilation here
-
-      - name: Rename C_main and P_main binaries
-        run: |
-          if [[ ${{ matrix.arch }} == 'arm' ]]; then
-            mv dist/C_main_arm.bin dist/C_main_${{ matrix.arch }}.bin
-            mv dist/P_main_arm.bin dist/P_main_${{ matrix.arch }}.bin
-          fi
 
       - name: Read Version Number
         id: version
