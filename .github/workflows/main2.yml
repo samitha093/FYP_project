@@ -1,4 +1,4 @@
-name: Build release packages arm and x86/x64
+name: Build release packages arm 
 
 on:
   workflow_dispatch: {}
@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        arch: [x86, x64, arm]
+        arch: [arm]
 
     steps:
       - name: Checkout repository
