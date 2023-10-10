@@ -1,4 +1,4 @@
-name: Build release packages arm 
+name: Build release packages arm
 
 on:
   workflow_dispatch: {}
@@ -42,37 +42,26 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
-      - name: Build C_main
+      - name: Build C_main for ARM
         if: matrix.arch == 'arm'
         run: pyinstaller --onefile --add-data "child_cart/api/templates:child_cart/api/templates" --name C_main_arm.bin C_main.py
         # Add any necessary setup for ARM compilation here
 
-      - name: Build P_main
+      - name: Build P_main for ARM
         if: matrix.arch == 'arm'
         run: pyinstaller --onefile --add-data "child_cart/api/templates:child_cart/api/templates" --name P_main_arm.bin P_main.py
         # Add any necessary setup for ARM compilation here
-
-      - name: Build C_main
-        if: matrix.arch == 'x86' || matrix.arch == 'x64'
-        run: pyinstaller --onefile --add-data "child_cart/api/templates:child_cart/api/templates" --name C_main.bin C_main.py
-
-      - name: Build P_main
-        if: matrix.arch == 'x86' || matrix.arch == 'x64'
-        run: pyinstaller --onefile --add-data "child_cart/api/templates:child_cart/api/templates" --name P_main.bin P_main.py
 
       - name: Rename C_main and P_main binaries
         run: |
           if [[ ${{ matrix.arch }} == 'arm' ]]; then
             mv dist/C_main_arm.bin dist/C_main_${{ matrix.arch }}.bin
             mv dist/P_main_arm.bin dist/P_main_${{ matrix.arch }}.bin
-          else
-            mv dist/C_main.bin dist/C_main_${{ matrix.arch }}.bin
-            mv dist/P_main.bin dist/P_main_${{ matrix.arch }}.bin
           fi
 
       - name: Read Version Number
         id: version
-        run: echo ::set-output name=VERSION::$(cat version.txt)
+        run: echo ::set-output name=VERSION::$(cat version.txt)-arm
 
       - name: Create GitHub Release
         id: create_release
@@ -89,7 +78,8 @@ jobs:
           cd dist
           ls
 
-      - name: Upload C_main Release Asset
+      - name: Upload C_main ARM Release Asset
+        if: matrix.arch == 'arm'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
@@ -99,7 +89,8 @@ jobs:
           asset_name: C_main_${{ matrix.arch }}.bin
           asset_content_type: application/octet-stream
 
-      - name: Upload P_main Release Asset
+      - name: Upload P_main ARM Release Asset
+        if: matrix.arch == 'arm'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
