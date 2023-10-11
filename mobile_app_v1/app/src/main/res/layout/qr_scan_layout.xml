@@ -58,10 +58,12 @@
     <ImageView
         android:id="@+id/ivCenteredImage"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="190dp"
         android:layout_below="@id/tvGreeting"
+        android:layout_alignParentEnd="true"
         android:layout_marginTop="16dp"
-    android:src="@drawable/smart_cart_image" />
+        android:layout_marginEnd="0dp"
+        android:src="@drawable/gloze" />
 
     <Button
         android:id="@+id/btnConnectToCart"
@@ -70,7 +72,7 @@
         android:layout_below="@id/ivCenteredImage"
         android:layout_centerInParent="true"
         android:layout_marginTop="16dp"
-        android:background="@drawable/rounded_button_background"
+
         android:padding="10dp"
         android:text="Connect to Cart"
         android:visibility="visible" />
@@ -85,8 +87,17 @@
         android:text="Disconnect Cart"
         android:layout_marginTop="16dp"
         android:padding="10dp"
-        android:background="@drawable/rounded_button_background"
         android:visibility="gone" />
+
+    <Button
+        android:id="@+id/btnTest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ivCenteredImage"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="100dp"
+        android:padding="10dp"
+        android:text="Test" />
 
     <FrameLayout
         android:id="@+id/frameLayoutScanner"
@@ -94,7 +105,6 @@
         android:layout_height="match_parent"
         android:layout_above="@id/btnConnectToCart"
         android:visibility="gone">
-
     </FrameLayout>
 
 

@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.tensorflow.lite.Interpreter;
@@ -29,7 +28,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.Calendar;
+
 
 
 public class SignUpActivity extends AppCompatActivity {
@@ -119,7 +118,8 @@ public class SignUpActivity extends AppCompatActivity {
         String city = etCity.getText().toString();
         String password = etPassword.getText().toString();
         String reenteredPassword = etReenterPassword.getText().toString();
-
+        // Hash the password
+//        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         if (name.isEmpty()) {
             etName.setError("Name is required");
             etName.requestFocus();

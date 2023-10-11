@@ -53,7 +53,7 @@
         android:layout_height="500dp"
         android:layout_margin="16dp"
         android:layout_weight="1"
-        app:cardBackgroundColor="#D8E2DC"
+        app:cardBackgroundColor="#455B55"
         app:cardCornerRadius="16dp">
         <!-- Round user vector image with background color -->
         <FrameLayout
@@ -85,7 +85,9 @@
                 android:id="@+id/tilName"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:textColor="#2c4c3b"
+                >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etName"
@@ -94,6 +96,7 @@
                     android:layout_gravity="center"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
+
                     android:hint="Name"
                     android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -112,6 +115,7 @@
                     android:inputType="none"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
+
                     android:hint="Gender" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -128,6 +132,7 @@
                     android:inputType="none"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
+
                     android:hint="City" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -144,6 +149,7 @@
                     android:inputType="none"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
+
                     android:hint="Email" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -160,6 +166,7 @@
                     android:inputType="none"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
+
                     android:hint="Age" />
             </com.google.android.material.textfield.TextInputLayout>
             <Button

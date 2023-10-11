@@ -78,6 +78,7 @@ import java.security.cert.X509Certificate;
 public class ScanQRCodeActivity extends Activity {
     private Button btnConnectToCart;
     private Button btnDisconnectCart;
+    private Button btnTest;
     private FrameLayout frameLayoutScanner;
     private boolean isConnected = false;
     private BottomNavigationView bottomNavigationView;
@@ -92,7 +93,7 @@ public class ScanQRCodeActivity extends Activity {
     private boolean isScannerVisible = false;
     private BottomNavigationViewModel viewModel;
     // Assuming you have the CA certificate file input stream available
-
+    private boolean isAlreadyPrint = false;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -129,10 +130,10 @@ public class ScanQRCodeActivity extends Activity {
             String name = userData.getString("name");
 
             if (name != null && !name.isEmpty()) {
-                String greeting = "Hi " + name + ", Welcome to smart cart app";
+                String greeting = "Hi " + name + ", Welcome to Gloze";
                 tvGreeting.setText(greeting);
             } else {
-                tvGreeting.setText("Hi User, Welcome to smart cart app");
+                tvGreeting.setText("Hi User, Welcome to Gloze");
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -145,11 +146,14 @@ public class ScanQRCodeActivity extends Activity {
         btnConnectToCart = findViewById(R.id.btnConnectToCart);
         btnDisconnectCart = findViewById(R.id.btnDisconnectCart);
         frameLayoutScanner = findViewById(R.id.frameLayoutScanner);
-
+        btnTest = findViewById(R.id.btnTest);
         btnConnectToCart.setOnClickListener(view -> {
             isConnected = true;
             toggleViews();
             startScanQR();
+        });
+        btnTest.setOnClickListener(view -> {
+            sendDataTest();
         });
         // Initialize the barcode scanner view
 //        barcodeView = findViewById(R.id.barcodeScannerView);
@@ -545,9 +549,8 @@ public class ScanQRCodeActivity extends Activity {
                 Log.i("INPUT STREAM",inputStream.toString());
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
                 String message;
-                boolean isAlreadyPrint = false;
 
-                FileOutputStream fileOutputStream = context.openFileOutput("dummy_data.txt", Context.MODE_APPEND | Context.MODE_PRIVATE);
+                FileOutputStream fileOutputStream = context.openFileOutput("checkout_data.txt", Context.MODE_APPEND | Context.MODE_PRIVATE);
 
                 while (true) {
                     message = reader.readLine();
@@ -565,17 +568,17 @@ public class ScanQRCodeActivity extends Activity {
                     }
                     else if (message.equals("SOCKET CONNECTED")) {
                         Log.d("SOCKET ESTABLISH", "Connected successfully.");
-                        showSnackbar("SSL CERTIFICATION IS SUCCESS");
+                        showSnackbar("SECURE HANDSHAKE IS SUCCESS");
                         Thread.sleep(1000);
-                        showSnackbar("SECURE SOCKET CONNECTION IS ESTABLISHED");
+                        showSnackbar("SOCKET CONNECTION IS ESTABLISHED");
                         sendUserData(); //sending user data
                         Thread.sleep(1000);
                         showSnackbar("USER DATA IS SHARED SUCCESSFULLY ");
                         sendDataSet(); //sending data set
                         //converting 250 data from txt file to csv
                         GetStartedActivity.convertTxtToCsv(getApplicationContext());
-                        //clear 250 data set from data
-                        GetStartedActivity.clearCheckoutData(getApplicationContext());
+                        //clear 100 data set from data
+                        GetStartedActivity.clearCheckoutData1(getApplicationContext(),100);
 
                     }
 
@@ -592,6 +595,7 @@ public class ScanQRCodeActivity extends Activity {
                             Log.d("Received Message", message);
                             // Write the received message to the file
                             // Add a newline after each message
+
                             if (message.equals("ENDING")){
                                 // Print the received message to the console using Log
                                 Log.d("BREAK","break");
@@ -599,10 +603,11 @@ public class ScanQRCodeActivity extends Activity {
                             }
                             fileOutputStream.write(message.getBytes());
                             fileOutputStream.write("\n".getBytes());
+//
                         }
 
                         // Get the file path of the saved file
-                        String filePath = context.getFilesDir() + "/" + "dummy_data.txt";
+                        String filePath = context.getFilesDir() + "/" + "checkout_data.txt";
                         // Print a success message indicating that the file has been saved
                         Log.d("FILE SAVED", "Received messages have been successfully saved to the file: " + filePath);
                         //fileOutputStream.close(); // Close the file output stream
@@ -621,7 +626,11 @@ public class ScanQRCodeActivity extends Activity {
 
         } catch (SocketException e) {
             // Handle the socket exception, which occurs when the connection is reset
-            handleDisconnect();
+                showSnackbar("Mobile is disconnected by Smart Cart");
+                btnDisconnectCart.setVisibility(View.GONE);
+                btnConnectToCart.setVisibility(View.VISIBLE);
+
+            //handleDisconnect();
         } catch (IOException e) {
             // Handle the exception (e.g., log or rethrow it)
             e.printStackTrace();
@@ -640,9 +649,10 @@ public class ScanQRCodeActivity extends Activity {
     }
 
     //send checkout data set
+    // CHECKOUT_TXT EKEN GANNA ONE DATA SEND KRANNA
     private void sendDataSet() {
         Context context = this; // Get the context if not available in the method already
-        File receivedFile = new File(context.getFilesDir(), "dummy_data.txt");
+        File receivedFile = new File(context.getFilesDir(), "checkout_data.txt");
         int dataSetSize = 100;
         if(receivedFile.exists()){
             try (BufferedReader reader = new BufferedReader(new FileReader(receivedFile))) {
@@ -657,12 +667,16 @@ public class ScanQRCodeActivity extends Activity {
                         // Display each line in the console log
                         Log.d("READ LINE", line);
                         sendMessages(line);
-                        if( lineCount%50 == 0){
+                        //sendMessages("[1,3,4]");
+                        /*if( lineCount%50 == 0){
                             Thread.sleep(5000);
                             line = "FILE";
                             sendMessages(line);
-                        }
+                        }*/
+                        line = "FILE";
+                        sendMessages(line);
                         lineCount++;
+                        System.out.println(lineCount);
                     }
                 }else
                     Log.i("MSG","DATA SET IS NOT SUFFICIENT TO SEND");
@@ -682,7 +696,7 @@ public class ScanQRCodeActivity extends Activity {
     private int dataSetCount() {
         int dataRowCount = 0;
         Context context = this; // Get the context if not available in the method already
-        File receivedFile = new File(context.getFilesDir(), "dummy_data.txt");
+        File receivedFile = new File(context.getFilesDir(), "checkout_data.txt");
         if (receivedFile.exists()) {
             try (BufferedReader reader = new BufferedReader(new FileReader(receivedFile))) {
                  // Counter for data rows
@@ -905,9 +919,6 @@ public class ScanQRCodeActivity extends Activity {
         runOnUiThread(() -> {
             showSnackbar("Mobile is disconnected by Smart Cart");
         });
-
-        // Update UI elements as needed
-        // For example, toggle the state of the disconnect/connect button
         runOnUiThread(() -> {
             btnDisconnectCart.setVisibility(View.GONE);
             btnConnectToCart.setVisibility(View.VISIBLE);
@@ -979,6 +990,10 @@ public class ScanQRCodeActivity extends Activity {
         barcodeView.setVisibility(View.VISIBLE);
         captureManager.onResume();
         captureManager.decode();
+    }
+    public void sendDataTest(){
+        GetStartedActivity.copyDataToInternalStorage(getApplicationContext(),"sampleData.txt", "checkout_data.txt");
+        showSnackbar("Test data set is added to checkout data file");
     }
 
 }

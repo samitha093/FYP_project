@@ -36,11 +36,11 @@
     <!-- Rounded Image of Smart Cart (Assuming the image is a circular shape) -->
     <ImageView
         android:id="@+id/ivSmartCart"
-        android:layout_width="224dp"
-        android:layout_height="185dp"
-        android:layout_centerHorizontal="true"
+        android:layout_width="172dp"
+        android:layout_height="151dp"
         android:layout_below="@+id/tvGetStarted"
-        android:src="@drawable/smart_cart_image" />
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/gloze" />
 
     <!-- Vertical LinearLayout for Buttons -->
     <LinearLayout

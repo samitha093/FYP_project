@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -563,13 +564,20 @@ public class GetStartedActivity extends AppCompatActivity {
 
     // 2. DUMMY DATASET SEND TO INTERNAL STORAGE
     public static void copyDataToInternalStorage(Context context, String assetFileName, String internalFileName) {
+
         try {
             InputStream inputStream = context.getAssets().open(assetFileName);
             File internalFile = new File(context.getFilesDir(), internalFileName);
-            OutputStream outputStream = new FileOutputStream(internalFile);
+
+            // Check if the file already exists
+            boolean fileExists = internalFile.exists();
+
+            OutputStream outputStream = new FileOutputStream(internalFile); // Use 'true' for append mode
+
 
             byte[] buffer = new byte[1024];
             int length;
+
             while ((length = inputStream.read(buffer)) > 0) {
                 outputStream.write(buffer, 0, length);
             }
@@ -578,16 +586,69 @@ public class GetStartedActivity extends AppCompatActivity {
             outputStream.close();
             inputStream.close();
 
-            System.out.println("Dummy dataset copied to internal storage: " + internalFile.getAbsolutePath());
+            System.out.println("Data appended to internal storage: " + internalFile.getAbsolutePath());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+    public static void copyDataToInternalStorage1(Context context, String assetFileName, String internalFileName) {
 
+        try {
+            InputStream inputStream = context.getAssets().open(assetFileName);
+            File internalFile = new File(context.getFilesDir(), internalFileName);
+
+            // Check if the file already exists
+            boolean fileExists = internalFile.exists();
+
+            OutputStream outputStream = new FileOutputStream(internalFile, true); // Use 'true' for append mode
+
+
+            byte[] buffer = new byte[1024];
+            int length;
+
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+
+            outputStream.flush();
+            outputStream.close();
+            inputStream.close();
+
+            System.out.println("Data appended to internal storage: " + internalFile.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+   /* public static void copyDataToInternalStorage(Context context, String assetFileName, String internalFileName, int numRowsToCopy) {
+        try {
+            InputStream inputStream = context.getAssets().open(assetFileName);
+            File internalFile = new File(context.getFilesDir(), internalFileName);
+            OutputStream outputStream = new FileOutputStream(internalFile);
+
+            byte[] buffer = new byte[1024];
+            int length;
+            int rowsCopied = 0;
+
+            while (rowsCopied < numRowsToCopy) {
+                outputStream.write(buffer);
+                rowsCopied++;
+                System.out.println("Data row number :  " + rowsCopied);
+            }
+
+            outputStream.flush();
+            outputStream.close();
+            inputStream.close();
+
+            System.out.println("Dataset copied to internal storage: " + rowsCopied + " rows copied. File path: " + internalFile.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+*/
     // 3. COPY FIRST 250 DATA IN INTERNAL STORAGE TXT FILE TO CSV
     public static void convertTxtToCsv(Context context) {
         try {
-            String fileName = "checkout_data.txt";
+            String fileName = "test_data.txt";
             File inputFile = new File(context.getFilesDir(), fileName);
             File outputFile = new File(context.getFilesDir(), "converted_checkout_data.csv");
 
@@ -629,7 +690,41 @@ public class GetStartedActivity extends AppCompatActivity {
         }
     }*/
 
-    public static void clearCheckoutData(Context context) {
+    public static void clearCheckoutData(Context context, int size) {
+        try {
+            String fileName = "test_data.txt";
+            File file = new File(context.getFilesDir(), fileName);
+
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            List<String> remainingLines = new ArrayList<>();
+
+            String line;
+            int lineCount = 0;
+            while ((line = reader.readLine()) != null) {
+                if (lineCount >= size) {
+                    remainingLines.add(line);
+                }
+                lineCount++;
+            }
+            reader.close();
+
+            FileWriter fileWriter = new FileWriter(file, false); // Passing false will overwrite the existing data
+            for (int i = 0; i < remainingLines.size(); i++) {
+                String remainingLine = remainingLines.get(i);
+                fileWriter.write(remainingLine);
+                if (i < remainingLines.size() - 1) {
+                    fileWriter.write(System.lineSeparator()); // Add line separator after each line except the last one
+                }
+            }
+
+            fileWriter.close();
+
+            System.out.println("Removed first " + size + " checkout data from file: " + file.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void clearCheckoutData1(Context context, int size) {
         try {
             String fileName = "checkout_data.txt";
             File file = new File(context.getFilesDir(), fileName);
@@ -640,7 +735,7 @@ public class GetStartedActivity extends AppCompatActivity {
             String line;
             int lineCount = 0;
             while ((line = reader.readLine()) != null) {
-                if (lineCount >= 250) {
+                if (lineCount >= size) {
                     remainingLines.add(line);
                 }
                 lineCount++;
@@ -648,13 +743,19 @@ public class GetStartedActivity extends AppCompatActivity {
             reader.close();
 
             FileWriter fileWriter = new FileWriter(file, false); // Passing false will overwrite the existing data
-            for (String remainingLine : remainingLines) {
+            for (int i = 0; i < remainingLines.size(); i++) {
+                String remainingLine = remainingLines.get(i);
                 fileWriter.write(remainingLine);
-                fileWriter.write(System.lineSeparator()); // Add line separator after each line
+                if (i < remainingLines.size() - 1) {
+                    fileWriter.write(System.lineSeparator()); // Add line separator after each line except the last one
+                }
             }
+            FileOutputStream fileOutputStream = context.openFileOutput("checkout_data.txt", Context.MODE_APPEND | Context.MODE_PRIVATE);
+
+            fileOutputStream.write("\n".getBytes());
             fileWriter.close();
 
-            System.out.println("Removed first 250 checkout data from file: " + file.getAbsolutePath());
+            System.out.println("Removed first " + size + " checkout data from file: " + file.getAbsolutePath());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -666,13 +767,13 @@ public class GetStartedActivity extends AppCompatActivity {
         // Specify the file paths you want to copy from the assets folder
         String[] assetFilePaths = {"ca.crt.pem", "ca.key.pem"};
 
-        // Specify the target directory in internal storage
+        // Specify the target directoy in internal storage
         String targetDirectory = "certificate";
 
         copyModelToInternalStorage("model.tflite");
-        copyDataToInternalStorage(getApplicationContext(),"dummy_data.txt", "checkout_data.txt");
+        copyDataToInternalStorage(getApplicationContext(),"dummy_data.txt", "test_data.txt");
         convertTxtToCsv(getApplicationContext());
-        clearCheckoutData(getApplicationContext());
+        //clearCheckoutData(getApplicationContext(),250);
         copyCertificate(getApplicationContext(),assetFilePaths,targetDirectory);
     }
 

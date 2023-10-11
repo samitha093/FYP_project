@@ -14,7 +14,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Dark application theme based on the light theme. -->
     <style name="Theme.PredictionApp.Dark" parent="Theme.MaterialComponents.DayNight">
-        <item name="colorPrimary">#B0C2BB</item> <!-- Slightly darker shade -->
+        <item name="colorPrimary">#87978F</item> <!-- Slightly darker shade -->
         <item name="colorPrimaryVariant">#87978F</item> <!-- Slightly darker shade -->
         <item name="colorOnPrimary">@color/black</item> <!-- Change to black for better readability -->
         <!-- Secondary brand color. -->

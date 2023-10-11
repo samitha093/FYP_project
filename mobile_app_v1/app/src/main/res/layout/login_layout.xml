@@ -21,7 +21,7 @@
             android:textSize="18sp" />
         <!-- Spacer to push the logout icon to the right -->
         <View
-            android:layout_width="130dp"
+            android:layout_width="230dp"
             android:layout_height="0dp"
             android:layout_weight="1" />
 
@@ -58,7 +58,7 @@
         android:layout_marginTop="20dp"
         android:hint="Email or Username"
         android:text=""
-        android:textColor="@color/black"
+        android:textColor="?android:attr/textColorPrimary"
         android:inputType="text"
         android:required="true" />
     <!-- Password
@@ -68,6 +68,7 @@
         android:layout_height="wrap_content"
         android:hint="Password"
         android:inputType="textPassword"
+        android:textColor="@color/black"
         android:required="true"/> -->
 
     <!-- Password-->
