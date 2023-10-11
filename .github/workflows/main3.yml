@@ -34,7 +34,7 @@ jobs:
         run: cp -r web_app/dist/* child_cart/api/templates
 
       - name: Install Python dependencies
-        run: pip3 install -r requirements.txt
+        run: pip install -r requirements.txt
 
       - name: Create Child cart package
         run: pyinstaller --onefile --add-data "child_cart/api/templates:child_cart/api/templates"  --name C_main.bin C_main.py
