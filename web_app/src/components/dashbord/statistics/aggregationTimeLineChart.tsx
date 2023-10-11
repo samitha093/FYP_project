@@ -50,7 +50,7 @@ const AggregationTimeLineChart: React.FC<modelAccuracyLineChartProps> = ({
     labels,
     datasets: [
       {
-        label: 'Local Model Accuracy',
+        label: 'Local Model Kernal Time',
         data: aggregationTimeArray,
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
       },
