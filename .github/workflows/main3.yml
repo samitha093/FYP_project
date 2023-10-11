@@ -44,7 +44,7 @@ jobs:
 
       - name: Read Version Number
         id: version
-        run: echo ::set-output name=VERSION::$(cat version.txt)
+        rrun: echo ::set-output name=VERSION::$(cat version.txt)-arm
 
       - name: Create GitHub Release
         id: create_release
