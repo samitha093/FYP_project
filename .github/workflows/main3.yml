@@ -21,6 +21,11 @@ jobs:
         with:
           node-version: 16
 
+      - name: Install Yarn
+        run: |
+          npm install -g yarn
+        shell: bash
+
       - name: Install Node dependencies
         run: cd web_app && yarn install
 
