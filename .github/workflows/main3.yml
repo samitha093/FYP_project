@@ -40,10 +40,10 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Create Child cart package
-        run: pyinstaller --onefile --add-data "child_cart/api/templates:child_cart/api/templates"  --name C_main.bin C_main.py
+        run: pyinstaller --onefile --add-data "child_cart/api/templates:child_cart/api/templates"  --name C_main.bin C_main.py --exclude-module werkzeug.urls
 
       - name: Create Parent cart package
-        run: pyinstaller --onefile --add-data  "child_cart/api/templates:child_cart/api/templates"  --name P_main.bin P_main.py
+        run: pyinstaller --onefile --add-data  "child_cart/api/templates:child_cart/api/templates"  --name P_main.bin P_main.py --exclude-module werkzeug.urls
 
       - name: Read Version Number
         id: version
