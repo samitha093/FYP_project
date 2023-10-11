@@ -33,6 +33,9 @@ jobs:
       - name: Copy files to child_cart/api/templates
         run: cp -r web_app/dist/* child_cart/api/templates
 
+      - name: Install TensorFlow
+        run: pip install tensorflow==2.12
+
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
