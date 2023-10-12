@@ -183,9 +183,11 @@ def hostSelector():
     global HOSTHISTORT, HOSTLIST, LOCALHOST, HOST
     nbrList = loadNBRList()
     print("Saved nabour list : ",nbrList)
+
     try:
-        for i in nbrList:
-            HOSTLIST.append(i)
+        HOSTLIST = nbrList
+        # for i in nbrList:
+        #     HOSTLIST.append(i)
         print("Select a host from known nabour list : ",HOSTLIST)
     except :
         pass
