@@ -67,6 +67,8 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
         setTimeout(() => {
         // Update the nabourArray with new data after the delay
         setNabourArray(response.data);
+        const testData =[["10.50.70.134"],["10.50.70.135"],["10.50.70.136"],["10.50.70.137"],["10.50.70.138"]];
+        setNabourArray(testData);
         }, 3000);
       }).catch(error => {
             console.error(error);
@@ -98,7 +100,15 @@ const Dashboard: React.FC<AppProps> = ({ darkMode }) => {
       setTimeout(() => {
         // Update the nabourArray with new data after the delay
         setPeerArray(data);
-        console.log(data)
+        // const testData = [
+        //   ["6PcvBOgY6s"],
+        //   ["k2VbYf8A1j"],
+        //   ["DxG3Rv9WZt"],
+        //   ["Np5QKHmLq7"],
+        //   ["Xp3Rv9WZtN"],
+        //   ["p5QKHmLq7X"]
+        // ];
+        // setPeerArray(testData);
       }, 3000);
     });
     socket.on('USERID', (data) => {
