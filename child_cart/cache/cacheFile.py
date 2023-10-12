@@ -629,7 +629,7 @@ def saveOrUpdateNBRList(NBRLIST):
         filename = "cache/nbrList.pkl"
         if not os.path.isfile(filename):
             print("The file", filename, "does not exist in the current path.")
-            new_row = [NBRLIST]  # Wrap NBRLIST in a list
+            new_row = NBRLIST  # Wrap NBRLIST in a list
             nbrList_lock.acquire()
             with open(filename, 'wb') as f:
                 pickle.dump(new_row, f)
@@ -660,8 +660,8 @@ def saveOrUpdateNBRList(NBRLIST):
         with open(filename, 'rb') as f:
             returnList = pickle.load(f)
         print("Naubor list:>>>>>")
-        print(returnList[0])
-        return returnList[0]
+        print(returnList)
+        return returnList
     except Exception as e:
         print("An error occurred:", str(e))
 
@@ -679,7 +679,7 @@ def loadNBRList():
             nbrList_lock.release()
             # print(returnList[0])
             # print("Load naubour list>>>>")
-            return returnList[0]
+            return returnList
         else:
             print("The file", filename, "does not exist in the current path.")
             nbrList_lock.release()
