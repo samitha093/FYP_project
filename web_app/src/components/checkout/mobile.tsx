@@ -81,6 +81,7 @@ const Mobile: React.FC<AppProps> = ({ darkMode }) => {
     });
     socket.on('USER_PROFILE', (data) => {
       setTimeout(() => {
+        console.log('Received from server:', data);
       // Update the nabourArray with new data after the delay
       setUserdat(data)
       if(data.length > 0){

@@ -44,16 +44,17 @@ function Statistics() {
   const [statisticData, setStatisticData] = useState<StatisticData>(initialStatisticData);
   //for testing dummy data
   const statisticData1 = {
-    aggregationLableArray: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,15,16,17,18,19,20,21,22,23,24,25],
-    receivedModelArray:    [7, 5, 8, 4, 5, 6, 8, 7, 5, 8,   4, 5,   6, 8, 7, 5, 8, 4, 5, 6, 8, 7, 5, 8,   4, 5,   6, 8],
-    rejectedModelArray: [2, 3, 0, 5, 4, 3, 1, 2, 3, 0, 5, 4, 3, 1,2, 3, 0, 5, 4, 3, 1, 2, 3, 0, 5, 4, 3, 1],
-    localModelAccuracy: [12, 23, 30, 35, 38, 44, 50, 55, 61, 75, 80, 89, 90, 91,50, 55, 61, 75, 80, 89, 90, 91,50, 55, 61, 75, 80, 89, 90, 91],
+    aggregationLableArray: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+    //values between 2 and 6
+    receivedModelArray:    [2,2,2,2,3,4,3,5,4,5,3,4,5,6],
+    rejectedModelArray: [0,0,0,0,1,2,1,3,2,3,1,2,3,4],
+    localModelAccuracy: [12, 23, 30, 35, 38, 44, 50, 55, 61,68, 75, 81,84],
     aggregationTimeArray: [2,3,2.5,3.5,3,2,4,2.5,4,2,3.5,3,4,2.5,3,2.5,3.5,3,2,4,2.5,4,2,3.5,3,4,2.5],
-    modelFinalAccuracy: 80,
+    modelFinalAccuracy: 84,
     role: "SHELL",
-    iteration: 10,
-    time: 12,
-    modelCount: 10
+    iteration: 13,
+    time: 45,
+    modelCount: 2
   };
 
   

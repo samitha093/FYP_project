@@ -13,7 +13,6 @@ ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
 ssl_context.check_hostname = False
 ssl_context.load_verify_locations(cafile=ca_cert_file)
 
-
 try:
     # Establish a socket connection to the server
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
@@ -23,13 +22,16 @@ try:
                 # Connect to the server
                 secure_client_socket.connect((server_host, server_port))
 
-                # Send a message to the server
-                message = "Hello, Server!"
-                secure_client_socket.send(message.encode('utf-8'))
+                while True:
+                    # Send a message to the server
+                    message = input("Enter a message to send to the server (or 'exit' to quit): ")
+                    if message.lower() == 'exit':
+                        break
+                    secure_client_socket.send(message.encode('utf-8'))
 
-                # Receive and print the response from the server
-                response = secure_client_socket.recv(1024)
-                print(f"Server response: {response.decode('utf-8')}")
+                    # Receive and print the response from the server
+                    response = secure_client_socket.recv(1024)
+                    print(f"Server response: {response.decode('utf-8')}")
 
         except ssl.CertificateError as cert_error:
             print(f"Certificate error: {cert_error}")
