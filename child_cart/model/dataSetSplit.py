@@ -115,8 +115,13 @@ def dataSaveTest(oneTimeDataSetSize):
         if(num >= 98000):
             num =0
         tempArray=[]
+        file = open("sampleData.txt", "w")
+
         for i in range(oneTimeDataSetSize):
             new_row = train_array[num]
+            #write in text file
+            file.write(str(new_row) + "\n")
+
             tempArray.append(new_row)
             num +=1
         my_data=updataCartData(tempArray)

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,18 +20,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 public class UserProfileActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
@@ -46,6 +52,7 @@ public class UserProfileActivity extends AppCompatActivity {
         //Log.i("STORED USER DATA", userDataJsonString);
 
         try {
+
             FileInputStream fis = openFileInput("user_data.json");
             InputStreamReader isr = new InputStreamReader(fis);
             BufferedReader br = new BufferedReader(isr);
@@ -92,6 +99,14 @@ public class UserProfileActivity extends AppCompatActivity {
                 showLogoutConfirmationDialog(v);
             }
         });
+        Button btnDeleteAccount = findViewById(R.id.btnDeleteAccount); // Replace with your button ID
+        btnDeleteAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDeleteAccountConfirmationDialog(v);
+            }
+        });
+
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
@@ -126,6 +141,7 @@ public class UserProfileActivity extends AppCompatActivity {
                         return false;
                     }
                 });
+
     }
     public void logout() {
         // Clear any user session or data here, if needed
@@ -159,6 +175,53 @@ public class UserProfileActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+    private void deleteAccountAndRedirect() {
+        try {
+            String fileName = "user_data.json";
+            File file = new File(getFilesDir(), fileName);
+
+            if (file.exists()) {
+                if (file.delete()) {
+                    SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                    // Clear user data and set login state to false
+                    editor.clear();
+                    editor.putBoolean("isLoggedIn", false);
+
+                    editor.apply();
+                    Intent intent = new Intent(this, GetStartedActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Log.i("DELETE ACCOUNT", "FAILED TO DELETE USER ACCOUNT");
+                }
+            } else {
+                Log.i("DELETE ACCOUNT", "NO USER TO DELETE");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void showDeleteAccountConfirmationDialog(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete Account");
+        builder.setMessage("Are you sure you want to delete your account?");
+        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Perform logout action here
+                deleteAccountAndRedirect();
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
 
 }
 

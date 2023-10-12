@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,16 +32,47 @@ import java.nio.channels.FileChannel;
 import java.util.Calendar;
 
 
-
-
 public class SignUpActivity extends AppCompatActivity {
-    private EditText etName, etAge, etEmail, etCity,etPassword,etReenterPassword;
-    //EditText etPassword = findViewById(R.id.etPassword);
-
-    private RadioGroup etGender;
     Interpreter localTfliteModel;
+    //EditText etPassword = findViewById(R.id.etPassword);
     Interpreter receivedTfliteModel;
+    private EditText etName, etAge, etEmail, etCity, etPassword, etReenterPassword;
+    private RadioGroup etGender;
     private Button signUpButton; // Declare the button
+    ImageView ivBack;
+
+    public static void copyModelToInternalStorage(Context context, String modelName) throws IOException {
+        InputStream inputStream = context.getAssets().open(modelName);
+
+        File modelFile = new File("/data/data/com.example.predictionapp/files", modelName);
+        OutputStream outputStream = new FileOutputStream(modelFile);
+
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = inputStream.read(buffer)) > 0) {
+            outputStream.write(buffer, 0, length);
+        }
+        Log.i("local model", "is transferred successfully");
+        outputStream.flush();
+        outputStream.close();
+        inputStream.close();
+    }
+
+    public static int[] argmax(float[][] array, int axis) {
+        int[] result = new int[array.length];
+        for (int i = 0; i < array.length; i++) {
+            float max = array[i][0];
+            int index = 0;
+            for (int j = 1; j < array[i].length; j++) {
+                if (array[i][j] > max) {
+                    max = array[i][j];
+                    index = j;
+                }
+            }
+            result[i] = index;
+        }
+        return result;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +83,6 @@ public class SignUpActivity extends AppCompatActivity {
         signUpButton = findViewById(R.id.btnSignUp);
 
 
-
         // Initialize EditText fields
         etName = findViewById(R.id.EditName);
         etEmail = findViewById(R.id.etEmail);
@@ -60,7 +91,7 @@ public class SignUpActivity extends AppCompatActivity {
         etCity = findViewById(R.id.etCity);
         etPassword = findViewById(R.id.etPassword);
         etReenterPassword = findViewById(R.id.etReenterPassword);
-
+        ivBack = findViewById(R.id.ivBack);
 
         // Set a click listener for the button
         signUpButton.setOnClickListener(new View.OnClickListener() {
@@ -71,95 +102,101 @@ public class SignUpActivity extends AppCompatActivity {
                 saveFormJson();
             }
         });
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                back();
+            }
+        });
     }
 
     // ... (Your code for form handling and other functionalities)
-        private void saveFormJson() {
-            String name = etName.getText().toString();
-            int selectedGenderId = etGender.getCheckedRadioButtonId();
-            String email = etEmail.getText().toString();
-            String age = etAge.getText().toString();
-            String city = etCity.getText().toString();
-            String password = etPassword.getText().toString();
-            String reenteredPassword = etReenterPassword.getText().toString();
+    private void saveFormJson() {
+        String name = etName.getText().toString();
+        int selectedGenderId = etGender.getCheckedRadioButtonId();
+        String email = etEmail.getText().toString();
+        String age = etAge.getText().toString();
+        String city = etCity.getText().toString();
+        String password = etPassword.getText().toString();
+        String reenteredPassword = etReenterPassword.getText().toString();
 
-            if (name.isEmpty()) {
-                etName.setError("Name is required");
-                etName.requestFocus();
-                return;
-            }
+        if (name.isEmpty()) {
+            etName.setError("Name is required");
+            etName.requestFocus();
+            return;
+        }
 
-            if (selectedGenderId == -1) {
-                // No gender is selected
-                TextView errorText = (TextView) etGender.getChildAt(0);
-                errorText.setError("Gender is required");
-                etGender.requestFocus();
-                return;
-            }
+        if (selectedGenderId == -1) {
+            // No gender is selected
+            TextView errorText = (TextView) etGender.getChildAt(0);
+            errorText.setError("Gender is required");
+            etGender.requestFocus();
+            return;
+        }
 
-            if (email.isEmpty()) {
-                etEmail.setError("Email is required");
-                etEmail.requestFocus();
-                return;
-            }
-            if (age.isEmpty()) {
-                etAge.setError("Age is required");
-                etAge.requestFocus();
-                return;
-            }
+        if (email.isEmpty()) {
+            etEmail.setError("Email is required");
+            etEmail.requestFocus();
+            return;
+        }
+        if (age.isEmpty()) {
+            etAge.setError("Age is required");
+            etAge.requestFocus();
+            return;
+        }
 
-            if (city.isEmpty()) {
-                etCity.setError("City is required");
-                etCity.requestFocus();
-                return;
-            }
-            if (password.isEmpty()) {
-                etCity.setError("Password is required");
-                etCity.requestFocus();
-                return;
-            }
-            if (reenteredPassword.isEmpty()) {
-                etCity.setError("Please verify your password");
-                etCity.requestFocus();
-                return;
-            }
-            String selectedGender = "";
-            if (selectedGenderId == R.id.radioButtonMale) {
-                selectedGender = "Male";
-            } else if (selectedGenderId == R.id.radioButtonFemale) {
-                selectedGender = "Female";
-            }
-            if(password != reenteredPassword){
-                etReenterPassword.setError("password is not match..");
-            }
-            // Create a JSON object to hold the user data
-            JSONObject userDataJson = new JSONObject();
+        if (city.isEmpty()) {
+            etCity.setError("City is required");
+            etCity.requestFocus();
+            return;
+        }
+        if (password.isEmpty()) {
+            etCity.setError("Password is required");
+            etCity.requestFocus();
+            return;
+        }
+        if (reenteredPassword.isEmpty()) {
+            etCity.setError("Please verify your password");
+            etCity.requestFocus();
+            return;
+        }
+        String selectedGender = "";
+        if (selectedGenderId == R.id.radioButtonMale) {
+            selectedGender = "Male";
+        } else if (selectedGenderId == R.id.radioButtonFemale) {
+            selectedGender = "Female";
+        }
+        if (!password.equals(reenteredPassword)) {
+            etReenterPassword.setError("Passwords do not match.");
+        }
+        // Create a JSON object to hold the user data
+        JSONObject userDataJson = new JSONObject();
+        try {
+            userDataJson.put("name", name);
+            userDataJson.put("gender", selectedGender);
+            userDataJson.put("email", email);
+            userDataJson.put("age", age);
+            userDataJson.put("city", city);
+            userDataJson.put("password", password);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        // Create the file name
+        String userDataJsonFile = "user_data.json";
+
+        String existingFormData = readFormData();
+
+        if (existingFormData != null && existingFormData.contains(userDataJson.toString())) {
+            // Check whether a user exists or not
+            Toast.makeText(getApplicationContext(), "This user has been already added", Toast.LENGTH_SHORT).show();
+        } else {
             try {
-                userDataJson.put("name", name);
-                userDataJson.put("gender", selectedGender);
-                userDataJson.put("email",email);
-                userDataJson.put("age", age);
-                userDataJson.put("city", city);
-                userDataJson.put("password",password);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            // Create the file name
-            String userDataJsonFile = "user_data.json";
-
-            String existingFormData = readFormData();
-
-            if (existingFormData != null && existingFormData.contains(userDataJson.toString())) {
-                // Check whether a user exists or not
-                Toast.makeText(getApplicationContext(), "This user has been already added", Toast.LENGTH_SHORT).show();
-            } else {
-                try {
-                    FileOutputStream fileOutputStream = openFileOutput(userDataJsonFile, Context.MODE_APPEND);
-                    // Convert the JSON object to a JSON string
-                    String userDataJsonString = userDataJson.toString() + "\n";
-                    fileOutputStream.write(userDataJsonString.getBytes());
-                    fileOutputStream.close();
+                FileOutputStream fileOutputStream = openFileOutput(userDataJsonFile, Context.MODE_APPEND);
+                // Convert the JSON object to a JSON string
+                String userDataJsonString = userDataJson.toString() + "\n";
+                fileOutputStream.write(userDataJsonString.getBytes());
+                fileOutputStream.close();
                     /*Calendar calendar = Calendar.getInstance();
                     loadModel("model");
                     int currentMonth = calendar.get(Calendar.MONTH) + 1;
@@ -167,49 +204,51 @@ public class SignUpActivity extends AppCompatActivity {
                     if(selectedGender == "Female"){genderInt = 1;}
                     if(selectedGender == "Male"){genderInt = 0;}
                     predict(currentMonth, genderInt);*/
-                    // Clear the text boxes
-                    etName.setText("");
-                    etGender.clearCheck();
-                    etEmail.setText("");
-                    etAge.setText("");
-                    etCity.setText("");
-                    etPassword.setText("");
-                    etReenterPassword.setText("");
+                // Clear the text boxes
+                etName.setText("");
+                etGender.clearCheck();
+                etEmail.setText("");
+                etAge.setText("");
+                etCity.setText("");
+                etPassword.setText("");
+                etReenterPassword.setText("");
 
-                    // Show success message or navigate to login screen
-                    Toast.makeText(this, "User registered successfully", Toast.LENGTH_SHORT).show();
-                    navigateToLogin(); // Call your method to navigate to the login screen
+                // Show success message or navigate to login screen
+                Toast.makeText(this, "User registered successfully", Toast.LENGTH_SHORT).show();
+                navigateToLogin(); // Call your method to navigate to the login screen
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        private void navigateToLogin() {
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-            //finish(); // Optional: Close the current activity if you don't want the user to come back to it
-        }
-        private String readFormData() {
-            try {
-                FileInputStream fis = openFileInput("user_data.json");
-                InputStreamReader isr = new InputStreamReader(fis);
-                BufferedReader br = new BufferedReader(isr);
-
-                StringBuilder stringBuilder = new StringBuilder();
-                String line;
-
-                while ((line = br.readLine()) != null) {
-                    stringBuilder.append(line).append("\n");
-                }
-                br.close();
-                return stringBuilder.toString();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            return null;
         }
+    }
+
+    private void navigateToLogin() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        //finish(); // Optional: Close the current activity if you don't want the user to come back to it
+    }
+
+    private String readFormData() {
+        try {
+            FileInputStream fis = openFileInput("user_data.json");
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                stringBuilder.append(line).append("\n");
+            }
+            br.close();
+            return stringBuilder.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
     private void loadModel(String fileName) {
         try {
@@ -230,7 +269,9 @@ public class SignUpActivity extends AppCompatActivity {
             Log.i("Prediction App", "Error");
             Log.i("Prediction App", ex.toString());
         }
-    }private MappedByteBuffer loadFile(String fileName) throws IOException {
+    }
+
+    private MappedByteBuffer loadFile(String fileName) throws IOException {
         // Get the path to the model file in the internal storage directory
         File directory = new File("/data/data/com.example.predictionapp/files");
         File modelFile = new File(directory, fileName + ".tflite");
@@ -274,41 +315,11 @@ public class SignUpActivity extends AppCompatActivity {
             Log.i(" Prediction App ", "Prediction results: " + String.valueOf(y_pred_model_1[i]));
         }
     }
-
-    public static void copyModelToInternalStorage(Context context, String modelName) throws IOException {
-        InputStream inputStream = context.getAssets().open(modelName);
-
-        File modelFile = new File("/data/data/com.example.predictionapp/files", modelName);
-        OutputStream outputStream = new FileOutputStream(modelFile);
-
-        byte[] buffer = new byte[1024];
-        int length;
-        while ((length = inputStream.read(buffer)) > 0) {
-            outputStream.write(buffer, 0, length);
-        }
-        Log.i("local model", "is transferred successfully");
-        outputStream.flush();
-        outputStream.close();
-        inputStream.close();
+    public void back(){
+        Intent intent = new Intent(this, GetStartedActivity.class);
+        startActivity(intent);
+        finish();
     }
-
-    public static int[] argmax(float[][] array, int axis) {
-        int[] result = new int[array.length];
-        for (int i = 0; i < array.length; i++) {
-            float max = array[i][0];
-            int index = 0;
-            for (int j = 1; j < array[i].length; j++) {
-                if (array[i][j] > max) {
-                    max = array[i][j];
-                    index = j;
-                }
-            }
-            result[i] = index;
-        }
-        return result;
-    }
-
-
 
 }
 

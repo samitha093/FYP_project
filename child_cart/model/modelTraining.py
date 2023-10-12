@@ -18,6 +18,6 @@ def continuoustrainModel(model,train_data1,train_labels1):
     saveLocalModelData(model)
     print("Localy trained and saved model parameters")
     return model
-   
+  
 
 

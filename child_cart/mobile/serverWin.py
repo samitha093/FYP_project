@@ -102,7 +102,7 @@ class SocketConnection:
                                             break  # End of file
                                         self.client_socket.sendall(data)
 
-                        self.client_socket.sendall(("\nENDING\n").encode())
+                        self.client_socket.sendall(("ENDING\n").encode())
                         isNewMessage = False
                         #remove file
                         if os.path.exists(FILENAME):
@@ -116,7 +116,7 @@ class SocketConnection:
         #     self.close_connection("Send")
 
     def receive_messages(self):
-        global isFileReceiving ,isUserDataReceiving ,FILENAME
+        global isFileReceiving ,isUserDataReceiving ,FILENAME, MESSAGE
 
         try:
            receivedData = []
@@ -129,13 +129,13 @@ class SocketConnection:
                     print("Data set Receiving enabled : ",data) 
                     isFileReceiving = True                               
                 elif isFileReceiving:
+                    print("Data set Receiving : ",data)
                     cleaned_string_array = data.strip()
                     list_strings = cleaned_string_array.split('\n')
                     receivedData = [ast.literal_eval(lst_str) for lst_str in list_strings]
-                    print("Received Data Array")
-                    print(receivedData)
-                    #length
-                    print("array length ",len(receivedData))
+                    # print("Received Data Array : ",receivedData)
+                    # #length
+                    # print("array length ",len(receivedData))
                     #update the card data
                     updataCartData(receivedData)
 

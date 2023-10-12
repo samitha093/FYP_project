@@ -20,13 +20,13 @@ def convert_last_two_digits(num):
     converted_num = float(f"{integer_part}.{converted_fractional:02d}")
     return converted_num
 
-
+#model accuracy check 
 def getModelAccuracy(model,test_data1,test_labels1):
     try:
       print("MODEL ACC>>>>>>>")
       y_pred_model_1 = model.predict(test_data1)
-
-      # The predictions are in the form of probability of each class, so we will take the class with highest probability
+      # The predictions are in the form of probability of each class, so we will take the 
+      # class with highest probability
       y_pred_model_1 = y_pred_model_1.argmax(axis=-1)
 
       # Calculate the accuracy of the model
@@ -47,9 +47,6 @@ def predictionsResults(model,test_data1):
   # The predictions are in the form of probability of each class, so we will take the class with highest probability
   y_pred_model_1 = y_pred_model_1.argmax(axis=-1)
 
-  # Calculate the accuracy of the model
-  # print("Predicted Results")
-  # print(y_pred_model_1)
   return y_pred_model_1
   
 def getCurrentThreand(month,gender):

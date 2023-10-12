@@ -278,7 +278,7 @@ def backgroudNetworkProcess():
                 print("Changed Connection Mode to " + conType)
                 mySocket.close(0,TEMPUSERID)
                 Stop_loop()
-            print("Connecting as KERNEL for globla aggregation")
+            print("Connecting as KERNEL for global aggregation")
             #kernel loop
             while True:
                 # get data from recived queue

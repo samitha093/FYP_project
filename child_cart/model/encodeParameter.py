@@ -16,23 +16,13 @@ from child_cart.cache.cacheFile import *
 #---------------------------------------Encode-----------------------
 #encode for cart 
 def encodeModelParameters():
-   
     print("Encoding ----------------> ")
     model = create_model()
     try:
         model_weights= loadLocalCartModelData()
-        # q = queue.Queue()
-        # t1=threading.Thread(target=loadLocalCartModelData,args=(q,))
-        # t1.start()
-        # t1.join()
-        # result = q.get()
-        # model_weights= result
-
         print("Model weights loaded successfully!")
     except Exception as e:
         print("Error occurred while loading model weights:", e)
-
-
 
     # save the model weights to an in-memory buffer
     buf = io.BytesIO()

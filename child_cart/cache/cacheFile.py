@@ -625,6 +625,7 @@ def getReceivedModelParameterLength():
 def saveOrUpdateNBRList(NBRLIST):
     global nbrList_lock
     try:
+     if(len(NBRLIST)!=0):  
         filename = "cache/nbrList.pkl"
         if not os.path.isfile(filename):
             print("The file", filename, "does not exist in the current path.")
@@ -632,18 +633,30 @@ def saveOrUpdateNBRList(NBRLIST):
             nbrList_lock.acquire()
             with open(filename, 'wb') as f:
                 pickle.dump(new_row, f)
-            print("New list added")
+            print("\033[91mNew list added\033[0m")
+            print(NBRLIST)
             nbrList_lock.release()
         else:
+
             print("The file", filename, "exists in the current path.")
             nbrList_lock.acquire()
-            with open(filename, 'rb') as f:
-                existingNbrList = pickle.load(f)
-            existingNbrList[0] = NBRLIST  # Update the first element of the list
+            newNbrList = NBRLIST  # Assuming NBRLIST is the new list you want to replace with
             with open(filename, 'wb') as f:
-                pickle.dump(existingNbrList, f)
-            nbrList_lock.release()
-            print("List updated")
+                pickle.dump(newNbrList, f)
+            nbrList_lock.release() 
+            print("\033[91mList replaced\033[0m")
+            print(NBRLIST)
+
+            # print("The file", filename, "exists in the current path.")
+            # nbrList_lock.acquire()
+            # with open(filename, 'rb') as f:
+            #     existingNbrList = pickle.load(f)
+            # existingNbrList[0] = NBRLIST  # Update the first element of the list
+            # with open(filename, 'wb') as f:
+            #     pickle.dump(existingNbrList, f)
+            # nbrList_lock.release()
+            # print("List updated")
+
         with open(filename, 'rb') as f:
             returnList = pickle.load(f)
         print("Naubor list:>>>>>")

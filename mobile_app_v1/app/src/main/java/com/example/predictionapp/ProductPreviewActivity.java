@@ -1,6 +1,7 @@
 package com.example.predictionapp;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -10,9 +11,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,13 +37,22 @@ public class ProductPreviewActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ProductAdapter adapter;
     private BottomNavigationView bottomNavigationView;
+    private ProgressBar loadingIndicator;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.product_preview);
+        ImageView ivLogout = findViewById(R.id.ivLogout);
+        loadingIndicator = findViewById(R.id.loadingIndicator);
 
+        ivLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLogoutConfirmationDialog(v);
+            }
+        });
         /*recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2)); // 2 columns per row
 
@@ -59,7 +73,7 @@ public class ProductPreviewActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2)); // 2 columns per row
 
-        /*List<Product> productList = new ArrayList<>();
+        List<Product> productList = new ArrayList<>();
         JSONArray jsonArray;
 
         try {
@@ -154,24 +168,24 @@ public class ProductPreviewActivity extends AppCompatActivity {
         }
 
         adapter = new ProductAdapter(productList);
-        recyclerView.setAdapter(adapter);*/
+        recyclerView.setAdapter(adapter);
 
-        /*// Get the predicted category number (replace this with your actual prediction logic)
+      /*  // Get the predicted category number (replace this with your actual prediction logic)
         int predictedCategoryNumber = 2; // Example category number
 
         // Fetch data from API based on predicted category number
         new FetchDataTask().execute(predictedCategoryNumber);*/
 
         //-------new update ------------
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        /*SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         int predictedCategoryNumber = sharedPreferences.getInt("predictedCategory", -1);
 
         if (predictedCategoryNumber != -1) {
             new FetchDataTask().execute(predictedCategoryNumber);
-        }
-
+        }*/
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
+
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener()
 
@@ -179,7 +193,6 @@ public class ProductPreviewActivity extends AppCompatActivity {
                     @RequiresApi(api = Build.VERSION_CODES.O)
                     @Override
                     public boolean onNavigationItemSelected (@NonNull MenuItem item){
-
                         BottomNavigationView navigationView = findViewById(R.id.bottom_navigation);
                         Menu menu = navigationView.getMenu();
 
@@ -220,11 +233,16 @@ public class ProductPreviewActivity extends AppCompatActivity {
             }
             return null;
         }
-
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loadingIndicator.setVisibility(View.VISIBLE); // Show the loading indicator
+        }
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-
+            // Hide the loading indicator
+            loadingIndicator.setVisibility(View.GONE);
             if (result != null) {
                 try {
                     List<Product> productList = parseJson(result);
@@ -251,6 +269,38 @@ public class ProductPreviewActivity extends AppCompatActivity {
 
             return productList;
         }
+    }
+    public void logout() {
+        // Clear any user session or data here, if needed
+
+        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // Clear user data and set login state to false
+        editor.clear();
+        editor.putBoolean("isLoggedIn", false);
+
+        editor.apply();
+        // Navigate back to the GetStartedActivity or LoginActivity
+        Intent intent = new Intent(this, GetStartedActivity.class); // Change to your desired destination activity
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish(); // Optional, depending on your navigation flow
+    }
+    private void showLogoutConfirmationDialog(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Logout");
+        builder.setMessage("Are you sure you want to logout?");
+        builder.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Perform logout action here
+                logout();
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 }
