@@ -1,5 +1,5 @@
 websockets==11.0.3
-aiohttp==3.8.4
+aiohttp==3.8.5
 kademlia==2.2.2
 pip==21.1
 scikit-learn==1.2.1
